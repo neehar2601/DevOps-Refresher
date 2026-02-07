@@ -392,12 +392,12 @@ Once approved and green, click **Merge**. Your `/health` endpoint is now part of
 ```text
                  (your laptop)
  ┌─────────────────────────────────────────────────────────────┐
- │  [Working Directory]   --git add-->   [Staging Area]       │
- │        (workbench)                     (loading dock)      │
- │                                                            │
- │  [Local Repository]  <--git commit-->  (sealed shipments)  │
- │            │                                              │
- └────────────┼───────────────────────────────────────────────┘
+ │  [Working Directory]   --git add-->   [Staging Area]        │
+ │        (workbench)                     (loading dock)       │
+ │                                                             │
+ │  [Local Repository]  <--git commit-->  (sealed shipments)   │
+ │            │                                                │
+ └────────────┼────────────────────────────────────────────────┘
               │
               │ git push / git fetch / git pull  (delivery trucks)
               ▼
