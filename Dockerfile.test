@@ -1,0 +1,17 @@
+# Base Image
+FROM ubuntu:latest
+
+# RUN: This happens NOW (during build).
+# We install 'curl' so we can use it later.
+RUN apt-get update && apt-get install -y curl
+
+# COPY: Simple file copy.
+COPY hello.txt /copy-safe.txt
+
+# ADD: The Magic!
+# It will automatically UNZIP this file for us.
+ADD magic.tar.gz /magic-unzipped/
+
+# CMD: This happens LATER (when you run).
+# It will print a message and list the files we created.
+CMD echo "--- CONTAINER STARTED ---" && ls -R /magic-unzipped/
