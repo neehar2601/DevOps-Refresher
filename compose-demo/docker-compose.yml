@@ -3,7 +3,7 @@ version: "3.8"  # The version of Docker Compose syntax
 services:
   # Service 1: Our Python Web App
   web:
-    build: .             # Build the Dockerfile in current directory
+    image: neehar2601/compose-demo:latest             # Build the Dockerfile in current directory
     ports:
       - "5001:5000"      # Map host port 5000 to container port 5000
     depends_on:
