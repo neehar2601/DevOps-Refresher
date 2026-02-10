@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Networking Visualizer</title>
+    <style>
+        :root {
+            --color-bg-primary: #0f172a;
+            --color-bg-secondary: #1e293b;
+            --color-bg-tertiary: #334155;
+            --color-text-primary: #f1f5f9;
+            --color-text-secondary: #cbd5e1;
+            --color-text-muted: #94a3b8;
+            --color-accent: #38bdf8;
+            --color-accent-hover: #0ea5e9;
+            --color-success: #22c55e;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --color-border: rgba(148, 163, 184, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: var(--color-bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--color-accent);
+        }
+
+        .subtitle {
+            color: var(--color-text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            background: var(--color-bg-secondary);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: var(--color-bg-tertiary);
+            color: var(--color-text-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: var(--color-accent);
+            color: var(--color-bg-primary);
+            border-color: var(--color-accent);
+        }
+
+        .tab-btn.active {
+            background: var(--color-accent);
+            color: var(--color-bg-primary);
+            border-color: var(--color-accent);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .network-section {
+            background: var(--color-bg-secondary);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--color-border);
+        }
+
+        .network-section h2 {
+            color: var(--color-accent);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .network-section h3 {
+            color: var(--color-text-primary);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .network-diagram {
+            background: var(--color-bg-tertiary);
+            padding: 30px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid var(--color-border);
+            overflow-x: auto;
+        }
+
+        .diagram-container {
+            min-width: 600px;
+        }
+
+        .network-box {
+            border: 2px solid;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px;
+            display: inline-block;
+            min-width: 120px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .container-box {
+            background: #1e3a8a;
+            border-color: #3b82f6;
+            color: #93c5fd;
+        }
+
+        .host-box {
+            background: #7c2d12;
+            border-color: #f97316;
+            color: #fdba74;
+        }
+
+        .bridge-box {
+            background: #166534;
+            border-color: #22c55e;
+            color: #86efac;
+        }
+
+        .overlay-box {
+            background: #7e22ce;
+            border-color: #a855f7;
+            color: #e9d5ff;
+        }
+
+        .external-box {
+            background: #44403c;
+            border-color: #78716c;
+            color: #d6d3d1;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: var(--color-bg-tertiary);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+        }
+
+        .feature-card h4 {
+            color: var(--color-accent);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .feature-card p {
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .code-block {
+            background: #0a0e1a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            border: 1px solid var(--color-border);
+        }
+
+        .code-block code {
+            color: var(--color-success);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .pros, .cons {
+            background: var(--color-bg-tertiary);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+        }
+
+        .pros h4 {
+            color: var(--color-success);
+            margin-bottom: 10px;
+        }
+
+        .cons h4 {
+            color: var(--color-error);
+            margin-bottom: 10px;
+        }
+
+        .pros ul, .cons ul {
+            margin-left: 20px;
+            color: var(--color-text-secondary);
+        }
+
+        .pros ul li, .cons ul li {
+            margin-bottom: 8px;
+        }
+
+        .info-box {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid var(--color-accent);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .info-box strong {
+            color: var(--color-accent);
+        }
+
+        .arrow {
+            display: inline-block;
+            margin: 0 10px;
+            color: var(--color-accent);
+            font-size: 1.5rem;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid var(--color-border);
+        }
+
+        th {
+            background: var(--color-bg-tertiary);
+            color: var(--color-accent);
+            font-weight: 600;
+        }
+
+        td {
+            color: var(--color-text-secondary);
+        }
+
+        tr:hover {
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐳 Docker Networking Visualizer</h1>
+            <p class="subtitle">Comprehensive guide to Docker network types, architecture, and communication patterns</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+            <button class="tab-btn" onclick="showTab('bridge')">Bridge Network</button>
+            <button class="tab-btn" onclick="showTab('host')">Host Network</button>
+            <button class="tab-btn" onclick="showTab('overlay')">Overlay Network</button>
+            <button class="tab-btn" onclick="showTab('macvlan')">Macvlan Network</button>
+            <button class="tab-btn" onclick="showTab('comparison')">Comparison</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="network-section">
+                <h2>Docker Networking Overview</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    Docker networking enables containers to communicate with each other, the Docker host, and external networks. 
+                    Docker uses the Container Network Model (CNM) to standardize networking across different environments.
+                </p>
+
+                <h3>Key Networking Concepts</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Network Namespaces</h4>
+                        <p>Each container runs in its own network namespace, providing isolation of network stack, IP addresses, and routing tables.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Virtual Ethernet (veth) Pairs</h4>
+                        <p>Docker uses veth pairs to connect containers to networks. One end is inside the container, the other connects to the host.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Bridges</h4>
+                        <p>Act as virtual switches that forward traffic between containers and the host network.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Port Mapping</h4>
+                        <p>Containers expose specific ports to the host using port mapping (-p flag), enabling external access.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Service Discovery</h4>
+                        <p>Containers on the same network can discover each other using container names via built-in DNS.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Network Address Translation (NAT)</h4>
+                        <p>Docker uses NAT to route traffic between containers and external networks through the host.</p>
+                    </div>
+                </div>
+
+                <h3>Docker Network Drivers</h3>
+                <div class="network-diagram">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Driver</th>
+                                <th>Scope</th>
+                                <th>Use Case</th>
+                                <th>Default</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>bridge</strong></td>
+                                <td>Single host</td>
+                                <td>Local container-to-container communication</td>
+                                <td>✓ Yes</td>
+                            </tr>
+                            <tr>
+                                <td><strong>host</strong></td>
+                                <td>Single host</td>
+                                <td>No network isolation, direct host network access</td>
+                                <td>✗ No</td>
+                            </tr>
+                            <tr>
+                                <td><strong>overlay</strong></td>
+                                <td>Multi-host</td>
+                                <td>Docker Swarm, distributed applications</td>
+                                <td>✗ No</td>
+                            </tr>
+                            <tr>
+                                <td><strong>macvlan</strong></td>
+                                <td>Single host</td>
+                                <td>Legacy apps, direct physical network integration</td>
+                                <td>✗ No</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ipvlan</strong></td>
+                                <td>Single host</td>
+                                <td>Advanced IP control, high-density environments</td>
+                                <td>✗ No</td>
+                            </tr>
+                            <tr>
+                                <td><strong>none</strong></td>
+                                <td>Single host</td>
+                                <td>Complete network isolation, manual configuration</td>
+                                <td>✗ No</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Common Docker Network Commands</h3>
+                <div class="code-block">
+                    <code># List all networks<br>
+docker network ls<br><br>
+# Inspect a network<br>
+docker network inspect bridge<br><br>
+# Create a custom network<br>
+docker network create my-network<br><br>
+# Connect container to network<br>
+docker network connect my-network container-name<br><br>
+# Disconnect container from network<br>
+docker network disconnect my-network container-name<br><br>
+# Remove a network<br>
+docker network rm my-network</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bridge Network Tab -->
+        <div id="bridge" class="tab-content">
+            <div class="network-section">
+                <h2>Bridge Network</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    The bridge network is Docker's default networking mode. It creates a private internal network on the host, 
+                    allowing containers on the same bridge to communicate while providing isolation from the host and external networks.
+                </p>
+
+                <div class="info-box">
+                    <strong>Key Feature:</strong> Automatic service discovery via DNS - containers can reach each other using container names.
+                </div>
+
+                <h3>Architecture Diagram</h3>
+                <div class="network-diagram">
+                    <div class="diagram-container">
+                        <div style="text-align: center;">
+                            <div class="external-box">External Network (Internet)</div>
+                            <div class="arrow">↓</div>
+                            <div class="host-box">Docker Host (eth0)</div>
+                            <div class="arrow">↓</div>
+                            <div class="bridge-box">docker0 Bridge (172.17.0.1)<br>Virtual Switch + NAT</div>
+                            <div class="arrow">↓</div>
+                            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                                <div>
+                                    <div class="container-box">Container 1<br>eth0: 172.17.0.2</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">veth pair</div>
+                                </div>
+                                <div>
+                                    <div class="container-box">Container 2<br>eth0: 172.17.0.3</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">veth pair</div>
+                                </div>
+                                <div>
+                                    <div class="container-box">Container 3<br>eth0: 172.17.0.4</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">veth pair</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>1. Bridge Creation</h4>
+                        <p>Docker creates a virtual bridge (docker0) on the host, acting as a software switch.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>2. Virtual Ethernet Pairs</h4>
+                        <p>Each container gets a veth pair - one end inside container (eth0), other end attached to docker0.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>3. IP Assignment</h4>
+                        <p>Containers receive private IPs from the bridge subnet (default: 172.17.0.0/16).</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>4. Internal Communication</h4>
+                        <p>Containers communicate directly via the bridge using IPs or container names.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>5. NAT for External Access</h4>
+                        <p>Docker uses iptables NAT rules to route external traffic through the host.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>6. Port Publishing</h4>
+                        <p>Use -p flag to map container ports to host ports for external access.</p>
+                    </div>
+                </div>
+
+                <h3>Packet Flow Example</h3>
+                <div class="network-diagram">
+                    <p style="color: var(--color-text-secondary); margin-bottom: 15px;"><strong>Container A → Container B:</strong></p>
+                    <div class="flow-diagram">
+                        <span class="network-box container-box">Container A<br>eth0</span>
+                        <span class="arrow">→</span>
+                        <span class="network-box host-box">veth-A<br>(host)</span>
+                        <span class="arrow">→</span>
+                        <span class="network-box bridge-box">docker0<br>bridge</span>
+                        <span class="arrow">→</span>
+                        <span class="network-box host-box">veth-B<br>(host)</span>
+                        <span class="arrow">→</span>
+                        <span class="network-box container-box">Container B<br>eth0</span>
+                    </div>
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Easy to set up - default configuration</li>
+                            <li>Automatic network isolation</li>
+                            <li>Built-in DNS service discovery</li>
+                            <li>Suitable for single-host deployments</li>
+                            <li>Low overhead and good performance</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Limitations</h4>
+                        <ul>
+                            <li>Limited to single host</li>
+                            <li>Requires port mapping for external access</li>
+                            <li>No multi-host service discovery</li>
+                            <li>NAT introduces slight latency</li>
+                            <li>Not suitable for distributed applications</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Usage Examples</h3>
+                <div class="code-block">
+                    <code># Use default bridge<br>
+docker run -d --name nginx nginx<br><br>
+# Create custom bridge network<br>
+docker network create --driver bridge my-bridge<br><br>
+# Run container on custom bridge<br>
+docker run -d --name app --network my-bridge nginx<br><br>
+# Publish ports to host<br>
+docker run -d -p 8080:80 --name web nginx<br><br>
+# Inspect bridge network<br>
+docker network inspect bridge</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Host Network Tab -->
+        <div id="host" class="tab-content">
+            <div class="network-section">
+                <h2>Host Network</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    The host network mode removes network isolation between the container and the Docker host. 
+                    Containers share the host's network stack directly, using the same IP addresses and ports.
+                </p>
+
+                <div class="info-box">
+                    <strong>Warning:</strong> No network isolation means containers can access all host network interfaces and ports. Use carefully!
+                </div>
+
+                <h3>Architecture Diagram</h3>
+                <div class="network-diagram">
+                    <div class="diagram-container">
+                        <div style="text-align: center;">
+                            <div class="external-box">External Network (Internet)</div>
+                            <div class="arrow">↓</div>
+                            <div class="host-box">Docker Host Network Stack<br>(eth0, IP addresses, routing table)</div>
+                            <div class="arrow">↓</div>
+                            <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+                                <div class="container-box">Container 1<br>Uses host network<br>No isolation</div>
+                                <div class="container-box">Container 2<br>Uses host network<br>No isolation</div>
+                            </div>
+                            <div style="margin-top: 15px; color: var(--color-text-muted); font-size: 0.9rem;">
+                                Containers share host's IP, ports, and network interfaces
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>1. No Network Namespace</h4>
+                        <p>Container doesn't get its own network namespace - uses host's directly.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>2. Direct Host Access</h4>
+                        <p>Container sees all host network interfaces (eth0, lo, etc.) as if running on host.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>3. No Port Mapping</h4>
+                        <p>-p flag has no effect. Container listens on host ports directly.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>4. Same IP Address</h4>
+                        <p>Container uses the host's IP address for all network operations.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>5. Performance Benefits</h4>
+                        <p>Eliminates network virtualization overhead - best performance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>6. Port Conflicts</h4>
+                        <p>Multiple containers can't bind to the same port - need to coordinate.</p>
+                    </div>
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Maximum network performance</li>
+                            <li>No NAT overhead or latency</li>
+                            <li>Direct access to host network services</li>
+                            <li>Simpler configuration for some scenarios</li>
+                            <li>Suitable for network monitoring tools</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Limitations</h4>
+                        <ul>
+                            <li>No network isolation or security</li>
+                            <li>Port conflicts between containers</li>
+                            <li>Less portable across environments</li>
+                            <li>Not available on Docker Desktop for Mac/Windows</li>
+                            <li>Can't use with Docker Swarm services</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Use Cases</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Performance-Critical Apps</h4>
+                        <p>Applications requiring maximum network throughput with minimal latency.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Network Monitoring</h4>
+                        <p>Tools that need to monitor all network traffic on the host.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>System Services</h4>
+                        <p>Services that need to integrate tightly with host networking (VPNs, proxies).</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Development Testing</h4>
+                        <p>Quick testing where isolation isn't needed and performance matters.</p>
+                    </div>
+                </div>
+
+                <h3>Usage Examples</h3>
+                <div class="code-block">
+                    <code># Run container with host network<br>
+docker run -d --network host --name nginx nginx<br><br>
+# Container listens on host's port 80 directly<br>
+# No -p flag needed or allowed<br><br>
+# Check container network mode<br>
+docker inspect nginx | grep NetworkMode<br><br>
+# Example: Network monitoring tool<br>
+docker run -d --network host --name monitor nicolaka/netshoot</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overlay Network Tab -->
+        <div id="overlay" class="tab-content">
+            <div class="network-section">
+                <h2>Overlay Network</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    Overlay networks enable multi-host networking for Docker Swarm and distributed applications. 
+                    They create a virtual network spanning multiple Docker hosts, allowing seamless container communication across hosts.
+                </p>
+
+                <div class="info-box">
+                    <strong>Key Feature:</strong> Built-in encryption support for secure communication between hosts and automatic service discovery across the cluster.
+                </div>
+
+                <h3>Architecture Diagram</h3>
+                <div class="network-diagram">
+                    <div class="diagram-container">
+                        <div style="text-align: center;">
+                            <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 30px;">
+                                <div>
+                                    <div class="host-box">Docker Host 1<br>IP: 192.168.1.10</div>
+                                    <div class="arrow">↓</div>
+                                    <div class="overlay-box">Overlay Network<br>ingress (VXLAN)</div>
+                                    <div class="arrow">↓</div>
+                                    <div class="container-box">Container A<br>10.0.9.2</div>
+                                    <div class="container-box" style="margin-top: 10px;">Container B<br>10.0.9.3</div>
+                                </div>
+                                <div style="align-self: center; color: var(--color-accent); font-size: 2rem;">↔</div>
+                                <div>
+                                    <div class="host-box">Docker Host 2<br>IP: 192.168.1.11</div>
+                                    <div class="arrow">↓</div>
+                                    <div class="overlay-box">Overlay Network<br>ingress (VXLAN)</div>
+                                    <div class="arrow">↓</div>
+                                    <div class="container-box">Container C<br>10.0.9.4</div>
+                                    <div class="container-box" style="margin-top: 10px;">Container D<br>10.0.9.5</div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 20px; color: var(--color-text-muted); font-size: 0.9rem;">
+                                Containers communicate across hosts transparently via overlay network
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>1. VXLAN Encapsulation</h4>
+                        <p>Uses VXLAN (Virtual Extensible LAN) to encapsulate container traffic over the physical network.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>2. Multi-Host Spanning</h4>
+                        <p>Creates a single logical network across multiple Docker hosts in a swarm.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>3. Automatic Routing</h4>
+                        <p>Docker handles routing packets between hosts transparently.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>4. Service Discovery</h4>
+                        <p>Built-in DNS allows containers to discover services across the entire cluster.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>5. Encryption Support</h4>
+                        <p>Optional IPsec encryption for secure communication between hosts.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>6. Load Balancing</h4>
+                        <p>Ingress network provides load balancing for published service ports.</p>
+                    </div>
+                </div>
+
+                <h3>Required Ports for Overlay Network</h3>
+                <div class="network-diagram">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Port</th>
+                                <th>Protocol</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2377</td>
+                                <td>TCP</td>
+                                <td>Cluster management communications</td>
+                            </tr>
+                            <tr>
+                                <td>7946</td>
+                                <td>TCP & UDP</td>
+                                <td>Container network discovery</td>
+                            </tr>
+                            <tr>
+                                <td>4789</td>
+                                <td>UDP</td>
+                                <td>Overlay network traffic (VXLAN)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Multi-host container communication</li>
+                            <li>Built-in service discovery across cluster</li>
+                            <li>Automatic load balancing (ingress)</li>
+                            <li>Optional encryption for security</li>
+                            <li>Seamless with Docker Swarm</li>
+                            <li>Scalable for distributed applications</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Limitations</h4>
+                        <ul>
+                            <li>Requires Docker Swarm mode</li>
+                            <li>More complex setup than bridge</li>
+                            <li>Slight performance overhead from encapsulation</li>
+                            <li>Requires open ports between hosts</li>
+                            <li>Encryption adds additional overhead</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Usage Examples</h3>
+                <div class="code-block">
+                    <code># Initialize Docker Swarm<br>
+docker swarm init<br><br>
+# Create overlay network<br>
+docker network create --driver overlay my-overlay<br><br>
+# Create service on overlay network<br>
+docker service create --name web --network my-overlay --replicas 3 nginx<br><br>
+# Create overlay with encryption<br>
+docker network create --driver overlay --opt encrypted my-secure-overlay<br><br>
+# List overlay networks<br>
+docker network ls --filter driver=overlay<br><br>
+# Inspect overlay network<br>
+docker network inspect my-overlay</code>
+                </div>
+
+                <h3>Use Cases</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Docker Swarm Clusters</h4>
+                        <p>Essential for multi-node Docker Swarm deployments.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Microservices Architecture</h4>
+                        <p>Services distributed across multiple hosts need to communicate.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>High Availability</h4>
+                        <p>Distribute containers across hosts for fault tolerance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Secure Multi-Host Apps</h4>
+                        <p>Applications requiring encrypted communication between hosts.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Macvlan Network Tab -->
+        <div id="macvlan" class="tab-content">
+            <div class="network-section">
+                <h2>Macvlan Network</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    Macvlan networks assign unique MAC addresses to containers, making them appear as physical devices on the network. 
+                    This allows containers to be directly connected to the physical network without NAT or port mapping.
+                </p>
+
+                <div class="info-box">
+                    <strong>Use Case:</strong> Legacy applications that expect physical network interfaces or integration with network appliances requiring MAC addresses.
+                </div>
+
+                <h3>Architecture Diagram</h3>
+                <div class="network-diagram">
+                    <div class="diagram-container">
+                        <div style="text-align: center;">
+                            <div class="external-box">Physical Network<br>192.168.1.0/24</div>
+                            <div class="arrow">↓</div>
+                            <div class="host-box">Docker Host<br>Physical NIC (eth0)</div>
+                            <div class="arrow">↓</div>
+                            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                                <div>
+                                    <div class="container-box">Container 1<br>MAC: 02:42:ac:11:00:02<br>IP: 192.168.1.100</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">Appears as physical device</div>
+                                </div>
+                                <div>
+                                    <div class="container-box">Container 2<br>MAC: 02:42:ac:11:00:03<br>IP: 192.168.1.101</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">Appears as physical device</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>1. Unique MAC Address</h4>
+                        <p>Each container receives its own MAC address, separate from the host.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>2. Physical Network Integration</h4>
+                        <p>Containers appear as physical devices on the network to external systems.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>3. Direct Network Access</h4>
+                        <p>No NAT or port mapping - containers have direct IPs on physical network.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>4. VLAN Support</h4>
+                        <p>Can assign containers to specific VLANs (802.1Q tagging).</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>5. No Docker Bridge</h4>
+                        <p>Bypasses Docker's virtual bridge entirely for maximum performance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>6. Parent Interface</h4>
+                        <p>Macvlan networks must be bound to a physical host interface.</p>
+                    </div>
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Containers appear as physical devices</li>
+                            <li>No NAT overhead - better performance</li>
+                            <li>Direct physical network integration</li>
+                            <li>VLAN support for network segmentation</li>
+                            <li>Works with legacy network infrastructure</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Limitations</h4>
+                        <ul>
+                            <li>Requires promiscuous mode on host NIC</li>
+                            <li>May not work in cloud environments</li>
+                            <li>More complex IP management</li>
+                            <li>Limited by MAC address table size on switches</li>
+                            <li>Containers can't reach host by default</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Macvlan Modes</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Bridge Mode (Default)</h4>
+                        <p>Containers on same host can communicate. Traffic to external network goes through parent interface.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>802.1q Trunk Mode</h4>
+                        <p>VLAN tagging support - assign containers to specific VLANs on trunked interface.</p>
+                    </div>
+                </div>
+
+                <h3>Usage Examples</h3>
+                <div class="code-block">
+                    <code># Create macvlan network<br>
+docker network create -d macvlan \<br>
+  --subnet=192.168.1.0/24 \<br>
+  --gateway=192.168.1.1 \<br>
+  -o parent=eth0 my-macvlan<br><br>
+# Run container on macvlan<br>
+docker run -d --network my-macvlan --ip=192.168.1.100 --name web nginx<br><br>
+# Create macvlan with VLAN (802.1q)<br>
+docker network create -d macvlan \<br>
+  --subnet=192.168.10.0/24 \<br>
+  -o parent=eth0.10 vlan10<br><br>
+# Inspect macvlan network<br>
+docker network inspect my-macvlan</code>
+                </div>
+
+                <h3>IPvlan Alternative</h3>
+                <p style="color: var(--color-text-secondary); margin: 20px 0;">
+                    <strong>IPvlan</strong> is similar to Macvlan but uses the parent interface's MAC address instead of assigning unique MACs. 
+                    This is more efficient for high-density environments where MAC address table limits are a concern.
+                </p>
+            </div>
+        </div>
+
+        <!-- Comparison Tab -->
+        <div id="comparison" class="tab-content">
+            <div class="network-section">
+                <h2>Network Types Comparison</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    Choose the right network type based on your deployment requirements, performance needs, and infrastructure constraints.
+                </p>
+
+                <h3>Feature Comparison Matrix</h3>
+                <div class="network-diagram">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Bridge</th>
+                                <th>Host</th>
+                                <th>Overlay</th>
+                                <th>Macvlan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Scope</strong></td>
+                                <td>Single host</td>
+                                <td>Single host</td>
+                                <td>Multi-host</td>
+                                <td>Single host</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Network Isolation</strong></td>
+                                <td>✓ Yes</td>
+                                <td>✗ No</td>
+                                <td>✓ Yes</td>
+                                <td>✓ Yes</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Performance</strong></td>
+                                <td>Good</td>
+                                <td>Excellent</td>
+                                <td>Good (overhead)</td>
+                                <td>Excellent</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Service Discovery</strong></td>
+                                <td>✓ DNS</td>
+                                <td>✗ Manual</td>
+                                <td>✓ DNS</td>
+                                <td>✗ Manual</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Port Mapping Required</strong></td>
+                                <td>✓ Yes</td>
+                                <td>✗ No</td>
+                                <td>Managed</td>
+                                <td>✗ No</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NAT Used</strong></td>
+                                <td>✓ Yes</td>
+                                <td>✗ No</td>
+                                <td>✓ Yes</td>
+                                <td>✗ No</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Default Network</strong></td>
+                                <td>✓ Yes</td>
+                                <td>✗ No</td>
+                                <td>✗ No</td>
+                                <td>✗ No</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Setup Complexity</strong></td>
+                                <td>Simple</td>
+                                <td>Very Simple</td>
+                                <td>Complex</td>
+                                <td>Moderate</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Security</strong></td>
+                                <td>Good</td>
+                                <td>Low</td>
+                                <td>Excellent</td>
+                                <td>Good</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cloud Compatible</strong></td>
+                                <td>✓ Yes</td>
+                                <td>✓ Yes</td>
+                                <td>✓ Yes</td>
+                                <td>Limited</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>When to Use Each Network Type</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Use Bridge When:</h4>
+                        <ul style="color: var(--color-text-secondary); margin-left: 20px; font-size: 0.9rem;">
+                            <li>Single-host deployments</li>
+                            <li>Development and testing</li>
+                            <li>Need container isolation</li>
+                            <li>Default choice for most apps</li>
+                            <li>Simple microservices on one host</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Use Host When:</h4>
+                        <ul style="color: var(--color-text-secondary); margin-left: 20px; font-size: 0.9rem;">
+                            <li>Maximum performance needed</li>
+                            <li>Network monitoring tools</li>
+                            <li>Direct host network access required</li>
+                            <li>No isolation concerns</li>
+                            <li>Single container per service</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Use Overlay When:</h4>
+                        <ul style="color: var(--color-text-secondary); margin-left: 20px; font-size: 0.9rem;">
+                            <li>Docker Swarm deployments</li>
+                            <li>Multi-host communication needed</li>
+                            <li>Distributed applications</li>
+                            <li>High availability setups</li>
+                            <li>Need encryption between hosts</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Use Macvlan When:</h4>
+                        <ul style="color: var(--color-text-secondary); margin-left: 20px; font-size: 0.9rem;">
+                            <li>Legacy app integration</li>
+                            <li>Need physical network presence</li>
+                            <li>VLAN requirements</li>
+                            <li>Network appliance integration</li>
+                            <li>MAC address visibility needed</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Performance Considerations</h3>
+                <div class="network-diagram">
+                    <div style="padding: 20px; background: rgba(56, 189, 248, 0.05); border-radius: 8px;">
+                        <p style="color: var(--color-text-secondary); margin-bottom: 15px;"><strong>Network Performance Ranking (Best to Lowest):</strong></p>
+                        <div class="flow-diagram">
+                            <span class="network-box host-box">1. Host<br>(No overhead)</span>
+                            <span class="arrow">→</span>
+                            <span class="network-box" style="background: #166534; border-color: #22c55e; color: #86efac;">2. Macvlan<br>(Direct access)</span>
+                            <span class="arrow">→</span>
+                            <span class="network-box bridge-box">3. Bridge<br>(NAT overhead)</span>
+                            <span class="arrow">→</span>
+                            <span class="network-box overlay-box">4. Overlay<br>(Encapsulation)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Security Comparison</h3>
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>Most Secure</h4>
+                        <ul>
+                            <li><strong>Overlay</strong> - Encryption support, isolated multi-host</li>
+                            <li><strong>Bridge</strong> - Network isolation, controlled exposure</li>
+                            <li><strong>Macvlan</strong> - Physical network level isolation</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>Least Secure</h4>
+                        <ul>
+                            <li><strong>Host</strong> - No isolation, full network access</li>
+                            <li><strong>None</strong> - Complete isolation (no network at all)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Decision Flow</h3>
+                <div class="code-block">
+                    <code>Question 1: Do you need multi-host communication?<br>
+  YES → Use OVERLAY<br>
+  NO  → Continue to Question 2<br><br>
+Question 2: Do you need maximum performance?<br>
+  YES → Use HOST (if isolation not needed) or MACVLAN<br>
+  NO  → Continue to Question 3<br><br>
+Question 3: Do you need physical network integration?<br>
+  YES → Use MACVLAN<br>
+  NO  → Use BRIDGE (default choice)</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
