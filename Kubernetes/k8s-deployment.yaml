@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 3               # 1. The Contract: We want 3 copies
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest # 2. The Image: A specific version (older)
+        ports:
+        - containerPort: 80
+
+---
+# The "---" separates two different objects in the same file
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: NodePort            # 3. The Type: Expose to outside
+  selector:
+    app: nginx              # 4. The Glue: Connects Service to Pods
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
