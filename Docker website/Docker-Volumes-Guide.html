@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Volumes - Complete Guide</title>
+    <style>
+        :root {
+            --color-bg-primary: #0f172a;
+            --color-bg-secondary: #1e293b;
+            --color-bg-tertiary: #334155;
+            --color-text-primary: #f1f5f9;
+            --color-text-secondary: #cbd5e1;
+            --color-text-muted: #94a3b8;
+            --color-accent: #38bdf8;
+            --color-accent-hover: #0ea5e9;
+            --color-success: #22c55e;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --color-border: rgba(148, 163, 184, 0.2);
+            --color-volume: #8b5cf6;
+            --color-bind: #f97316;
+            --color-tmpfs: #eab308;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: var(--color-bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--color-accent);
+        }
+
+        .subtitle {
+            color: var(--color-text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            background: var(--color-bg-secondary);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: var(--color-bg-tertiary);
+            color: var(--color-text-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: var(--color-accent);
+            color: var(--color-bg-primary);
+            border-color: var(--color-accent);
+        }
+
+        .tab-btn.active {
+            background: var(--color-accent);
+            color: var(--color-bg-primary);
+            border-color: var(--color-accent);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            background: var(--color-bg-secondary);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--color-border);
+        }
+
+        .section h2 {
+            color: var(--color-accent);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .section h3 {
+            color: var(--color-text-primary);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .diagram {
+            background: var(--color-bg-tertiary);
+            padding: 30px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid var(--color-border);
+            overflow-x: auto;
+        }
+
+        .diagram-container {
+            min-width: 600px;
+        }
+
+        .box {
+            border: 2px solid;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px;
+            display: inline-block;
+            min-width: 120px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .container-box {
+            background: #1e3a8a;
+            border-color: #3b82f6;
+            color: #93c5fd;
+        }
+
+        .host-box {
+            background: #7c2d12;
+            border-color: #f97316;
+            color: #fdba74;
+        }
+
+        .volume-box {
+            background: #5b21b6;
+            border-color: var(--color-volume);
+            color: #d8b4fe;
+        }
+
+        .bind-box {
+            background: #9a3412;
+            border-color: var(--color-bind);
+            color: #fed7aa;
+        }
+
+        .tmpfs-box {
+            background: #713f12;
+            border-color: var(--color-tmpfs);
+            color: #fde047;
+        }
+
+        .storage-box {
+            background: #166534;
+            border-color: #22c55e;
+            color: #86efac;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: var(--color-bg-tertiary);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+        }
+
+        .feature-card h4 {
+            color: var(--color-accent);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .feature-card p {
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .code-block {
+            background: #0a0e1a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            border: 1px solid var(--color-border);
+        }
+
+        .code-block code {
+            color: var(--color-success);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .pros, .cons {
+            background: var(--color-bg-tertiary);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+        }
+
+        .pros h4 {
+            color: var(--color-success);
+            margin-bottom: 10px;
+        }
+
+        .cons h4 {
+            color: var(--color-error);
+            margin-bottom: 10px;
+        }
+
+        .pros ul, .cons ul {
+            margin-left: 20px;
+            color: var(--color-text-secondary);
+        }
+
+        .pros ul li, .cons ul li {
+            margin-bottom: 8px;
+        }
+
+        .info-box {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid var(--color-accent);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .info-box strong {
+            color: var(--color-accent);
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--color-warning);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .warning-box strong {
+            color: var(--color-warning);
+        }
+
+        .arrow {
+            display: inline-block;
+            margin: 0 10px;
+            color: var(--color-accent);
+            font-size: 1.5rem;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid var(--color-border);
+        }
+
+        th {
+            background: var(--color-bg-tertiary);
+            color: var(--color-accent);
+            font-weight: 600;
+        }
+
+        td {
+            color: var(--color-text-secondary);
+        }
+
+        tr:hover {
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .lifecycle-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .lifecycle-step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .step-number {
+            background: var(--color-accent);
+            color: var(--color-bg-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+            background: var(--color-bg-tertiary);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+        }
+
+        @media (max-width: 768px) {
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📦 Docker Volumes - Complete Guide</h1>
+            <p class="subtitle">Master data persistence in Docker: Volumes, Bind Mounts, tmpfs, and best practices</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+            <button class="tab-btn" onclick="showTab('volumes')">Volumes</button>
+            <button class="tab-btn" onclick="showTab('bind-mounts')">Bind Mounts</button>
+            <button class="tab-btn" onclick="showTab('tmpfs')">tmpfs Mounts</button>
+            <button class="tab-btn" onclick="showTab('drivers')">Volume Drivers</button>
+            <button class="tab-btn" onclick="showTab('backup')">Backup &amp; Restore</button>
+            <button class="tab-btn" onclick="showTab('comparison')">Comparison</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="section">
+                <h2>Docker Storage Overview</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    By default, container data is stored in the container's writable layer and lost when the container is removed. 
+                    Docker provides three mount types for persistent storage: <strong>volumes</strong>, <strong>bind mounts</strong>, and <strong>tmpfs mounts</strong>.
+                </p>
+
+                <div class="info-box">
+                    <strong>Best Practice:</strong> Use volumes for production data persistence. They're managed by Docker, work across platforms, and offer better performance than bind mounts on Docker Desktop.
+                </div>
+
+                <h3>Three Mount Types</h3>
+                <div class="diagram">
+                    <div class="diagram-container">
+                        <div style="text-align: center;">
+                            <div class="host-box">Docker Host</div>
+                            <div style="display: flex; justify-content: space-around; margin-top: 20px; flex-wrap: wrap;">
+                                <div>
+                                    <div class="volume-box">Docker Volume<br>/var/lib/docker/volumes</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">Managed by Docker</div>
+                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                    <div class="container-box">Container</div>
+                                </div>
+                                <div>
+                                    <div class="bind-box">Host Directory<br>/home/user/data</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">Bind Mount</div>
+                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                    <div class="container-box">Container</div>
+                                </div>
+                                <div>
+                                    <div class="tmpfs-box">RAM (tmpfs)<br>Memory Only</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">Temporary</div>
+                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                    <div class="container-box">Container</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Key Concepts</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Persistence</h4>
+                        <p>Data survives container restarts and deletions when stored in volumes or bind mounts.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Isolation</h4>
+                        <p>Container storage layer is isolated from volumes - data doesn't count toward container size.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Sharing</h4>
+                        <p>Multiple containers can mount the same volume simultaneously for data sharing.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Performance</h4>
+                        <p>Volumes offer native disk performance. tmpfs offers RAM speed. Bind mounts vary by platform.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Management</h4>
+                        <p>Docker CLI commands manage volumes. Host OS manages bind mount directories.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Portability</h4>
+                        <p>Volumes work consistently across Docker hosts. Bind mounts depend on host filesystem structure.</p>
+                    </div>
+                </div>
+
+                <h3>Container Storage Layers</h3>
+                <div class="diagram">
+                    <div class="lifecycle-diagram">
+                        <div class="lifecycle-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <strong>Read-Only Image Layers</strong> - Base OS, dependencies, application code (immutable)
+                            </div>
+                        </div>
+                        <div class="lifecycle-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <strong>Container Writable Layer</strong> - Changes made during runtime (lost when container removed)
+                            </div>
+                        </div>
+                        <div class="lifecycle-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <strong>Mounted Volumes</strong> - Persistent storage bypassing container storage layer
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Common Volume Commands</h3>
+                <div class="code-block">
+                    <code># Create a volume<br>
+docker volume create my-volume<br><br>
+# List all volumes<br>
+docker volume ls<br><br>
+# Inspect volume details<br>
+docker volume inspect my-volume<br><br>
+# Remove a volume<br>
+docker volume rm my-volume<br><br>
+# Remove all unused volumes<br>
+docker volume prune<br><br>
+# Run container with volume<br>
+docker run -v my-volume:/app/data nginx<br><br>
+# Run container with bind mount<br>
+docker run -v /host/path:/container/path nginx</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Volumes Tab -->
+        <div id="volumes" class="tab-content">
+            <div class="section">
+                <h2>Docker Volumes</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    Volumes are the preferred mechanism for persisting data in Docker. They're completely managed by Docker, 
+                    stored in a dedicated directory on the host (<code>/var/lib/docker/volumes/</code> on Linux), 
+                    and isolated from core host functionality.
+                </p>
+
+                <div class="info-box">
+                    <strong>Recommendation:</strong> Always use volumes for production databases, application data, and any content that must persist beyond container lifecycle.
+                </div>
+
+                <h3>Volume Architecture</h3>
+                <div class="diagram">
+                    <div class="diagram-container">
+                        <div style="text-align: center;">
+                            <div class="host-box">Docker Host Filesystem</div>
+                            <div class="arrow">↓</div>
+                            <div class="storage-box">/var/lib/docker/volumes/<br>Docker-Managed Storage Area</div>
+                            <div style="display: flex; justify-content: center; gap: 30px; margin-top: 20px; flex-wrap: wrap;">
+                                <div>
+                                    <div class="volume-box">my-volume<br>/_data/</div>
+                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                    <div class="container-box">Container A<br>/app/data</div>
+                                </div>
+                                <div>
+                                    <div class="volume-box">db-volume<br>/_data/</div>
+                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                    <div class="container-box">Container B<br>/var/lib/mysql</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How Volumes Work</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>1. Volume Creation</h4>
+                        <p>Created explicitly with docker volume create or automatically when container starts with -v flag.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>2. Docker Management</h4>
+                        <p>Docker handles storage location, permissions, and lifecycle independently of containers.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>3. Mount Point</h4>
+                        <p>Volume mounted to specific directory inside container. Multiple containers can share same volume.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>4. Data Persistence</h4>
+                        <p>Data remains even after container deletion. Must explicitly run docker volume rm to delete.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>5. Named vs Anonymous</h4>
+                        <p>Named volumes have user-defined names. Anonymous volumes get random UUIDs.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>6. Pre-population</h4>
+                        <p>If mount point contains data in image, that data is copied to new volume on first mount.</p>
+                    </div>
+                </div>
+
+                <h3>Volume Types</h3>
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>Named Volumes</h4>
+                        <ul>
+                            <li>User-friendly names (my-app-data)</li>
+                            <li>Easy to reference and manage</li>
+                            <li>Ideal for production use</li>
+                            <li>Can be shared between containers</li>
+                            <li>Created with: docker volume create name</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>Anonymous Volumes</h4>
+                        <ul>
+                            <li>Auto-generated UUID names</li>
+                            <li>Created implicitly with -v flag</li>
+                            <li>Harder to track and manage</li>
+                            <li>Useful for temporary data</li>
+                            <li>Often orphaned after container removal</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Advantages &amp; Limitations</h3>
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Managed by Docker - consistent across platforms</li>
+                            <li>Works on Docker Desktop (Mac/Windows)</li>
+                            <li>Can be backed up and migrated easily</li>
+                            <li>More secure than bind mounts</li>
+                            <li>Better performance on Mac/Windows</li>
+                            <li>Support for volume drivers (cloud storage)</li>
+                            <li>Can pre-populate from container image</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Limitations</h4>
+                        <ul>
+                            <li>Less transparent than bind mounts</li>
+                            <li>Host path not directly visible</li>
+                            <li>Requires Docker CLI to access</li>
+                            <li>Harder to inspect content directly</li>
+                            <li>Anonymous volumes can accumulate</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Usage Examples</h3>
+                <div class="code-block">
+                    <code># Create named volume<br>
+docker volume create postgres-data<br><br>
+# Run container with named volume<br>
+docker run -d --name db \<br>
+  -v postgres-data:/var/lib/postgresql/data \<br>
+  postgres:latest<br><br>
+# Anonymous volume (auto-created)<br>
+docker run -d -v /app/data nginx<br><br>
+# Using --mount (long syntax, more explicit)<br>
+docker run -d --name web \<br>
+  --mount source=web-data,target=/usr/share/nginx/html \<br>
+  nginx<br><br>
+# Inspect volume location<br>
+docker volume inspect postgres-data<br><br>
+# Share volume between containers<br>
+docker run -d --name app1 -v shared-data:/data alpine<br>
+docker run -d --name app2 -v shared-data:/data alpine<br><br>
+# Read-only volume mount<br>
+docker run -d -v my-volume:/data:ro nginx</code>
+                </div>
+
+                <h3>Common Use Cases</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Database Storage</h4>
+                        <p>PostgreSQL, MySQL, MongoDB - persist database files across container restarts.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Application Data</h4>
+                        <p>User uploads, generated files, caches that must survive container updates.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Shared Storage</h4>
+                        <p>Multiple containers accessing same data - logs, shared configs, file processing.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Backup Sources</h4>
+                        <p>Centralized location for backing up critical application data.</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Warning:</strong> Always use named volumes for production. Anonymous volumes can be accidentally deleted with docker volume prune, causing data loss.
+                </div>
+            </div>
+        </div>
+
+        <!-- Bind Mounts Tab -->
+        <div id="bind-mounts" class="tab-content">
+            <div class="section">
+                <h2>Bind Mounts</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    Bind mounts link a specific file or directory on the host to a container location. They provide direct, 
+                    immediate synchronization between host and container filesystems. Ideal for development workflows where 
+                    you need real-time code updates without rebuilding images.
+                </p>
+
+                <div class="warning-box">
+                    <strong>Security Note:</strong> Bind mounts give containers direct access to host filesystem. This can be a security risk. Use carefully in production.
+                </div>
+
+                <h3>Bind Mount Architecture</h3>
+                <div class="diagram">
+                    <div class="diagram-container">
+                        <div style="text-align: center;">
+                            <div class="host-box">Host Filesystem</div>
+                            <div style="display: flex; justify-content: center; gap: 40px; margin-top: 20px; flex-wrap: wrap;">
+                                <div>
+                                    <div class="bind-box">/home/user/project<br>Source Code</div>
+                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                    <div style="color: var(--color-text-muted); font-size: 0.9rem;">Real-time sync</div>
+                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                    <div class="container-box">Container<br>/app</div>
+                                </div>
+                                <div>
+                                    <div class="bind-box">/etc/nginx<br>Config Files</div>
+                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                    <div style="color: var(--color-text-muted); font-size: 0.9rem;">Direct access</div>
+                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                    <div class="container-box">Container<br>/etc/nginx</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How Bind Mounts Work</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>1. Direct Mapping</h4>
+                        <p>Specific host path mapped directly to container path. Must use absolute paths.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>2. Immediate Sync</h4>
+                        <p>Changes on host appear instantly in container and vice versa. No copy operation.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>3. Host Dependency</h4>
+                        <p>Requires exact path to exist on host. Not managed by Docker.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>4. File Permissions</h4>
+                        <p>Host file permissions apply. Container processes must have appropriate access rights.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>5. Overwrites Container Data</h4>
+                        <p>If mount path contains data in image, host directory content takes precedence.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>6. Platform Differences</h4>
+                        <p>Performance varies by platform. Slower on Docker Desktop (Mac/Windows) due to filesystem translation.</p>
+                    </div>
+                </div>
+
+                <h3>Advantages &amp; Limitations</h3>
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Direct, real-time file access</li>
+                            <li>Perfect for development workflows</li>
+                            <li>Easy to inspect and edit files</li>
+                            <li>No Docker commands needed to access data</li>
+                            <li>Can mount specific files (not just dirs)</li>
+                            <li>Useful for config file injection</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Limitations</h4>
+                        <ul>
+                            <li>Reduced portability - host-dependent paths</li>
+                            <li>Security risk - direct host access</li>
+                            <li>Performance issues on Mac/Windows</li>
+                            <li>Manual path management required</li>
+                            <li>Can break container isolation</li>
+                            <li>Not recommended for production</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Usage Examples</h3>
+                <div class="code-block">
+                    <code># Basic bind mount (short syntax)<br>
+docker run -d -v /host/path:/container/path nginx<br><br>
+# Development: Mount source code<br>
+docker run -d --name dev-app \<br>
+  -v $(pwd)/src:/app/src \<br>
+  -p 3000:3000 \<br>
+  node:latest<br><br>
+# Mount single config file<br>
+docker run -d \<br>
+  -v /home/user/nginx.conf:/etc/nginx/nginx.conf:ro \<br>
+  nginx<br><br>
+# Using --mount (long syntax, more explicit)<br>
+docker run -d \<br>
+  --mount type=bind,source=/host/data,target=/app/data \<br>
+  alpine<br><br>
+# Read-only bind mount<br>
+docker run -d -v /host/config:/app/config:ro nginx<br><br>
+# Mount with propagation mode<br>
+docker run -d \<br>
+  --mount type=bind,source=/host/data,target=/data,bind-propagation=shared \<br>
+  ubuntu</code>
+                </div>
+
+                <h3>Common Use Cases</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Development Environments</h4>
+                        <p>Mount source code for live reload without rebuilding images. Edit locally, run in container.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Configuration Files</h4>
+                        <p>Inject host configs into containers. Update configs without container restart.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Log Access</h4>
+                        <p>Write container logs to host directory for easy monitoring and analysis.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Host Tool Access</h4>
+                        <p>Share Docker socket (/var/run/docker.sock) or other host resources with containers.</p>
+                    </div>
+                </div>
+
+                <h3>Bind Mount vs Volume Decision</h3>
+                <div class="diagram">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>Use Bind Mount</th>
+                                <th>Use Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Development</strong></td>
+                                <td>✓ Source code sync</td>
+                                <td>Database data</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Production</strong></td>
+                                <td>Config files only</td>
+                                <td>✓ All persistent data</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Host Integration</strong></td>
+                                <td>✓ Need host tools/files</td>
+                                <td>Isolated storage</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Performance</strong></td>
+                                <td>Linux hosts only</td>
+                                <td>✓ All platforms</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Portability</strong></td>
+                                <td>Low</td>
+                                <td>✓ High</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- tmpfs Mounts Tab -->
+        <div id="tmpfs" class="tab-content">
+            <div class="section">
+                <h2>tmpfs Mounts</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    tmpfs mounts store data in the host system's memory (RAM) only. They provide the fastest I/O performance 
+                    but are temporary - all data is lost when the container stops. Perfect for sensitive information that 
+                    shouldn't be persisted to disk or temporary caches requiring maximum speed.
+                </p>
+
+                <div class="info-box">
+                    <strong>Linux Only:</strong> tmpfs mounts are only available on Linux hosts. Not supported on Docker Desktop for Mac or Windows.
+                </div>
+
+                <h3>tmpfs Architecture</h3>
+                <div class="diagram">
+                    <div class="diagram-container">
+                        <div style="text-align: center;">
+                            <div class="host-box">Docker Host</div>
+                            <div class="arrow">↓</div>
+                            <div class="tmpfs-box">RAM (System Memory)<br>Volatile Storage</div>
+                            <div style="display: flex; justify-content: center; gap: 30px; margin-top: 20px; flex-wrap: wrap;">
+                                <div>
+                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                    <div class="container-box">Container A<br>/tmp/cache</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-warning); margin-top: 5px;">Data lost on stop</div>
+                                </div>
+                                <div>
+                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                    <div class="container-box">Container B<br>/run/secrets</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-warning); margin-top: 5px;">Data lost on stop</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How tmpfs Works</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>1. Memory Storage</h4>
+                        <p>Data stored entirely in host's RAM. No disk I/O - fastest possible performance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>2. Temporary Nature</h4>
+                        <p>All data automatically deleted when container stops. Perfect for temporary files.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>3. Size Limits</h4>
+                        <p>Limited by available system memory. Can set explicit size limits to prevent OOM issues.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>4. No Persistence</h4>
+                        <p>Zero disk footprint. Data never written to storage layer. Automatic cleanup.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>5. Security Benefits</h4>
+                        <p>Sensitive data never hits disk. Reduces risk of data leaks from disk forensics.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>6. Platform Limitation</h4>
+                        <p>Linux only. Uses native tmpfs filesystem. Not available on Docker Desktop.</p>
+                    </div>
+                </div>
+
+                <h3>Advantages &amp; Limitations</h3>
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Extremely fast - RAM speed I/O</li>
+                            <li>Automatic cleanup on container stop</li>
+                            <li>Ideal for sensitive data (passwords, keys)</li>
+                            <li>No disk space consumption</li>
+                            <li>Better security - data never on disk</li>
+                            <li>Perfect for temporary caches</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Limitations</h4>
+                        <ul>
+                            <li>Linux hosts only (no Mac/Windows)</li>
+                            <li>Data lost on container stop</li>
+                            <li>Limited by available RAM</li>
+                            <li>Not suitable for persistent data</li>
+                            <li>Can cause OOM if overused</li>
+                            <li>Can't be shared between hosts</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Usage Examples</h3>
+                <div class="code-block">
+                    <code># Basic tmpfs mount (short syntax)<br>
+docker run -d --tmpfs /app/cache nginx<br><br>
+# tmpfs with size limit (default unlimited)<br>
+docker run -d --tmpfs /tmp:rw,size=100m,mode=1777 nginx<br><br>
+# Using --mount (long syntax, more options)<br>
+docker run -d \<br>
+  --mount type=tmpfs,destination=/app/tmp,tmpfs-size=104857600 \<br>
+  ubuntu<br><br>
+# tmpfs with specific mode (permissions)<br>
+docker run -d \<br>
+  --mount type=tmpfs,destination=/run/secrets,tmpfs-mode=1700 \<br>
+  alpine<br><br>
+# Multiple tmpfs mounts<br>
+docker run -d \<br>
+  --tmpfs /tmp \<br>
+  --tmpfs /app/cache:rw,size=50m \<br>
+  nginx<br><br>
+# Verify tmpfs mount<br>
+docker exec container-name df -h /app/cache</code>
+                </div>
+
+                <h3>tmpfs Options</h3>
+                <div class="diagram">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Description</th>
+                                <th>Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>tmpfs-size</strong></td>
+                                <td>Size limit in bytes (default: unlimited)</td>
+                                <td>tmpfs-size=104857600 (100MB)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>tmpfs-mode</strong></td>
+                                <td>File mode in octal (default: 1777)</td>
+                                <td>tmpfs-mode=1700 (owner only)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>rw / ro</strong></td>
+                                <td>Read-write or read-only</td>
+                                <td>--tmpfs /tmp:ro</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Common Use Cases</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Sensitive Credentials</h4>
+                        <p>Store API keys, passwords, tokens temporarily. Never written to disk.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Session Data</h4>
+                        <p>User sessions, temporary auth tokens. Fast access, automatic expiry.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>High-Speed Caches</h4>
+                        <p>Application caches requiring maximum I/O speed. RAM latency vs disk.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Build Artifacts</h4>
+                        <p>Temporary compilation outputs, intermediate files during build processes.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Testing Data</h4>
+                        <p>Temporary test files that don't need persistence. Clean slate every run.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Swap Space</h4>
+                        <p>Container-specific temporary storage for memory-intensive operations.</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Memory Warning:</strong> Be careful with tmpfs size. Excessive tmpfs usage can lead to out-of-memory (OOM) errors and container crashes.
+                </div>
+            </div>
+        </div>
+
+        <!-- Volume Drivers Tab -->
+        <div id="drivers" class="tab-content">
+            <div class="section">
+                <h2>Volume Drivers &amp; Plugins</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    Volume drivers extend Docker's storage capabilities beyond local filesystem. They enable volumes 
+                    to be stored on remote hosts, cloud storage, network filesystems, and specialized storage systems. 
+                    Critical for production deployments requiring high availability, backup, and distributed storage.
+                </p>
+
+                <div class="info-box">
+                    <strong>Key Concept:</strong> The default "local" driver stores volumes on the Docker host. Third-party drivers enable external storage solutions like AWS EBS, Azure Files, NFS, and more.
+                </div>
+
+                <h3>Volume Driver Architecture</h3>
+                <div class="diagram">
+                    <div class="diagram-container">
+                        <div style="text-align: center;">
+                            <div class="container-box">Docker Container</div>
+                            <div class="arrow">↓</div>
+                            <div class="volume-box">Volume (managed by driver)</div>
+                            <div style="display: flex; justify-content: space-around; margin-top: 20px; flex-wrap: wrap; gap: 15px;">
+                                <div>
+                                    <div class="arrow">↓</div>
+                                    <div class="storage-box">Local Driver<br>Host Disk</div>
+                                </div>
+                                <div>
+                                    <div class="arrow">↓</div>
+                                    <div class="storage-box">NFS Driver<br>Network Storage</div>
+                                </div>
+                                <div>
+                                    <div class="arrow">↓</div>
+                                    <div class="storage-box">AWS EBS<br>Cloud Storage</div>
+                                </div>
+                                <div>
+                                    <div class="arrow">↓</div>
+                                    <div class="storage-box">Azure Files<br>Cloud Storage</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Popular Volume Drivers</h3>
+                <div class="diagram">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Driver</th>
+                                <th>Storage Backend</th>
+                                <th>Use Case</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>local</strong></td>
+                                <td>Host filesystem</td>
+                                <td>Default - single-host deployments</td>
+                            </tr>
+                            <tr>
+                                <td><strong>nfs</strong></td>
+                                <td>Network File System</td>
+                                <td>Shared storage across multiple hosts</td>
+                            </tr>
+                            <tr>
+                                <td><strong>rexray/ebs</strong></td>
+                                <td>AWS Elastic Block Store</td>
+                                <td>AWS cloud persistent storage</td>
+                            </tr>
+                            <tr>
+                                <td><strong>azure-file</strong></td>
+                                <td>Azure File Storage</td>
+                                <td>Microsoft Azure cloud storage</td>
+                            </tr>
+                            <tr>
+                                <td><strong>gce-docker</strong></td>
+                                <td>Google Persistent Disk</td>
+                                <td>Google Cloud Platform storage</td>
+                            </tr>
+                            <tr>
+                                <td><strong>vieux/sshfs</strong></td>
+                                <td>SSH Filesystem</td>
+                                <td>Remote host storage via SSH</td>
+                            </tr>
+                            <tr>
+                                <td><strong>convoy</strong></td>
+                                <td>Multiple backends</td>
+                                <td>Backup, snapshot, restore features</td>
+                            </tr>
+                            <tr>
+                                <td><strong>portworx</strong></td>
+                                <td>Distributed storage</td>
+                                <td>Enterprise container storage platform</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Local Driver Options</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Default Storage</h4>
+                        <p>Stores volumes in /var/lib/docker/volumes/ with simple directory structure.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Mount Options</h4>
+                        <p>Supports type, device, and o parameters for advanced local mounting.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>NFS Mount</h4>
+                        <p>Local driver can mount NFS shares as Docker volumes.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>CIFS/SMB Support</h4>
+                        <p>Can mount Windows shares (CIFS) using local driver with options.</p>
+                    </div>
+                </div>
+
+                <h3>Usage Examples</h3>
+                <div class="code-block">
+                    <code># Default local driver (implicit)<br>
+docker volume create my-volume<br><br>
+# Explicit local driver<br>
+docker volume create --driver local my-local-volume<br><br>
+# NFS volume using local driver<br>
+docker volume create --driver local \<br>
+  --opt type=nfs \<br>
+  --opt o=addr=192.168.1.100,rw \<br>
+  --opt device=:/path/to/dir \<br>
+  nfs-volume<br><br>
+# CIFS/SMB volume<br>
+docker volume create --driver local \<br>
+  --opt type=cifs \<br>
+  --opt device=//server/share \<br>
+  --opt o=username=user,password=pass \<br>
+  smb-volume<br><br>
+# AWS EBS with RexRay driver<br>
+docker volume create --driver rexray/ebs \<br>
+  --name my-ebs-volume \<br>
+  --opt size=10<br><br>
+# Run container with driver-based volume<br>
+docker run -d -v my-ebs-volume:/data nginx<br><br>
+# List volumes by driver<br>
+docker volume ls --filter driver=local</code>
+                </div>
+
+                <h3>RexRay Driver Example (AWS EBS)</h3>
+                <div class="code-block">
+                    <code># Install RexRay plugin<br>
+docker plugin install rexray/ebs \<br>
+  EBS_ACCESSKEY=AKIAIOSFODNN7EXAMPLE \<br>
+  EBS_SECRETKEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY<br><br>
+# Create EBS-backed volume<br>
+docker volume create --driver rexray/ebs \<br>
+  --name postgres-data \<br>
+  --opt size=20<br><br>
+# Run database with EBS volume<br>
+docker run -d --name postgres \<br>
+  --volume-driver rexray/ebs \<br>
+  --mount src=postgres-data,target=/var/lib/postgresql/data \<br>
+  postgres:latest</code>
+                </div>
+
+                <h3>When to Use Volume Drivers</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Multi-Host Deployments</h4>
+                        <p>Docker Swarm or Kubernetes needing shared storage across nodes.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Cloud Storage Integration</h4>
+                        <p>Leverage AWS EBS, Azure Disks, GCP Persistent Disks for cloud-native apps.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>High Availability</h4>
+                        <p>Replicated storage backends ensuring data availability during host failures.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Enterprise Storage</h4>
+                        <p>Integration with NetApp, EMC, or other enterprise storage systems.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Backup &amp; Snapshots</h4>
+                        <p>Drivers offering built-in backup, snapshot, and restore capabilities.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Performance Requirements</h4>
+                        <p>SSD-backed cloud storage for high-IOPS database workloads.</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Plugin Management:</strong> Volume driver plugins require installation and configuration. Always test in non-production environments first.
+                </div>
+            </div>
+        </div>
+
+        <!-- Backup & Restore Tab -->
+        <div id="backup" class="tab-content">
+            <div class="section">
+                <h2>Volume Backup &amp; Restore</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    Backing up Docker volumes is critical for disaster recovery, data migration, and testing. 
+                    Docker volumes can be backed up by creating temporary containers that mount the volume and 
+                    use tar or application-specific tools to create archives.
+                </p>
+
+                <div class="info-box">
+                    <strong>Best Practice:</strong> For databases, use application-specific backup tools (pg_dump, mysqldump, mongodump) for consistency guarantees. Generic tar backups may capture inconsistent state.
+                </div>
+
+                <h3>Backup Methods Comparison</h3>
+                <div class="diagram">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Pros</th>
+                                <th>Cons</th>
+                                <th>Best For</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Application-Specific</strong></td>
+                                <td>Consistent, tested, reliable</td>
+                                <td>Tool-dependent, requires knowledge</td>
+                                <td>Databases (pg_dump, mysqldump)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Volume Copy (tar)</strong></td>
+                                <td>Simple, works for any volume</td>
+                                <td>May be inconsistent, large files</td>
+                                <td>File-based data, static content</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Volume-to-Volume</strong></td>
+                                <td>Fast, stays in Docker</td>
+                                <td>Still on same host, not true backup</td>
+                                <td>Quick snapshots, testing</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Third-Party Tools</strong></td>
+                                <td>Automated, scheduled, cloud upload</td>
+                                <td>Additional dependencies</td>
+                                <td>Production environments</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Generic Volume Backup (tar method)</h3>
+                <div class="code-block">
+                    <code># Backup volume to tar file<br>
+docker run --rm \<br>
+  -v my-volume:/data \<br>
+  -v $(pwd):/backup \<br>
+  ubuntu tar czf /backup/my-volume-backup.tar.gz -C /data .<br><br>
+# Alternative: Stop container first for consistency<br>
+docker stop my-app<br>
+docker run --rm -v my-volume:/data -v $(pwd):/backup \<br>
+  ubuntu tar czf /backup/my-volume-backup.tar.gz -C /data .<br>
+docker start my-app<br><br>
+# Restore volume from tar backup<br>
+docker run --rm \<br>
+  -v my-volume:/data \<br>
+  -v $(pwd):/backup \<br>
+  ubuntu bash -c "cd /data &amp;&amp; tar xzf /backup/my-volume-backup.tar.gz"<br><br>
+# Verify backup file<br>
+tar tzf my-volume-backup.tar.gz | head</code>
+                </div>
+
+                <h3>Database-Specific Backups</h3>
+                <div class="code-block">
+                    <code># PostgreSQL backup<br>
+docker exec postgres-container \<br>
+  pg_dump -U username dbname &gt; backup.sql<br><br>
+# PostgreSQL backup (all databases)<br>
+docker exec postgres-container \<br>
+  pg_dumpall -U postgres &gt; backup-all.sql<br><br>
+# PostgreSQL restore<br>
+docker exec -i postgres-container \<br>
+  psql -U username dbname &lt; backup.sql<br><br>
+# MySQL backup<br>
+docker exec mysql-container \<br>
+  mysqldump -u root -p'password' dbname &gt; backup.sql<br><br>
+# MySQL restore<br>
+docker exec -i mysql-container \<br>
+  mysql -u root -p'password' dbname &lt; backup.sql<br><br>
+# MongoDB backup<br>
+docker exec mongo-container \<br>
+  mongodump --out /backup --gzip<br><br>
+# MongoDB restore<br>
+docker exec mongo-container \<br>
+  mongorestore --gzip /backup</code>
+                </div>
+
+                <h3>Volume-to-Volume Copy</h3>
+                <div class="code-block">
+                    <code># Create new volume<br>
+docker volume create my-volume-backup<br><br>
+# Copy data from one volume to another<br>
+docker run --rm -i -t \<br>
+  -v my-volume:/from \<br>
+  -v my-volume-backup:/to \<br>
+  ubuntu bash -c "cd /from &amp;&amp; cp -av . /to"<br><br>
+# Alternative: Use rsync for incremental copies<br>
+docker run --rm \<br>
+  -v my-volume:/source:ro \<br>
+  -v backup-volume:/dest \<br>
+  ubuntu rsync -av /source/ /dest/</code>
+                </div>
+
+                <h3>Automated Backup Workflow</h3>
+                <div class="lifecycle-diagram">
+                    <div class="lifecycle-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <strong>Stop Application (Optional)</strong> - Stop container to ensure data consistency
+                        </div>
+                    </div>
+                    <div class="lifecycle-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <strong>Create Backup</strong> - Use tar or application-specific tool to create archive
+                        </div>
+                    </div>
+                    <div class="lifecycle-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <strong>Compress &amp; Encrypt</strong> - Compress backup file and optionally encrypt
+                        </div>
+                    </div>
+                    <div class="lifecycle-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <strong>Upload to Remote</strong> - Transfer backup to external server, S3, or cloud storage
+                        </div>
+                    </div>
+                    <div class="lifecycle-step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <strong>Verify Backup</strong> - Test restore on non-production environment to ensure integrity
+                        </div>
+                    </div>
+                    <div class="lifecycle-step">
+                        <div class="step-number">6</div>
+                        <div class="step-content">
+                            <strong>Restart Application</strong> - Start container and verify normal operation
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Backup to Cloud Storage</h3>
+                <div class="code-block">
+                    <code># Backup to AWS S3<br>
+docker run --rm \<br>
+  -v my-volume:/data:ro \<br>
+  -e AWS_ACCESS_KEY_ID=your_key \<br>
+  -e AWS_SECRET_ACCESS_KEY=your_secret \<br>
+  amazon/aws-cli s3 sync /data s3://my-bucket/backups/$(date +%Y-%m-%d)/<br><br>
+# Backup with encryption to S3<br>
+docker run --rm -v my-volume:/data:ro ubuntu tar czf - -C /data . | \<br>
+  openssl enc -aes-256-cbc -salt -pass pass:mypassword | \<br>
+  aws s3 cp - s3://my-bucket/backup-$(date +%Y-%m-%d).tar.gz.enc<br><br>
+# Scheduled backup with cron (on host)<br>
+# Add to crontab: 0 2 * * * /path/to/backup-script.sh<br>
+# backup-script.sh contains backup commands above</code>
+                </div>
+
+                <h3>Best Practices</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Regular Schedule</h4>
+                        <p>Automate backups with cron or orchestration tools. Daily at minimum for production data.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Test Restores</h4>
+                        <p>Regularly test restore process. Backups are useless if you can't restore from them.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Off-Site Storage</h4>
+                        <p>Store backups on different server or cloud storage. Protect against host failure.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Retention Policy</h4>
+                        <p>Keep multiple backup versions. Follow 3-2-1 rule: 3 copies, 2 different media, 1 off-site.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Encryption</h4>
+                        <p>Encrypt sensitive data backups before upload. Use tools like gpg or openssl.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Monitoring</h4>
+                        <p>Monitor backup job success/failure. Alert on backup failures immediately.</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Consistency Warning:</strong> Backing up live databases with tar may result in corrupted backups. Always prefer application-specific backup tools or stop containers during backup.
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Tab -->
+        <div id="comparison" class="tab-content">
+            <div class="section">
+                <h2>Mount Types Comparison</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
+                    Choose the right mount type based on persistence requirements, performance needs, security constraints, and deployment environment.
+                </p>
+
+                <h3>Comprehensive Feature Matrix</h3>
+                <div class="diagram">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Volumes</th>
+                                <th>Bind Mounts</th>
+                                <th>tmpfs Mounts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Managed By</strong></td>
+                                <td>Docker</td>
+                                <td>Host OS</td>
+                                <td>Host OS (RAM)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data Persistence</strong></td>
+                                <td>✓ Yes</td>
+                                <td>✓ Yes</td>
+                                <td>✗ No (RAM only)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Platform Support</strong></td>
+                                <td>All (Linux, Mac, Windows)</td>
+                                <td>All (Linux, Mac, Windows)</td>
+                                <td>Linux only</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Performance</strong></td>
+                                <td>Excellent (best on Mac/Win)</td>
+                                <td>Excellent (Linux), Slower (Mac/Win)</td>
+                                <td>Fastest (RAM speed)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Path Specification</strong></td>
+                                <td>Volume name only</td>
+                                <td>Absolute host path required</td>
+                                <td>Container path only</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pre-population</strong></td>
+                                <td>✓ From container image</td>
+                                <td>✗ Host content takes precedence</td>
+                                <td>✗ Empty on creation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sharing Between Containers</strong></td>
+                                <td>✓ Easy (name reference)</td>
+                                <td>✓ Possible (same host path)</td>
+                                <td>✗ Per-container only</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Backup/Migration</strong></td>
+                                <td>Easy (Docker CLI)</td>
+                                <td>Depends on host setup</td>
+                                <td>Not applicable (temporary)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Security</strong></td>
+                                <td>Good isolation</td>
+                                <td>Exposes host filesystem</td>
+                                <td>Best (never on disk)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Volume Drivers</strong></td>
+                                <td>✓ Supported (NFS, cloud, etc.)</td>
+                                <td>✗ Not applicable</td>
+                                <td>✗ Not applicable</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Portability</strong></td>
+                                <td>High</td>
+                                <td>Low (host-dependent)</td>
+                                <td>Medium (Linux only)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Swarm Support</strong></td>
+                                <td>✓ Yes</td>
+                                <td>Limited</td>
+                                <td>✓ Yes (per-node)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Storage Location</strong></td>
+                                <td>/var/lib/docker/volumes/</td>
+                                <td>User-defined host path</td>
+                                <td>System memory (RAM)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Decision Matrix: When to Use Each Type</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Use Volumes When:</h4>
+                        <ul style="color: var(--color-text-secondary); margin-left: 20px; font-size: 0.9rem;">
+                            <li>Production data persistence</li>
+                            <li>Database storage (PostgreSQL, MySQL, MongoDB)</li>
+                            <li>Multi-container data sharing</li>
+                            <li>Cloud or network storage needed</li>
+                            <li>Running on Docker Desktop (Mac/Windows)</li>
+                            <li>Need consistent performance across platforms</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Use Bind Mounts When:</h4>
+                        <ul style="color: var(--color-text-secondary); margin-left: 20px; font-size: 0.9rem;">
+                            <li>Local development workflows</li>
+                            <li>Source code live reload</li>
+                            <li>Sharing host config files</li>
+                            <li>Need direct host file access</li>
+                            <li>Docker socket sharing (/var/run/docker.sock)</li>
+                            <li>Host-specific integrations</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Use tmpfs When:</h4>
+                        <ul style="color: var(--color-text-secondary); margin-left: 20px; font-size: 0.9rem;">
+                            <li>Sensitive data (passwords, keys, tokens)</li>
+                            <li>Session storage</li>
+                            <li>High-speed caches</li>
+                            <li>Temporary build artifacts</li>
+                            <li>Data that shouldn't persist</li>
+                            <li>Running on Linux hosts</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Performance Comparison</h3>
+                <div class="diagram">
+                    <div style="padding: 20px; background: rgba(56, 189, 248, 0.05); border-radius: 8px;">
+                        <p style="color: var(--color-text-secondary); margin-bottom: 15px;"><strong>Read/Write Performance (Best to Slowest):</strong></p>
+                        <div class="flow-diagram">
+                            <span class="box tmpfs-box">1. tmpfs<br>(RAM speed)</span>
+                            <span class="arrow">→</span>
+                            <span class="box volume-box">2. Volumes<br>(Disk I/O)</span>
+                            <span class="arrow">→</span>
+                            <span class="box bind-box">3. Bind Mounts<br>(Linux: fast)<br>(Mac/Win: slow)</span>
+                        </div>
+                        <p style="color: var(--color-text-muted); margin-top: 15px; font-size: 0.9rem;">
+                            *Bind mounts on Docker Desktop use filesystem translation layer (osxfs/grpcfuse) causing significant overhead
+                        </p>
+                    </div>
+                </div>
+
+                <h3>Security Comparison</h3>
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>Most Secure</h4>
+                        <ul>
+                            <li><strong>tmpfs</strong> - Never written to disk, automatic cleanup</li>
+                            <li><strong>Volumes</strong> - Docker-managed, isolated from host</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>Least Secure</h4>
+                        <ul>
+                            <li><strong>Bind Mounts</strong> - Direct host access, potential privilege escalation</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Real-World Scenarios</h3>
+                <div class="diagram">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>Recommended Mount</th>
+                                <th>Why</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Production Database</strong></td>
+                                <td>Volume</td>
+                                <td>Persistence, performance, backup support</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Node.js Development</strong></td>
+                                <td>Bind Mount</td>
+                                <td>Live code reload, instant changes</td>
+                            </tr>
+                            <tr>
+                                <td><strong>API Secrets</strong></td>
+                                <td>tmpfs</td>
+                                <td>Security - never persisted to disk</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Application Logs</strong></td>
+                                <td>Volume or Bind Mount</td>
+                                <td>Volume for isolation, Bind for host access</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Static Assets (CDN)</strong></td>
+                                <td>Volume</td>
+                                <td>Persistence, can migrate to cloud storage</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Build Cache</strong></td>
+                                <td>tmpfs or Volume</td>
+                                <td>tmpfs for speed, Volume for persistence</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Config Files</strong></td>
+                                <td>Bind Mount</td>
+                                <td>Easy updates from host without rebuild</td>
+                            </tr>
+                            <tr>
+                                <td><strong>User Uploads</strong></td>
+                                <td>Volume (cloud driver)</td>
+                                <td>Scalability, S3/Azure integration</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Quick Reference Decision Tree</h3>
+                <div class="code-block">
+                    <code>Question 1: Does data need to persist after container stops?<br>
+  NO  → Use tmpfs (fastest, Linux only)<br>
+  YES → Continue to Question 2<br><br>
+Question 2: Are you in development or production?<br>
+  DEVELOPMENT → Bind mount for source code, Volume for databases<br>
+  PRODUCTION  → Use Volume (always)<br><br>
+Question 3: Running on Docker Desktop (Mac/Windows)?<br>
+  YES → Use Volume (much better performance)<br>
+  NO  → Volume or Bind mount both work well<br><br>
+Question 4: Need to share data between containers?<br>
+  YES → Use Volume (easy sharing by name)<br>
+  NO  → Any mount type works<br><br>
+Question 5: Need cloud storage integration?<br>
+  YES → Use Volume with driver plugin (rexray, azure, etc.)<br>
+  NO  → Default local driver is fine</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
+

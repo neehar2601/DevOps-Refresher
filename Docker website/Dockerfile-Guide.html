@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dockerfile & Image Building Guide</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-hover: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1.5rem 2rem;
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .section h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section h3 {
+            color: var(--secondary);
+            font-size: 1.3rem;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .card {
+            background: var(--bg-hover);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .card h4 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .card.secondary {
+            border-left-color: var(--secondary);
+        }
+
+        .card.secondary h4 {
+            color: var(--secondary);
+        }
+
+        .card.accent {
+            border-left-color: var(--accent);
+        }
+
+        .card.accent h4 {
+            color: var(--accent);
+        }
+
+        .card.danger {
+            border-left-color: var(--danger);
+        }
+
+        .card.danger h4 {
+            color: var(--danger);
+        }
+
+        .code-block {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block pre {
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .code-label {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--bg-hover);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover {
+            background: var(--bg-card);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .badge.required {
+            background: var(--danger);
+            color: white;
+        }
+
+        .badge.optional {
+            background: var(--accent);
+            color: white;
+        }
+
+        .badge.best-practice {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .visual-diagram {
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .layer {
+            background: var(--bg-card);
+            padding: 1rem;
+            margin: 0.5rem auto;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            max-width: 600px;
+            position: relative;
+        }
+
+        .layer::before {
+            content: '→';
+            position: absolute;
+            left: -30px;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .layer:first-child::before {
+            content: '';
+        }
+
+        .highlight {
+            background: var(--primary);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .info-box {
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .info-box.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--accent);
+        }
+
+        .info-box.success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--secondary);
+        }
+
+        .info-box.danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--danger);
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .interactive-example {
+            background: var(--bg-dark);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .interactive-example h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav-tabs {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+
+        .command-syntax {
+            background: var(--bg-card);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin: 1rem 0;
+            font-family: monospace;
+        }
+
+        .step-indicator {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🐳 Dockerfile & Image Building Guide</h1>
+        <p>Master Docker image creation with Dockerfiles, CMD vs ENTRYPOINT, and build optimization</p>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab active" onclick="showTab('dockerfile-basics')">Dockerfile Basics</button>
+        <button class="tab" onclick="showTab('instructions')">Instructions</button>
+        <button class="tab" onclick="showTab('cmd-entrypoint')">CMD vs ENTRYPOINT</button>
+        <button class="tab" onclick="showTab('building')">Building Images</button>
+        <button class="tab" onclick="showTab('layers')">Layers & Caching</button>
+        <button class="tab" onclick="showTab('best-practices')">Best Practices</button>
+    </div>
+
+    <div class="container">
+        <!-- Dockerfile Basics Tab -->
+        <div id="dockerfile-basics" class="tab-content active">
+            <div class="section">
+                <h2>📄 What is a Dockerfile?</h2>
+                <p>A <span class="highlight">Dockerfile</span> is a text document containing all the commands needed to build a Docker image. It automates the image creation process and ensures reproducibility.</p>
+                
+                <div class="info-box">
+                    <strong>Key Concept:</strong> A Dockerfile is a blueprint that defines how to create a container image layer by layer.
+                </div>
+
+                <div class="visual-diagram">
+                    <h3>Dockerfile → Image → Container Flow</h3>
+                    <div class="layer">Dockerfile (text file with instructions)</div>
+                    <div class="layer">docker build → Docker Image (immutable template)</div>
+                    <div class="layer">docker run → Running Container (executable instance)</div>
+                </div>
+
+                <h3>Basic Dockerfile Structure</h3>
+                <div class="code-block">
+                    <span class="code-label">Dockerfile</span>
+                    <pre># Comments start with #
+FROM ubuntu:22.04
+
+LABEL maintainer="your-email@example.com"
+LABEL description="Simple web application"
+
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+EXPOSE 8080
+
+CMD ["python3", "app.py"]</pre>
+                </div>
+
+                <div class="grid">
+                    <div class="card">
+                        <h4>✅ Advantages</h4>
+                        <ul>
+                            <li>Automated and reproducible builds</li>
+                            <li>Version control friendly (text file)</li>
+                            <li>Easy to share and collaborate</li>
+                            <li>Documents the image creation process</li>
+                        </ul>
+                    </div>
+                    <div class="card secondary">
+                        <h4>📋 Components</h4>
+                        <ul>
+                            <li>Base image specification (FROM)</li>
+                            <li>Metadata (LABEL)</li>
+                            <li>Build instructions (RUN, COPY)</li>
+                            <li>Runtime configuration (CMD, ENTRYPOINT)</li>
+                        </ul>
+                    </div>
+                    <div class="card accent">
+                        <h4>🔧 Common Uses</h4>
+                        <ul>
+                            <li>Application deployment</li>
+                            <li>Development environments</li>
+                            <li>CI/CD pipelines</li>
+                            <li>Microservices architecture</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📦 Dockerfile Components</h2>
+                
+                <div class="grid">
+                    <div class="card">
+                        <h4>FROM <span class="badge required">Required</span></h4>
+                        <p>Sets the base image for subsequent instructions. Must be the first instruction (except ARG).</p>
+                        <div class="command-syntax">FROM python:3.11-slim</div>
+                    </div>
+
+                    <div class="card">
+                        <h4>LABEL <span class="badge optional">Optional</span></h4>
+                        <p>Adds metadata to the image as key-value pairs.</p>
+                        <div class="command-syntax">LABEL version="1.0" env="production"</div>
+                    </div>
+
+                    <div class="card">
+                        <h4>RUN <span class="badge best-practice">Build-time</span></h4>
+                        <p>Executes commands during image build. Creates new layers.</p>
+                        <div class="command-syntax">RUN npm install</div>
+                    </div>
+
+                    <div class="card">
+                        <h4>COPY <span class="badge best-practice">Build-time</span></h4>
+                        <p>Copies files from host to container filesystem.</p>
+                        <div class="command-syntax">COPY . /app</div>
+                    </div>
+
+                    <div class="card">
+                        <h4>ADD <span class="badge optional">Build-time</span></h4>
+                        <p>Like COPY but with extra features (auto-extract tar, URLs).</p>
+                        <div class="command-syntax">ADD archive.tar.gz /app</div>
+                    </div>
+
+                    <div class="card">
+                        <h4>WORKDIR <span class="badge best-practice">Best Practice</span></h4>
+                        <p>Sets working directory for subsequent instructions.</p>
+                        <div class="command-syntax">WORKDIR /app</div>
+                    </div>
+
+                    <div class="card">
+                        <h4>EXPOSE <span class="badge optional">Documentation</span></h4>
+                        <p>Documents which ports the container listens on.</p>
+                        <div class="command-syntax">EXPOSE 8080</div>
+                    </div>
+
+                    <div class="card">
+                        <h4>ENV <span class="badge best-practice">Configuration</span></h4>
+                        <p>Sets environment variables.</p>
+                        <div class="command-syntax">ENV NODE_ENV=production</div>
+                    </div>
+
+                    <div class="card">
+                        <h4>CMD <span class="badge required">Runtime</span></h4>
+                        <p>Default command to run when container starts.</p>
+                        <div class="command-syntax">CMD ["python", "app.py"]</div>
+                    </div>
+
+                    <div class="card">
+                        <h4>ENTRYPOINT <span class="badge required">Runtime</span></h4>
+                        <p>Configures container to run as executable.</p>
+                        <div class="command-syntax">ENTRYPOINT ["python"]</div>
+                    </div>
+
+                    <div class="card">
+                        <h4>USER <span class="badge best-practice">Security</span></h4>
+                        <p>Sets the user for subsequent instructions.</p>
+                        <div class="command-syntax">USER appuser</div>
+                    </div>
+
+                    <div class="card">
+                        <h4>ARG <span class="badge optional">Build-time</span></h4>
+                        <p>Defines build-time variables.</p>
+                        <div class="command-syntax">ARG VERSION=1.0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions Tab -->
+        <div id="instructions" class="tab-content">
+            <div class="section">
+                <h2>🔧 Dockerfile Instructions Deep Dive</h2>
+                
+                <h3><span class="step-indicator">1</span>FROM - Base Image</h3>
+                <p>Every Dockerfile must start with a FROM instruction (except ARG for build arguments used in FROM).</p>
+                
+                <div class="code-block">
+                    <span class="code-label">Examples</span>
+                    <pre># Official image
+FROM python:3.11-slim
+
+# Specific version
+FROM node:18.16.0-alpine
+
+# Multi-stage build
+FROM golang:1.20 AS builder
+
+# Platform-specific
+FROM --platform=linux/amd64 ubuntu:22.04
+
+# ARG before FROM
+ARG VERSION=3.11
+FROM python:${VERSION}-slim</pre>
+                </div>
+
+                <div class="info-box warning">
+                    <strong>⚠️ Important:</strong> Use specific version tags (not <code>latest</code>) for production to ensure reproducibility.
+                </div>
+
+                <h3><span class="step-indicator">2</span>RUN - Execute Commands</h3>
+                <p>Executes commands during image build. Each RUN creates a new layer.</p>
+
+                <div class="two-column">
+                    <div>
+                        <h4>Shell Form</h4>
+                        <div class="code-block">
+                            <pre>RUN apt-get update
+RUN echo "Hello World"</pre>
+                        </div>
+                        <p>Runs in shell (<code>/bin/sh -c</code>)</p>
+                    </div>
+                    <div>
+                        <h4>Exec Form</h4>
+                        <div class="code-block">
+                            <pre>RUN ["apt-get", "update"]
+RUN ["/bin/bash", "-c", "echo Hello"]</pre>
+                        </div>
+                        <p>Direct execution, no shell processing</p>
+                    </div>
+                </div>
+
+                <div class="info-box success">
+                    <strong>✅ Best Practice:</strong> Chain commands with <code>&&</code> to reduce layers:
+                    <div class="code-block">
+                        <pre>RUN apt-get update && \
+    apt-get install -y python3 && \
+    rm -rf /var/lib/apt/lists/*</pre>
+                    </div>
+                </div>
+
+                <h3><span class="step-indicator">3</span>COPY vs ADD</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>COPY</th>
+                            <th>ADD</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Basic file copy</td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                        </tr>
+                        <tr>
+                            <td>Auto-extract tar files</td>
+                            <td>❌ No</td>
+                            <td>✅ Yes</td>
+                        </tr>
+                        <tr>
+                            <td>Download from URLs</td>
+                            <td>❌ No</td>
+                            <td>✅ Yes (deprecated)</td>
+                        </tr>
+                        <tr>
+                            <td>Recommended</td>
+                            <td>✅ Preferred</td>
+                            <td>⚠️ Use sparingly</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="code-block">
+                    <span class="code-label">Examples</span>
+                    <pre># COPY - simple and predictable
+COPY package.json /app/
+COPY . /app
+
+# COPY with wildcard
+COPY *.py /app/
+
+# COPY with ownership
+COPY --chown=user:group app.py /app/
+
+# ADD - auto-extract tar
+ADD archive.tar.gz /app/
+
+# ADD - multiple sources
+ADD file1.txt file2.txt /app/</pre>
+                </div>
+
+                <h3><span class="step-indicator">4</span>WORKDIR - Set Working Directory</h3>
+                <div class="code-block">
+                    <pre># Sets working directory for RUN, CMD, ENTRYPOINT, COPY, ADD
+WORKDIR /app
+
+# Creates directory if it doesn't exist
+WORKDIR /var/www/html
+
+# Can use environment variables
+ENV APP_HOME=/app
+WORKDIR ${APP_HOME}</pre>
+                </div>
+
+                <div class="info-box">
+                    <strong>💡 Tip:</strong> Use WORKDIR instead of <code>RUN cd /path</code> - WORKDIR persists across instructions.
+                </div>
+
+                <h3><span class="step-indicator">5</span>ENV - Environment Variables</h3>
+                <div class="code-block">
+                    <pre># Single variable
+ENV NODE_ENV=production
+
+# Multiple variables (space-separated)
+ENV PORT=8080 HOST=0.0.0.0
+
+# Multiple variables (one per line)
+ENV API_KEY=abc123 \
+    DATABASE_URL=postgres://localhost \
+    DEBUG=false</pre>
+                </div>
+
+                <div class="grid">
+                    <div class="card">
+                        <h4>ENV vs ARG</h4>
+                        <ul>
+                            <li><strong>ENV:</strong> Available at build AND runtime</li>
+                            <li><strong>ARG:</strong> Only available at build time</li>
+                            <li>ENV persists in final image</li>
+                            <li>ARG values not in final image</li>
+                        </ul>
+                    </div>
+                    <div class="card secondary">
+                        <h4>Common Use Cases</h4>
+                        <ul>
+                            <li>Application configuration</li>
+                            <li>Path variables (PATH, JAVA_HOME)</li>
+                            <li>Runtime behavior flags</li>
+                            <li>Version information</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3><span class="step-indicator">6</span>EXPOSE - Document Ports</h3>
+                <div class="code-block">
+                    <pre># TCP port (default)
+EXPOSE 8080
+
+# UDP port
+EXPOSE 53/udp
+
+# Multiple ports
+EXPOSE 80 443
+
+# With protocol
+EXPOSE 8080/tcp 8081/tcp</pre>
+                </div>
+
+                <div class="info-box warning">
+                    <strong>⚠️ Important:</strong> EXPOSE is <strong>documentation only</strong>. It doesn't actually publish the port. Use <code>-p</code> flag in <code>docker run</code> to publish ports.
+                </div>
+
+                <h3><span class="step-indicator">7</span>USER - Security</h3>
+                <div class="code-block">
+                    <pre># Create non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Switch to non-root user
+USER appuser
+
+# All subsequent instructions run as this user
+WORKDIR /home/appuser
+COPY --chown=appuser:appuser . .
+
+# Can switch back to root if needed
+USER root
+RUN apt-get install -y package
+USER appuser</pre>
+                </div>
+
+                <div class="info-box danger">
+                    <strong>🔒 Security Best Practice:</strong> Never run containers as root in production. Always create and use a non-privileged user.
+                </div>
+            </div>
+        </div>
+
+        <!-- CMD vs ENTRYPOINT Tab -->
+        <div id="cmd-entrypoint" class="tab-content">
+            <div class="section">
+                <h2>⚔️ CMD vs ENTRYPOINT</h2>
+                <p>Both define what command runs when a container starts, but they behave differently and serve different purposes.</p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>CMD</th>
+                            <th>ENTRYPOINT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Purpose</td>
+                            <td>Default command with arguments</td>
+                            <td>Main executable for container</td>
+                        </tr>
+                        <tr>
+                            <td>Overridable</td>
+                            <td>✅ Easily (docker run args replace it)</td>
+                            <td>⚠️ Requires --entrypoint flag</td>
+                        </tr>
+                        <tr>
+                            <td>Common Use</td>
+                            <td>Flexible containers (multiple commands)</td>
+                            <td>Single-purpose containers</td>
+                        </tr>
+                        <tr>
+                            <td>Arguments</td>
+                            <td>Entire command replaced</td>
+                            <td>Docker run args appended</td>
+                        </tr>
+                        <tr>
+                            <td>Multiple Allowed</td>
+                            <td>❌ Only last one used</td>
+                            <td>❌ Only last one used</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>CMD - Default Command</h3>
+                <div class="code-block">
+                    <span class="code-label">Three Forms</span>
+                    <pre># 1. Exec form (preferred)
+CMD ["python", "app.py"]
+
+# 2. Shell form
+CMD python app.py
+
+# 3. As default parameters to ENTRYPOINT
+ENTRYPOINT ["python"]
+CMD ["app.py"]</pre>
+                </div>
+
+                <div class="interactive-example">
+                    <h4>🔬 CMD Behavior</h4>
+                    <div class="code-block">
+                        <pre># Dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY app.py .
+CMD ["python", "app.py"]</pre>
+                    </div>
+                    <div class="grid">
+                        <div class="card">
+                            <h4>Default Run</h4>
+                            <div class="command-syntax">$ docker run myapp</div>
+                            <p>Executes: <code>python app.py</code></p>
+                        </div>
+                        <div class="card accent">
+                            <h4>Override CMD</h4>
+                            <div class="command-syntax">$ docker run myapp python test.py</div>
+                            <p>Executes: <code>python test.py</code><br>(CMD replaced entirely)</p>
+                        </div>
+                        <div class="card secondary">
+                            <h4>Interactive Shell</h4>
+                            <div class="command-syntax">$ docker run -it myapp bash</div>
+                            <p>Executes: <code>bash</code><br>(CMD ignored)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>ENTRYPOINT - Main Executable</h3>
+                <div class="code-block">
+                    <span class="code-label">Two Forms</span>
+                    <pre># 1. Exec form (preferred)
+ENTRYPOINT ["python", "app.py"]
+
+# 2. Shell form (wraps in /bin/sh -c)
+ENTRYPOINT python app.py</pre>
+                </div>
+
+                <div class="interactive-example">
+                    <h4>🔬 ENTRYPOINT Behavior</h4>
+                    <div class="code-block">
+                        <pre># Dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY app.py .
+ENTRYPOINT ["python", "app.py"]</pre>
+                    </div>
+                    <div class="grid">
+                        <div class="card">
+                            <h4>Default Run</h4>
+                            <div class="command-syntax">$ docker run myapp</div>
+                            <p>Executes: <code>python app.py</code></p>
+                        </div>
+                        <div class="card accent">
+                            <h4>Add Arguments</h4>
+                            <div class="command-syntax">$ docker run myapp --debug</div>
+                            <p>Executes: <code>python app.py --debug</code><br>(Args appended to ENTRYPOINT)</p>
+                        </div>
+                        <div class="card danger">
+                            <h4>Override ENTRYPOINT</h4>
+                            <div class="command-syntax">$ docker run --entrypoint bash myapp</div>
+                            <p>Executes: <code>bash</code><br>(Requires explicit flag)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>🤝 Using CMD and ENTRYPOINT Together</h3>
+                <p>The most powerful pattern: ENTRYPOINT defines the executable, CMD provides default arguments.</p>
+
+                <div class="code-block">
+                    <span class="code-label">Dockerfile</span>
+                    <pre>FROM python:3.11-slim
+WORKDIR /app
+COPY app.py .
+
+# ENTRYPOINT is the executable
+ENTRYPOINT ["python", "app.py"]
+
+# CMD provides default arguments
+CMD ["--host", "0.0.0.0", "--port", "8080"]</pre>
+                </div>
+
+                <div class="grid">
+                    <div class="card">
+                        <h4>Default Behavior</h4>
+                        <div class="command-syntax">$ docker run myapp</div>
+                        <p><strong>Executes:</strong><br>
+                        <code>python app.py --host 0.0.0.0 --port 8080</code></p>
+                    </div>
+                    <div class="card secondary">
+                        <h4>Override CMD Only</h4>
+                        <div class="command-syntax">$ docker run myapp --port 3000</div>
+                        <p><strong>Executes:</strong><br>
+                        <code>python app.py --port 3000</code><br>
+                        (CMD replaced, ENTRYPOINT intact)</p>
+                    </div>
+                    <div class="card accent">
+                        <h4>Keep Defaults, Add More</h4>
+                        <div class="command-syntax">$ docker run myapp --port 8080 --debug</div>
+                        <p><strong>Executes:</strong><br>
+                        <code>python app.py --port 8080 --debug</code><br>
+                        (User provides all args)</p>
+                    </div>
+                </div>
+
+                <h3>📊 Common Patterns</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>Pattern 1: CMD Only</h4>
+                        <div class="code-block">
+                            <pre>CMD ["npm", "start"]</pre>
+                        </div>
+                        <p><strong>Use when:</strong> Flexible container that might run different commands</p>
+                        <p><strong>Example:</strong> Development images, base images</p>
+                    </div>
+
+                    <div class="card secondary">
+                        <h4>Pattern 2: ENTRYPOINT Only</h4>
+                        <div class="code-block">
+                            <pre>ENTRYPOINT ["nginx", "-g", "daemon off;"]</pre>
+                        </div>
+                        <p><strong>Use when:</strong> Container always runs same executable</p>
+                        <p><strong>Example:</strong> Service containers (nginx, databases)</p>
+                    </div>
+
+                    <div class="card accent">
+                        <h4>Pattern 3: Both Together</h4>
+                        <div class="code-block">
+                            <pre>ENTRYPOINT ["python", "app.py"]
+CMD ["--config", "default.yml"]</pre>
+                        </div>
+                        <p><strong>Use when:</strong> Fixed executable with configurable default args</p>
+                        <p><strong>Example:</strong> CLI tools, applications with options</p>
+                    </div>
+
+                    <div class="card">
+                        <h4>Pattern 4: Shell Script Wrapper</h4>
+                        <div class="code-block">
+                            <pre>COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["python", "app.py"]</pre>
+                        </div>
+                        <p><strong>Use when:</strong> Need initialization before main process</p>
+                        <p><strong>Example:</strong> Setup environment, wait for dependencies</p>
+                    </div>
+                </div>
+
+                <h3>🚀 Real-World Examples</h3>
+                
+                <div class="interactive-example">
+                    <h4>Example 1: Web Server (CMD)</h4>
+                    <div class="code-block">
+                        <pre>FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --production
+COPY . .
+EXPOSE 3000
+
+# Flexible - easy to override for testing
+CMD ["npm", "start"]
+
+# Run normally:        docker run myapp
+# Run tests:           docker run myapp npm test
+# Interactive shell:   docker run -it myapp sh</pre>
+                    </div>
+                </div>
+
+                <div class="interactive-example">
+                    <h4>Example 2: Database (ENTRYPOINT)</h4>
+                    <div class="code-block">
+                        <pre>FROM postgres:15
+ENV POSTGRES_PASSWORD=secret
+
+# Always runs postgres, args can be added
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["postgres"]
+
+# Run with defaults:   docker run mydb
+# Add postgres opts:   docker run mydb postgres -c max_connections=100</pre>
+                    </div>
+                </div>
+
+                <div class="interactive-example">
+                    <h4>Example 3: CLI Tool (Both)</h4>
+                    <div class="code-block">
+                        <pre>FROM python:3.11-slim
+RUN pip install awscli
+WORKDIR /work
+
+# Fixed executable, flexible arguments
+ENTRYPOINT ["aws"]
+CMD ["--help"]
+
+# Show help:           docker run awscli
+# List S3 buckets:     docker run awscli s3 ls
+# Specific command:    docker run awscli ec2 describe-instances</pre>
+                    </div>
+                </div>
+
+                <div class="info-box success">
+                    <strong>✅ Decision Guide:</strong>
+                    <ul>
+                        <li><strong>Use CMD when:</strong> You want easy override (dev environments, flexible containers)</li>
+                        <li><strong>Use ENTRYPOINT when:</strong> Container has single purpose (production services)</li>
+                        <li><strong>Use both when:</strong> Fixed executable with optional arguments (CLI tools, apps with config)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Building Images Tab -->
+        <div id="building" class="tab-content">
+            <div class="section">
+                <h2>🏗️ Building Docker Images</h2>
+                
+                <h3>Basic Build Command</h3>
+                <div class="code-block">
+                    <span class="code-label">Terminal</span>
+                    <pre># Basic build (looks for Dockerfile in current directory)
+docker build .
+
+# Build with tag
+docker build -t myapp:1.0 .
+
+# Build with multiple tags
+docker build -t myapp:1.0 -t myapp:latest .
+
+# Specify Dockerfile name
+docker build -f Dockerfile.dev -t myapp:dev .
+
+# Specify build context
+docker build -t myapp:1.0 /path/to/context
+
+# Build with build arguments
+docker build --build-arg VERSION=1.0 -t myapp:1.0 .</pre>
+                </div>
+
+                <h3>Build Context</h3>
+                <p>The build context is the set of files at the specified PATH or URL. Docker sends this entire context to the daemon.</p>
+
+                <div class="visual-diagram">
+                    <h4>Build Process Flow</h4>
+                    <div class="layer">1. Docker client reads Dockerfile</div>
+                    <div class="layer">2. Build context sent to Docker daemon</div>
+                    <div class="layer">3. Daemon executes Dockerfile instructions</div>
+                    <div class="layer">4. Each instruction creates a new layer</div>
+                    <div class="layer">5. Final image built from layers</div>
+                </div>
+
+                <div class="grid">
+                    <div class="card">
+                        <h4>✅ Good Build Context</h4>
+                        <div class="code-block">
+                            <pre>myapp/
+├── Dockerfile
+├── src/
+│   └── app.py
+├── requirements.txt
+└── .dockerignore</pre>
+                        </div>
+                        <p>Only necessary files included</p>
+                    </div>
+                    <div class="card danger">
+                        <h4>❌ Bad Build Context</h4>
+                        <div class="code-block">
+                            <pre>myapp/
+├── Dockerfile
+├── src/
+├── node_modules/ ← 300MB
+├── .git/ ← 500MB
+├── venv/ ← 200MB
+└── large-data/ ← 2GB</pre>
+                        </div>
+                        <p>Sending unnecessary files slows build</p>
+                    </div>
+                </div>
+
+                <h3>.dockerignore File</h3>
+                <p>Exclude files from build context to speed up builds and reduce image size.</p>
+
+                <div class="code-block">
+                    <span class="code-label">.dockerignore</span>
+                    <pre># Version control
+.git
+.gitignore
+.gitattributes
+
+# Dependencies (will be installed in image)
+node_modules
+venv
+__pycache__
+
+# IDE
+.vscode
+.idea
+*.swp
+
+# Documentation
+README.md
+docs/
+
+# Testing
+tests/
+*.test.js
+coverage/
+
+# CI/CD
+.github
+.gitlab-ci.yml
+Jenkinsfile
+
+# Local environment
+.env.local
+docker-compose.yml
+
+# Build artifacts
+dist/
+build/
+*.log</pre>
+                </div>
+
+                <h3>Build Arguments (ARG)</h3>
+                <p>Pass variables at build time to customize image creation.</p>
+
+                <div class="two-column">
+                    <div>
+                        <h4>Dockerfile</h4>
+                        <div class="code-block">
+                            <pre>ARG NODE_VERSION=18
+FROM node:${NODE_VERSION}-alpine
+
+ARG BUILD_DATE
+ARG VERSION
+LABEL build_date=${BUILD_DATE}
+LABEL version=${VERSION}
+
+ARG APP_ENV=production
+ENV APP_ENV=${APP_ENV}
+
+RUN echo "Building version ${VERSION}"</pre>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Build Command</h4>
+                        <div class="code-block">
+                            <pre># With build args
+docker build \
+  --build-arg VERSION=1.2.3 \
+  --build-arg BUILD_DATE=$(date -u) \
+  --build-arg APP_ENV=staging \
+  -t myapp:1.2.3 \
+  .
+
+# Using default ARG values
+docker build -t myapp:latest .</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box warning">
+                    <strong>⚠️ Security:</strong> Build args are visible in <code>docker history</code>. Never pass secrets via ARG. Use Docker secrets or ENV at runtime instead.
+                </div>
+
+                <h3>Multi-Stage Builds</h3>
+                <p>Use multiple FROM statements to create smaller, more secure production images.</p>
+
+                <div class="code-block">
+                    <span class="code-label">Multi-stage Dockerfile</span>
+                    <pre># Stage 1: Build stage
+FROM node:18 AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Stage 2: Production stage
+FROM node:18-alpine
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+EXPOSE 3000
+CMD ["node", "dist/server.js"]
+
+# Result: Only production dependencies and built code in final image</pre>
+                </div>
+
+                <div class="grid">
+                    <div class="card">
+                        <h4>✅ Benefits</h4>
+                        <ul>
+                            <li>Smaller image size (no build tools)</li>
+                            <li>Improved security (no source code)</li>
+                            <li>Faster deployments</li>
+                            <li>Separate build/runtime dependencies</li>
+                        </ul>
+                    </div>
+                    <div class="card secondary">
+                        <h4>🔍 Common Pattern</h4>
+                        <ul>
+                            <li><strong>Stage 1:</strong> Install build tools, compile code</li>
+                            <li><strong>Stage 2:</strong> Copy only artifacts</li>
+                            <li>Final image: Minimal runtime environment</li>
+                            <li>Example: 1GB → 150MB reduction</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Advanced Build Examples</h3>
+
+                <div class="interactive-example">
+                    <h4>Go Application (Multi-stage)</h4>
+                    <div class="code-block">
+                        <pre># Build stage
+FROM golang:1.20 AS builder
+WORKDIR /app
+COPY go.* ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o myapp
+
+# Production stage
+FROM alpine:3.18
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=builder /app/myapp .
+CMD ["./myapp"]
+
+# Result: ~5MB final image vs ~800MB with full Go image</pre>
+                    </div>
+                </div>
+
+                <div class="interactive-example">
+                    <h4>Python Application with Dev/Prod Targets</h4>
+                    <div class="code-block">
+                        <pre>FROM python:3.11-slim AS base
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Development stage
+FROM base AS development
+COPY requirements-dev.txt .
+RUN pip install --no-cache-dir -r requirements-dev.txt
+COPY . .
+CMD ["python", "app.py"]
+
+# Production stage
+FROM base AS production
+COPY . .
+RUN useradd -m appuser && chown -R appuser /app
+USER appuser
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "app:app"]
+
+# Build dev:  docker build --target development -t myapp:dev .
+# Build prod: docker build --target production -t myapp:prod .</pre>
+                    </div>
+                </div>
+
+                <h3>Build Cache</h3>
+                <p>Docker caches each layer. Understanding cache behavior speeds up builds significantly.</p>
+
+                <div class="grid">
+                    <div class="card">
+                        <h4>✅ Cache HIT (Fast)</h4>
+                        <div class="code-block">
+                            <pre># Instruction unchanged
+RUN apt-get update
+
+# Files unchanged since last build
+COPY package.json .
+
+# Result: Layer reused from cache</pre>
+                        </div>
+                    </div>
+                    <div class="card accent">
+                        <h4>❌ Cache MISS (Rebuild)</h4>
+                        <div class="code-block">
+                            <pre># Instruction modified
+RUN apt-get update && apt-get install -y git
+
+# File changed
+COPY package.json . (modified)
+
+# Result: Layer + all subsequent layers rebuilt</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <span class="code-label">Optimize for Caching</span>
+                    <pre># ❌ BAD: Copy everything, then install (cache invalidated often)
+COPY . /app
+RUN npm install
+
+# ✅ GOOD: Copy dependencies first, then source (better caching)
+COPY package*.json /app/
+RUN npm install
+COPY . /app
+
+# Why? package.json changes rarely vs source code changes frequently</pre>
+                </div>
+
+                <h3>Build Options Reference</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Option</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>-t, --tag</td>
+                            <td>Name and tag for image</td>
+                            <td>-t myapp:1.0</td>
+                        </tr>
+                        <tr>
+                            <td>-f, --file</td>
+                            <td>Specify Dockerfile path</td>
+                            <td>-f Dockerfile.prod</td>
+                        </tr>
+                        <tr>
+                            <td>--build-arg</td>
+                            <td>Set build-time variables</td>
+                            <td>--build-arg VERSION=1.0</td>
+                        </tr>
+                        <tr>
+                            <td>--target</td>
+                            <td>Set target build stage</td>
+                            <td>--target production</td>
+                        </tr>
+                        <tr>
+                            <td>--no-cache</td>
+                            <td>Disable cache, rebuild all</td>
+                            <td>docker build --no-cache .</td>
+                        </tr>
+                        <tr>
+                            <td>--pull</td>
+                            <td>Always pull base image</td>
+                            <td>docker build --pull .</td>
+                        </tr>
+                        <tr>
+                            <td>--platform</td>
+                            <td>Set platform (multi-arch)</td>
+                            <td>--platform linux/amd64</td>
+                        </tr>
+                        <tr>
+                            <td>--progress</td>
+                            <td>Output type (auto/plain/tty)</td>
+                            <td>--progress=plain</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Layers & Caching Tab -->
+        <div id="layers" class="tab-content">
+            <div class="section">
+                <h2>📚 Image Layers & Caching</h2>
+                
+                <h3>Understanding Image Layers</h3>
+                <p>Each instruction in a Dockerfile creates a new layer. Layers are stacked and cached independently.</p>
+
+                <div class="visual-diagram">
+                    <h4>Layer Structure</h4>
+                    <div class="layer" style="border-left-color: var(--accent);">Base Layer: FROM ubuntu:22.04 (72MB)</div>
+                    <div class="layer" style="border-left-color: var(--primary);">Layer 2: RUN apt-get update (23MB)</div>
+                    <div class="layer" style="border-left-color: var(--secondary);">Layer 3: RUN apt-get install python3 (145MB)</div>
+                    <div class="layer" style="border-left-color: var(--accent);">Layer 4: COPY app.py /app/ (8KB)</div>
+                    <div class="layer" style="border-left-color: var(--primary);">Layer 5: CMD ["python3", "app.py"] (0B - metadata)</div>
+                    <div class="layer" style="background: var(--primary); color: white; border: none;">
+                        <strong>Total Image Size: ~240MB</strong>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Key Concepts:</strong>
+                    <ul>
+                        <li>Each layer is <strong>immutable</strong> - once created, never changes</li>
+                        <li>Layers are <strong>shared</strong> between images using same base</li>
+                        <li>Only changed layers are <strong>rebuilt</strong></li>
+                        <li>Layers are <strong>stacked</strong> - order matters</li>
+                    </ul>
+                </div>
+
+                <h3>How Caching Works</h3>
+                
+                <div class="grid">
+                    <div class="card">
+                        <h4>🟢 Cache Hit</h4>
+                        <p>Docker reuses layer if:</p>
+                        <ul>
+                            <li>Instruction text is identical</li>
+                            <li>For COPY/ADD: file checksums match</li>
+                            <li>All previous layers cache hit</li>
+                        </ul>
+                        <div class="info-box success">
+                            <strong>Result:</strong> Instant (no rebuild needed)
+                        </div>
+                    </div>
+                    <div class="card danger">
+                        <h4>🔴 Cache Miss</h4>
+                        <p>Docker rebuilds if:</p>
+                        <ul>
+                            <li>Instruction text changed</li>
+                            <li>Files in COPY/ADD changed</li>
+                            <li>Previous layer had cache miss</li>
+                        </ul>
+                        <div class="info-box danger">
+                            <strong>Result:</strong> Layer + all subsequent layers rebuilt
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Cache Invalidation Example</h3>
+                
+                <div class="two-column">
+                    <div>
+                        <h4>❌ Poor Caching</h4>
+                        <div class="code-block">
+                            <pre>FROM python:3.11-slim
+WORKDIR /app
+
+# Copy everything first
+COPY . .
+
+# Install dependencies
+RUN pip install -r requirements.txt
+
+CMD ["python", "app.py"]</pre>
+                        </div>
+                        <div class="info-box danger">
+                            <strong>Problem:</strong> Any source file change invalidates cache for pip install (slow!)
+                        </div>
+                    </div>
+                    <div>
+                        <h4>✅ Optimal Caching</h4>
+                        <div class="code-block">
+                            <pre>FROM python:3.11-slim
+WORKDIR /app
+
+# Copy dependencies first
+COPY requirements.txt .
+
+# Install dependencies
+RUN pip install -r requirements.txt
+
+# Copy source code last
+COPY . .
+
+CMD ["python", "app.py"]</pre>
+                        </div>
+                        <div class="info-box success">
+                            <strong>Benefit:</strong> Source changes don't invalidate pip install cache
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Build Time Comparison</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Poor Caching</th>
+                            <th>Optimal Caching</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>First build</td>
+                            <td>180 seconds</td>
+                            <td>180 seconds</td>
+                        </tr>
+                        <tr>
+                            <td>Change app.py</td>
+                            <td>165 seconds (reinstall deps)</td>
+                            <td>5 seconds (cache hit)</td>
+                        </tr>
+                        <tr>
+                            <td>Change requirements.txt</td>
+                            <td>165 seconds</td>
+                            <td>155 seconds</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Layer Optimization Strategies</h3>
+
+                <div class="grid">
+                    <div class="card">
+                        <h4>1. Order Instructions by Change Frequency</h4>
+                        <div class="code-block">
+                            <pre># Rarely changes
+FROM node:18-alpine
+WORKDIR /app
+
+# Changes occasionally
+COPY package*.json ./
+RUN npm ci --production
+
+# Changes frequently
+COPY . .
+
+CMD ["node", "server.js"]</pre>
+                        </div>
+                    </div>
+
+                    <div class="card secondary">
+                        <h4>2. Combine Related Commands</h4>
+                        <div class="code-block">
+                            <pre># ❌ Multiple layers
+RUN apt-get update
+RUN apt-get install -y python3
+RUN apt-get install -y pip
+
+# ✅ Single layer
+RUN apt-get update && \
+    apt-get install -y \
+        python3 \
+        python3-pip && \
+    rm -rf /var/lib/apt/lists/*</pre>
+                        </div>
+                    </div>
+
+                    <div class="card accent">
+                        <h4>3. Clean Up in Same Layer</h4>
+                        <div class="code-block">
+                            <pre># ❌ Cleanup in separate layer (doesn't reduce size)
+RUN apt-get install -y build-tools
+RUN rm -rf /var/lib/apt/lists/*
+
+# ✅ Cleanup in same layer
+RUN apt-get install -y build-tools && \
+    rm -rf /var/lib/apt/lists/*</pre>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4>4. Use .dockerignore</h4>
+                        <div class="code-block">
+                            <pre># .dockerignore
+node_modules
+npm-debug.log
+.git
+.vscode
+*.md
+
+# Prevents unnecessary cache invalidation</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Inspecting Layers</h3>
+                <div class="code-block">
+                    <span class="code-label">Terminal Commands</span>
+                    <pre># View image layers and sizes
+docker history myapp:latest
+
+# Detailed JSON output
+docker image inspect myapp:latest
+
+# See layer cache IDs
+docker build --progress=plain .
+
+# Export and examine
+docker save myapp:latest -o myapp.tar
+tar -xvf myapp.tar</pre>
+                </div>
+
+                <h3>Advanced: BuildKit Cache Mounts</h3>
+                <p>Docker BuildKit provides advanced caching features for dependencies.</p>
+
+                <div class="code-block">
+                    <span class="code-label">Enable BuildKit</span>
+                    <pre># syntax=docker/dockerfile:1
+FROM python:3.11-slim
+
+# Cache pip packages across builds
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r requirements.txt
+
+# Cache apt packages
+RUN --mount=type=cache,target=/var/cache/apt \
+    --mount=type=cache,target=/var/lib/apt \
+    apt-get update && apt-get install -y git
+
+# Build with BuildKit
+DOCKER_BUILDKIT=1 docker build -t myapp .</pre>
+                </div>
+
+                <div class="info-box success">
+                    <strong>✅ Benefits:</strong> Package managers (pip, npm, apt) reuse downloaded files across builds, even if layers are invalidated.
+                </div>
+
+                <h3>Layer Size Optimization</h3>
+
+                <div class="interactive-example">
+                    <h4>Before Optimization (450MB)</h4>
+                    <div class="code-block">
+                        <pre>FROM ubuntu:22.04
+RUN apt-get update
+RUN apt-get install -y python3 python3-pip git build-essential
+COPY . /app
+RUN cd /app && pip install -r requirements.txt
+WORKDIR /app
+CMD ["python3", "app.py"]</pre>
+                    </div>
+                </div>
+
+                <div class="interactive-example">
+                    <h4>After Optimization (125MB)</h4>
+                    <div class="code-block">
+                        <pre>FROM python:3.11-slim
+WORKDIR /app
+
+# Combine and cleanup in single layer
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        git && \
+    rm -rf /var/lib/apt/lists/*
+
+# Optimize caching
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Source last
+COPY . .
+
+CMD ["python3", "app.py"]</pre>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Optimization Techniques Applied:</strong>
+                    <ul>
+                        <li>Used slim base image (python:3.11-slim vs ubuntu)</li>
+                        <li>Combined RUN commands (5 layers → 2 layers)</li>
+                        <li>Removed build dependencies after use</li>
+                        <li>Cleaned apt cache in same layer</li>
+                        <li>Used --no-cache-dir for pip</li>
+                        <li>Optimized layer order for caching</li>
+                    </ul>
+                    <strong>Result: 72% size reduction</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Best Practices Tab -->
+        <div id="best-practices" class="tab-content">
+            <div class="section">
+                <h2>⭐ Best Practices</h2>
+
+                <h3>🔒 Security</h3>
+                <div class="grid">
+                    <div class="card danger">
+                        <h4>1. Never Run as Root</h4>
+                        <div class="code-block">
+                            <pre># Create non-root user
+RUN groupadd -r appuser && \
+    useradd -r -g appuser appuser
+
+# Set ownership
+COPY --chown=appuser:appuser . /app
+
+# Switch user
+USER appuser</pre>
+                        </div>
+                    </div>
+
+                    <div class="card danger">
+                        <h4>2. Scan for Vulnerabilities</h4>
+                        <div class="code-block">
+                            <pre># Scan image
+docker scan myapp:latest
+
+# Use Trivy
+trivy image myapp:latest
+
+# Update base images regularly
+FROM python:3.11-slim</pre>
+                        </div>
+                    </div>
+
+                    <div class="card danger">
+                        <h4>3. Don't Store Secrets</h4>
+                        <div class="code-block">
+                            <pre># ❌ NEVER do this
+ENV API_KEY=secret123
+RUN echo "password" > /app/pw.txt
+
+# ✅ Use at runtime
+docker run -e API_KEY=$API_KEY myapp
+docker secret create api_key key.txt</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>📦 Image Size</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>1. Use Slim/Alpine Base Images</h4>
+                        <div class="code-block">
+                            <pre># python:3.11 = 900MB
+FROM python:3.11-slim  # 130MB
+FROM python:3.11-alpine  # 50MB
+
+# node:18 = 1GB
+FROM node:18-slim  # 250MB
+FROM node:18-alpine  # 180MB</pre>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4>2. Multi-Stage Builds</h4>
+                        <div class="code-block">
+                            <pre># Build stage
+FROM node:18 AS builder
+RUN npm run build
+
+# Production stage
+FROM node:18-alpine
+COPY --from=builder /app/dist ./dist
+
+# Result: 180MB vs 1GB</pre>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4>3. Clean Up in Same Layer</h4>
+                        <div class="code-block">
+                            <pre>RUN apt-get update && \
+    apt-get install -y package && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* \
+           /tmp/* \
+           /var/tmp/*</pre>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4>4. Use .dockerignore</h4>
+                        <div class="code-block">
+                            <pre># .dockerignore
+node_modules
+.git
+*.md
+tests/
+.env
+coverage/</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>⚡ Build Speed</h3>
+                <div class="grid">
+                    <div class="card secondary">
+                        <h4>1. Order by Change Frequency</h4>
+                        <div class="code-block">
+                            <pre># Rarely changes first
+COPY package.json .
+RUN npm install
+
+# Frequently changes last
+COPY . .</pre>
+                        </div>
+                    </div>
+
+                    <div class="card secondary">
+                        <h4>2. Use BuildKit Cache Mounts</h4>
+                        <div class="code-block">
+                            <pre># syntax=docker/dockerfile:1
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r requirements.txt</pre>
+                        </div>
+                    </div>
+
+                    <div class="card secondary">
+                        <h4>3. Minimize Build Context</h4>
+                        <div class="code-block">
+                            <pre># Build from subdirectory
+docker build -t app ./backend
+
+# Exclude with .dockerignore
+# Reduces context sent to daemon</pre>
+                        </div>
+                    </div>
+
+                    <div class="card secondary">
+                        <h4>4. Combine RUN Commands</h4>
+                        <div class="code-block">
+                            <pre># ❌ Multiple layers
+RUN cmd1
+RUN cmd2
+
+# ✅ Single layer
+RUN cmd1 && cmd2</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>📝 Maintainability</h3>
+                <div class="grid">
+                    <div class="card accent">
+                        <h4>1. Pin Versions</h4>
+                        <div class="code-block">
+                            <pre># ❌ Unpredictable
+FROM python:3
+RUN pip install flask
+
+# ✅ Reproducible
+FROM python:3.11.5-slim
+RUN pip install flask==2.3.2</pre>
+                        </div>
+                    </div>
+
+                    <div class="card accent">
+                        <h4>2. Add Labels</h4>
+                        <div class="code-block">
+                            <pre>LABEL maintainer="dev@example.com"
+LABEL version="1.0.0"
+LABEL description="API Server"
+LABEL org.opencontainers.image.source="https://github.com/user/repo"</pre>
+                        </div>
+                    </div>
+
+                    <div class="card accent">
+                        <h4>3. Document with Comments</h4>
+                        <div class="code-block">
+                            <pre># Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    # PostgreSQL client
+    postgresql-client \
+    # Image processing
+    libmagic1</pre>
+                        </div>
+                    </div>
+
+                    <div class="card accent">
+                        <h4>4. Use HEALTHCHECK</h4>
+                        <div class="code-block">
+                            <pre>HEALTHCHECK --interval=30s \
+            --timeout=3s \
+            --start-period=5s \
+            --retries=3 \
+  CMD curl -f http://localhost/ || exit 1</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>🎯 Complete Example: Production-Ready Dockerfile</h3>
+                <div class="code-block">
+                    <span class="code-label">Dockerfile (Node.js)</span>
+                    <pre># syntax=docker/dockerfile:1
+
+# Build stage
+FROM node:18-alpine AS builder
+
+# Install build dependencies
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
+
+# Install dependencies (cached layer)
+COPY package*.json ./
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --only=production
+
+# Build application
+COPY . .
+RUN npm run build
+
+# Production stage
+FROM node:18-alpine
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+WORKDIR /app
+
+# Copy built application from builder
+COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nodejs:nodejs /app/package.json ./
+
+# Switch to non-root user
+USER nodejs
+
+# Expose port
+EXPOSE 3000
+
+# Add health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
+  CMD node healthcheck.js || exit 1
+
+# Add metadata
+LABEL maintainer="devops@company.com" \
+      version="1.0.0" \
+      description="Production Node.js API"
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", "dist/server.js"]</pre>
+                </div>
+
+                <div class="info-box success">
+                    <strong>✅ This Dockerfile follows all best practices:</strong>
+                    <ul>
+                        <li>Multi-stage build (smaller final image)</li>
+                        <li>Alpine base (minimal size)</li>
+                        <li>Non-root user (security)</li>
+                        <li>Cache mount (faster builds)</li>
+                        <li>Layer optimization (better caching)</li>
+                        <li>Health check (monitoring)</li>
+                        <li>Labels (documentation)</li>
+                        <li>Proper signal handling (dumb-init)</li>
+                    </ul>
+                </div>
+
+                <h3>📋 Checklist</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Best Practice</th>
+                            <th>Why</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="3">Security</td>
+                            <td>Use non-root USER</td>
+                            <td>Limit container privileges</td>
+                        </tr>
+                        <tr>
+                            <td>Scan for vulnerabilities</td>
+                            <td>Detect security issues</td>
+                        </tr>
+                        <tr>
+                            <td>No secrets in image</td>
+                            <td>Prevent credential leaks</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="3">Size</td>
+                            <td>Use slim/alpine bases</td>
+                            <td>Reduce image size 70-90%</td>
+                        </tr>
+                        <tr>
+                            <td>Multi-stage builds</td>
+                            <td>Exclude build dependencies</td>
+                        </tr>
+                        <tr>
+                            <td>Clean up in same layer</td>
+                            <td>Remove temp files properly</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="3">Speed</td>
+                            <td>Order by change frequency</td>
+                            <td>Maximize cache hits</td>
+                        </tr>
+                        <tr>
+                            <td>Use .dockerignore</td>
+                            <td>Reduce build context</td>
+                        </tr>
+                        <tr>
+                            <td>Combine RUN commands</td>
+                            <td>Fewer layers</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="3">Reliability</td>
+                            <td>Pin versions</td>
+                            <td>Reproducible builds</td>
+                        </tr>
+                        <tr>
+                            <td>Add HEALTHCHECK</td>
+                            <td>Container health monitoring</td>
+                        </tr>
+                        <tr>
+                            <td>Use WORKDIR</td>
+                            <td>Predictable paths</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+
