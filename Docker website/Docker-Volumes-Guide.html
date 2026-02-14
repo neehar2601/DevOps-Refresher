@@ -1,388 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Docker Volumes - Complete Guide</title>
-    <style>
-        :root {
-            --color-bg-primary: #0f172a;
-            --color-bg-secondary: #1e293b;
-            --color-bg-tertiary: #334155;
-            --color-text-primary: #f1f5f9;
-            --color-text-secondary: #cbd5e1;
-            --color-text-muted: #94a3b8;
-            --color-accent: #38bdf8;
-            --color-accent-hover: #0ea5e9;
-            --color-success: #22c55e;
-            --color-warning: #f59e0b;
-            --color-error: #ef4444;
-            --color-border: rgba(148, 163, 184, 0.2);
-            --color-volume: #8b5cf6;
-            --color-bind: #f97316;
-            --color-tmpfs: #eab308;
-        }
+    <link rel="stylesheet" href="shared-styles.css">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--color-bg-primary);
-            color: var(--color-text-primary);
-            line-height: 1.6;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 20px;
-            background: var(--color-bg-secondary);
-            border-radius: 12px;
-            border: 1px solid var(--color-border);
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            color: var(--color-accent);
-        }
-
-        .subtitle {
-            color: var(--color-text-secondary);
-            font-size: 1.1rem;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            background: var(--color-bg-secondary);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid var(--color-border);
-        }
-
-        .tab-btn {
-            padding: 12px 24px;
-            background: var(--color-bg-tertiary);
-            color: var(--color-text-secondary);
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .tab-btn:hover {
-            background: var(--color-accent);
-            color: var(--color-bg-primary);
-            border-color: var(--color-accent);
-        }
-
-        .tab-btn.active {
-            background: var(--color-accent);
-            color: var(--color-bg-primary);
-            border-color: var(--color-accent);
-        }
-
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .section {
-            background: var(--color-bg-secondary);
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid var(--color-border);
-        }
-
-        .section h2 {
-            color: var(--color-accent);
-            margin-bottom: 15px;
-            font-size: 1.8rem;
-        }
-
-        .section h3 {
-            color: var(--color-text-primary);
-            margin-top: 20px;
-            margin-bottom: 10px;
-            font-size: 1.3rem;
-        }
-
-        .diagram {
-            background: var(--color-bg-tertiary);
-            padding: 30px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border: 2px solid var(--color-border);
-            overflow-x: auto;
-        }
-
-        .diagram-container {
-            min-width: 600px;
-        }
-
-        .box {
-            border: 2px solid;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px;
-            display: inline-block;
-            min-width: 120px;
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .container-box {
-            background: #1e3a8a;
-            border-color: #3b82f6;
-            color: #93c5fd;
-        }
-
-        .host-box {
-            background: #7c2d12;
-            border-color: #f97316;
-            color: #fdba74;
-        }
-
-        .volume-box {
-            background: #5b21b6;
-            border-color: var(--color-volume);
-            color: #d8b4fe;
-        }
-
-        .bind-box {
-            background: #9a3412;
-            border-color: var(--color-bind);
-            color: #fed7aa;
-        }
-
-        .tmpfs-box {
-            background: #713f12;
-            border-color: var(--color-tmpfs);
-            color: #fde047;
-        }
-
-        .storage-box {
-            background: #166534;
-            border-color: #22c55e;
-            color: #86efac;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .feature-card {
-            background: var(--color-bg-tertiary);
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid var(--color-border);
-        }
-
-        .feature-card h4 {
-            color: var(--color-accent);
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-
-        .feature-card p {
-            color: var(--color-text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .code-block {
-            background: #0a0e1a;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            overflow-x: auto;
-            border: 1px solid var(--color-border);
-        }
-
-        .code-block code {
-            color: var(--color-success);
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-        }
-
-        .pros-cons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .pros, .cons {
-            background: var(--color-bg-tertiary);
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid var(--color-border);
-        }
-
-        .pros h4 {
-            color: var(--color-success);
-            margin-bottom: 10px;
-        }
-
-        .cons h4 {
-            color: var(--color-error);
-            margin-bottom: 10px;
-        }
-
-        .pros ul, .cons ul {
-            margin-left: 20px;
-            color: var(--color-text-secondary);
-        }
-
-        .pros ul li, .cons ul li {
-            margin-bottom: 8px;
-        }
-
-        .info-box {
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid var(--color-accent);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-
-        .info-box strong {
-            color: var(--color-accent);
-        }
-
-        .warning-box {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid var(--color-warning);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-
-        .warning-box strong {
-            color: var(--color-warning);
-        }
-
-        .arrow {
-            display: inline-block;
-            margin: 0 10px;
-            color: var(--color-accent);
-            font-size: 1.5rem;
-        }
-
-        .flow-diagram {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 20px 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid var(--color-border);
-        }
-
-        th {
-            background: var(--color-bg-tertiary);
-            color: var(--color-accent);
-            font-weight: 600;
-        }
-
-        td {
-            color: var(--color-text-secondary);
-        }
-
-        tr:hover {
-            background: rgba(56, 189, 248, 0.05);
-        }
-
-        .lifecycle-diagram {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .lifecycle-step {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .step-number {
-            background: var(--color-accent);
-            color: var(--color-bg-primary);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
-        .step-content {
-            flex: 1;
-            background: var(--color-bg-tertiary);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid var(--color-border);
-        }
-
-        @media (max-width: 768px) {
-            .pros-cons {
-                grid-template-columns: 1fr;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .tabs {
-                flex-direction: column;
-            }
-            
-            .tab-btn {
-                width: 100%;
-            }
-        }
-    </style>
-</head>
 <body>
     <div class="container">
         <header>
@@ -405,12 +29,15 @@
             <div class="section">
                 <h2>Docker Storage Overview</h2>
                 <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
-                    By default, container data is stored in the container's writable layer and lost when the container is removed. 
-                    Docker provides three mount types for persistent storage: <strong>volumes</strong>, <strong>bind mounts</strong>, and <strong>tmpfs mounts</strong>.
+                    By default, container data is stored in the container's writable layer and lost when the container
+                    is removed.
+                    Docker provides three mount types for persistent storage: <strong>volumes</strong>, <strong>bind
+                        mounts</strong>, and <strong>tmpfs mounts</strong>.
                 </p>
 
                 <div class="info-box">
-                    <strong>Best Practice:</strong> Use volumes for production data persistence. They're managed by Docker, work across platforms, and offer better performance than bind mounts on Docker Desktop.
+                    <strong>Best Practice:</strong> Use volumes for production data persistence. They're managed by
+                    Docker, work across platforms, and offer better performance than bind mounts on Docker Desktop.
                 </div>
 
                 <h3>Three Mount Types</h3>
@@ -418,22 +45,26 @@
                     <div class="diagram-container">
                         <div style="text-align: center;">
                             <div class="host-box">Docker Host</div>
-                            <div style="display: flex; justify-content: space-around; margin-top: 20px; flex-wrap: wrap;">
+                            <div
+                                style="display: flex; justify-content: space-around; margin-top: 20px; flex-wrap: wrap;">
                                 <div>
                                     <div class="volume-box">Docker Volume<br>/var/lib/docker/volumes</div>
-                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">Managed by Docker</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">
+                                        Managed by Docker</div>
                                     <div class="arrow" style="transform: rotate(90deg);">↓</div>
                                     <div class="container-box">Container</div>
                                 </div>
                                 <div>
                                     <div class="bind-box">Host Directory<br>/home/user/data</div>
-                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">Bind Mount</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">
+                                        Bind Mount</div>
                                     <div class="arrow" style="transform: rotate(90deg);">↓</div>
                                     <div class="container-box">Container</div>
                                 </div>
                                 <div>
                                     <div class="tmpfs-box">RAM (tmpfs)<br>Memory Only</div>
-                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">Temporary</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 5px;">
+                                        Temporary</div>
                                     <div class="arrow" style="transform: rotate(90deg);">↓</div>
                                     <div class="container-box">Container</div>
                                 </div>
@@ -450,7 +81,8 @@
                     </div>
                     <div class="feature-card">
                         <h4>Isolation</h4>
-                        <p>Container storage layer is isolated from volumes - data doesn't count toward container size.</p>
+                        <p>Container storage layer is isolated from volumes - data doesn't count toward container size.
+                        </p>
                     </div>
                     <div class="feature-card">
                         <h4>Sharing</h4>
@@ -458,7 +90,8 @@
                     </div>
                     <div class="feature-card">
                         <h4>Performance</h4>
-                        <p>Volumes offer native disk performance. tmpfs offers RAM speed. Bind mounts vary by platform.</p>
+                        <p>Volumes offer native disk performance. tmpfs offers RAM speed. Bind mounts vary by platform.
+                        </p>
                     </div>
                     <div class="feature-card">
                         <h4>Management</h4>
@@ -466,7 +99,8 @@
                     </div>
                     <div class="feature-card">
                         <h4>Portability</h4>
-                        <p>Volumes work consistently across Docker hosts. Bind mounts depend on host filesystem structure.</p>
+                        <p>Volumes work consistently across Docker hosts. Bind mounts depend on host filesystem
+                            structure.</p>
                     </div>
                 </div>
 
@@ -476,13 +110,15 @@
                         <div class="lifecycle-step">
                             <div class="step-number">1</div>
                             <div class="step-content">
-                                <strong>Read-Only Image Layers</strong> - Base OS, dependencies, application code (immutable)
+                                <strong>Read-Only Image Layers</strong> - Base OS, dependencies, application code
+                                (immutable)
                             </div>
                         </div>
                         <div class="lifecycle-step">
                             <div class="step-number">2</div>
                             <div class="step-content">
-                                <strong>Container Writable Layer</strong> - Changes made during runtime (lost when container removed)
+                                <strong>Container Writable Layer</strong> - Changes made during runtime (lost when
+                                container removed)
                             </div>
                         </div>
                         <div class="lifecycle-step">
@@ -519,13 +155,15 @@ docker run -v /host/path:/container/path nginx</code>
             <div class="section">
                 <h2>Docker Volumes</h2>
                 <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
-                    Volumes are the preferred mechanism for persisting data in Docker. They're completely managed by Docker, 
-                    stored in a dedicated directory on the host (<code>/var/lib/docker/volumes/</code> on Linux), 
+                    Volumes are the preferred mechanism for persisting data in Docker. They're completely managed by
+                    Docker,
+                    stored in a dedicated directory on the host (<code>/var/lib/docker/volumes/</code> on Linux),
                     and isolated from core host functionality.
                 </p>
 
                 <div class="info-box">
-                    <strong>Recommendation:</strong> Always use volumes for production databases, application data, and any content that must persist beyond container lifecycle.
+                    <strong>Recommendation:</strong> Always use volumes for production databases, application data, and
+                    any content that must persist beyond container lifecycle.
                 </div>
 
                 <h3>Volume Architecture</h3>
@@ -535,7 +173,8 @@ docker run -v /host/path:/container/path nginx</code>
                             <div class="host-box">Docker Host Filesystem</div>
                             <div class="arrow">↓</div>
                             <div class="storage-box">/var/lib/docker/volumes/<br>Docker-Managed Storage Area</div>
-                            <div style="display: flex; justify-content: center; gap: 30px; margin-top: 20px; flex-wrap: wrap;">
+                            <div
+                                style="display: flex; justify-content: center; gap: 30px; margin-top: 20px; flex-wrap: wrap;">
                                 <div>
                                     <div class="volume-box">my-volume<br>/_data/</div>
                                     <div class="arrow" style="transform: rotate(90deg);">↓</div>
@@ -555,7 +194,8 @@ docker run -v /host/path:/container/path nginx</code>
                 <div class="feature-grid">
                     <div class="feature-card">
                         <h4>1. Volume Creation</h4>
-                        <p>Created explicitly with docker volume create or automatically when container starts with -v flag.</p>
+                        <p>Created explicitly with docker volume create or automatically when container starts with -v
+                            flag.</p>
                     </div>
                     <div class="feature-card">
                         <h4>2. Docker Management</h4>
@@ -563,11 +203,13 @@ docker run -v /host/path:/container/path nginx</code>
                     </div>
                     <div class="feature-card">
                         <h4>3. Mount Point</h4>
-                        <p>Volume mounted to specific directory inside container. Multiple containers can share same volume.</p>
+                        <p>Volume mounted to specific directory inside container. Multiple containers can share same
+                            volume.</p>
                     </div>
                     <div class="feature-card">
                         <h4>4. Data Persistence</h4>
-                        <p>Data remains even after container deletion. Must explicitly run docker volume rm to delete.</p>
+                        <p>Data remains even after container deletion. Must explicitly run docker volume rm to delete.
+                        </p>
                     </div>
                     <div class="feature-card">
                         <h4>5. Named vs Anonymous</h4>
@@ -673,7 +315,8 @@ docker run -d -v my-volume:/data:ro nginx</code>
                 </div>
 
                 <div class="warning-box">
-                    <strong>Warning:</strong> Always use named volumes for production. Anonymous volumes can be accidentally deleted with docker volume prune, causing data loss.
+                    <strong>Warning:</strong> Always use named volumes for production. Anonymous volumes can be
+                    accidentally deleted with docker volume prune, causing data loss.
                 </div>
             </div>
         </div>
@@ -683,13 +326,16 @@ docker run -d -v my-volume:/data:ro nginx</code>
             <div class="section">
                 <h2>Bind Mounts</h2>
                 <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
-                    Bind mounts link a specific file or directory on the host to a container location. They provide direct, 
-                    immediate synchronization between host and container filesystems. Ideal for development workflows where 
+                    Bind mounts link a specific file or directory on the host to a container location. They provide
+                    direct,
+                    immediate synchronization between host and container filesystems. Ideal for development workflows
+                    where
                     you need real-time code updates without rebuilding images.
                 </p>
 
                 <div class="warning-box">
-                    <strong>Security Note:</strong> Bind mounts give containers direct access to host filesystem. This can be a security risk. Use carefully in production.
+                    <strong>Security Note:</strong> Bind mounts give containers direct access to host filesystem. This
+                    can be a security risk. Use carefully in production.
                 </div>
 
                 <h3>Bind Mount Architecture</h3>
@@ -697,7 +343,8 @@ docker run -d -v my-volume:/data:ro nginx</code>
                     <div class="diagram-container">
                         <div style="text-align: center;">
                             <div class="host-box">Host Filesystem</div>
-                            <div style="display: flex; justify-content: center; gap: 40px; margin-top: 20px; flex-wrap: wrap;">
+                            <div
+                                style="display: flex; justify-content: center; gap: 40px; margin-top: 20px; flex-wrap: wrap;">
                                 <div>
                                     <div class="bind-box">/home/user/project<br>Source Code</div>
                                     <div class="arrow" style="transform: rotate(90deg);">↓</div>
@@ -741,7 +388,8 @@ docker run -d -v my-volume:/data:ro nginx</code>
                     </div>
                     <div class="feature-card">
                         <h4>6. Platform Differences</h4>
-                        <p>Performance varies by platform. Slower on Docker Desktop (Mac/Windows) due to filesystem translation.</p>
+                        <p>Performance varies by platform. Slower on Docker Desktop (Mac/Windows) due to filesystem
+                            translation.</p>
                     </div>
                 </div>
 
@@ -800,7 +448,8 @@ docker run -d \<br>
                 <div class="feature-grid">
                     <div class="feature-card">
                         <h4>Development Environments</h4>
-                        <p>Mount source code for live reload without rebuilding images. Edit locally, run in container.</p>
+                        <p>Mount source code for live reload without rebuilding images. Edit locally, run in container.
+                        </p>
                     </div>
                     <div class="feature-card">
                         <h4>Configuration Files</h4>
@@ -863,13 +512,16 @@ docker run -d \<br>
             <div class="section">
                 <h2>tmpfs Mounts</h2>
                 <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
-                    tmpfs mounts store data in the host system's memory (RAM) only. They provide the fastest I/O performance 
-                    but are temporary - all data is lost when the container stops. Perfect for sensitive information that 
+                    tmpfs mounts store data in the host system's memory (RAM) only. They provide the fastest I/O
+                    performance
+                    but are temporary - all data is lost when the container stops. Perfect for sensitive information
+                    that
                     shouldn't be persisted to disk or temporary caches requiring maximum speed.
                 </p>
 
                 <div class="info-box">
-                    <strong>Linux Only:</strong> tmpfs mounts are only available on Linux hosts. Not supported on Docker Desktop for Mac or Windows.
+                    <strong>Linux Only:</strong> tmpfs mounts are only available on Linux hosts. Not supported on Docker
+                    Desktop for Mac or Windows.
                 </div>
 
                 <h3>tmpfs Architecture</h3>
@@ -879,16 +531,19 @@ docker run -d \<br>
                             <div class="host-box">Docker Host</div>
                             <div class="arrow">↓</div>
                             <div class="tmpfs-box">RAM (System Memory)<br>Volatile Storage</div>
-                            <div style="display: flex; justify-content: center; gap: 30px; margin-top: 20px; flex-wrap: wrap;">
+                            <div
+                                style="display: flex; justify-content: center; gap: 30px; margin-top: 20px; flex-wrap: wrap;">
                                 <div>
                                     <div class="arrow" style="transform: rotate(90deg);">↓</div>
                                     <div class="container-box">Container A<br>/tmp/cache</div>
-                                    <div style="font-size: 0.8rem; color: var(--color-warning); margin-top: 5px;">Data lost on stop</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-warning); margin-top: 5px;">Data
+                                        lost on stop</div>
                                 </div>
                                 <div>
                                     <div class="arrow" style="transform: rotate(90deg);">↓</div>
                                     <div class="container-box">Container B<br>/run/secrets</div>
-                                    <div style="font-size: 0.8rem; color: var(--color-warning); margin-top: 5px;">Data lost on stop</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-warning); margin-top: 5px;">Data
+                                        lost on stop</div>
                                 </div>
                             </div>
                         </div>
@@ -1031,7 +686,8 @@ docker exec container-name df -h /app/cache</code>
                 </div>
 
                 <div class="warning-box">
-                    <strong>Memory Warning:</strong> Be careful with tmpfs size. Excessive tmpfs usage can lead to out-of-memory (OOM) errors and container crashes.
+                    <strong>Memory Warning:</strong> Be careful with tmpfs size. Excessive tmpfs usage can lead to
+                    out-of-memory (OOM) errors and container crashes.
                 </div>
             </div>
         </div>
@@ -1041,13 +697,14 @@ docker exec container-name df -h /app/cache</code>
             <div class="section">
                 <h2>Volume Drivers &amp; Plugins</h2>
                 <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
-                    Volume drivers extend Docker's storage capabilities beyond local filesystem. They enable volumes 
-                    to be stored on remote hosts, cloud storage, network filesystems, and specialized storage systems. 
+                    Volume drivers extend Docker's storage capabilities beyond local filesystem. They enable volumes
+                    to be stored on remote hosts, cloud storage, network filesystems, and specialized storage systems.
                     Critical for production deployments requiring high availability, backup, and distributed storage.
                 </p>
 
                 <div class="info-box">
-                    <strong>Key Concept:</strong> The default "local" driver stores volumes on the Docker host. Third-party drivers enable external storage solutions like AWS EBS, Azure Files, NFS, and more.
+                    <strong>Key Concept:</strong> The default "local" driver stores volumes on the Docker host.
+                    Third-party drivers enable external storage solutions like AWS EBS, Azure Files, NFS, and more.
                 </div>
 
                 <h3>Volume Driver Architecture</h3>
@@ -1057,7 +714,8 @@ docker exec container-name df -h /app/cache</code>
                             <div class="container-box">Docker Container</div>
                             <div class="arrow">↓</div>
                             <div class="volume-box">Volume (managed by driver)</div>
-                            <div style="display: flex; justify-content: space-around; margin-top: 20px; flex-wrap: wrap; gap: 15px;">
+                            <div
+                                style="display: flex; justify-content: space-around; margin-top: 20px; flex-wrap: wrap; gap: 15px;">
                                 <div>
                                     <div class="arrow">↓</div>
                                     <div class="storage-box">Local Driver<br>Host Disk</div>
@@ -1228,7 +886,8 @@ docker run -d --name postgres \<br>
                 </div>
 
                 <div class="warning-box">
-                    <strong>Plugin Management:</strong> Volume driver plugins require installation and configuration. Always test in non-production environments first.
+                    <strong>Plugin Management:</strong> Volume driver plugins require installation and configuration.
+                    Always test in non-production environments first.
                 </div>
             </div>
         </div>
@@ -1238,13 +897,15 @@ docker run -d --name postgres \<br>
             <div class="section">
                 <h2>Volume Backup &amp; Restore</h2>
                 <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
-                    Backing up Docker volumes is critical for disaster recovery, data migration, and testing. 
-                    Docker volumes can be backed up by creating temporary containers that mount the volume and 
+                    Backing up Docker volumes is critical for disaster recovery, data migration, and testing.
+                    Docker volumes can be backed up by creating temporary containers that mount the volume and
                     use tar or application-specific tools to create archives.
                 </p>
 
                 <div class="info-box">
-                    <strong>Best Practice:</strong> For databases, use application-specific backup tools (pg_dump, mysqldump, mongodump) for consistency guarantees. Generic tar backups may capture inconsistent state.
+                    <strong>Best Practice:</strong> For databases, use application-specific backup tools (pg_dump,
+                    mysqldump, mongodump) for consistency guarantees. Generic tar backups may capture inconsistent
+                    state.
                 </div>
 
                 <h3>Backup Methods Comparison</h3>
@@ -1378,7 +1039,8 @@ docker run --rm \<br>
                     <div class="lifecycle-step">
                         <div class="step-number">5</div>
                         <div class="step-content">
-                            <strong>Verify Backup</strong> - Test restore on non-production environment to ensure integrity
+                            <strong>Verify Backup</strong> - Test restore on non-production environment to ensure
+                            integrity
                         </div>
                     </div>
                     <div class="lifecycle-step">
@@ -1422,7 +1084,8 @@ docker run --rm -v my-volume:/data:ro ubuntu tar czf - -C /data . | \<br>
                     </div>
                     <div class="feature-card">
                         <h4>Retention Policy</h4>
-                        <p>Keep multiple backup versions. Follow 3-2-1 rule: 3 copies, 2 different media, 1 off-site.</p>
+                        <p>Keep multiple backup versions. Follow 3-2-1 rule: 3 copies, 2 different media, 1 off-site.
+                        </p>
                     </div>
                     <div class="feature-card">
                         <h4>Encryption</h4>
@@ -1435,7 +1098,8 @@ docker run --rm -v my-volume:/data:ro ubuntu tar czf - -C /data . | \<br>
                 </div>
 
                 <div class="warning-box">
-                    <strong>Consistency Warning:</strong> Backing up live databases with tar may result in corrupted backups. Always prefer application-specific backup tools or stop containers during backup.
+                    <strong>Consistency Warning:</strong> Backing up live databases with tar may result in corrupted
+                    backups. Always prefer application-specific backup tools or stop containers during backup.
                 </div>
             </div>
         </div>
@@ -1445,7 +1109,8 @@ docker run --rm -v my-volume:/data:ro ubuntu tar czf - -C /data . | \<br>
             <div class="section">
                 <h2>Mount Types Comparison</h2>
                 <p style="color: var(--color-text-secondary); margin-bottom: 20px;">
-                    Choose the right mount type based on persistence requirements, performance needs, security constraints, and deployment environment.
+                    Choose the right mount type based on persistence requirements, performance needs, security
+                    constraints, and deployment environment.
                 </p>
 
                 <h3>Comprehensive Feature Matrix</h3>
@@ -1582,7 +1247,8 @@ docker run --rm -v my-volume:/data:ro ubuntu tar czf - -C /data . | \<br>
                 <h3>Performance Comparison</h3>
                 <div class="diagram">
                     <div style="padding: 20px; background: rgba(56, 189, 248, 0.05); border-radius: 8px;">
-                        <p style="color: var(--color-text-secondary); margin-bottom: 15px;"><strong>Read/Write Performance (Best to Slowest):</strong></p>
+                        <p style="color: var(--color-text-secondary); margin-bottom: 15px;"><strong>Read/Write
+                                Performance (Best to Slowest):</strong></p>
                         <div class="flow-diagram">
                             <span class="box tmpfs-box">1. tmpfs<br>(RAM speed)</span>
                             <span class="arrow">→</span>
@@ -1591,7 +1257,8 @@ docker run --rm -v my-volume:/data:ro ubuntu tar czf - -C /data . | \<br>
                             <span class="box bind-box">3. Bind Mounts<br>(Linux: fast)<br>(Mac/Win: slow)</span>
                         </div>
                         <p style="color: var(--color-text-muted); margin-top: 15px; font-size: 0.9rem;">
-                            *Bind mounts on Docker Desktop use filesystem translation layer (osxfs/grpcfuse) causing significant overhead
+                            *Bind mounts on Docker Desktop use filesystem translation layer (osxfs/grpcfuse) causing
+                            significant overhead
                         </p>
                     </div>
                 </div>
@@ -1690,22 +1357,7 @@ Question 5: Need cloud storage integration?<br>
         </div>
     </div>
 
-    <script>
-        function showTab(tabName) {
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => {
-                content.classList.remove('active');
-            });
-
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-        }
-    </script>
+    <script src="tabs.js"></script>
 </body>
-</html>
 
+</html>

@@ -1,402 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dockerfile & Image Building Guide</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --secondary: #10b981;
-            --accent: #f59e0b;
-            --danger: #ef4444;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --bg-hover: #334155;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
-            --border: #475569;
-        }
+    <link rel="stylesheet" href="shared-styles.css">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-            padding: 2.5rem 2rem;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
-
-        .header p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-
-        .nav-tabs {
-            display: flex;
-            gap: 0.5rem;
-            padding: 1.5rem 2rem;
-            background: var(--bg-card);
-            border-bottom: 2px solid var(--border);
-            overflow-x: auto;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .tab {
-            padding: 0.75rem 1.5rem;
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .tab:hover {
-            background: var(--bg-hover);
-            color: var(--text-primary);
-        }
-
-        .tab.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.4s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .section {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border);
-        }
-
-        .section h2 {
-            color: var(--primary);
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .section h3 {
-            color: var(--secondary);
-            font-size: 1.3rem;
-            margin: 1.5rem 0 1rem;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-        }
-
-        .card {
-            background: var(--bg-hover);
-            padding: 1.5rem;
-            border-radius: 10px;
-            border-left: 4px solid var(--primary);
-            transition: all 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        .card h4 {
-            color: var(--primary);
-            font-size: 1.1rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .card.secondary {
-            border-left-color: var(--secondary);
-        }
-
-        .card.secondary h4 {
-            color: var(--secondary);
-        }
-
-        .card.accent {
-            border-left-color: var(--accent);
-        }
-
-        .card.accent h4 {
-            color: var(--accent);
-        }
-
-        .card.danger {
-            border-left-color: var(--danger);
-        }
-
-        .card.danger h4 {
-            color: var(--danger);
-        }
-
-        .code-block {
-            background: #0d1117;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            overflow-x: auto;
-            position: relative;
-        }
-
-        .code-block pre {
-            color: var(--text-primary);
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        .code-label {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: var(--primary);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-            background: var(--bg-hover);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .comparison-table th,
-        .comparison-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .comparison-table th {
-            background: var(--primary);
-            color: white;
-            font-weight: 600;
-        }
-
-        .comparison-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .comparison-table tr:hover {
-            background: var(--bg-card);
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin: 0.25rem;
-        }
-
-        .badge.required {
-            background: var(--danger);
-            color: white;
-        }
-
-        .badge.optional {
-            background: var(--accent);
-            color: white;
-        }
-
-        .badge.best-practice {
-            background: var(--secondary);
-            color: white;
-        }
-
-        .visual-diagram {
-            background: var(--bg-dark);
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            padding: 2rem;
-            margin: 1.5rem 0;
-            text-align: center;
-        }
-
-        .layer {
-            background: var(--bg-card);
-            padding: 1rem;
-            margin: 0.5rem auto;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary);
-            max-width: 600px;
-            position: relative;
-        }
-
-        .layer::before {
-            content: '→';
-            position: absolute;
-            left: -30px;
-            font-size: 1.5rem;
-            color: var(--primary);
-        }
-
-        .layer:first-child::before {
-            content: '';
-        }
-
-        .highlight {
-            background: var(--primary);
-            color: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-
-        .info-box {
-            background: rgba(37, 99, 235, 0.1);
-            border: 1px solid var(--primary);
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem 0;
-        }
-
-        .info-box.warning {
-            background: rgba(245, 158, 11, 0.1);
-            border-color: var(--accent);
-        }
-
-        .info-box.success {
-            background: rgba(16, 185, 129, 0.1);
-            border-color: var(--secondary);
-        }
-
-        .info-box.danger {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: var(--danger);
-        }
-
-        ul, ol {
-            margin-left: 1.5rem;
-            margin-top: 0.5rem;
-        }
-
-        li {
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-        }
-
-        .interactive-example {
-            background: var(--bg-dark);
-            border: 2px solid var(--primary);
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-        }
-
-        .interactive-example h4 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .two-column {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin: 1.5rem 0;
-        }
-
-        @media (max-width: 768px) {
-            .two-column {
-                grid-template-columns: 1fr;
-            }
-            
-            .header h1 {
-                font-size: 1.8rem;
-            }
-            
-            .nav-tabs {
-                padding: 1rem;
-            }
-            
-            .container {
-                padding: 1rem;
-            }
-        }
-
-        .command-syntax {
-            background: var(--bg-card);
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            margin: 1rem 0;
-            font-family: monospace;
-        }
-
-        .step-indicator {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 30px;
-            font-weight: bold;
-            margin-right: 0.5rem;
-        }
-    </style>
-</head>
 <body>
     <div class="header">
         <h1>🐳 Dockerfile & Image Building Guide</h1>
@@ -417,10 +27,12 @@
         <div id="dockerfile-basics" class="tab-content active">
             <div class="section">
                 <h2>📄 What is a Dockerfile?</h2>
-                <p>A <span class="highlight">Dockerfile</span> is a text document containing all the commands needed to build a Docker image. It automates the image creation process and ensures reproducibility.</p>
-                
+                <p>A <span class="highlight">Dockerfile</span> is a text document containing all the commands needed to
+                    build a Docker image. It automates the image creation process and ensures reproducibility.</p>
+
                 <div class="info-box">
-                    <strong>Key Concept:</strong> A Dockerfile is a blueprint that defines how to create a container image layer by layer.
+                    <strong>Key Concept:</strong> A Dockerfile is a blueprint that defines how to create a container
+                    image layer by layer.
                 </div>
 
                 <div class="visual-diagram">
@@ -489,11 +101,12 @@ CMD ["python3", "app.py"]</pre>
 
             <div class="section">
                 <h2>📦 Dockerfile Components</h2>
-                
+
                 <div class="grid">
                     <div class="card">
                         <h4>FROM <span class="badge required">Required</span></h4>
-                        <p>Sets the base image for subsequent instructions. Must be the first instruction (except ARG).</p>
+                        <p>Sets the base image for subsequent instructions. Must be the first instruction (except ARG).
+                        </p>
                         <div class="command-syntax">FROM python:3.11-slim</div>
                     </div>
 
@@ -570,10 +183,11 @@ CMD ["python3", "app.py"]</pre>
         <div id="instructions" class="tab-content">
             <div class="section">
                 <h2>🔧 Dockerfile Instructions Deep Dive</h2>
-                
+
                 <h3><span class="step-indicator">1</span>FROM - Base Image</h3>
-                <p>Every Dockerfile must start with a FROM instruction (except ARG for build arguments used in FROM).</p>
-                
+                <p>Every Dockerfile must start with a FROM instruction (except ARG for build arguments used in FROM).
+                </p>
+
                 <div class="code-block">
                     <span class="code-label">Examples</span>
                     <pre># Official image
@@ -594,7 +208,8 @@ FROM python:${VERSION}-slim</pre>
                 </div>
 
                 <div class="info-box warning">
-                    <strong>⚠️ Important:</strong> Use specific version tags (not <code>latest</code>) for production to ensure reproducibility.
+                    <strong>⚠️ Important:</strong> Use specific version tags (not <code>latest</code>) for production to
+                    ensure reproducibility.
                 </div>
 
                 <h3><span class="step-indicator">2</span>RUN - Execute Commands</h3>
@@ -694,7 +309,8 @@ WORKDIR ${APP_HOME}</pre>
                 </div>
 
                 <div class="info-box">
-                    <strong>💡 Tip:</strong> Use WORKDIR instead of <code>RUN cd /path</code> - WORKDIR persists across instructions.
+                    <strong>💡 Tip:</strong> Use WORKDIR instead of <code>RUN cd /path</code> - WORKDIR persists across
+                    instructions.
                 </div>
 
                 <h3><span class="step-indicator">5</span>ENV - Environment Variables</h3>
@@ -748,7 +364,8 @@ EXPOSE 8080/tcp 8081/tcp</pre>
                 </div>
 
                 <div class="info-box warning">
-                    <strong>⚠️ Important:</strong> EXPOSE is <strong>documentation only</strong>. It doesn't actually publish the port. Use <code>-p</code> flag in <code>docker run</code> to publish ports.
+                    <strong>⚠️ Important:</strong> EXPOSE is <strong>documentation only</strong>. It doesn't actually
+                    publish the port. Use <code>-p</code> flag in <code>docker run</code> to publish ports.
                 </div>
 
                 <h3><span class="step-indicator">7</span>USER - Security</h3>
@@ -770,7 +387,8 @@ USER appuser</pre>
                 </div>
 
                 <div class="info-box danger">
-                    <strong>🔒 Security Best Practice:</strong> Never run containers as root in production. Always create and use a non-privileged user.
+                    <strong>🔒 Security Best Practice:</strong> Never run containers as root in production. Always
+                    create and use a non-privileged user.
                 </div>
             </div>
         </div>
@@ -779,7 +397,8 @@ USER appuser</pre>
         <div id="cmd-entrypoint" class="tab-content">
             <div class="section">
                 <h2>⚔️ CMD vs ENTRYPOINT</h2>
-                <p>Both define what command runs when a container starts, but they behave differently and serve different purposes.</p>
+                <p>Both define what command runs when a container starts, but they behave differently and serve
+                    different purposes.</p>
 
                 <table class="comparison-table">
                     <thead>
@@ -919,21 +538,24 @@ CMD ["--host", "0.0.0.0", "--port", "8080"]</pre>
                         <h4>Default Behavior</h4>
                         <div class="command-syntax">$ docker run myapp</div>
                         <p><strong>Executes:</strong><br>
-                        <code>python app.py --host 0.0.0.0 --port 8080</code></p>
+                            <code>python app.py --host 0.0.0.0 --port 8080</code>
+                        </p>
                     </div>
                     <div class="card secondary">
                         <h4>Override CMD Only</h4>
                         <div class="command-syntax">$ docker run myapp --port 3000</div>
                         <p><strong>Executes:</strong><br>
-                        <code>python app.py --port 3000</code><br>
-                        (CMD replaced, ENTRYPOINT intact)</p>
+                            <code>python app.py --port 3000</code><br>
+                            (CMD replaced, ENTRYPOINT intact)
+                        </p>
                     </div>
                     <div class="card accent">
                         <h4>Keep Defaults, Add More</h4>
                         <div class="command-syntax">$ docker run myapp --port 8080 --debug</div>
                         <p><strong>Executes:</strong><br>
-                        <code>python app.py --port 8080 --debug</code><br>
-                        (User provides all args)</p>
+                            <code>python app.py --port 8080 --debug</code><br>
+                            (User provides all args)
+                        </p>
                     </div>
                 </div>
 
@@ -980,7 +602,7 @@ CMD ["python", "app.py"]</pre>
                 </div>
 
                 <h3>🚀 Real-World Examples</h3>
-                
+
                 <div class="interactive-example">
                     <h4>Example 1: Web Server (CMD)</h4>
                     <div class="code-block">
@@ -1035,9 +657,12 @@ CMD ["--help"]
                 <div class="info-box success">
                     <strong>✅ Decision Guide:</strong>
                     <ul>
-                        <li><strong>Use CMD when:</strong> You want easy override (dev environments, flexible containers)</li>
-                        <li><strong>Use ENTRYPOINT when:</strong> Container has single purpose (production services)</li>
-                        <li><strong>Use both when:</strong> Fixed executable with optional arguments (CLI tools, apps with config)</li>
+                        <li><strong>Use CMD when:</strong> You want easy override (dev environments, flexible
+                            containers)</li>
+                        <li><strong>Use ENTRYPOINT when:</strong> Container has single purpose (production services)
+                        </li>
+                        <li><strong>Use both when:</strong> Fixed executable with optional arguments (CLI tools, apps
+                            with config)</li>
                     </ul>
                 </div>
             </div>
@@ -1047,7 +672,7 @@ CMD ["--help"]
         <div id="building" class="tab-content">
             <div class="section">
                 <h2>🏗️ Building Docker Images</h2>
-                
+
                 <h3>Basic Build Command</h3>
                 <div class="code-block">
                     <span class="code-label">Terminal</span>
@@ -1071,7 +696,8 @@ docker build --build-arg VERSION=1.0 -t myapp:1.0 .</pre>
                 </div>
 
                 <h3>Build Context</h3>
-                <p>The build context is the set of files at the specified PATH or URL. Docker sends this entire context to the daemon.</p>
+                <p>The build context is the set of files at the specified PATH or URL. Docker sends this entire context
+                    to the daemon.</p>
 
                 <div class="visual-diagram">
                     <h4>Build Process Flow</h4>
@@ -1193,7 +819,8 @@ docker build -t myapp:latest .</pre>
                 </div>
 
                 <div class="info-box warning">
-                    <strong>⚠️ Security:</strong> Build args are visible in <code>docker history</code>. Never pass secrets via ARG. Use Docker secrets or ENV at runtime instead.
+                    <strong>⚠️ Security:</strong> Build args are visible in <code>docker history</code>. Never pass
+                    secrets via ARG. Use Docker secrets or ENV at runtime instead.
                 </div>
 
                 <h3>Multi-Stage Builds</h3>
@@ -1395,17 +1022,22 @@ COPY . /app
         <div id="layers" class="tab-content">
             <div class="section">
                 <h2>📚 Image Layers & Caching</h2>
-                
+
                 <h3>Understanding Image Layers</h3>
-                <p>Each instruction in a Dockerfile creates a new layer. Layers are stacked and cached independently.</p>
+                <p>Each instruction in a Dockerfile creates a new layer. Layers are stacked and cached independently.
+                </p>
 
                 <div class="visual-diagram">
                     <h4>Layer Structure</h4>
-                    <div class="layer" style="border-left-color: var(--accent);">Base Layer: FROM ubuntu:22.04 (72MB)</div>
-                    <div class="layer" style="border-left-color: var(--primary);">Layer 2: RUN apt-get update (23MB)</div>
-                    <div class="layer" style="border-left-color: var(--secondary);">Layer 3: RUN apt-get install python3 (145MB)</div>
+                    <div class="layer" style="border-left-color: var(--accent);">Base Layer: FROM ubuntu:22.04 (72MB)
+                    </div>
+                    <div class="layer" style="border-left-color: var(--primary);">Layer 2: RUN apt-get update (23MB)
+                    </div>
+                    <div class="layer" style="border-left-color: var(--secondary);">Layer 3: RUN apt-get install python3
+                        (145MB)</div>
                     <div class="layer" style="border-left-color: var(--accent);">Layer 4: COPY app.py /app/ (8KB)</div>
-                    <div class="layer" style="border-left-color: var(--primary);">Layer 5: CMD ["python3", "app.py"] (0B - metadata)</div>
+                    <div class="layer" style="border-left-color: var(--primary);">Layer 5: CMD ["python3", "app.py"] (0B
+                        - metadata)</div>
                     <div class="layer" style="background: var(--primary); color: white; border: none;">
                         <strong>Total Image Size: ~240MB</strong>
                     </div>
@@ -1422,7 +1054,7 @@ COPY . /app
                 </div>
 
                 <h3>How Caching Works</h3>
-                
+
                 <div class="grid">
                     <div class="card">
                         <h4>🟢 Cache Hit</h4>
@@ -1451,7 +1083,7 @@ COPY . /app
                 </div>
 
                 <h3>Cache Invalidation Example</h3>
-                
+
                 <div class="two-column">
                     <div>
                         <h4>❌ Poor Caching</h4>
@@ -1627,7 +1259,8 @@ DOCKER_BUILDKIT=1 docker build -t myapp .</pre>
                 </div>
 
                 <div class="info-box success">
-                    <strong>✅ Benefits:</strong> Package managers (pip, npm, apt) reuse downloaded files across builds, even if layers are invalidated.
+                    <strong>✅ Benefits:</strong> Package managers (pip, npm, apt) reuse downloaded files across builds,
+                    even if layers are invalidated.
                 </div>
 
                 <h3>Layer Size Optimization</h3>
@@ -2026,30 +1659,7 @@ CMD ["node", "dist/server.js"]</pre>
         </div>
     </div>
 
-    <script>
-        function showTab(tabId) {
-            // Hide all tab contents
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-            });
-
-            // Remove active class from all tabs
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Show selected tab content
-            document.getElementById(tabId).classList.add('active');
-
-            // Add active class to clicked tab
-            event.target.classList.add('active');
-
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    </script>
+    <script src="tabs.js"></script>
 </body>
-</html>
 
+</html>
