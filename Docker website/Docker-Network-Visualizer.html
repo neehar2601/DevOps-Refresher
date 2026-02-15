@@ -69,6 +69,31 @@
                     </div>
                 </div>
 
+                <h3>📹 Network Visualization Videos</h3>
+                <div class="info-box"
+                    style="display: flex; flex-direction: row; gap: 20px; justify-content: center; flex-wrap: wrap; padding: 20px;">
+                    <div style="flex: 1; min-width: 300px; max-width: 500px; text-align: center;">
+                        <video id="vid1" controls style="width: 100%; border-radius: 8px;">
+                            <source
+                                src="https://devops-learner.s3.us-east-2.amazonaws.com/Support_Videos/Docker_visualisers/Docker_Network_Visualization_Video_1.mp4"
+                                type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <button onclick="document.getElementById('vid1').requestFullscreen()" class="tab-btn"
+                            style="margin-top: 10px; padding: 5px 15px; font-size: 0.85em;">Pop-out Fullscreen</button>
+                    </div>
+                    <div style="flex: 1; min-width: 300px; max-width: 500px; text-align: center;">
+                        <video id="vid2" controls style="width: 100%; border-radius: 8px;">
+                            <source
+                                src="https://devops-learner.s3.us-east-2.amazonaws.com/Support_Videos/Docker_visualisers/Docker_Network_Visualization_Video.mp4"
+                                type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <button onclick="document.getElementById('vid2').requestFullscreen()" class="tab-btn"
+                            style="margin-top: 10px; padding: 5px 15px; font-size: 0.85em;">Pop-out Fullscreen</button>
+                    </div>
+                </div>
+
                 <h3>Docker Network Drivers</h3>
                 <div class="network-diagram">
                     <table>
@@ -268,6 +293,16 @@ docker run -d -p 8080:80 --name web nginx<br><br>
 # Inspect bridge network<br>
 docker network inspect bridge</code>
                 </div>
+
+                <h3>📹 Bridge Networking Video</h3>
+                <div class="info-box">
+                    <video controls style="width: 100%; max-width: 800px; border-radius: 8px; margin-top: 10px;">
+                        <source
+                            src="https://devops-learner.s3.us-east-2.amazonaws.com/Support_Videos/Docker_visualisers/Docker_Bridges_Networking_Video.mp4"
+                            type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
             </div>
         </div>
 
@@ -385,6 +420,16 @@ docker run -d --network host --name nginx nginx<br><br>
 docker inspect nginx | grep NetworkMode<br><br>
 # Example: Network monitoring tool<br>
 docker run -d --network host --name monitor nicolaka/netshoot</code>
+                </div>
+
+                <h3>📹 Host Networking Video</h3>
+                <div class="info-box">
+                    <video controls style="width: 100%; max-width: 800px; border-radius: 8px; margin-top: 10px;">
+                        <source
+                            src="https://devops-learner.s3.us-east-2.amazonaws.com/Support_Videos/Docker_visualisers/Docker_Host_Networking_Video.mp4"
+                            type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
             </div>
         </div>
@@ -551,6 +596,16 @@ docker network inspect my-overlay</code>
                         <h4>Secure Multi-Host Apps</h4>
                         <p>Applications requiring encrypted communication between hosts.</p>
                     </div>
+                </div>
+
+                <h3>📹 Overlay Networking Video</h3>
+                <div class="info-box">
+                    <video controls style="width: 100%; max-width: 800px; border-radius: 8px; margin-top: 10px;">
+                        <source
+                            src="https://devops-learner.s3.us-east-2.amazonaws.com/Support_Videos/Docker_visualisers/Docker_Overlay_Networking_Video.mp4"
+                            type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
             </div>
         </div>
