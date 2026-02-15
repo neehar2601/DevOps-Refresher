@@ -4,97 +4,773 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Docker Learning Hub</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>DevOps Tools Hub</title>
+
+  <style>
+    :root {
+      --color-bg-primary: #0f172a;
+      --color-bg-secondary: #1e293b;
+      --color-bg-tertiary: #334155;
+      --color-text-primary: #f1f5f9;
+      --color-text-secondary: #cbd5e1;
+      --color-text-muted: #94a3b8;
+      --color-accent: #38bdf8;
+      --color-accent-hover: #0ea5e9;
+      --color-success: #22c55e;
+      --color-warning: #f59e0b;
+      --color-error: #ef4444;
+      --color-border: rgba(148, 163, 184, 0.2);
+
+      --tool-docker: #38bdf8;
+      --tool-wip: #f59e0b;
+      --tool-locked: rgba(148, 163, 184, 0.25);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 26px;
+      padding: 30px 20px;
+      background: var(--color-bg-secondary);
+      border-radius: 12px;
+      border: 1px solid var(--color-border);
+    }
+
+    h1 {
+      font-size: 2.6rem;
+      margin-bottom: 10px;
+      color: var(--color-accent);
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      color: var(--color-text-secondary);
+      font-size: 1.1rem;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    .search {
+      flex: 1;
+      min-width: 260px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-tertiary);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .search input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: rgba(148, 163, 184, 0.08);
+      color: var(--color-text-secondary);
+      font-weight: 650;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.18s ease;
+    }
+
+    .pill:hover {
+      border-color: rgba(56, 189, 248, 0.45);
+      background: rgba(56, 189, 248, 0.10);
+    }
+
+    .pill.active {
+      background: var(--color-accent);
+      color: var(--color-bg-primary);
+      border-color: var(--color-accent);
+    }
+
+    .section {
+      background: var(--color-bg-secondary);
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      border: 1px solid var(--color-border);
+    }
+
+    .section h2 {
+      color: var(--color-accent);
+      margin-bottom: 12px;
+      font-size: 1.85rem;
+    }
+
+    .section p {
+      color: var(--color-text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .info-box {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid var(--color-accent);
+      padding: 14px;
+      border-radius: 10px;
+      margin: 14px 0;
+      color: var(--color-text-secondary);
+    }
+
+    .info-box strong {
+      color: var(--color-accent);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: var(--color-bg-secondary);
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--color-border);
+      margin-bottom: 18px;
+    }
+
+    .tab-btn {
+      padding: 10px 16px;
+      background: var(--color-bg-tertiary);
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 650;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .tab-btn:hover {
+      background: var(--color-accent);
+      color: var(--color-bg-primary);
+      border-color: var(--color-accent);
+    }
+
+    .tab-btn.active {
+      background: var(--color-accent);
+      color: var(--color-bg-primary);
+      border-color: var(--color-accent);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-top: 14px;
+    }
+
+    .tool-card {
+      background: var(--color-bg-tertiary);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+      cursor: pointer;
+      min-height: 168px;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.45);
+    }
+
+    .tool-card .title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .tool-card h3 {
+      font-size: 1.15rem;
+      color: var(--color-text-primary);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      background: rgba(148, 163, 184, 0.08);
+      white-space: nowrap;
+      font-weight: 750;
+    }
+
+    .badge.ready {
+      border-color: rgba(34, 197, 94, 0.35);
+      background: rgba(34, 197, 94, 0.10);
+      color: #bbf7d0;
+    }
+
+    .badge.wip {
+      border-color: rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.10);
+      color: #fde68a;
+    }
+
+    .badge.locked {
+      border-color: rgba(148, 163, 184, 0.25);
+      background: rgba(148, 163, 184, 0.08);
+      color: var(--color-text-muted);
+    }
+
+    .tool-card p {
+      color: var(--color-text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+
+    .meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-secondary);
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-weight: 750;
+      transition: all 0.18s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: var(--color-accent);
+      color: var(--color-bg-primary);
+      border-color: var(--color-accent);
+    }
+
+    .btn.primary {
+      background: var(--color-accent);
+      color: var(--color-bg-primary);
+      border-color: var(--color-accent);
+    }
+
+    .btn.primary:hover {
+      background: var(--color-accent-hover);
+      border-color: var(--color-accent-hover);
+    }
+
+    .btn.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.92);
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+      padding: 10px 14px;
+      border-radius: 12px;
+      display: none;
+      max-width: 820px;
+      width: calc(100% - 32px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .toast strong {
+      color: var(--color-accent);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--color-text-muted);
+      margin-top: 8px;
+      padding: 10px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 14px;
+      }
+
+      h1 {
+        font-size: 2.05rem;
+      }
+
+      .section {
+        padding: 22px;
+      }
+    }
+  </style>
 </head>
 
 <body>
   <div class="container">
     <header>
-      <h1>Docker Learning Hub</h1>
+      <h1>DevOps Tools Hub</h1>
       <p class="subtitle">
-        A simple, visual set of pages to understand containers, Docker fundamentals, and key building blocks like
-        networking, volumes, and Dockerfiles.
+        A visual, clickable map of DevOps concepts and tooling. Only Docker is live right now; everything else is marked
+        as WIP / coming soon.
       </p>
     </header>
 
-    <div class="section">
-      <h2>What is Docker?</h2>
-      <p>
-        Docker is a platform for building, packaging, and running applications as <strong>containers</strong>.
-        A container bundles your app + its dependencies, and runs in an isolated environment on a host.
-      </p>
-
-      <div class="info-box">
-        <strong>Mental model:</strong> Image = blueprint (immutable), Container = running instance (mutable runtime
-        layer).
+    <div class="topbar">
+      <div class="search">
+        <input id="searchInput" type="text" placeholder="Search tools (e.g., docker, git, kubernetes, aws)..." />
       </div>
-
-      <div class="feature-grid">
-        <div class="feature-card">
-          <h3>Why containers?</h3>
-          <p>Consistent runtime across laptops, CI, and production; quick startup; reproducible builds.</p>
-          <span class="pill">Consistency</span>
-          <span class="pill">Speed</span>
-          <span class="pill">Portability</span>
-        </div>
-
-        <div class="feature-card">
-          <h3>Core pieces</h3>
-          <p>Images, containers, registries, Dockerfile, build context, networks, volumes.</p>
-          <span class="pill">Dockerfile</span>
-          <span class="pill">Network</span>
-          <span class="pill">Volumes</span>
-        </div>
-
-        <div class="feature-card">
-          <h3>Common flow</h3>
-          <p>Write Dockerfile → build image → run container → connect network/volumes → ship image to registry.</p>
-          <div class="code-block"><code>docker build -t myapp:1.0 .
-docker run --rm -p 8080:8080 myapp:1.0</code></div>
-        </div>
+      <div class="pill-row">
+        <div class="pill active" data-filter="all">All</div>
+        <div class="pill" data-filter="devops">DevOps</div>
+        <div class="pill" data-filter="containers">Containers</div>
+        <div class="pill" data-filter="cloud">Cloud</div>
+        <div class="pill" data-filter="gitops">GitOps</div>
       </div>
     </div>
 
     <div class="section">
-      <h2>Start here (pages)</h2>
-      <p>Open any topic. Each page is standalone, with diagrams and examples.</p>
-
+      <h2>What is DevOps?</h2>
+      <p>
+        DevOps is a set of practices that brings development and operations together so teams can deliver software
+        faster, more reliably, and with repeatable automation.
+      </p>
+      <div class="info-box">
+        <strong>Core idea:</strong> Treat delivery like a product — version control, automation, fast feedback, and safe
+        releases.
+      </div>
       <div class="feature-grid">
-        <div class="feature-card">
-          <h3>Dockerfile + Build + CMD vs ENTRYPOINT</h3>
-          <p>Understand Dockerfile components, how image building works, and exactly how CMD/ENTRYPOINT behave.</p>
-          <div class="btn-row">
-            <a class="btn primary" href="Dockerfile-Guide.html" data-rel="Dockerfile-Guide.html">Open Dockerfile
-              Guide</a>
+        <div class="tool-card" style="cursor: default;">
+          <div class="title">
+            <h3>Culture</h3>
+            <span class="badge locked">Principle</span>
+          </div>
+          <p>Shared ownership, reduced handoffs, and blameless incident learning.</p>
+          <div class="meta">Collaboration • Reliability • Observability</div>
+        </div>
+
+        <div class="tool-card" style="cursor: default;">
+          <div class="title">
+            <h3>Automation</h3>
+            <span class="badge locked">Principle</span>
+          </div>
+          <p>CI/CD, infrastructure as code, and repeatable environments.</p>
+          <div class="meta">Pipelines • IaC • Testing</div>
+        </div>
+
+        <div class="tool-card" style="cursor: default;">
+          <div class="title">
+            <h3>Feedback loops</h3>
+            <span class="badge locked">Principle</span>
+          </div>
+          <p>Short cycles using metrics, logs, traces, and deployment feedback.</p>
+          <div class="meta">Monitoring • Alerts • Postmortems</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('learning-path', event)">Learning path</button>
+      <button class="tab-btn" onclick="showTab('tool-pages', event)">Tool pages</button>
+      <button class="tab-btn" onclick="showTab('cloud', event)">Cloud</button>
+      <button class="tab-btn" onclick="showTab('gitops', event)">GitOps</button>
+    </div>
+
+    <!-- Learning path -->
+    <div id="learning-path" class="tab-content active">
+      <div class="section">
+        <h2>Suggested learning path</h2>
+        <p>Pick a path and jump into the only live section: Docker.</p>
+
+        <div class="feature-grid">
+          <div class="tool-card"
+            onclick="toast('Start with <strong>Linux</strong> (coming soon), then jump to Docker (live).')">
+            <div class="title">
+              <h3>Path A: Fundamentals</h3>
+              <span class="badge wip">Coming soon</span>
+            </div>
+            <p>Linux → Git → Docker → Kubernetes → GitOps</p>
+            <div class="btn-row">
+              <button class="btn disabled" title="Coming soon">Open Linux</button>
+              <button class="btn disabled" title="Coming soon">Open Git</button>
+              <a class="btn primary" href="docker-index.html">Open Docker</a>
+            </div>
+          </div>
+
+          <div class="tool-card"
+            onclick="toast('If you already know Git/Linux, go straight to <strong>Docker</strong>.')">
+            <div class="title">
+              <h3>Path B: Containers first</h3>
+              <span class="badge ready">Docker live</span>
+            </div>
+            <p>Docker → Images → Volumes → Networking → (Kubernetes later)</p>
+            <div class="btn-row">
+              <a class="btn primary" href="docker-index.html">Open Docker Home</a>
+              <a class="btn" href="Docker-Network-Visualizer.html">Networking</a>
+              <a class="btn" href="Docker-Volumes-Guide.html">Volumes</a>
+            </div>
+          </div>
+
+          <div class="tool-card"
+            onclick="toast('Cloud section is marked WIP — Docker is the only active deep-dive right now.')">
+            <div class="title">
+              <h3>Path C: Cloud-driven</h3>
+              <span class="badge wip">WIP</span>
+            </div>
+            <p>AWS/Azure → Docker → Deploy → (Kubernetes + GitOps later)</p>
+            <div class="btn-row">
+              <button class="btn disabled" title="Coming soon">AWS</button>
+              <button class="btn disabled" title="Coming soon">Azure</button>
+              <a class="btn" href="docker-index.html">Docker</a>
+            </div>
           </div>
         </div>
 
-        <div class="feature-card">
-          <h3>Docker Networking Visualizer</h3>
-          <p>Bridge/host/overlay/macvlan explained with architecture diagrams and decision guides.</p>
-          <div class="btn-row">
-            <a class="btn" href="Docker-Network-Visualizer.html" data-rel="Docker-Network-Visualizer.html">Open
-              Networking</a>
+        <div class="info-box" style="margin-top: 16px;">
+          <strong>Note:</strong> The Docker deep dives reuse the same visual style and interaction patterns as your
+          existing pages.
+        </div>
+      </div>
+    </div>
+
+    <!-- Tool pages -->
+    <div id="tool-pages" class="tab-content">
+      <div class="section">
+        <h2>DevOps tool pages</h2>
+        <p>Click a card. Live pages open; WIP pages show a “coming soon” toast.</p>
+
+        <div class="feature-grid" id="toolGrid">
+          <!-- Docker (LIVE) -->
+          <div class="tool-card tool" data-tags="all devops containers docker" data-status="ready">
+            <div class="title">
+              <h3>Docker</h3>
+              <span class="badge ready">Live</span>
+            </div>
+            <p>Containers, images, networking, volumes, and Dockerfile fundamentals.</p>
+            <div class="btn-row">
+              <a class="btn primary" href="docker-index.html">Docker Home</a>
+              <a class="btn" href="Docker-Network-Visualizer.html">Networking</a>
+              <a class="btn" href="Docker-Volumes-Guide.html">Volumes</a>
+            </div>
+            <div class="meta">Hands-on • Visual • CLI examples</div>
+          </div>
+
+          <!-- Git -->
+          <div class="tool-card tool" data-tags="all devops git" data-status="wip"
+            onclick="comingSoon('Git', 'Branching, merging, rebasing, PR workflow, and team conventions.')">
+            <div class="title">
+              <h3>Git</h3>
+              <span class="badge wip">Coming soon</span>
+            </div>
+            <p>Version control fundamentals and practical collaboration flows.</p>
+            <div class="btn-row">
+              <button class="btn disabled">Open Git</button>
+            </div>
+            <div class="meta">Branch strategy • PRs • Conflict resolution</div>
+          </div>
+
+          <!-- Linux -->
+          <div class="tool-card tool" data-tags="all devops linux" data-status="wip"
+            onclick="comingSoon('Linux', 'Filesystem, permissions, processes, systemd, networking basics for DevOps.')">
+            <div class="title">
+              <h3>Linux</h3>
+              <span class="badge wip">Coming soon</span>
+            </div>
+            <p>Core Linux concepts every DevOps engineer uses daily.</p>
+            <div class="btn-row">
+              <button class="btn disabled">Open Linux</button>
+            </div>
+            <div class="meta">CLI • Permissions • Troubleshooting</div>
+          </div>
+
+          <!-- Kubernetes -->
+          <div class="tool-card tool" data-tags="all devops containers kubernetes" data-status="wip"
+            onclick="comingSoon('Kubernetes', 'Pods, deployments, services, ingress, configmaps, secrets, and troubleshooting.')">
+            <div class="title">
+              <h3>Kubernetes</h3>
+              <span class="badge wip">Coming soon</span>
+            </div>
+            <p>Orchestration concepts and cluster fundamentals.</p>
+            <div class="btn-row">
+              <button class="btn disabled">Open Kubernetes</button>
+            </div>
+            <div class="meta">Pods • Deployments • Services</div>
+          </div>
+
+          <!-- CI/CD -->
+          <div class="tool-card tool" data-tags="all devops cicd" data-status="wip"
+            onclick="comingSoon('CI/CD', 'Build/test/release pipelines, artifacts, environments, and deployment strategies.')">
+            <div class="title">
+              <h3>CI/CD</h3>
+              <span class="badge wip">WIP</span>
+            </div>
+            <p>Pipelines, build stages, releases, and safe deployment patterns.</p>
+            <div class="btn-row">
+              <button class="btn disabled">Open CI/CD</button>
+            </div>
+            <div class="meta">Pipelines • Artifacts • Environments</div>
+          </div>
+
+          <!-- Terraform -->
+          <div class="tool-card tool" data-tags="all devops iac terraform" data-status="wip"
+            onclick="comingSoon('Terraform', 'State, plan/apply, modules, remote backends, and best practices.')">
+            <div class="title">
+              <h3>Terraform</h3>
+              <span class="badge wip">Coming soon</span>
+            </div>
+            <p>Infrastructure as Code patterns for cloud and on-prem.</p>
+            <div class="btn-row">
+              <button class="btn disabled">Open Terraform</button>
+            </div>
+            <div class="meta">IaC • State • Modules</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cloud -->
+    <div id="cloud" class="tab-content">
+      <div class="section">
+        <h2>Cloud tools</h2>
+        <p>These are placeholders for upcoming pages.</p>
+
+        <div class="feature-grid">
+          <div class="tool-card tool" data-tags="all cloud aws" data-status="wip"
+            onclick="comingSoon('AWS', 'Core services, IAM, VPC, EC2, S3, ECS/EKS, and deployment patterns.')">
+            <div class="title">
+              <h3>AWS</h3>
+              <span class="badge wip">Coming soon</span>
+            </div>
+            <p>Cloud fundamentals + practical DevOps workflows on AWS.</p>
+            <div class="btn-row"><button class="btn disabled">Open AWS</button></div>
+            <div class="meta">IAM • VPC • Compute • Containers</div>
+          </div>
+
+          <div class="tool-card tool" data-tags="all cloud azure" data-status="wip"
+            onclick="comingSoon('Azure', 'Resource groups, VNets, AKS, ACR, storage, identity, and CI/CD integration.')">
+            <div class="title">
+              <h3>Azure</h3>
+              <span class="badge wip">Coming soon</span>
+            </div>
+            <p>Cloud fundamentals + DevOps workflows on Azure.</p>
+            <div class="btn-row"><button class="btn disabled">Open Azure</button></div>
+            <div class="meta">Entra ID • VNets • AKS • ACR</div>
           </div>
         </div>
 
-        <div class="feature-card">
-          <h3>Docker Volumes Guide</h3>
-          <p>Volumes vs bind mounts vs tmpfs, plus backups and real-world usage patterns.</p>
-          <div class="btn-row">
-            <a class="btn" href="Docker-Volumes-Guide.html" data-rel="Docker-Volumes-Guide.html">Open Volumes</a>
+        <div class="info-box" style="margin-top: 16px;">
+          <strong>Tip:</strong> When you publish cloud pages later, you can keep the filenames stable and just “unlock”
+          the buttons.
+        </div>
+      </div>
+    </div>
+
+    <!-- GitOps -->
+    <div id="gitops" class="tab-content">
+      <div class="section">
+        <h2>GitOps</h2>
+        <p>Coming soon: continuous delivery using Git as the source of truth.</p>
+
+        <div class="feature-grid">
+          <div class="tool-card tool" data-tags="all gitops argo" data-status="wip"
+            onclick="comingSoon('GitOps', 'Argo CD / Flux, sync loops, drift detection, and promotion workflows.')">
+            <div class="title">
+              <h3>GitOps (Argo CD / Flux)</h3>
+              <span class="badge wip">Coming soon</span>
+            </div>
+            <p>Declarative delivery: Git → cluster, with reconciliation and drift control.</p>
+            <div class="btn-row"><button class="btn disabled">Open GitOps</button></div>
+            <div class="meta">Reconciliation • Drift • Promotion</div>
+          </div>
+
+          <div class="tool-card tool" data-tags="all gitops" data-status="wip"
+            onclick="comingSoon('Kubernetes + GitOps', 'How Docker images become running workloads in clusters.')">
+            <div class="title">
+              <h3>Kubernetes + GitOps</h3>
+              <span class="badge wip">WIP</span>
+            </div>
+            <p>Bridge from image builds to deployments, rollbacks, and progressive delivery.</p>
+            <div class="btn-row"><button class="btn disabled">Open (WIP)</button></div>
+            <div class="meta">Deployments • Rollbacks • Strategies</div>
           </div>
         </div>
       </div>
     </div>
 
     <footer>
-      Built for quick learning and visual understanding.
+      DevOps Tools Hub • Static HTML friendly for S3 hosting
     </footer>
   </div>
 
-  <script src="script.js"></script>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Update this if your Docker entry page filename differs.
+    // If you kept the earlier "Docker Learning Hub" as index.html, set dockerIndex = "index.html".
+    const dockerIndex = "index.html"; // or "docker-index.html"
+
+    // Fix docker home links dynamically
+    document.querySelectorAll('a[href="docker-index.html"]').forEach(a => a.setAttribute("href", dockerIndex));
+
+    function showTab(tabName, event) {
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById(tabName).classList.add("active");
+      event.target.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // Toast helpers
+    let toastTimer = null;
+    function toast(html) {
+      const t = document.getElementById("toast");
+      t.innerHTML = html;
+      t.style.display = "block";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.style.display = "none", 3400);
+    }
+
+    function comingSoon(name, desc) {
+      toast(`<strong>${name}</strong> page is coming soon. ${desc}`);
+    }
+
+    // Filter pills
+    let activeFilter = "all";
+    document.querySelectorAll(".pill").forEach(p => {
+      p.addEventListener("click", () => {
+        document.querySelectorAll(".pill").forEach(x => x.classList.remove("active"));
+        p.classList.add("active");
+        activeFilter = p.getAttribute("data-filter");
+        applyFilters();
+      });
+    });
+
+    // Search
+    document.getElementById("searchInput").addEventListener("input", applyFilters);
+
+    function applyFilters() {
+      const q = (document.getElementById("searchInput").value || "").trim().toLowerCase();
+      const cards = document.querySelectorAll(".tool-card.tool");
+
+      let shown = 0;
+      cards.forEach(card => {
+        const tags = (card.getAttribute("data-tags") || "").toLowerCase();
+        const title = (card.querySelector("h3")?.textContent || "").toLowerCase();
+        const text = (card.querySelector("p")?.textContent || "").toLowerCase();
+
+        const matchesSearch = !q || tags.includes(q) || title.includes(q) || text.includes(q);
+        const matchesFilter = (activeFilter === "all") || tags.includes(activeFilter);
+
+        const visible = matchesSearch && matchesFilter;
+        card.style.display = visible ? "block" : "none";
+        if (visible) shown++;
+      });
+
+      // Small UX hint when nothing matches
+      if (shown === 0) {
+        toast(`No matches. Try searching <strong>docker</strong>, <strong>git</strong>, <strong>kubernetes</strong>, <strong>aws</strong>.`);
+      }
+    }
+
+    // Make tool cards clickable only for WIP: show toast
+    document.querySelectorAll(".tool-card.tool").forEach(card => {
+      const status = card.getAttribute("data-status");
+      const hasLinks = card.querySelector("a.btn");
+      if (status !== "ready" && !hasLinks) {
+        card.addEventListener("click", () => comingSoon("This tool", "You can keep browsing Docker while this page is being built."));
+      }
+    });
+  </script>
 </body>
 
 </html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docker Learning Hub</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Docker Learning Hub</h1>
+      <p class="subtitle">
+        A simple, visual set of pages to understand containers, Docker fundamentals, and key building blocks like
+        networking, volumes, and Dockerfiles.
+      </p>
+    </header>
+
+    <div class="section">
+      <h2>What is Docker?</h2>
+      <p>
+        Docker is a platform for building, packaging, and running applications as <strong>containers</strong>.
+        A container bundles your app + its dependencies, and runs in an isolated environment on a host.
+      </p>
+
+      <div class="info-box">
+        <strong>Mental model:</strong> Image = blueprint (immutable), Container = running instance (mutable runtime
+        layer).
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h3>Why containers?</h3>
+          <p>Consistent runtime across laptops, CI, and production; quick startup; reproducible builds.</p>
+          <span class="pill">Consistency</span>
+          <span class="pill">Speed</span>
+          <span class="pill">Portability</span>
+        </div>
+
+        <div class="feature-card">
+          <h3>Core pieces</h3>
+          <p>Images, containers, registries, Dockerfile, build context, networks, volumes.</p>
+          <span class="pill">Dockerfile</span>
+          <span class="pill">Network</span>
+          <span class="pill">Volumes</span>
+        </div>
+
+        <div class="feature-card">
+          <h3>Common flow</h3>
+          <p>Write Dockerfile → build image → run container → connect network/volumes → ship image to registry.</p>
+          <div class="code-block"><code>docker build -t myapp:1.0 .
+docker run --rm -p 8080:8080 myapp:1.0</code></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Start here (pages)</h2>
+      <p>Open any topic. Each page is standalone, with diagrams and examples.</p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h3>Dockerfile + Build + CMD vs ENTRYPOINT</h3>
+          <p>Understand Dockerfile components, how image building works, and exactly how CMD/ENTRYPOINT behave.</p>
+          <div class="btn-row">
+            <a class="btn primary" href="Dockerfile-Guide.html" data-rel="Dockerfile-Guide.html">Open Dockerfile
+              Guide</a>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <h3>Docker Networking Visualizer</h3>
+          <p>Bridge/host/overlay/macvlan explained with architecture diagrams and decision guides.</p>
+          <div class="btn-row">
+            <a class="btn" href="Docker-Network-Visualizer.html" data-rel="Docker-Network-Visualizer.html">Open
+              Networking</a>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <h3>Docker Volumes Guide</h3>
+          <p>Volumes vs bind mounts vs tmpfs, plus backups and real-world usage patterns.</p>
+          <div class="btn-row">
+            <a class="btn" href="Docker-Volumes-Guide.html" data-rel="Docker-Volumes-Guide.html">Open Volumes</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Built for quick learning and visual understanding.
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
