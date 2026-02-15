@@ -287,6 +287,10 @@ COPY *.py /app/
 
 # COPY with ownership
 COPY --chown=user:group app.py /app/
+```html
+# Documentation: <a href="https://docs.docker.com/reference/dockerfile#copy">Docker COPY Documentation</a>
+# Debugging_help: <a href="https://github.com/GoogleContainerTools/kaniko/issues/1524">Kaniko Issue #1524</a>
+```
 
 # ADD - auto-extract tar
 ADD archive.tar.gz /app/
@@ -654,6 +658,7 @@ CMD ["--help"]
                     </div>
                 </div>
 
+                ```html
                 <div class="info-box success">
                     <strong>✅ Decision Guide:</strong>
                     <ul>
@@ -664,9 +669,19 @@ CMD ["--help"]
                         <li><strong>Use both when:</strong> Fixed executable with optional arguments (CLI tools, apps
                             with config)</li>
                     </ul>
+                    <p><strong>🔗 Explore Further:</strong></p>
+                    <ul>
+                        <li><a href="https://stackoverflow.com/questions/21553353/what-is-the-difference-between-cmd-and-entrypoint-in-a-dockerfile"
+                                target="_blank">Stack Overflow: CMD vs ENTRYPOINT Discussion</a></li>
+                        <li><a href="https://www.docker.com/blog/docker-best-practices-choosing-between-run-cmd-and-entrypoint/"
+                                target="_blank">Docker Blog: Choosing Between RUN, CMD, and ENTRYPOINT</a></li>
+                        <li><a href="https://www.geeksforgeeks.org/linux-unix/difference-between-run-vs-cmd-vs-entrypoint-docker-commands/"
+                                target="_blank">GeeksforGeeks: RUN vs CMD vs ENTRYPOINT Comparison</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
+        ```
 
         <!-- Building Images Tab -->
         <div id="building" class="tab-content">
