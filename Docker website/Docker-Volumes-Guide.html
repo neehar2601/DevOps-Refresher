@@ -222,26 +222,38 @@ docker run -v /host/path:/container/path nginx</code>
                 </div>
 
                 <h3>Volume Types</h3>
-                <div class="pros-cons">
-                    <div class="pros">
-                        <h4>Named Volumes</h4>
-                        <ul>
-                            <li>User-friendly names (my-app-data)</li>
-                            <li>Easy to reference and manage</li>
-                            <li>Ideal for production use</li>
-                            <li>Can be shared between containers</li>
-                            <li>Created with: docker volume create name</li>
-                        </ul>
+                <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
+                    <!-- Named vs Anonymous comparison -->
+                    <div class="pros-cons" style="flex: 1; min-width: 280px;">
+                        <div class="pros">
+                            <h4>Named Volumes</h4>
+                            <ul>
+                                <li>User-friendly names (my-app-data)</li>
+                                <li>Easy to reference and manage</li>
+                                <li>Ideal for production use</li>
+                                <li>Can be shared between containers</li>
+                                <li>Created with: docker volume create name</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4>Anonymous Volumes</h4>
+                            <ul>
+                                <li>Auto-generated UUID names</li>
+                                <li>Created implicitly with -v flag</li>
+                                <li>Harder to track and manage</li>
+                                <li>Useful for temporary data</li>
+                                <li>Often orphaned after container removal</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="cons">
-                        <h4>Anonymous Volumes</h4>
-                        <ul>
-                            <li>Auto-generated UUID names</li>
-                            <li>Created implicitly with -v flag</li>
-                            <li>Harder to track and manage</li>
-                            <li>Useful for temporary data</li>
-                            <li>Often orphaned after container removal</li>
-                        </ul>
+                    <!-- Named vs Anonymous visualiser video -->
+                    <div class="diagram" style="flex: 1; min-width: 280px;">
+                        <video controls style="width: 100%; border-radius: 8px; background: #000;" preload="metadata">
+                            <source
+                                src="https://devops-learner.s3.us-east-2.amazonaws.com/Support_Videos/Docker_visualisers/Docker_volume_named_unnamed_volume.mp4"
+                                type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
                     </div>
                 </div>
 
@@ -339,28 +351,42 @@ docker run -d -v my-volume:/data:ro nginx</code>
                 </div>
 
                 <h3>Bind Mount Architecture</h3>
-                <div class="diagram">
-                    <div class="diagram-container">
-                        <div style="text-align: center;">
-                            <div class="host-box">Host Filesystem</div>
-                            <div
-                                style="display: flex; justify-content: center; gap: 40px; margin-top: 20px; flex-wrap: wrap;">
-                                <div>
-                                    <div class="bind-box">/home/user/project<br>Source Code</div>
-                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
-                                    <div style="color: var(--color-text-muted); font-size: 0.9rem;">Real-time sync</div>
-                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
-                                    <div class="container-box">Container<br>/app</div>
-                                </div>
-                                <div>
-                                    <div class="bind-box">/etc/nginx<br>Config Files</div>
-                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
-                                    <div style="color: var(--color-text-muted); font-size: 0.9rem;">Direct access</div>
-                                    <div class="arrow" style="transform: rotate(90deg);">↓</div>
-                                    <div class="container-box">Container<br>/etc/nginx</div>
+                <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
+                    <!-- Architecture diagram -->
+                    <div class="diagram" style="flex: 1; min-width: 280px;">
+                        <div class="diagram-container">
+                            <div style="text-align: center;">
+                                <div class="host-box">Host Filesystem</div>
+                                <div
+                                    style="display: flex; justify-content: center; gap: 40px; margin-top: 20px; flex-wrap: wrap;">
+                                    <div>
+                                        <div class="bind-box">/home/user/project<br>Source Code</div>
+                                        <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                        <div style="color: var(--color-text-muted); font-size: 0.9rem;">Real-time sync
+                                        </div>
+                                        <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                        <div class="container-box">Container<br>/app</div>
+                                    </div>
+                                    <div>
+                                        <div class="bind-box">/etc/nginx<br>Config Files</div>
+                                        <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                        <div style="color: var(--color-text-muted); font-size: 0.9rem;">Direct access
+                                        </div>
+                                        <div class="arrow" style="transform: rotate(90deg);">↓</div>
+                                        <div class="container-box">Container<br>/etc/nginx</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <!-- Visualiser video -->
+                    <div class="diagram" style="flex: 1; min-width: 280px;">
+                        <video controls style="width: 100%; border-radius: 8px; background: #000;" preload="metadata">
+                            <source
+                                src="https://devops-learner.s3.us-east-2.amazonaws.com/Support_Videos/Docker_visualisers/Docker_volume_bind_mount'.mp4"
+                                type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
                     </div>
                 </div>
 
@@ -504,6 +530,7 @@ docker run -d \<br>
                         </tbody>
                     </table>
                 </div>
+
             </div>
         </div>
 

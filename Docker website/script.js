@@ -23,18 +23,35 @@ function setAbsoluteLinks() {
 }
 
 // Initialize when DOM is loaded
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   const useRelativeBtn = document.getElementById("useRelativeBtn");
   const useAbsoluteBtn = document.getElementById("useAbsoluteBtn");
-  
+
   if (useRelativeBtn) {
     useRelativeBtn.addEventListener("click", setRelativeLinks);
   }
-  
+
   if (useAbsoluteBtn) {
     useAbsoluteBtn.addEventListener("click", setAbsoluteLinks);
   }
-  
+
   // Default to relative links (best for same-prefix S3 hosting).
   setRelativeLinks();
 });
+
+// ── Toast & coming-soon helpers (global so onclick attrs can call them) ──────
+
+let _toastTimer = null;
+
+function toast(html) {
+  const t = document.getElementById("toast");
+  if (!t) return;
+  t.innerHTML = html;
+  t.style.display = "block";
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { t.style.display = "none"; }, 3400);
+}
+
+function comingSoon(name, desc) {
+  toast("<strong>" + name + "</strong> is coming soon. " + (desc || ""));
+}
