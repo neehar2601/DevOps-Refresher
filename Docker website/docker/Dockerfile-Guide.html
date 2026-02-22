@@ -5,13 +5,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dockerfile & Image Building Guide</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 
 <body>
-    <div class="header">
-        <h1>🐳 Dockerfile & Image Building Guide</h1>
-        <p>Master Docker image creation with Dockerfiles, CMD vs ENTRYPOINT, and build optimization</p>
+
+  <!-- Sticky site header -->
+  <div class="site-header">
+    <a href="docker_index.html" class="brand">
+      <div class="brand-icon">
+        <i data-lucide="file-code" style="width:18px;height:18px;"></i>
+      </div>
+      <span>Docker Hub</span>
+    </a>
+    <div class="breadcrumb">
+      <a href="../index.html">DevOps Hub</a>
+      <span class="sep">/</span>
+      <a href="docker_index.html">Docker</a>
+      <span class="sep">/</span>
+      <span>Dockerfile Guide</span>
     </div>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1>🐳 Dockerfile & Image Building</h1>
+      <p class="subtitle">Dockerfile anatomy, image layers, build cache, CMD vs ENTRYPOINT — the complete reference.</p>
+    </header>
 
     <div class="nav-tabs">
         <button class="tab active" onclick="showTab('dockerfile-basics')">Dockerfile Basics</button>
@@ -1674,7 +1694,7 @@ CMD ["node", "dist/server.js"]</pre>
         </div>
     </div>
 
-    <script src="tabs.js"></script>
+    <script src="../assets/script.js"></script>
 </body>
 
 </html>

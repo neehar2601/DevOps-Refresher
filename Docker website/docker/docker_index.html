@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docker Learning Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } } } }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tech-card {
+      border-left: 4px solid #3b82f6;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+
+  <!-- Sticky Header -->
+  <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <i data-lucide="container" class="w-7 h-7 text-blue-400"></i>
+        <h1 class="text-xl font-bold tracking-tight">Docker <span class="text-slate-400 font-light">Learning Hub</span>
+        </h1>
+      </div>
+      <a href="../index.html"
+        class="flex items-center gap-2 text-sm text-slate-400 hover:text-blue-400 transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span class="hidden sm:inline">Back to Hub</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-10 fade-in">
+
+    <!-- What is Docker -->
+    <section>
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="p-3 bg-blue-500/15 border border-blue-500/25 rounded-xl flex-shrink-0">
+            <i data-lucide="box" class="w-6 h-6 text-blue-400"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-white mb-2">What is Docker?</h2>
+            <p class="text-slate-400 leading-relaxed">
+              Docker is a platform for building, packaging, and running applications as <strong
+                class="text-slate-200">containers</strong>.
+              A container bundles your app and its dependencies into an isolated, reproducible environment that runs
+              identically everywhere.
+            </p>
+          </div>
+        </div>
+
+        <!-- Mental model callout -->
+        <div
+          class="bg-blue-950/40 border border-blue-500/25 border-l-4 border-l-blue-400 rounded-xl rounded-l-none p-4 mb-6">
+          <p class="text-slate-300 text-sm leading-relaxed">
+            <strong class="text-blue-400">Mental model:</strong>
+            <span class="font-mono text-blue-300 text-xs mx-1">Image</span> = blueprint (immutable snapshot) ·
+            <span class="font-mono text-emerald-300 text-xs mx-1">Container</span> = running instance (mutable runtime
+            layer on top)
+          </p>
+        </div>
+
+        <!-- Three pillars -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+          <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 tech-card">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="zap" class="w-4 h-4 text-blue-400"></i>
+              <h3 class="font-bold text-white text-sm">Why containers?</h3>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed">Consistent runtime across laptops, CI, and production.
+              Quick startup. Reproducible builds. No "works on my machine" excuses.</p>
+            <div class="mt-3 flex flex-wrap gap-1">
+              <span
+                class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Consistency</span>
+              <span
+                class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Speed</span>
+              <span
+                class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Portability</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5" style="border-left:4px solid #10b981">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i>
+              <h3 class="font-bold text-white text-sm">Core pieces</h3>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed">Images, containers, registries, Dockerfile, build context,
+              networks, and volumes — the seven building blocks.</p>
+            <div class="mt-3 flex flex-wrap gap-1">
+              <span
+                class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Dockerfile</span>
+              <span
+                class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Network</span>
+              <span
+                class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Volumes</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5" style="border-left:4px solid #a855f7">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="git-commit-horizontal" class="w-4 h-4 text-purple-400"></i>
+              <h3 class="font-bold text-white text-sm">Common flow</h3>
+            </div>
+            <p class="text-slate-400 text-sm mb-3 leading-relaxed">Write Dockerfile → build image → run container →
+              connect network/volumes → ship to registry.</p>
+            <div class="bg-slate-950 rounded-lg overflow-hidden border border-slate-700">
+              <div class="bg-slate-800/80 px-3 py-1.5 flex items-center gap-1.5">
+                <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                <span class="text-xs text-slate-500 font-mono ml-2">terminal</span>
+              </div>
+              <div class="p-3 font-mono text-xs text-emerald-400 leading-relaxed">
+                <div><span class="text-slate-500">$ </span>docker build -t myapp:1.0 .</div>
+                <div><span class="text-slate-500">$ </span>docker run --rm -p 8080:8080 myapp:1.0</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Topic Pages -->
+    <section>
+      <div class="mb-5">
+        <h2 class="text-xl font-bold text-white">Start here — pick a topic</h2>
+        <p class="text-slate-400 mt-1 text-sm">Each page is standalone with diagrams, examples, and deep explanations.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+        <!-- Dockerfile Guide -->
+        <div
+          class="bg-slate-800 border border-blue-500/30 rounded-2xl overflow-hidden hover:-translate-y-1 transition-transform duration-200 shadow-lg">
+          <div class="bg-blue-900/20 px-6 pt-6 pb-4">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="p-2 bg-blue-500/20 rounded-lg">
+                <i data-lucide="file-code" class="w-5 h-5 text-blue-400"></i>
+              </div>
+              <h3 class="font-bold text-white">Dockerfile Guide</h3>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Dockerfile anatomy, image layers, build cache, CMD vs ENTRYPOINT — the complete reference.
+            </p>
+          </div>
+          <div class="px-6 pb-5 pt-3">
+            <a href="Dockerfile-Guide.html"
+              class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+              Open Dockerfile Guide
+            </a>
+            <p class="text-slate-500 text-xs mt-2">Layers • Cache • CMD vs ENTRYPOINT</p>
+          </div>
+        </div>
+
+        <!-- Networking Visualizer -->
+        <div
+          class="bg-slate-800 border border-emerald-500/30 rounded-2xl overflow-hidden hover:-translate-y-1 transition-transform duration-200 shadow-lg">
+          <div class="bg-emerald-900/20 px-6 pt-6 pb-4">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="p-2 bg-emerald-500/20 rounded-lg">
+                <i data-lucide="network" class="w-5 h-5 text-emerald-400"></i>
+              </div>
+              <h3 class="font-bold text-white">Networking Visualizer</h3>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Bridge, host, overlay, macvlan — architecture diagrams and decision guides for every network driver.
+            </p>
+          </div>
+          <div class="px-6 pb-5 pt-3">
+            <a href="Docker-Network-Visualizer.html"
+              class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-semibold text-sm transition-colors">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+              Open Networking
+            </a>
+            <p class="text-slate-500 text-xs mt-2">Bridge • Host • Overlay • Macvlan</p>
+          </div>
+        </div>
+
+        <!-- Volumes Guide -->
+        <div
+          class="bg-slate-800 border border-purple-500/30 rounded-2xl overflow-hidden hover:-translate-y-1 transition-transform duration-200 shadow-lg">
+          <div class="bg-purple-900/20 px-6 pt-6 pb-4">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="p-2 bg-purple-500/20 rounded-lg">
+                <i data-lucide="hard-drive" class="w-5 h-5 text-purple-400"></i>
+              </div>
+              <h3 class="font-bold text-white">Volumes Guide</h3>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Volumes vs bind mounts vs tmpfs, persistence patterns, backups, and real-world usage examples.
+            </p>
+          </div>
+          <div class="px-6 pb-5 pt-3">
+            <a href="Docker-Volumes-Guide.html"
+              class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-purple-700 hover:bg-purple-600 text-white font-semibold text-sm transition-colors">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+              Open Volumes
+            </a>
+            <p class="text-slate-500 text-xs mt-2">Volumes • Bind mounts • tmpfs</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 border-t border-slate-800 text-slate-500 py-5 text-center text-sm">
+    <p>Docker Learning Hub · <a href="../index.html" class="text-blue-400 hover:underline">← DevOps Hub</a></p>
+  </footer>
+
+  <script src="../assets/script.js"></script>
+</body>
+
+</html>

@@ -5,16 +5,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Docker Networking Visualizer</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <h1>🐳 Docker Networking Visualizer</h1>
-            <p class="subtitle">Comprehensive guide to Docker network types, architecture, and communication patterns
-            </p>
-        </header>
+
+  <!-- Sticky site header -->
+  <div class="site-header">
+    <a href="docker_index.html" class="brand">
+      <div class="brand-icon">
+        <i data-lucide="network" style="width:18px;height:18px;"></i>
+      </div>
+      <span>Docker Hub</span>
+    </a>
+    <div class="breadcrumb">
+      <a href="../index.html">DevOps Hub</a>
+      <span class="sep">/</span>
+      <a href="docker_index.html">Docker</a>
+      <span class="sep">/</span>
+      <span>Networking Visualizer</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1>🌐 Docker Networking Visualizer</h1>
+      <p class="subtitle">Bridge, host, overlay, macvlan — architecture diagrams and decision guides for every network driver.</p>
+    </header>
 
         <div class="tabs">
             <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
@@ -984,7 +1002,7 @@ Question 3: Do you need physical network integration?<br>
         </div>
     </div>
 
-    <script src="tabs.js"></script>
+    <script src="../assets/script.js"></script>
 </body>
 
 </html>
