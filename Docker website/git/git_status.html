@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git History & Inspecting Commits</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } } } }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tech-card {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .analogy-card {
+            border-left: 4px solid #10b981;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Tab tooltip on hover */
+        .tab-btn {
+            position: relative;
+        }
+
+        .tab-btn::after {
+            content: attr(data-label);
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%) scale(0.95);
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            z-index: 200;
+        }
+
+        .tab-btn:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-950 border-b border-slate-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i data-lucide="git-commit" class="w-8 h-8 text-blue-400"></i>
+                <h1 class="text-2xl font-bold tracking-tight">Git History <span
+                        class="text-slate-400 font-light">&</span> Inspecting Commits</h1>
+            </div>
+            <a href="git_index.html"
+                class="hidden sm:flex items-center gap-2 text-sm text-slate-400 hover:text-blue-400 transition-colors">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Git Hub
+            </a>
+        </div>
+    </header>
+
+    <!-- Sibling Page Nav -->
+    <section class="bg-slate-950 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Git Learning Hub</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                <!-- Git Overview -->
+                <div
+                    class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden hover:-translate-y-0.5 transition-transform duration-200 shadow-lg">
+                    <div class="bg-blue-900/10 px-5 pt-5 pb-3">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-blue-500/20 rounded-lg">
+                                <i data-lucide="book-open" class="w-5 h-5 text-blue-400"></i>
+                            </div>
+                            <h3 class="font-bold text-white">Git Overview</h3>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed">VCS fundamentals, Git basics, setup commands,
+                            and a full quick-reference cheat sheet.</p>
+                    </div>
+                    <div class="px-5 pb-4 pt-3">
+                        <a href="git_index.html"
+                            class="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-blue-700 hover:bg-blue-600 text-white font-semibold text-sm transition-colors">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> Open Overview
+                        </a>
+                        <p class="text-slate-500 text-xs mt-2">VCS intro &middot; git init &middot; Cheat Sheet</p>
+                    </div>
+                </div>
+
+                <!-- Workflow & Branching -->
+                <div
+                    class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden hover:-translate-y-0.5 transition-transform duration-200 shadow-lg">
+                    <div class="bg-violet-900/10 px-5 pt-5 pb-3">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-violet-500/20 rounded-lg">
+                                <i data-lucide="git-branch" class="w-5 h-5 text-violet-400"></i>
+                            </div>
+                            <h3 class="font-bold text-white">Workflow &amp; Branching</h3>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed">The three-state workflow, branching, merging,
+                            push/pull, remotes, stash, and rebase.</p>
+                    </div>
+                    <div class="px-5 pb-4 pt-3">
+                        <a href="git_workflow.html"
+                            class="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-violet-700 hover:bg-violet-600 text-white font-semibold text-sm transition-colors">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> Open Workflow
+                        </a>
+                        <p class="text-slate-500 text-xs mt-2">Branches &middot; Merging &middot; Push/Pull &middot;
+                            Remotes</p>
+                    </div>
+                </div>
+
+                <!-- History & Commits (active) -->
+                <div
+                    class="bg-slate-800 border border-emerald-500/40 rounded-2xl overflow-hidden shadow-lg shadow-emerald-900/20 ring-1 ring-emerald-500/20">
+                    <div class="bg-emerald-900/20 px-5 pt-5 pb-3">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-emerald-500/20 rounded-lg">
+                                <i data-lucide="git-commit" class="w-5 h-5 text-emerald-400"></i>
+                            </div>
+                            <h3 class="font-bold text-white">History &amp; Commits</h3>
+                            <span
+                                class="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold">You
+                                are here</span>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed">git log, commit IDs, going back in time,
+                            reset, revert, and recovering with reflog.</p>
+                    </div>
+                    <div class="px-5 pb-4 pt-3">
+                        <a href="git_status.html"
+                            class="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-emerald-600/50 text-emerald-200 font-semibold text-sm cursor-default">
+                            <i data-lucide="check" class="w-4 h-4"></i> Current Page
+                        </a>
+                        <p class="text-slate-500 text-xs mt-2">git log &middot; reset &middot; revert &middot; reflog
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <div class="bg-slate-900 border-b border-slate-800 sticky top-[108px] z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex space-x-2 overflow-x-auto py-3 no-scrollbar" id="nav-tabs">
+                <!-- Tabs generated by JS -->
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <div id="content-container" class="fade-in">
+            <!-- Content injected by JS -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 text-slate-500 py-6 text-center text-sm">
+        <p>Git Learning Hub · DevOps Learning Hub · <a href="../index.html" class="text-blue-400 hover:underline">← Back
+                to Hub</a></p>
+    </footer>
+
+    <script>
+        // ── Tab data ──────────────────────────────────────────────────────────────
+        const tabs = [
+            {
+                id: 'status',
+                title: 'Status & Areas',
+                icon: 'activity',
+                intro: 'Your first habit in any repo: run git status often. It shows what is happening in your working directory, staging area, and how your branch compares to the remote.',
+                sections: [
+                    {
+                        techTitle: 'git status — Your Dashboard',
+                        techText: 'git status tells you three things at a glance: which files are modified but not staged, which are staged for the next commit, and whether your branch is ahead/behind the remote.',
+                        techIcon: 'monitor',
+                        analogyTitle: 'The Farm Inspection Report',
+                        analogyText: 'git status is the farm manager\'s morning report: which plots still have unharvested crops (modified), which crates are loaded on the dock (staged), and how many shipments are waiting to go to the city warehouse (ahead/behind remote).',
+                        analogyIcon: 'clipboard-list',
+                        commands: [
+                            '# See overall state',
+                            'git status',
+                            '# Short/compact form',
+                            'git status -s'
+                        ]
+                    },
+                    {
+                        techTitle: "Git's Three Areas",
+                        techText: 'Everything in Git passes through three areas:<br><br><strong>Working Directory</strong> — your actual files on disk. Edits happen here.<br><strong>Staging Area (Index)</strong> — what will go into the next commit. You choose what to include.<br><strong>HEAD / Last Commit</strong> — the snapshot your branch currently points to.',
+                        techIcon: 'layers',
+                        analogyTitle: 'Field → Dock → Warehouse',
+                        analogyText: 'The working directory is your farm field (crops you are actively picking). The staging area is the sorting dock (crates you have packed and labelled, ready for the truck). HEAD is the last sealed shipment that left for the city warehouse.',
+                        analogyIcon: 'package',
+                        commands: [
+                            '# "Changes not staged" → Working Directory',
+                            '# "Changes to be committed" → Staging Area',
+                            '# "nothing to commit, working tree clean" → fully in sync',
+                            'git status'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'log',
+                title: 'Commit History (git log)',
+                icon: 'book-open',
+                intro: 'git log shows the full story of your repository: every commit ID, author, timestamp, and message — letting you understand what changed and when.',
+                sections: [
+                    {
+                        techTitle: 'Reading git log',
+                        techText: 'git log outputs commits newest-first. Each entry shows the full SHA hash, author, date, and message. Use flags to control verbosity and filtering.',
+                        techIcon: 'list',
+                        analogyTitle: 'The Farm Diary',
+                        analogyText: 'git log is like a farm diary where each page entry records one completed shipment: who packed it, when it left, and what was in the crates. The most recent shipment is on top.',
+                        analogyIcon: 'book',
+                        commands: [
+                            '# Full detail history',
+                            'git log',
+                            '# One line per commit (most common)',
+                            'git log --oneline',
+                            '# Visual graph of branches and merges',
+                            'git log --oneline --graph --decorate --all'
+                        ]
+                    },
+                    {
+                        techTitle: 'Filtering & Searching History',
+                        techText: 'In real projects you often need to find when a specific change was made. Git log supports powerful filters by file, author, date, message keyword, or even a code string.',
+                        techIcon: 'search',
+                        analogyTitle: 'Searching the Diary',
+                        analogyText: 'Looking for when the fertilizer recipe changed? You can search the farm diary by date, by the worker who wrote the entry, or by keywords in the notes — rather than reading every page.',
+                        analogyIcon: 'file-search',
+                        commands: [
+                            '# Show history for a specific file',
+                            'git log --follow -- path/to/file.py',
+                            '# Search commits by message keyword',
+                            'git log --grep "hotfix" --oneline',
+                            '# Search commits that touched a specific string in code',
+                            'git log -S "AUTH_TOKEN" --oneline',
+                            '# Filter by author',
+                            'git log --author="Alice" --oneline'
+                        ]
+                    },
+                    {
+                        techTitle: 'Commit IDs (Hashes)',
+                        techText: 'Every commit has a 40-character SHA-1 hash. In daily work you almost always use the short form (first 7 characters from git log --oneline), which is unique enough in most repos.',
+                        techIcon: 'hash',
+                        analogyTitle: 'Shipment Tracking ID',
+                        analogyText: 'The full 40-character hash is like a full barcode on a shipping container. The short 7-character form is like the human-readable tracking number you give to a customer — shorter, but still uniquely identifies the box.',
+                        analogyIcon: 'tag',
+                        commands: [
+                            '# From: git log --oneline',
+                            '# 9f3a2c1 Fix login bug',
+                            '# 7-char ID is sufficient for most commands:',
+                            'git show 9f3a2c1',
+                            'git checkout 9f3a2c1'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'goback',
+                title: 'Going Back in Time',
+                icon: 'undo-2',
+                intro: 'Git lets you look at any past state, move your branch pointer backward, or safely reverse changes. The right tool depends on whether the commits are public or still local.',
+                sections: [
+                    {
+                        techTitle: 'Just Looking: Detached HEAD',
+                        techText: 'To inspect an old commit without changing anything, use git switch --detach (or git checkout &lt;hash&gt;). Git warns you are in "detached HEAD" state — you are viewing history, not on a branch.',
+                        techIcon: 'eye',
+                        analogyTitle: 'Walking Through the Diary',
+                        analogyText: 'You walk back in the farm diary to last Tuesday\'s page and look at the crops that were harvested that day. You haven\'t torn out any pages, and you haven\'t changed the "today" marker — you\'re just reading.',
+                        analogyIcon: 'book-open',
+                        commands: [
+                            '# Inspect old commit (safe, read-only)',
+                            'git switch --detach 9f3a2c1',
+                            '# or older syntax:',
+                            'git checkout 9f3a2c1',
+                            '# To keep new work from here, create a branch:',
+                            'git checkout -b experiment-from-old-commit'
+                        ]
+                    },
+                    {
+                        techTitle: 'Moving the Branch: git reset',
+                        techText: '<strong>Use only on local, unpushed branches!</strong> --soft keeps staged changes, --mixed (default) unstages them, --hard discards them entirely. HEAD~1 means "one commit back".',
+                        techIcon: 'rewind',
+                        analogyTitle: 'Moving the Today Marker',
+                        analogyText: 'Reset moves the "today" bookmark back in the farm diary. --soft leaves the crops on the loading dock (staged). --mixed moves crops back to the field. --hard throws the crops away entirely.',
+                        analogyIcon: 'calendar-minus',
+                        commands: [
+                            '# Keep file changes staged (undo commit only)',
+                            'git reset --soft HEAD~1',
+                            '# Keep file changes but unstaged (default)',
+                            'git reset --mixed HEAD~1',
+                            '# Discard everything — dangerous!',
+                            'git reset --hard HEAD~1'
+                        ]
+                    },
+                    {
+                        techTitle: 'Safely Undoing Public Commits: git revert',
+                        techText: 'On shared branches already pushed to the remote (like main), use git revert. It creates a brand new commit that reverses the changes of the target commit — history stays intact.',
+                        techIcon: 'rotate-ccw',
+                        analogyTitle: 'Writing a Correction Entry',
+                        analogyText: 'Instead of tearing out yesterday\'s faulty diary page (which would confuse everyone who already read it), you write a new entry that says "correction: undo yesterday\'s fertilizer batch — too strong." The history stays clean for everyone.',
+                        analogyIcon: 'pencil',
+                        commands: [
+                            '# Safely undo the last commit (creates new commit)',
+                            'git revert HEAD',
+                            '# Undo a specific older commit',
+                            'git revert 9f3a2c1'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'recover',
+                title: 'Recovering Mistakes',
+                icon: 'life-buoy',
+                intro: 'Even experienced engineers accidentally lose commits. Git\'s secret weapon is the reflog — a local, private log of every movement HEAD has made, letting you recover almost anything.',
+                sections: [
+                    {
+                        techTitle: 'git reflog — Your Safety Net',
+                        techText: 'The reflog records every position HEAD has been at, including commits that are no longer reachable by any branch. It is local-only and expires after 90 days by default.',
+                        techIcon: 'shield',
+                        analogyTitle: 'Farm Gate CCTV',
+                        analogyText: 'The reflog is like a private security camera at your farm gate that records every crate movement. Even if you accidentally threw a crate away, the footage shows exactly when it passed through and what the tracking ID was.',
+                        analogyIcon: 'camera',
+                        commands: [
+                            '# See where HEAD has been',
+                            'git reflog',
+                            '# Typical output:',
+                            '# a81b9e4 HEAD@{0}: commit: Fix login bug',
+                            '# 12c4d7e HEAD@{1}: reset: moving to HEAD~1',
+                            '# 9f3a2c1 HEAD@{2}: commit: Add login form'
+                        ]
+                    },
+                    {
+                        techTitle: 'Recovering a Lost Commit',
+                        techText: 'Find the commit hash in reflog where things were good. Then either create a new branch from it, or reset your current branch back to it. Always prefer option 1 on shared branches.',
+                        techIcon: 'search-check',
+                        analogyTitle: 'Retrieving a Lost Crate',
+                        analogyText: 'Review the CCTV footage, find the timestamp where the crate was still intact, grab the tracking ID from the screen, and go retrieve the crate from wherever it was at that moment.',
+                        analogyIcon: 'package-search',
+                        commands: [
+                            '# Step 1: Find the good state',
+                            'git reflog',
+                            '# Step 2a: Create a rescue branch (safe)',
+                            'git branch rescue-branch 9f3a2c1',
+                            '# Step 2b: Or move current branch back (caution on shared branches)',
+                            'git reset --hard 9f3a2c1'
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let currentTab = tabs[0].id;
+
+        // ── Helpers ────────────────────────────────────────────────────────────────
+        function renderCodeBlock(commands) {
+            if (!commands || commands.length === 0) return '';
+            const cmdHtml = commands.map(cmd => {
+                if (cmd.startsWith('#')) return `<div class="text-slate-500">${cmd}</div>`;
+                return `<div><span class="text-emerald-500 select-none">$ </span><span class="text-slate-200">${cmd}</span></div>`;
+            }).join('');
+            return `
+        <div class="mt-5 rounded-lg overflow-hidden border border-slate-700 shadow-sm bg-slate-900">
+          <div class="bg-slate-800 px-4 py-1.5 flex items-center space-x-2">
+            <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+            <span class="text-xs text-slate-400 font-mono ml-4">Terminal</span>
+          </div>
+          <div class="p-4 font-mono text-sm leading-relaxed overflow-x-auto">${cmdHtml}</div>
+        </div>`;
+        }
+
+        // ── Render tabs ────────────────────────────────────────────────────────────
+        function renderTabs() {
+            const nav = document.getElementById('nav-tabs');
+            nav.innerHTML = '';
+            tabs.forEach(tab => {
+                const isActive = currentTab === tab.id;
+                const btn = document.createElement('button');
+                btn.className = `tab-btn flex items-center space-x-2 px-4 py-3 text-sm font-semibold rounded-t-lg transition-colors whitespace-nowrap border-b-2 ${isActive ? 'text-blue-400 bg-slate-800/50 border-blue-400'
+                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 border-transparent'
+                    }`;
+                btn.dataset.label = tab.title;
+                btn.onclick = () => { currentTab = tab.id; renderTabs(); renderContent(); };
+                btn.innerHTML = `<i data-lucide="${tab.icon}" class="w-4 h-4"></i><span>${tab.title}</span>`;
+                nav.appendChild(btn);
+                if (isActive) requestAnimationFrame(() => btn.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }));
+            });
+            lucide.createIcons();
+        }
+
+        // ── Render content ─────────────────────────────────────────────────────────
+        function renderContent() {
+            const container = document.getElementById('content-container');
+            const tab = tabs.find(t => t.id === currentTab);
+
+            container.classList.remove('fade-in');
+            void container.offsetWidth;
+            container.classList.add('fade-in');
+
+            let html = `
+        <div class="mb-10 text-center max-w-3xl mx-auto">
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">${tab.title}</h2>
+          <p class="text-lg text-slate-400">${tab.intro}</p>
+        </div>
+        <div class="space-y-8">
+      `;
+
+            tab.sections.forEach(sec => {
+                html += `
+          <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-700">
+
+              <!-- Technical Reality -->
+              <div class="p-6 md:p-8 tech-card bg-slate-900/50 flex flex-col h-full">
+                <div>
+                  <div class="flex items-center space-x-3 mb-4">
+                    <div class="p-2 bg-blue-900/50 rounded-lg text-blue-400">
+                      <i data-lucide="${sec.techIcon}"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">The Technical Reality</h3>
+                  </div>
+                  <h4 class="text-sm font-bold uppercase tracking-wider text-blue-400 mb-3">${sec.techTitle}</h4>
+                  <div class="text-slate-300 leading-relaxed text-sm md:text-base">${sec.techText}</div>
+                </div>
+                <div class="mt-auto pt-4">${renderCodeBlock(sec.commands)}</div>
+              </div>
+
+              <!-- The Analogy -->
+              <div class="p-6 md:p-8 analogy-card bg-emerald-950/20 flex flex-col h-full justify-center">
+                <div class="flex items-center space-x-3 mb-4">
+                  <div class="p-2 bg-emerald-900/50 rounded-lg text-emerald-400">
+                    <i data-lucide="${sec.analogyIcon}"></i>
+                  </div>
+                  <h3 class="text-xl font-bold text-white">The Analogy</h3>
+                </div>
+                <h4 class="text-sm font-bold uppercase tracking-wider text-emerald-400 mb-3">${sec.analogyTitle}</h4>
+                <div class="text-slate-300 leading-relaxed text-sm md:text-base italic">"${sec.analogyText}"</div>
+              </div>
+
+            </div>
+          </div>
+        `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // ── Init ───────────────────────────────────────────────────────────────────
+        renderTabs();
+        renderContent();
+    </script>
+
+</body>
+
+</html>
