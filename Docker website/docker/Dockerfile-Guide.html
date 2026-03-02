@@ -741,13 +741,24 @@ docker build --build-arg VERSION=1.0 -t myapp:1.0 .</pre>
                         context
                         to the daemon.</p>
 
-                    <div class="visual-diagram">
-                        <h4>Build Process Flow</h4>
-                        <div class="layer">1. Docker client reads Dockerfile</div>
-                        <div class="layer">2. Build context sent to Docker daemon</div>
-                        <div class="layer">3. Daemon executes Dockerfile instructions</div>
-                        <div class="layer">4. Each instruction creates a new layer</div>
-                        <div class="layer">5. Final image built from layers</div>
+                    <div class="two-column">
+                        <div class="diagram">
+                            <video controls style="width: 100%; border-radius: 8px; background: #000;"
+                                preload="metadata">
+                                <source
+                                    src="https://devops-learner.s3.us-east-2.amazonaws.com/Support_Videos/Docker_visualisers/Docker_Image_Build_Visualization.mp4"
+                                    type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="visual-diagram" style="margin-top: 0;">
+                            <h4>Build Process Flow</h4>
+                            <div class="layer">1. Docker client reads Dockerfile</div>
+                            <div class="layer">2. Build context sent to Docker daemon</div>
+                            <div class="layer">3. Daemon executes Dockerfile instructions</div>
+                            <div class="layer">4. Each instruction creates a new layer</div>
+                            <div class="layer">5. Final image built from layers</div>
+                        </div>
                     </div>
 
                     <div class="grid">
@@ -867,6 +878,14 @@ docker build -t myapp:latest .</pre>
 
                     <h3>Multi-Stage Builds</h3>
                     <p>Use multiple FROM statements to create smaller, more secure production images.</p>
+                    <div class="diagram">
+                        <video controls style="width: 100%; border-radius: 8px; background: #000;" preload="metadata">
+                            <source
+                                src="https://devops-learner.s3.us-east-2.amazonaws.com/Support_Videos/Docker_visualisers/Multi_Stage_Container_Build_Video.mp4"
+                                type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
 
                     <div class="code-block">
                         <span class="code-label">Multi-stage Dockerfile</span>

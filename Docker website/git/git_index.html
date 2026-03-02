@@ -185,7 +185,7 @@
             vcs: {
                 title: "Version Control Systems (VCS)",
                 icon: "history",
-                intro: "Before learning Git, we must understand the problem it solves. Version Control is a system that records changes to a file or set of files over time.",
+                intro: "Before diving into Git, we must understand the core problem: managing code history and collaboration as it grows in complexity. Version Control Systems (VCS) provide the infrastructure needed to record and recall specific versions of projects, ensuring no work is ever lost.",
                 sections: [
                     {
                         techTitle: "The Requirement for VCS",
@@ -397,6 +397,54 @@
 
             if (currentTab === 'vcs') {
                 html += `
+                <!-- Generations of VCS Section -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <i data-lucide="layers-3" class="w-5 h-5 text-blue-400"></i>
+                        The Evolution: Three Generations of VCS
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Local VCS -->
+                        <div class="bg-slate-800/40 border border-slate-700/50 rounded-2xl p-6 relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i data-lucide="monitor" class="w-12 h-12"></i>
+                            </div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-slate-700 text-[10px] font-bold text-slate-300">G1</span>
+                                <h4 class="font-bold text-white">Local VCS</h4>
+                            </div>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-4">A simple database built into your local file system. It tracks changes to files on <strong class="text-slate-200">one machine</strong> only.</p>
+                            <div class="text-[10px] text-blue-400/70 font-mono font-bold uppercase tracking-wider">Example: RCS</div>
+                        </div>
+
+                        <!-- Centralized VCS -->
+                        <div class="bg-slate-800/40 border border-slate-700/50 rounded-2xl p-6 relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i data-lucide="server" class="w-12 h-12"></i>
+                            </div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-blue-500/20 text-[10px] font-bold text-blue-400 border border-blue-500/30">G2</span>
+                                <h4 class="font-bold text-white">Centralized (CVCS)</h4>
+                            </div>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-4">A single <strong class="text-slate-200">central server</strong> holds all versions. You check out what you need, but collaboration requires an active network connection.</p>
+                            <div class="text-[10px] text-blue-400/70 font-mono font-bold uppercase tracking-wider">Example: SVN, CVS, TFS</div>
+                        </div>
+
+                        <!-- Distributed VCS -->
+                        <div class="bg-blue-900/10 border border-blue-500/30 rounded-2xl p-6 relative overflow-hidden group ring-1 ring-blue-500/10">
+                            <div class="absolute top-0 right-0 p-3 opacity-20 group-hover:opacity-30 transition-opacity">
+                                <i data-lucide="git-branch" class="w-12 h-12 text-blue-400"></i>
+                            </div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-[10px] font-bold text-white">G3</span>
+                                <h4 class="font-bold text-white">Distributed (DVCS)</h4>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-4">Clients <strong class="text-white text-shadow-sm shadow-blue-500">fully clone</strong> the entire project history. Every clone is a complete backup. Speed and offline work are baseline features.</p>
+                            <div class="text-[10px] text-blue-400/70 font-mono font-bold uppercase tracking-wider">The Standard: Git</div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- What is Git? Overview Panel -->
                 <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 mb-10 shadow-lg">
                     <div class="flex items-start gap-4 mb-6">
