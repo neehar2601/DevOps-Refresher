@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Addressing Guide - Networking Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Content Styling - Premium Overhaul */
+        section {
+            background: rgba(30, 41, 59, 0.3);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            margin-bottom: 3rem;
+            scroll-margin-top: 6rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            padding-bottom: 1rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-top: 2.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: #94a3b8;
+        }
+
+        ul,
+        ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #94a3b8;
+        }
+
+        li {
+            margin-bottom: 0.625rem;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.05);
+            border-left: 4px solid #3b82f6;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0.75rem;
+        }
+
+        .info-box strong {
+            color: #60a5fa;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-card {
+            background: rgba(15, 23, 42, 0.4);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(59, 130, 246, 0.3);
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 2rem 0;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.9);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            color: #60a5fa;
+        }
+
+        pre {
+            background: #020617;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            color: #cbd5e1;
+        }
+
+        .step-box {
+            background: rgba(16, 185, 129, 0.05);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #10b981;
+            border-radius: 0.75rem;
+        }
+
+        .step-box h4 {
+            color: #34d399;
+            margin-top: 0;
+        }
+
+        .diagram {
+            background: #020617;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: auto;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            color: #94a3b8;
+            line-height: 1.5;
+            font-size: 0.875rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #3b82f6;
+            color: white;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 40;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            background: #2563eb;
+            box-shadow: 0 15px 20px -3px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Nav active state emulation */
+        .sidebar-link-active {
+            color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+            font-weight: 600;
+        }
+
+        /* Modal Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1.5rem;
+        }
+
+        .modal-container {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .dhcp-flow {
+            background: #111;
+            color: #00ff9c;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            background: rgba(30, 41, 59, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            color: #94a3b8;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f8f5f5;
+        }
+
+        .debian-btn {
+            background: #f8f7f7;
+            color: rgb(203, 3, 53);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 12px rgba(215, 10, 83, 0.2);
+        }
+
+        .debian-btn:hover {
+            transform: translateY(-2px);
+            background: #f5f3f3;
+            box-shadow: 0 6px 16px rgba(215, 10, 83, 0.3);
+        }
+    </style>
+</head>
+
+<body class="bg-[#0b0f1a] text-slate-300 selection:bg-blue-500/30">
+    <!-- Classic Header -->
+    <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="network" class="w-8 h-8 text-blue-500"></i>
+                    <h1 class="text-white font-bold text-xl tracking-tight">Networking <span
+                            class="text-slate-500 font-light">Hub</span></h1>
+                </div>
+                <nav class="flex items-center gap-6">
+                    <a href="Network_index.html"
+                        class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Networking
+                    </a>
+                    <a href="../index.html"
+                        class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
+                        <i data-lucide="home" class="w-4 h-4"></i> DevOps Hub
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sub-navigation Tab Bar -->
+    <div class="bg-[#0f172a] border-b border-slate-800 sticky top-[64px] z-40 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex space-x-2 md:space-x-4 overflow-x-auto py-3 no-scrollbar" id="nav-tabs">
+                <!-- Tabs generated by JS -->
+            </nav>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-[70vh]">
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 text-sm text-slate-500 mb-8 overflow-x-auto whitespace-nowrap pb-2">
+            <a href="../index.html" class="hover:text-blue-400 transition-colors">DevOps Hub</a>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            <a href="Network_index.html" class="hover:text-blue-400 transition-colors">Networking</a>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            <span class="text-slate-300">IP Addressing Guide</span>
+        </nav>
+
+        <div id="content-container" class="fade-in">
+            <!-- Content injected by JS -->
+        </div>
+    </main>
+    <a href="#" class="back-to-top">
+        <i data-lucide="arrow-up" class="w-5 h-5"></i>
+    </a>
+    <footer class="mt-20 border-t border-slate-800 py-12 bg-slate-900/50 backdrop-blur-sm px-4">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-slate-500 text-sm italic tracking-wide font-medium">Networking Hub — IP Addressing Guide
+            </p>
+        </div>
+    </footer>
+
+    <!-- Debian Modal Overlay -->
+    <div id="debian-modal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="flex items-center gap-3">
+                    <img src="https://www.debian.org/logos/openlogo-nd-100.png" class="w-8 h-8 object-contain"
+                        alt="Debian Logo">
+                    <h2 class="text-xl font-bold text-white mb-0 border-0 p-0">Debian Networking Configuration</h2>
+                </div>
+                <button onclick="toggleDebianModal()" class="modal-close">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="prose prose-invert max-w-none">
+                    <h3 class="mt-0 text-blue-400">Configuring Static vs Dynamic IP in Debian</h3>
+                    <p>Method 1: Using /etc/network/interfaces File</p>
+
+                    <h4 class="flex items-center gap-2">🔍 Check Current Configuration</h4>
+                    <p>First, identify your network interface name:</p>
+                    <pre><code>bash
+ip a
+# Common names: eth0, ens33, enp0s5, wlp1s0</code></pre>
+
+                    <h4 class="mt-6">📌 Setting a STATIC IP Address</h4>
+                    <p><strong>Step 1:</strong> Edit the interfaces file:</p>
+                    <pre><code>bash
+sudo nano /etc/network/interfaces</code></pre>
+                    <p><strong>Step 2:</strong> Configure static IP. Change from DHCP to:</p>
+                    <pre><code>bash
+# Static IP Configuration
+auto eth0
+iface eth0 inet static
+    address 192.168.1.100
+    netmask 255.255.255.0
+    gateway 192.168.1.1
+    dns-nameservers 8.8.8.8 8.8.4.4</code></pre>
+
+                    <h4 class="mt-6">🔄 Setting a DYNAMIC IP Address (DHCP)</h4>
+                    <p><strong>Step 1:</strong> Edit the interfaces file:</p>
+                    <pre><code>bash
+sudo nano /etc/network/interfaces</code></pre>
+                    <p><strong>Step 2:</strong> Configure DHCP:</p>
+                    <pre><code>bash
+# DHCP Configuration (Dynamic)
+auto eth0
+iface eth0 inet dhcp</code></pre>
+
+                    <h4 class="mt-8 flex items-center gap-2 text-yellow-500"><i data-lucide="refresh-cw"
+                            class="w-5 h-5"></i> 🔁 Restarting Network Interface After Changes</h4>
+                    <div class="bg-red-500/10 border border-red-500/20 p-4 rounded-xl mb-4">
+                        <p class="text-sm text-red-500 font-bold mb-0">⚠️ Warning: Do NOT run these commands over SSH,
+                            as you'll lose connection!</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 text-sm">
+                            <h5 class="text-blue-400 font-bold mb-2">Method 1: Using ifdown and ifup (Recommended)</h5>
+                            <pre class="m-0"><code>bash
+# Bring interface DOWN
+sudo ifdown eth0
+
+# Bring interface UP
+sudo ifup eth0
+
+# Verify new IP
+ip a show eth0</code></pre>
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 text-sm">
+                            <h5 class="text-blue-400 font-bold mb-2">Method 2: Using systemctl (System-wide restart)
+                            </h5>
+                            <pre class="m-0"><code>bash
+# Restart entire networking service
+sudo systemctl restart networking
+
+# Check status
+sudo systemctl status networking
+
+# Verify IP address
+ip addr show</code></pre>
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 text-sm">
+                            <h5 class="text-blue-400 font-bold mb-2">Method 3: Using ip command (if ifup/ifdown not
+                                available)</h5>
+                            <pre class="m-0"><code>bash
+sudo ip link set eth0 down
+sudo ip link set eth0 up
+sudo ip link show eth0</code></pre>
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 text-sm">
+                            <h5 class="text-blue-400 font-bold mb-2">Method 4: Restart specific interface with systemd
+                            </h5>
+                            <pre class="m-0"><code>bash
+# For systemd-managed interfaces
+sudo systemctl restart ifup@eth0.service</code></pre>
+                        </div>
+                    </div>
+
+                    <h4 class="mt-8">📂 Alternative: Using /etc/network/interfaces.d/ Directory</h4>
+                    <p>For better organization, you can separate interface configs:</p>
+                    <p><strong>Step 1:</strong> Create interface-specific file:</p>
+                    <pre><code>bash
+sudo nano /etc/network/interfaces.d/eth0</code></pre>
+                    <p><strong>Step 2:</strong> Add configuration:</p>
+                    <pre><code>bash
+# Static IP
+iface eth0 inet static
+    address 192.168.1.100
+    netmask 255.255.255.0
+    gateway 192.168.1.1
+    dns-nameservers 8.8.8.8</code></pre>
+                    <p><strong>Step 3:</strong> Modify main interfaces file (ensure source line exists):</p>
+                    <pre><code>bash
+source /etc/network/interfaces.d/*
+
+# Loopback
+auto lo
+iface lo inet loopback
+
+# Reference to external config
+auto eth0</code></pre>
+
+                    <div class="info-box bg-green-500/5 border-green-500/30">
+                        <strong class="text-green-400">✅ Verify Configuration</strong>
+                        <pre class="bg-transparent border-0 p-0 text-slate-300 text-xs"><code>bash
+# Check IP assignment
+ip addr show eth0
+
+# Check for active DHCP client
+ps aux | grep dhclient
+
+# View DHCP leases (if DHCP)
+cat /var/lib/dhcp/dhclient.eth0.leases
+
+# Test connectivity
+ping -c 4 8.8.8.8
+ping -c 4 google.com</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const contentData = {
+            what_is_ip: {
+                title: "What is an IP Address?",
+                icon: "help-circle",
+                intro: "An IP address (Internet Protocol address) is a unique numerical identifier assigned to every device connected to a network.",
+                sections: [
+                    {
+                        title: "Identification & Location",
+                        content: `
+                            <p>It serves two primary purposes:</p>
+                            <ul>
+                                <li><strong>Identification:</strong> Uniquely identifies a device on a network</li>
+                                <li><strong>Location Addressing:</strong> Enables routing of data packets to the correct destination</li>
+                            </ul>
+                            <div class="comparison-grid">
+                                <div class="comparison-card">
+                                    <h4>IPv4 (Internet Protocol version 4)</h4>
+                                    <ul>
+                                        <li><strong>Format:</strong> Four octets (e.g., <code>192.168.1.100</code>)</li>
+                                        <li><strong>Structure:</strong> 32-bit address</li>
+                                        <li><strong>Total Addresses:</strong> ~4.3 billion</li>
+                                        <li><strong>Status:</strong> Widely used, mostly exhausted</li>
+                                    </ul>
+                                </div>
+                                <div class="comparison-card">
+                                    <h4>IPv6 (Internet Protocol version 6)</h4>
+                                    <ul>
+                                        <li><strong>Format:</strong> Hexadecimal groups (e.g., <code>2001:db8::1</code>)</li>
+                                        <li><strong>Structure:</strong> 128-bit address</li>
+                                        <li><strong>Total Addresses:</strong> 340 undecillion</li>
+                                        <li><strong>Status:</strong> Future of internet addressing</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="info-box">
+                                <strong>How IP Addresses Work</strong>
+                                <p>When you send data over a network, your device's IP is the source, and the target's IP is the destination. Routers use these to forward packets through the internet.</p>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            classes: {
+                title: "IP Address Classes",
+                icon: "grid",
+                intro: "Historically, IPv4 addresses were divided into five classes (A, B, C, D, E) for easier management.",
+                sections: [
+                    {
+                        title: "Classful Addressing Overview",
+                        content: `
+                            <div class="space-y-8">
+                                <div>
+                                    <h3>Class A</h3>
+                                    <div class="info-box">
+                                        <strong>Range:</strong> <code>1.0.0.0</code> to <code>126.255.255.255</code><br>
+                                        <strong>Default Subnet Mask:</strong> <code>255.0.0.0</code> (/8)<br>
+                                        <strong>First Octet:</strong> 1 to 126<br>
+                                        <strong>Binary Identification:</strong> First bit is always <code>0</code><br>
+                                        <strong>Networks:</strong> 126 networks<br>
+                                        <strong>Hosts per Network:</strong> 16,777,214<br>
+                                        <strong>Use Case:</strong> Very large organizations, government agencies<br>
+                                        <strong>Private Range:</strong> <code>10.0.0.0</code> to <code>10.255.255.255</code>
+                                    </div>
+                                    <div class="diagram">
+N.H.H.H
+N = Network portion (1 octet)
+H = Host portion (3 octets)
+
+Example: 10.0.0.0 (Private Class A)
+         50.23.45.67 (Public Class A)
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3>Class B</h3>
+                                    <div class="info-box">
+                                        <strong>Range:</strong> <code>128.0.0.0</code> to <code>191.255.255.255</code><br>
+                                        <strong>Default Subnet Mask:</strong> <code>255.255.0.0</code> (/16)<br>
+                                        <strong>First Octet:</strong> 128 to 191<br>
+                                        <strong>Binary Identification:</strong> First two bits are always <code>10</code><br>
+                                        <strong>Networks:</strong> 16,384 networks<br>
+                                        <strong>Hosts per Network:</strong> 65,534<br>
+                                        <strong>Use Case:</strong> Medium to large organizations, universities, ISPs<br>
+                                        <strong>Private Range:</strong> <code>172.16.0.0</code> to <code>172.31.255.255</code>
+                                    </div>
+                                    <div class="diagram">
+N.N.H.H
+N = Network portion (2 octets)
+H = Host portion (2 octets)
+
+Example: 172.16.0.0 (Private Class B)
+         150.45.78.90 (Public Class B)
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3>Class C</h3>
+                                    <div class="info-box">
+                                        <strong>Range:</strong> <code>192.0.0.0</code> to <code>223.255.255.255</code><br>
+                                        <strong>Default Subnet Mask:</strong> <code>255.255.255.0</code> (/24)<br>
+                                        <strong>First Octet:</strong> 192 to 223<br>
+                                        <strong>Binary Identification:</strong> First three bits are always <code>110</code><br>
+                                        <strong>Networks:</strong> 2,097,152 networks<br>
+                                        <strong>Hosts per Network:</strong> 254<br>
+                                        <strong>Use Case:</strong> Small businesses, local area networks (LANs), home networks<br>
+                                        <strong>Private Range:</strong> <code>192.168.0.0</code> to <code>192.168.255.255</code>
+                                    </div>
+                                    <div class="diagram">
+N.N.N.H
+N = Network portion (3 octets)
+H = Host portion (1 octet)
+
+Example: 192.168.1.0 (Private Class C - most common home network)
+         200.34.56.78 (Public Class C)
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3>Class D (Multicast)</h3>
+                                    <div class="info-box">
+                                        <strong>Range:</strong> <code>224.0.0.0</code> to <code>239.255.255.255</code><br>
+                                        <strong>Purpose:</strong> Multicast addressing (one-to-many communication)<br>
+                                        <strong>Use Case:</strong> Streaming media, OSPF routing protocol, video conferencing<br>
+                                        <strong>Note:</strong> Not assigned to individual hosts - represent groups of devices
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3>Class E (Experimental)</h3>
+                                    <div class="info-box">
+                                        <strong>Range:</strong> <code>240.0.0.0</code> to <code>255.255.255.255</code><br>
+                                        <strong>Purpose:</strong> Reserved for experimental and research purposes<br>
+                                        <strong>Note:</strong> Not available for general use on the internet
+                                    </div>
+                                </div>
+
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Class</th>
+                                            <th>Range</th>
+                                            <th>Default Mask</th>
+                                            <th>Networks</th>
+                                            <th>Hosts per Network</th>
+                                            <th>Use</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>A</strong></td>
+                                            <td>1.0.0.0 - 126.255.255.255</td>
+                                            <td>255.0.0.0 (/8)</td>
+                                            <td>126</td>
+                                            <td>16,777,214</td>
+                                            <td>Very large orgs</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>B</strong></td>
+                                            <td>128.0.0.0 - 191.255.255.255</td>
+                                            <td>255.255.0.0 (/16)</td>
+                                            <td>16,384</td>
+                                            <td>65,534</td>
+                                            <td>Medium-large orgs</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>C</strong></td>
+                                            <td>192.0.0.0 - 223.255.255.255</td>
+                                            <td>255.255.255.0 (/24)</td>
+                                            <td>2,097,152</td>
+                                            <td>254</td>
+                                            <td>Small networks</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>D</strong></td>
+                                            <td>224.0.0.0 - 239.255.255.255</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>Multicast</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>E</strong></td>
+                                            <td>240.0.0.0 - 255.255.255.255</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>Experimental</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            private_public: {
+                title: "Private vs Public IPs",
+                icon: "shield-check",
+                intro: "Understanding the difference between routable internet addresses and internal local addresses.",
+                sections: [
+                    {
+                        title: "Public & Private Differences",
+                        content: `
+                            <div class="comparison-grid">
+                                <div class="comparison-card">
+                                    <h4>Public IP Addresses</h4>
+                                    <p><strong>Definition:</strong> Globally unique addresses that can be accessed over the internet.</p>
+                                    <p><strong>Assigned By:</strong> Internet Service Providers (ISPs), Cloud Providers</p>
+                                    <p><strong>Characteristics:</strong></p>
+                                    <ul>
+                                        <li>Must be unique across the entire internet</li>
+                                        <li>Routable on the public internet</li>
+                                        <li>Requires registration and allocation</li>
+                                        <li>Can be static or dynamic</li>
+                                    </ul>
+                                    <p><strong>Use Cases:</strong></p>
+                                    <ul>
+                                        <li>Hosting websites</li>
+                                        <li>Running public-facing services</li>
+                                        <li>VPN endpoints</li>
+                                        <li>Remote access servers</li>
+                                    </ul>
+                                </div>
+
+                                <div class="comparison-card">
+                                    <h4>Private IP Addresses</h4>
+                                    <p><strong>Definition:</strong> IP addresses reserved for use within private networks (RFC 1918).</p>
+                                    <p><strong>Assigned By:</strong> Local network administrators, DHCP servers</p>
+                                    <p><strong>Characteristics:</strong></p>
+                                    <ul>
+                                        <li>Not routable on the public internet</li>
+                                        <li>Can be reused in different private networks</li>
+                                        <li>Must use NAT to communicate with the internet</li>
+                                        <li>Free to use without registration</li>
+                                    </ul>
+                                    <p><strong>Use Cases:</strong></p>
+                                    <ul>
+                                        <li>Internal office networks</li>
+                                        <li>Home networks</li>
+                                        <li>Cloud private subnets (VPCs)</li>
+                                        <li>Development/testing environments</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h3>Private IP Ranges</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Class</th>
+                                        <th>Range</th>
+                                        <th>CIDR</th>
+                                        <th>Usable Addresses</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Class A</td>
+                                        <td>10.0.0.0 - 10.255.255.255</td>
+                                        <td>10.0.0.0/8</td>
+                                        <td>16,777,216</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Class B</td>
+                                        <td>172.16.0.0 - 172.31.255.255</td>
+                                        <td>172.16.0.0/12</td>
+                                        <td>1,048,576</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Class C</td>
+                                        <td>192.168.0.0 - 192.168.255.255</td>
+                                        <td>192.168.0.0/16</td>
+                                        <td>65,536</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3>NAT (Network Address Translation)</h3>
+                            <div class="info-box">
+                                <strong>Purpose:</strong> Allows multiple devices on a private network to share a single public IP address.
+                                <br><br>
+                                <strong>How It Works:</strong>
+                                <ol>
+                                    <li>Your device (private IP: <code>192.168.1.10</code>) sends a request to <code>google.com</code></li>
+                                    <li>Your router (public IP: <code>203.0.113.25</code>) replaces your private IP with its public IP</li>
+                                    <li>Google's server responds to <code>203.0.113.25</code></li>
+                                    <li>Router forwards the response back to <code>192.168.1.10</code></li>
+                                </ol>
+                                <strong>Benefits:</strong>
+                                <ul>
+                                    <li>Conserves public IP addresses</li>
+                                    <li>Adds a layer of security (internal IPs are hidden)</li>
+                                    <li>Allows multiple devices to share one public IP</li>
+                                </ul>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            loopback: {
+                title: "Loopback (Localhost)",
+                icon: "refresh-cw",
+                intro: "The special address used to refer back to the device itself.",
+                sections: [
+                    {
+                        title: "127.0.0.1",
+                        content: `
+                            <div class="info-box">
+                                <strong>Definition:</strong> A special IP address that refers to the device itself (localhost).
+                                <br><br>
+                                <strong>IPv4 Loopback:</strong> <code>127.0.0.1</code> (entire range: <code>127.0.0.0</code> to <code>127.255.255.255</code>)
+                                <br>
+                                <strong>IPv6 Loopback:</strong> <code>::1</code>
+                            </div>
+
+                            <h3>Purpose</h3>
+                            <ul>
+                                <li>Testing network software without sending data over a physical network</li>
+                                <li>Inter-process communication on the same machine</li>
+                                <li>Troubleshooting network configurations</li>
+                            </ul>
+
+                            <h3>How It Works</h3>
+                            <ul>
+                                <li>Packets sent to <code>127.0.0.1</code> never leave the device</li>
+                                <li>The operating system routes them back internally</li>
+                                <li>Used by developers to test web servers, databases, and APIs locally</li>
+                            </ul>
+
+                            <h3>Common Uses</h3>
+                            <pre><code># Test if a web server is running locally
+curl http://127.0.0.1:8080
+
+# Ping the loopback interface (test TCP/IP stack)
+ping 127.0.0.1
+
+# Access local database
+mysql -h 127.0.0.1 -u root -p
+
+# SSH to local machine
+ssh user@localhost</code></pre>
+
+                            <div class="info-box">
+                                <strong>DevOps Examples:</strong>
+                                <ul>
+                                    <li>Docker containers expose services on <code>127.0.0.1:8080</code></li>
+                                    <li>Kubernetes port-forwarding uses <code>localhost</code></li>
+                                    <li>Local development servers bind to <code>127.0.0.1</code></li>
+                                </ul>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            static_dynamic: {
+                title: "Static vs Dynamic",
+                icon: "activity",
+                intro: "Comparing manually assigned addresses vs automated assignments.",
+                sections: [
+                    {
+                        title: "Stability vs Automation",
+                        content: `
+                            <div class="comparison-grid">
+                                <div class="comparison-card">
+                                    <h4>Static IP Address</h4>
+                                    <p><strong>Definition:</strong> A manually configured IP address that never changes.</p>
+                                    <p><strong>Characteristics:</strong></p>
+                                    <ul>
+                                        <li>Permanent assignment</li>
+                                        <li>Manually configured by administrator</li>
+                                        <li>Remains constant even after reboots</li>
+                                        <li>Requires manual changes to reassign</li>
+                                    </ul>
+                                    <p><strong>When to Use:</strong></p>
+                                    <ul>
+                                        <li>Web servers (need consistent address for DNS)</li>
+                                        <li>Database servers</li>
+                                        <li>Printers/scanners</li>
+                                        <li>Network devices (routers, switches, firewalls)</li>
+                                        <li>Remote access (VPN endpoints, SSH servers)</li>
+                                    </ul>
+                                    <p><strong>Advantages:</strong></p>
+                                    <ul>
+                                        <li>Predictable and stable</li>
+                                        <li>Easier for remote access</li>
+                                        <li>Better for hosting services</li>
+                                        <li>No dependency on DHCP server</li>
+                                    </ul>
+                                    <p><strong>Disadvantages:</strong></p>
+                                    <ul>
+                                        <li>Manual configuration required</li>
+                                        <li>Risk of IP conflicts if not managed properly</li>
+                                        <li>Difficult to manage at scale</li>
+                                    </ul>
+                                </div>
+
+                                <div class="comparison-card">
+                                    <h4>Dynamic IP Address</h4>
+                                    <p><strong>Definition:</strong> An IP address automatically assigned by a DHCP server.</p>
+                                    <p><strong>Characteristics:</strong></p>
+                                    <ul>
+                                        <li>Temporary assignment (lease duration)</li>
+                                        <li>Automatically configured</li>
+                                        <li>May change after lease expiration or reboot</li>
+                                        <li>No manual configuration needed</li>
+                                    </ul>
+                                    <p><strong>When to Use:</strong></p>
+                                    <ul>
+                                        <li>End-user devices (laptops, smartphones, tablets)</li>
+                                        <li>Guest networks</li>
+                                        <li>Large networks (easier to manage hundreds of devices)</li>
+                                        <li>Mobile devices that move between networks</li>
+                                    </ul>
+                                    <p><strong>Advantages:</strong></p>
+                                    <ul>
+                                        <li>Automatic configuration</li>
+                                        <li>Efficient IP address utilization</li>
+                                        <li>Easy to scale</li>
+                                        <li>Reduces administrative overhead</li>
+                                        <li>Prevents IP conflicts</li>
+                                    </ul>
+                                    <p><strong>Disadvantages:</strong></p>
+                                    <ul>
+                                        <li>IP address may change</li>
+                                        <li>Dependency on DHCP server availability</li>
+                                        <li>Harder to remotely access</li>
+                                        <li>Not suitable for hosting services</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h3>Configuration Examples</h3>
+                            
+                            <h4>Static IP (Linux)</h4>
+                            <pre><code># Edit network configuration
+sudo nano /etc/netplan/01-netcfg.yaml
+
+# Static IP configuration
+network:
+  version: 2
+  ethernets:
+    eth0:
+      addresses:
+        - 192.168.1.100/24
+      gateway4: 192.168.1.1
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 8.8.4.4
+
+# Apply changes
+sudo netplan apply</code></pre>
+
+                            <h4>Dynamic IP (Linux)</h4>
+                            <pre><code># Edit network configuration
+sudo nano /etc/netplan/01-netcfg.yaml
+
+# DHCP configuration
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: true
+
+# Apply changes
+sudo netplan apply</code></pre>
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Static IP</th>
+                                        <th>Dynamic IP</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Configuration</td>
+                                        <td>Manual</td>
+                                        <td>Automatic (DHCP)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Stability</td>
+                                        <td>Permanent</td>
+                                        <td>Temporary (lease-based)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Use Case</td>
+                                        <td>Servers, network devices</td>
+                                        <td>Clients, end-user devices</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Management Effort</td>
+                                        <td>High (manual updates)</td>
+                                        <td>Low (automated)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Remote Access</td>
+                                        <td>Easy (fixed address)</td>
+                                        <td>Difficult (IP changes)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Scalability</td>
+                                        <td>Difficult for large networks</td>
+                                        <td>Easy</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="mt-8 flex flex-col items-center">
+                                <p class="text-center italic text-slate-500 mb-0">Need traditional Debian interface configuration?</p>
+                                <button onclick="toggleDebianModal()" class="debian-btn">
+                                    <img src="https://www.debian.org/logos/openlogo-nd-100.png" class="w-5 h-5 object-contain" alt="Debian logo">
+                                    Configuring in Debian
+                                </button>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            dhcp: {
+                title: "DHCP & DORA",
+                icon: "zap",
+                intro: "The Dynamic Host Configuration Protocol (DHCP) automatically assigns IP information to devices, ensuring seamless connectivity.",
+                sections: [
+                    {
+                        title: "How DHCP Works",
+                        content: `
+                            <div class="space-y-8">
+                                <div>
+                                    <h3>What is DHCP?</h3>
+                                    <div class="info-box">
+                                        <strong>Definition:</strong> A network protocol that automatically assigns IP addresses and network configuration to devices on a network.
+                                        <br><br>
+                                        <strong>Purpose:</strong>
+                                        <ul>
+                                            <li>Eliminate manual IP configuration</li>
+                                            <li>Prevent IP address conflicts</li>
+                                            <li>Efficiently manage IP address pools</li>
+                                            <li>Centralize network configuration</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3>DHCP Components</h3>
+                                    <ul>
+                                        <li><strong>DHCP Server:</strong> Manages pool of available IP addresses, assigns IPs based on lease duration (Windows Server DHCP, ISC DHCP, dnsmasq)</li>
+                                        <li><strong>DHCP Client:</strong> Any device requesting an IP address (laptops, phones, IoT devices, VMs)</li>
+                                        <li><strong>IP Address Pool:</strong> Range of IPs available for assignment (e.g., <code>192.168.1.100</code> to <code>192.168.1.200</code>)</li>
+                                        <li><strong>Lease Duration:</strong> How long a device can use an IP before renewal (e.g., 24 hours, 7 days)</li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h3>DORA Process (How DHCP Works)</h3>
+                                    <p>DHCP uses a <strong>4-step process</strong> called <strong>DORA</strong>:</p>
+
+                                    <div class="step-box">
+                                        <h4>Step 1: DHCP Discover</h4>
+                                        <p><strong>Goal:</strong> Client searches for available DHCP servers</p>
+                                        <p><strong>Process:</strong></p>
+                                        <ul>
+                                            <li>Client broadcasts a <strong>DHCP Discover</strong> message to the entire network</li>
+                                            <li>Source IP: <code>0.0.0.0</code> (client has no IP yet)</li>
+                                            <li>Destination IP: <code>255.255.255.255</code> (broadcast)</li>
+                                            <li>Message: "I'm new here, is there a DHCP server?"</li>
+                                            <li>UDP Port: Client sends from port 68, server listens on port 67</li>
+                                        </ul>
+                                        <pre><code>Client: "Hello, I'm a laptop with MAC aa:bb:cc:dd:ee:ff. Is there a DHCP server?"</code></pre>
+                                    </div>
+
+                                    <div class="step-box">
+                                        <h4>Step 2: DHCP Offer</h4>
+                                        <p><strong>Goal:</strong> DHCP server offers an available IP address</p>
+                                        <p><strong>Process:</strong></p>
+                                        <ul>
+                                            <li>DHCP server receives the Discover message</li>
+                                            <li>Checks its IP address pool for an available IP</li>
+                                            <li>Sends a <strong>DHCP Offer</strong> message back to the client</li>
+                                            <li>Offer includes: IP address (<code>192.168.1.150</code>), subnet mask, lease duration, default gateway, DNS servers</li>
+                                        </ul>
+                                        <pre><code>Server: "Hey laptop aa:bb:cc:dd:ee:ff, I have 192.168.1.150 available for you!"</code></pre>
+                                    </div>
+
+                                    <div class="step-box">
+                                        <h4>Step 3: DHCP Request</h4>
+                                        <p><strong>Goal:</strong> Client accepts an offer and requests the IP</p>
+                                        <p><strong>Process:</strong></p>
+                                        <ul>
+                                            <li>Client selects one offer (if multiple were received)</li>
+                                            <li>Sends a <strong>DHCP Request</strong> message</li>
+                                            <li>This is a broadcast message (to inform all DHCP servers)</li>
+                                            <li>Message includes: selected server's IP, requested IP address</li>
+                                        </ul>
+                                        <pre><code>Client: "Thank you all, I accept the offer from server 192.168.1.1 for IP 192.168.1.150!"</code></pre>
+                                    </div>
+
+                                    <div class="step-box">
+                                        <h4>Step 4: DHCP Acknowledge (ACK)</h4>
+                                        <p><strong>Goal:</strong> Server confirms the IP assignment</p>
+                                        <p><strong>Process:</strong></p>
+                                        <ul>
+                                            <li>Selected DHCP server sends a <strong>DHCP Acknowledge</strong> message</li>
+                                            <li>Confirms the IP address lease</li>
+                                            <li>Provides final configuration: IP, subnet mask, gateway, DNS, lease time</li>
+                                        </ul>
+                                        <pre><code>Server: "Confirmed! 192.168.1.150 is yours for 24 hours. Gateway: 192.168.1.1, DNS: 8.8.8.8"</code></pre>
+                                        <p><strong>Client Actions After ACK:</strong></p>
+                                        <ul>
+                                            <li>Configures network interface with assigned IP</li>
+                                            <li>Updates routing table with default gateway</li>
+                                            <li>Configures DNS resolver</li>
+                                            <li>Client is now online and can communicate on the network</li>
+                                        </ul>
+                                    </div>
+
+                                    <h2>DHCP DORA Process</h2>
+
+                                    <pre class="dhcp-flow">
+                                    Client                         DHCP Server
+                                    |                                |
+                                    |----(1) DHCP Discover---------->| 
+                                    |        (Broadcast)             |
+                                    |        "I need an IP!"         |
+                                    |                                |
+                                    |<---(2) DHCP Offer--------------|
+                                    |        (Broadcast/Unicast)     |
+                                    |        "Here's 192.168.1.150"  |
+                                    |                                |
+                                    |----(3) DHCP Request----------->|
+                                    |        (Broadcast)             |
+                                    |        "I accept 192.168.1.150"|
+                                    |                                |
+                                    |<---(4) DHCP ACK----------------|
+                                    |        (Unicast)               |
+                                    |"Confirmed! Here's your config" |
+                                    |                                |
+                                    Client configures IP and is online
+                                    </pre>
+                                </div>
+
+                                <div>
+                                    <h3>DHCP Lease Management</h3>
+                                    <ul>
+                                        <li><strong>At 50% of lease time:</strong> Client sends DHCP Request (unicast to original server) - if server responds with ACK, lease is renewed</li>
+                                        <li><strong>At 87.5% of lease time:</strong> If renewal fails, client broadcasts DHCP Request - any DHCP server can respond</li>
+                                        <li><strong>At 100% (expiration):</strong> If no response, client must stop using the IP - restarts DORA process</li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h3>Checking DHCP Lease</h3>
+                                    <pre><code># Linux
+cat /var/lib/dhcp/dhclient.leases
+ip addr show
+sudo dhclient -r eth0  # Release
+sudo dhclient eth0     # Renew
+
+# Windows
+ipconfig /all
+ipconfig /release
+ipconfig /renew</code></pre>
+                                </div>
+
+                                <div>
+                                    <h3>DHCP Reservation</h3>
+                                    <div class="info-box">
+                                        <strong>Definition:</strong> A DHCP server assigns the same IP address to a device every time, based on its MAC address.
+                                        <br><br>
+                                        <strong>Benefits:</strong>
+                                        <ul>
+                                            <li>Device gets "static" IP automatically</li>
+                                            <li>No manual configuration on the device</li>
+                                            <li>Centralized management</li>
+                                            <li>Easy to change IP from DHCP server</li>
+                                        </ul>
+                                        <strong>Use Case:</strong> Printers, servers, network devices (IP cameras, IoT hubs)
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            subnetting: {
+                title: "Subnetting & CIDR",
+                icon: "split",
+                intro: "Dividing large networks into smaller, more manageable sub-networks to improve performance, security, and management.",
+                sections: [
+                    {
+                        title: "Why Subnetting is Required",
+                        content: `
+                            <div class="space-y-8">
+                                <div>
+                                    <h3>The Problem Without Subnetting</h3>
+                                    <p>Imagine you have a Class C network: <code>192.168.1.0/24</code> with 254 usable IPs. All devices are on one large network.</p>
+                                    
+                                    <div class="info-box">
+                                        <strong>Problems:</strong>
+                                        <ul>
+                                            <li><strong>Broadcast Traffic:</strong> Every device receives every broadcast packet (ARP requests, DHCP discovers) - network becomes slow</li>
+                                            <li><strong>Security:</strong> No isolation between departments - one compromised device affects everyone</li>
+                                            <li><strong>Poor Organization:</strong> Hard to manage - can't separate servers, printers, and user devices</li>
+                                            <li><strong>IP Address Waste:</strong> If you need 30 IPs for a department, you give them a /24 (254 IPs) - 224 IPs wasted</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3>What is Subnetting?</h3>
+                                    <div class="info-box">
+                                        <strong>Definition:</strong> Dividing a large network into smaller sub-networks (subnets) to improve performance, security, and management.
+                                        <br><br>
+                                        <strong>Benefits:</strong>
+                                        <ul>
+                                            <li><strong>Reduced Broadcast Traffic:</strong> Each subnet is a separate broadcast domain</li>
+                                            <li><strong>Improved Security:</strong> Isolate sensitive systems</li>
+                                            <li><strong>Better Organization:</strong> Separate networks by function</li>
+                                            <li><strong>Efficient IP Utilization:</strong> Allocate only required IPs</li>
+                                            <li><strong>Easier Troubleshooting:</strong> Problems isolated to specific subnets</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3>CIDR (Classless Inter-Domain Routing)</h3>
+                                    <p><strong>Definition:</strong> A method of allocating IP addresses and routing that replaces classful addressing.</p>
+                                    <p><strong>CIDR Notation:</strong> <code>192.168.1.0/24</code></p>
+                                    <ul>
+                                        <li><code>192.168.1.0</code>: Network address</li>
+                                        <li><code>/24</code>: Subnet mask (first 24 bits are network, last 8 bits are hosts)</li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h3>Subnet Mask Explained</h3>
+                                    <p>A <strong>subnet mask</strong> determines which portion of an IP address is the network and which is the host.</p>
+                                    <pre class="network-diagram">
+                                        IP Address : 192.168.1.100
+                                        Subnet Mask: 255.255.255.0
+
+                                        Binary IP  : 11000000.10101000.00000001.01100100
+                                        Binary Mask: 11111111.11111111.11111111.00000000
+
+                                                    <-------- Network --------> <-Host->
+
+                                        Result:
+                                        - First 24 bits (3 octets) = Network portion
+                                        - Last 8 bits (1 octet)   = Host portion
+                                        - Network address         : 192.168.1.0
+                                        - Host range              : 192.168.1.1 to 192.168.1.254
+                                    </pre>
+                                </div>
+
+                                <div>
+                                    <h3>Common Subnet Masks</h3>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>CIDR</th>
+                                                <th>Subnet Mask</th>
+                                                <th>Usable Hosts</th>
+                                                <th>Use Case</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>/8</td><td>255.0.0.0</td><td>16,777,214</td><td>Class A (very large)</td></tr>
+                                            <tr><td>/16</td><td>255.255.0.0</td><td>65,534</td><td>Class B (large)</td></tr>
+                                            <tr><td>/24</td><td>255.255.255.0</td><td>254</td><td>Class C (standard LAN)</td></tr>
+                                            <tr><td>/25</td><td>255.255.255.128</td><td>126</td><td>Small office</td></tr>
+                                            <tr><td>/26</td><td>255.255.255.192</td><td>62</td><td>Small department</td></tr>
+                                            <tr><td>/27</td><td>255.255.255.224</td><td>30</td><td>Small team</td></tr>
+                                            <tr><td>/28</td><td>255.255.255.240</td><td>14</td><td>Tiny subnet</td></tr>
+                                            <tr><td>/30</td><td>255.255.255.252</td><td>2</td><td>Router-to-router</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div>
+                                    <h3>How to Calculate Subnets</h3>
+                                    <div class="info-box">
+                                        <strong>Formula for Number of Hosts:</strong>
+                                        <pre><code>Number of Usable Hosts = 2^h - 2</code></pre>
+                                        <ul>
+                                            <li><strong>h</strong> = number of host bits (zeros in subnet mask)</li>
+                                            <li><strong>-2</strong> accounts for network address and broadcast address</li>
+                                        </ul>
+                                        <strong>Example: /26 Subnet</strong>
+                                        <pre><code>Subnet Mask: 255.255.255.192 (/26)
+                                        Binary: 11111111.11111111.11111111.11000000
+                                                &lt;----- 26 network bits ----&gt;|&lt;-6 host bits-&gt;
+
+                                        Number of Hosts = 2^6 - 2 = 64 - 2 = 62 usable IPs</code></pre>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3>Subnetting Example: Splitting a /24 Network</h3>
+                                    <p><strong>Scenario:</strong> You have <code>192.168.1.0/24</code> and need to create 4 subnets.</p>
+                                    
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Subnet</th>
+                                                <th>Network Address</th>
+                                                <th>Usable Range</th>
+                                                <th>Broadcast</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>Subnet 1</td><td>192.168.1.0/26</td><td>192.168.1.1 - 192.168.1.62</td><td>192.168.1.63</td></tr>
+                                            <tr><td>Subnet 2</td><td>192.168.1.64/26</td><td>192.168.1.65 - 192.168.1.126</td><td>192.168.1.127</td></tr>
+                                            <tr><td>Subnet 3</td><td>192.168.1.128/26</td><td>192.168.1.129 - 192.168.1.190</td><td>192.168.1.191</td></tr>
+                                            <tr><td>Subnet 4</td><td>192.168.1.192/26</td><td>192.168.1.193 - 192.168.1.254</td><td>192.168.1.255</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div>
+                                    <h3>Real-World Example: AWS VPC</h3>
+                                    <p><strong>VPC CIDR:</strong> <code>10.0.0.0/16</code> (65,536 IPs)</p>
+                                    
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Subnet Type</th>
+                                                <th>CIDR</th>
+                                                <th>Purpose</th>
+                                                <th>Usable IPs</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>Public Subnet 1</td><td>10.0.1.0/24</td><td>Web servers (AZ1)</td><td>254</td></tr>
+                                            <tr><td>Public Subnet 2</td><td>10.0.2.0/24</td><td>Web servers (AZ2)</td><td>254</td></tr>
+                                            <tr><td>Private Subnet 1</td><td>10.0.10.0/24</td><td>Databases (AZ1)</td><td>254</td></tr>
+                                            <tr><td>Private Subnet 2</td><td>10.0.11.0/24</td><td>Databases (AZ2)</td><td>254</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div>
+                                    <h3>Subnetting Commands (Linux)</h3>
+                                    <pre><code># Calculate subnets using ipcalc
+ipcalc 192.168.1.0/24
+
+# View network configuration
+ip addr show
+ip route show</code></pre>
+                                </div>
+
+                                <div>
+                                    <h3>DevOps Context: IP Addressing in Practice</h3>
+                                    
+                                    <h4>AWS VPC</h4>
+                                    <pre><code># Create VPC
+aws ec2 create-vpc --cidr-block 10.0.0.0/16
+
+# Create public subnet
+aws ec2 create-subnet --vpc-id vpc-xxxxx --cidr-block 10.0.1.0/24
+
+# Create private subnet
+aws ec2 create-subnet --vpc-id vpc-xxxxx --cidr-block 10.0.10.0/24</code></pre>
+
+                                    <h4>Docker Networking</h4>
+                                    <pre><code># Docker assigns private IPs to containers
+docker network inspect bridge
+
+# Create custom network with specific subnet
+docker network create --subnet=172.18.0.0/16 my-network
+
+# Run container with static IP
+docker run -d --network my-network --ip 172.18.0.10 nginx</code></pre>
+
+                                    <h4>Kubernetes Networking</h4>
+                                    <pre><code># Pod gets IP from cluster CIDR range
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app
+spec:
+  containers:
+  - name: nginx
+    image: nginx</code></pre>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            }
+        };
+
+        const navTabs = document.getElementById('nav-tabs');
+        const contentContainer = document.getElementById('content-container');
+        let activeTab = 'what_is_ip';
+
+        function renderTabs() {
+            navTabs.innerHTML = Object.entries(contentData).map(([id, data]) => `
+                <button onclick="switchTab('${id}')" 
+                    id="tab-${id}"
+                    class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex items-center gap-2
+                    ${activeTab === id ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-800'}">
+                    <i data-lucide="${data.icon}" class="w-4 h-4"></i>
+                    ${data.title}
+                </button>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function switchTab(tabId) {
+            activeTab = tabId;
+            renderTabs();
+            renderContent();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderContent() {
+            const data = contentData[activeTab];
+            contentContainer.innerHTML = `
+                <div class="fade-in">
+                    <div class="mb-8">
+                        <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight">${data.title}</h1>
+                        <p class="text-lg text-slate-400 leading-relaxed">${data.intro}</p>
+                    </div>
+                    ${data.sections.map(section => `
+                        <div class="space-y-6">
+                            ${section.title ? `<h2 class="text-2xl font-bold text-white mb-4">${section.title}</h2>` : ''}
+                            <div class="prose prose-invert max-w-none">
+                                ${section.content}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+        renderTabs();
+        renderContent();
+
+        // Active link highlighting on scroll (removed as we use tabs now)
+        function toggleDebianModal() {
+            const modal = document.getElementById('debian-modal');
+            const isVisible = modal.style.display === 'flex';
+            modal.style.display = isVisible ? 'none' : 'flex';
+            document.body.style.overflow = isVisible ? 'auto' : 'hidden'; // Prevent scrolling when modal open
+        }
+
+        function closeModal(event) {
+            if (event.target.id === 'debian-modal') {
+                toggleDebianModal();
+            }
+        }
+    </script>
+</body>
+
+</html>

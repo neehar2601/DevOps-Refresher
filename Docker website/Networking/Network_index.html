@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Networking Fundamentals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } } } }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tech-card {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .analogy-card {
+            border-left: 4px solid #10b981;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .component-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .component-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .journey-step {
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .journey-step::before {
+            content: '';
+            position: absolute;
+            left: 0.75rem;
+            top: 2.5rem;
+            bottom: -1rem;
+            width: 2px;
+            background: linear-gradient(to bottom, #3b82f6, transparent);
+        }
+
+        .journey-step:last-child::before {
+            display: none;
+        }
+
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 1.125rem;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Interactive Packet Journey Styles */
+        .steps-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .steps-list::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 4px;
+        }
+
+        .steps-list::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+
+        .step-item {
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .step-item.active {
+            opacity: 1;
+            transform: translateX(4px);
+            background: rgba(30, 41, 59, 0.8);
+            border-color: #3b82f6;
+        }
+
+        .step-item.completed {
+            opacity: 0.8;
+        }
+
+        .type-outbound {
+            border-left: 4px solid #fbbc04;
+        }
+
+        .type-server {
+            border-left: 4px solid #ea4335;
+        }
+
+        .type-inbound {
+            border-left: 4px solid #34a853;
+        }
+
+        .active.type-outbound {
+            border-left-width: 6px;
+            border-left-color: #f9ab00;
+        }
+
+        .active.type-server {
+            border-left-width: 6px;
+            border-left-color: #d93025;
+        }
+
+        .active.type-inbound {
+            border-left-width: 6px;
+            border-left-color: #1e8e3e;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+
+    <header class="bg-slate-950 border-b border-slate-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i data-lucide="network" class="w-8 h-8 text-blue-400"></i>
+                <h1 class="text-2xl font-bold tracking-tight">Networking <span
+                        class="text-slate-400 font-light">Fundamentals</span></h1>
+            </div>
+            <nav class="flex items-center gap-6">
+                <a href="../index.html"
+                    class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
+                    <i data-lucide="home" class="w-4 h-4"></i> DevOps Hub
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="bg-slate-900 border-b border-slate-800 sticky top-[68px] z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex space-x-2 md:space-x-6 overflow-x-auto py-3 no-scrollbar" id="nav-tabs">
+                <!-- Tabs generated by JS -->
+            </nav>
+        </div>
+    </div>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <div id="content-container" class="fade-in">
+            <!-- Content injected by JS -->
+        </div>
+    </main>
+
+    <footer class="bg-slate-950 border-t border-slate-800 text-slate-500 py-6 text-center text-sm">
+        <p>Networking Hub · DevOps Learning Hub · <a href="../index.html" class="text-blue-400 hover:underline">← Back
+                to Hub</a></p>
+    </footer>
+
+    <script>
+        const contentData = {
+            intro: {
+                title: "What is Networking?",
+                icon: "network",
+                intro: "A network is a collection of interconnected devices that share resources and communicate using standardized protocols.",
+                sections: [
+                    {
+                        title: "What is a Network?",
+                        content: `
+                            <p class="text-slate-300 leading-relaxed mb-4">
+                                A <strong class="text-white">network</strong> is a collection of interconnected devices that share resources 
+                                and communicate with each other using standardized protocols. Networks range from small home setups 
+                                (a laptop, phone, and router) to massive global infrastructures like the internet.
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+                                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                                    <h4 class="font-bold text-blue-400 mb-2 flex items-center">
+                                        <i data-lucide="link" class="w-4 h-4 mr-2"></i>Interconnection
+                                    </h4>
+                                    <p class="text-sm text-slate-400">Devices are physically or wirelessly linked</p>
+                                </div>
+                                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                                    <h4 class="font-bold text-blue-400 mb-2 flex items-center">
+                                        <i data-lucide="message-square" class="w-4 h-4 mr-2"></i>Communication
+                                    </h4>
+                                    <p class="text-sm text-slate-400">Data flows between nodes using protocols (TCP/IP, HTTP)</p>
+                                </div>
+                                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                                    <h4 class="font-bold text-blue-400 mb-2 flex items-center">
+                                        <i data-lucide="share-2" class="w-4 h-4 mr-2"></i>Resource Sharing
+                                    </h4>
+                                    <p class="text-sm text-slate-400">Files, printers, internet, and apps accessed by multiple users</p>
+                                </div>
+                                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                                    <h4 class="font-bold text-blue-400 mb-2 flex items-center">
+                                        <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>Addressing
+                                    </h4>
+                                    <p class="text-sm text-slate-400">Every device has a unique identifier (IP, MAC address)</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "How Networks Work",
+                        content: `
+                            <p class="text-slate-300 leading-relaxed mb-4">
+                                Networks operate through a combination of hardware, software, and protocols:
+                            </p>
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-3 bg-slate-800/50 p-4 rounded-lg">
+                                    <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">1</span>
+                                    <div>
+                                        <h4 class="font-semibold text-white">Physical/Data Link Layer</h4>
+                                        <p class="text-sm text-slate-400">Cables (Ethernet) or wireless signals (Wi-Fi) carry raw data</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3 bg-slate-800/50 p-4 rounded-lg">
+                                    <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">2</span>
+                                    <div>
+                                        <h4 class="font-semibold text-white">Network Layer</h4>
+                                        <p class="text-sm text-slate-400">Routers use IP addresses to forward data packets to the correct destination</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3 bg-slate-800/50 p-4 rounded-lg">
+                                    <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">3</span>
+                                    <div>
+                                        <h4 class="font-semibold text-white">Transport Layer</h4>
+                                        <p class="text-sm text-slate-400">TCP ensures reliable delivery; UDP offers faster, connectionless transmission</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3 bg-slate-800/50 p-4 rounded-lg">
+                                    <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">4</span>
+                                    <div>
+                                        <h4 class="font-semibold text-white">Application Layer</h4>
+                                        <p class="text-sm text-slate-400">Protocols like HTTP, DNS, and SSH enable specific services</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "Networking Models (OSI vs TCP/IP)",
+                        content: `
+                            <p class="text-slate-300 leading-relaxed mb-4">
+                                To manage network complexity, we use models that organize different protocols and functions into functional layers:
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                                <div class="bg-blue-950/40 border border-blue-500/25 border-l-4 border-l-blue-400 rounded-xl rounded-l-none p-5">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <i data-lucide="layers" class="w-5 h-5 text-blue-400"></i>
+                                        <h3 class="font-bold text-white">OSI 7-Layer Model</h3>
+                                    </div>
+                                    <p class="text-slate-300 text-sm leading-relaxed">
+                                        The <strong class="text-blue-400">Theoretical Roadmap</strong>. It breaks networking into 7 logical steps. It is perfect for learning and troubleshooting but isn't strictly how modern protocols are written.
+                                    </p>
+                                </div>
+                                <div class="bg-purple-950/40 border border-purple-500/25 border-l-4 border-l-purple-400 rounded-xl rounded-l-none p-5">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <i data-lucide="activity" class="w-5 h-5 text-purple-400"></i>
+                                        <h3 class="font-bold text-white">TCP/IP Model</h3>
+                                    </div>
+                                    <p class="text-slate-300 text-sm leading-relaxed">
+                                        The <strong class="text-purple-400">Practical Implementation</strong>. This 4-layer model is what the modern internet actually uses. It simplifies the OSI model into functional groups for actual data movement.
+                                    </p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "Why Networks Matter for DevOps",
+                        content: `
+                            <p class="text-slate-300 leading-relaxed mb-4">
+                                Modern DevOps workflows depend on networking:
+                            </p>
+                            <ul class="space-y-2 text-slate-300">
+                                <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"></i><span><strong class="text-white">Container Networking:</strong> Docker containers communicate via virtual networks</span></li>
+                                <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"></i><span><strong class="text-white">Kubernetes Networking:</strong> Pods, services, and ingress controllers manage traffic</span></li>
+                                <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"></i><span><strong class="text-white">Cloud Infrastructure:</strong> VPCs, subnets, load balancers, and security groups control access</span></li>
+                                <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"></i><span><strong class="text-white">Service Meshes:</strong> Istio and Linkerd manage microservice communication</span></li>
+                                <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"></i><span><strong class="text-white">CI/CD Pipelines:</strong> Jenkins, GitHub Actions need network access to repos and deployment targets</span></li>
+                            </ul>
+                        `
+                    }
+                ],
+                guidesList: [
+                    {
+                        title: "IP Addressing Guide",
+                        desc: "Visual IP calculation, classes, subnets, CIDR notation, and network troubleshooting.",
+                        url: "IP Addressing Guide.html",
+                        subtext: "Subnets • CIDR • Calculation",
+                        borderColor: "border-emerald-500/30",
+                        bgClass: "bg-emerald-900/20",
+                        iconBgClass: "bg-emerald-500/20",
+                        iconColor: "text-emerald-400",
+                        icon: "map-pin",
+                        btnClass: "bg-emerald-700 hover:bg-emerald-600"
+                    },
+                    {
+                        title: "Networking Tools Guide",
+                        desc: "Essential Linux networking tools. Categorized modern vs legacy commands with examples.",
+                        url: "Networking-Tools-Guide.html",
+                        subtext: "Connectivity • DNS • Perf",
+                        borderColor: "border-blue-500/30",
+                        bgClass: "bg-blue-900/20",
+                        iconBgClass: "bg-blue-500/20",
+                        iconColor: "text-blue-400",
+                        icon: "wrench",
+                        btnClass: "bg-blue-600 hover:bg-blue-500"
+                    }
+                ]
+            },
+            components: {
+                title: "Network Components",
+                icon: "box",
+                intro: "Understanding the building blocks that make modern networks function.",
+                components: [
+                    {
+                        name: "Node (Device)",
+                        icon: "laptop",
+                        definition: "Any device connected to a network that can send, receive, or process data.",
+                        types: ["<strong>Endpoints:</strong> Laptops, desktops, smartphones, IoT devices", "<strong>Servers:</strong> Web servers (Nginx, Apache), database servers (PostgreSQL, MySQL)", "<strong>Network Devices:</strong> Routers, switches, firewalls"],
+                        devops: "Virtual Machines (EC2, Azure VMs, GCP Compute Engine), Containers (Docker), Kubernetes Pods"
+                    },
+                    {
+                        name: "Switch",
+                        icon: "shuffle",
+                        definition: "A Layer 2 device that connects multiple devices within the same local network (LAN) and forwards data frames based on MAC addresses.",
+                        how: "Maintains a <strong>MAC address table</strong> mapping ports to connected devices. When a frame arrives, the switch reads the destination MAC and forwards it only to the correct port.",
+                        example: "In an office with 50 computers, a switch ensures that when Computer A sends data to Computer B, only Computer B receives it—traffic is isolated and efficient.",
+                        devops: "Virtual switches in VMware or Hyper-V connect VMs. Docker bridge networks use Linux virtual switches (docker0)."
+                    },
+                    {
+                        name: "Router",
+                        icon: "git-branch",
+                        definition: "A Layer 3 device that forwards data packets between different networks using IP addresses.",
+                        functions: ["<strong>Routing:</strong> Determines the best path for packets to reach their destination", "<strong>NAT:</strong> Allows multiple devices on a private network to share a single public IP", "<strong>Firewall:</strong> Filters traffic based on security rules"],
+                        devops: "Cloud VPCs use virtual routers (AWS Route Tables, Azure Route Tables). Kubernetes uses kube-proxy to route traffic between pods."
+                    },
+                    {
+                        name: "DNS Server",
+                        icon: "globe",
+                        definition: "Translates human-readable domain names (like google.com) into IP addresses (like 142.250.184.46).",
+                        records: ["<strong>A Record:</strong> Maps domain to IPv4 address", "<strong>AAAA Record:</strong> Maps domain to IPv6 address", "<strong>CNAME:</strong> Alias for another domain", "<strong>MX:</strong> Mail server for the domain"],
+                        devops: "AWS Route 53, Azure DNS manage DNS for cloud apps. Kubernetes CoreDNS resolves service names to IPs."
+                    },
+                    {
+                        name: "DHCP Server",
+                        icon: "zap",
+                        definition: "Automatically assigns IP addresses and network configuration to devices when they connect to a network.",
+                        process: "DORA Process: <strong>Discover</strong> (Client broadcasts), <strong>Offer</strong> (Server responds with IP), <strong>Request</strong> (Client accepts), <strong>Acknowledge</strong> (Server confirms)",
+                        devops: "Cloud platforms automatically assign private IPs to VMs via DHCP. Kubernetes assigns IPs to pods from a CIDR range."
+                    },
+                    {
+                        name: "Load Balancer",
+                        icon: "scale",
+                        definition: "Distributes incoming network traffic across multiple servers to ensure no single server is overwhelmed.",
+                        types: ["<strong>Layer 4:</strong> Routes based on IP and port (TCP/UDP)", "<strong>Layer 7:</strong> Routes based on HTTP headers, URLs, cookies"],
+                        devops: "AWS ELB (Elastic Load Balancer), Nginx/HAProxy for reverse proxying, Kubernetes Ingress Controllers"
+                    },
+                    {
+                        name: "Firewall",
+                        icon: "shield",
+                        definition: "A security device that monitors and controls incoming and outgoing network traffic based on predefined rules.",
+                        types: ["<strong>Packet Filtering:</strong> Inspects packets by IP, port, protocol", "<strong>Stateful Inspection:</strong> Tracks active connections", "<strong>Application Layer:</strong> Inspects HTTP/HTTPS traffic for threats"],
+                        devops: "AWS Security Groups control EC2 traffic, Azure Network Security Groups (NSGs), iptables on Linux servers"
+                    }
+                ]
+            },
+            journey: {
+                title: "Packet Journey",
+                icon: "route",
+                intro: "Follow a complete interactive packet journey from typing google.com to seeing the webpage.",
+                steps: [
+                    {
+                        type: "outbound", title: "1. URL Parsing & Caches",
+                        brief: "Checking local memory.",
+                        detail: "<p>The browser parses the URL. It identifies the protocol (HTTPS) and the domain (google.com).</p><p>It checks its internal <strong>HSTS list</strong> to ensure the connection must be secure. Then, it checks the <strong>Browser DNS Cache</strong> and the <strong>OS DNS Cache</strong> (including the <code>/etc/hosts</code> file) to see if it already knows Google's IP address.</p><p><strong>DNS Cache Hierarchy:</strong></p><ul><li>Browser DNS cache (in-memory)</li><li>OS DNS cache</li><li>Local hosts file (<code>/etc/hosts</code> on Linux/Mac, <code>C:\\\\Windows\\\\System32\\\\drivers\\\\etc\\\\hosts</code> on Windows)</li></ul><p><em>Assuming a cache miss, we proceed to DNS resolution.</em></p>"
+                    },
+                    {
+                        type: "outbound", title: "2. DNS Resolution",
+                        brief: "Querying the hierarchy.",
+                        detail: "<p>The OS sends a UDP request on <strong>Port 53</strong> to the configured <strong>Recursive DNS Resolver</strong> (typically provided by your ISP or configured as 8.8.8.8 for Google DNS).</p><p>The Resolver traverses the DNS hierarchy:</p><ul><li>Queries the <strong>Root Server</strong> (.), which points to the .com TLD servers.</li><li>Queries the <strong>TLD Server</strong> (.com), which points to Google's Name Servers.</li><li>Queries Google's <strong>Authoritative Name Server</strong>, which responds with the <strong>A Record</strong> (IPv4) or <strong>AAAA Record</strong> (IPv6).</li></ul><p>Result: <span class=\"code-block px-3 py-1 bg-black rounded text-green-400 font-mono\">142.250.190.46</span></p><p class=\"mt-4\"><strong>DNS Caching with TTL:</strong> The DNS record comes with a <strong>TTL (Time To Live)</strong> value. It tells resolvers and caches how long they can store this IP before needing to query again.</p>"
+                    },
+                    {
+                        type: "outbound", title: "3. ARP & Routing",
+                        brief: "Finding the local exit point.",
+                        detail: "<p>Before the packet can leave your machine, the OS needs the physical <strong>MAC address</strong> of your local router (the <strong>Default Gateway</strong>) to build the Ethernet frame.</p><p>It checks its <strong>ARP cache</strong>. If empty, it broadcasts an <strong>ARP Request</strong> to the local network: <em>'Who has the IP of the default gateway?'</em></p><p>The router replies with its MAC address, and this mapping is cached in the ARP table for future use.</p>"
+                    },
+                    {
+                        type: "outbound", title: "4. TCP & TLS Handshake",
+                        brief: "Establishing the secure connection.",
+                        detail: "<p>A reliable, encrypted connection is established with Google's IP on <strong>Port 443</strong> before any HTTP data is sent.</p><p><strong>TCP 3-Way Handshake (Layer 4):</strong></p><ol class=\"list-decimal pl-5 space-y-1 mb-4\"><li>Client sends <strong>SYN</strong> - \"Let's connect\"</li><li>Server replies <strong>SYN-ACK</strong> - \"I'm ready\"</li><li>Client replies <strong>ACK</strong> - \"Connection established\"</li></ol><p><strong>TLS Handshake:</strong> Browser validates the certificate chain against its trusted <strong>CA root store</strong> and generates symmetric session keys.</p>"
+                    },
+                    {
+                        type: "outbound", title: "5. Outbound Encapsulation",
+                        brief: "Sending the HTTP GET Request.",
+                        detail: "<p>Now, data flows <strong>down</strong> the OSI stack (encapsulation):</p><ul class=\"list-disc pl-5 space-y-1\"><li><strong>L7 (Application):</strong> Formulates the HTTP request (GET / HTTP/2).</li><li><strong>L6/L5:</strong> Payload is encrypted using <strong>TLS 1.3</strong> keys.</li><li><strong>L4 (Transport):</strong> Wrapped in a <strong>TCP Segment</strong> (Dst Port: 443).</li><li><strong>L3 (Network):</strong> Wrapped in an <strong>IP Packet</strong> (Dst IP: Google's IP).</li><li><strong>L2 (Data Link):</strong> Wrapped in an <strong>Ethernet Frame</strong> (Dst MAC: Router's MAC).</li><li><strong>L1 (Physical):</strong> Transmitted as electrical signals or radio waves.</li></ul>"
+                    },
+                    {
+                        type: "server", title: "6. Google's Processing",
+                        brief: "Handling the request.",
+                        detail: "<p>The data arrives at Google's edge network. The packet travels <strong>up</strong> Google's OSI stack (de-encapsulation):</p><ul class=\"list-disc pl-5 space-y-1\"><li><strong>L1-L2:</strong> Frame is received and validated.</li><li><strong>L3:</strong> IP packet is routed to the correct server.</li><li><strong>L4:</strong> TCP segment is processed, acknowledged.</li><li><strong>L5-L6:</strong> TLS payload is decrypted.</li><li><strong>L7:</strong> HTTP request is parsed by a backend application server.</li></ul>"
+                    },
+                    {
+                        type: "inbound", title: "7. Response Encapsulation",
+                        brief: "Google sends the response.",
+                        detail: "<p>Google's server formulates an <strong>HTTP 200 OK</strong> response containing the HTML body.</p><p>This data travels <strong>down</strong> Google's OSI stack: encrypted via TLS, wrapped in TCP segments, further wrapped in IP packets, and finally Ethernet frames before being transmitted back through the internet backbone.</p>"
+                    },
+                    {
+                        type: "inbound", title: "8. De-encapsulation (At Home)",
+                        brief: "Receiving the data.",
+                        detail: "<p>The packets arrive at your local router. Data flows <strong>up</strong> your OSI stack:</p><ul class=\"list-disc pl-5 space-y-1\"><li><strong>L1:</strong> Signals received by network interface.</li><li><strong>L2:</strong> Ethernet header is stripped after verification.</li><li><strong>L3:</strong> IP header is stripped, passed to transport layer.</li><li><strong>L4:</strong> TCP processes segments, verifies order, strips header.</li><li><strong>L5/L6:</strong> Browser decrypts payload using session keys.</li><li><strong>L7:</strong> Browser reads raw HTML data from HTTP response.</li></ul>"
+                    },
+                    {
+                        type: "inbound", title: "9. Browser Rendering",
+                        brief: "Painting the screen.",
+                        detail: "<p>The browser's rendering engine takes over:</p><ol class=\"list-decimal pl-5 space-y-1\"><li><strong>DOM Construction:</strong> Parses HTML to build the DOM tree.</li><li><strong>CSSOM Construction:</strong> Parses CSS for styling rules.</li><li><strong>Sub-resource Fetching:</strong> Requests images, JS, and fonts.</li><li><strong>JavaScript Execution:</strong> Runs code to modify the page dynamically.</li><li><strong>Layout & Paint:</strong> Calculates element positions and draws pixels.</li></ol><p class=\"mt-4\">The Google search bar is now visible and interactive!</p>"
+                    }
+                ],
+                osiModel: [
+                    { layer: 7, name: "Application", protocol: "HTTP, DNS, SSH", action: "User interacts with browser" },
+                    { layer: 6, name: "Presentation", protocol: "SSL/TLS, encryption", action: "Data encryption (HTTPS)" },
+                    { layer: 5, name: "Session", protocol: "Session management", action: "Maintains connection state" },
+                    { layer: 4, name: "Transport", protocol: "TCP, UDP", action: "Reliable delivery, ports (80, 443)" },
+                    { layer: 3, name: "Network", protocol: "IP, Routers", action: "Routing between networks" },
+                    { layer: 2, name: "Data Link", protocol: "Ethernet, MAC, Switches", action: "Local network delivery" },
+                    { layer: 1, name: "Physical", protocol: "Cables, Wi-Fi, signals", action: "Electrical/radio signals" }
+                ]
+            },
+            cheatsheet: {
+                title: "Command Cheat Sheet",
+                icon: "terminal",
+                intro: "Essential Linux networking commands for DevOps troubleshooting and diagnostics.",
+                categories: [
+                    {
+                        name: "Network Interface Management",
+                        commands: [
+                            { cmd: "ip addr show", desc: "Display all network interfaces" },
+                            { cmd: "ip link show up", desc: "Show only active interfaces" },
+                            { cmd: "sudo ip link set eth0 up", desc: "Bring an interface up" },
+                            { cmd: "sudo ip addr add 192.168.1.100/24 dev eth0", desc: "Assign a static IP address" }
+                        ]
+                    },
+                    {
+                        name: "Connectivity Testing",
+                        commands: [
+                            { cmd: "ping google.com", desc: "Test connectivity to a host" },
+                            { cmd: "ping -c 4 8.8.8.8", desc: "Send 4 packets and stop" },
+                            { cmd: "traceroute google.com", desc: "Trace the route to a host" },
+                            { cmd: "nc -zv example.com 22", desc: "Check if a port is open (Netcat)" }
+                        ]
+                    },
+                    {
+                        name: "DNS and Name Resolution",
+                        commands: [
+                            { cmd: "nslookup google.com", desc: "Query DNS for a domain" },
+                            { cmd: "dig google.com", desc: "Advanced DNS lookup" },
+                            { cmd: "dig google.com +short", desc: "Get just the IP address" },
+                            { cmd: "dig -x 8.8.8.8", desc: "Reverse DNS lookup" }
+                        ]
+                    },
+                    {
+                        name: "Routing",
+                        commands: [
+                            { cmd: "ip route show", desc: "Display routing table" },
+                            { cmd: "ip route show default", desc: "Show default gateway" },
+                            { cmd: "sudo ip route add 10.0.0.0/24 via 192.168.1.1", desc: "Add a static route" },
+                            { cmd: "sudo ip route del 10.0.0.0/24", desc: "Delete a route" }
+                        ]
+                    },
+                    {
+                        name: "Port and Socket Information",
+                        commands: [
+                            { cmd: "ss -tuln", desc: "Show all open ports (TCP/UDP, listening)" },
+                            { cmd: "sudo ss -tulpn | grep :80", desc: "Show which process is using port 80" },
+                            { cmd: "sudo lsof -i :80", desc: "List processes using port 80" },
+                            { cmd: "ss -tan", desc: "Display all active connections" }
+                        ]
+                    },
+                    {
+                        name: "Firewall (iptables)",
+                        commands: [
+                            { cmd: "sudo iptables -L -v -n", desc: "List all firewall rules" },
+                            { cmd: "sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT", desc: "Allow incoming SSH" },
+                            { cmd: "sudo iptables -A INPUT -s 192.168.1.50 -j DROP", desc: "Block an IP address" },
+                            { cmd: "sudo iptables -F", desc: "Flush all rules (use carefully!)" }
+                        ]
+                    },
+                    {
+                        name: "Network Performance",
+                        commands: [
+                            { cmd: "iftop", desc: "Real-time bandwidth by connection" },
+                            { cmd: "iperf3 -s", desc: "Start iperf server" },
+                            { cmd: "sudo tcpdump -i eth0", desc: "Capture network traffic on eth0" },
+                            { cmd: "sudo tcpdump -i eth0 port 80", desc: "Capture HTTP traffic only" }
+                        ]
+                    },
+                    {
+                        name: "Docker Networking",
+                        commands: [
+                            { cmd: "docker network ls", desc: "List Docker networks" },
+                            { cmd: "docker network inspect bridge", desc: "Inspect a network" },
+                            { cmd: "docker network create my-network", desc: "Create a custom network" },
+                            { cmd: "docker network connect my-network container", desc: "Connect container to network" }
+                        ]
+                    },
+                    {
+                        name: "Kubernetes Networking",
+                        commands: [
+                            { cmd: "kubectl get svc", desc: "List services" },
+                            { cmd: "kubectl describe svc my-service", desc: "Describe a service" },
+                            { cmd: "kubectl port-forward pod/my-pod 8080:80", desc: "Port-forward to a pod" },
+                            { cmd: "kubectl get pods -o wide", desc: "Get pod IPs" }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        let currentTab = 'intro';
+        let currentStepIndex = -1;
+
+        function startProcess() {
+            const startBtn = document.getElementById('journey-start-btn');
+            const nextBtn = document.getElementById('journey-next-btn');
+            startBtn.disabled = true;
+            nextBtn.disabled = false;
+            currentStepIndex = 0;
+            updateJourneyUI();
+        }
+
+        function nextStep() {
+            const steps = contentData.journey.steps;
+            if (currentStepIndex < steps.length - 1) {
+                currentStepIndex++;
+                updateJourneyUI();
+            } else {
+                finishProcess();
+            }
+        }
+
+        function prevStep() {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                updateJourneyUI();
+            }
+        }
+
+        function jumpToStep(index) {
+            const startBtn = document.getElementById('journey-start-btn');
+            if (startBtn && startBtn.disabled) {
+                currentStepIndex = index;
+                updateJourneyUI();
+            }
+        }
+
+        function finishProcess() {
+            const detailTitleEl = document.getElementById('journey-detail-title');
+            const detailContentEl = document.getElementById('journey-detail-content');
+            const nextBtn = document.getElementById('journey-next-btn');
+            const prevBtn = document.getElementById('journey-prev-btn');
+            const startBtn = document.getElementById('journey-start-btn');
+
+            detailTitleEl.innerText = "Connection Closed";
+            detailContentEl.innerHTML = "<p class='mb-4'>The page is fully rendered. The <strong>TCP connection</strong> is kept alive (persistent connection) for a short time in case you initiate another search, allowing for faster subsequent requests without repeating the handshake.</p><p class='mb-4'>When idle timeout is reached (or explicitly closed), the connection is cleanly terminated via a <strong>TCP FIN exchange</strong>.</p><p class='mt-6 p-4 bg-blue-950/30 border border-blue-500/20 rounded-xl text-blue-300 italic'><strong>Round trip complete.</strong> The browser maintains its caches and rendered DOM for optimal performance.</p>";
+
+            nextBtn.disabled = true;
+            prevBtn.disabled = false;
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<i data-lucide="refresh-cw" class="w-4 h-4"></i> Restart Request';
+            currentStepIndex = contentData.journey.steps.length;
+
+            document.querySelectorAll('.step-item').forEach(el => el.classList.remove('active'));
+            lucide.createIcons();
+        }
+
+        function updateJourneyUI() {
+            const nextBtn = document.getElementById('journey-next-btn');
+            const prevBtn = document.getElementById('journey-prev-btn');
+            const detailTitleEl = document.getElementById('journey-detail-title');
+            const detailContentEl = document.getElementById('journey-detail-content');
+            const steps = contentData.journey.steps;
+
+            prevBtn.disabled = currentStepIndex === 0;
+            nextBtn.disabled = false;
+            nextBtn.innerHTML = currentStepIndex === steps.length - 1 ? 'Finish Process <i data-lucide="check" class="w-4 h-4"></i>' : 'Next Step <i data-lucide="chevron-right" class="w-4 h-4"></i>';
+
+            document.querySelectorAll('.step-item').forEach((el, index) => {
+                el.classList.remove('active');
+                if (index <= currentStepIndex) {
+                    el.classList.add('completed');
+                } else {
+                    el.classList.remove('completed');
+                }
+            });
+
+            const activeStepEl = document.getElementById(`step-ui-${currentStepIndex}`);
+            if (activeStepEl) {
+                activeStepEl.classList.add('active');
+                activeStepEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            const currentData = steps[currentStepIndex];
+            if (currentData) {
+                detailTitleEl.innerText = currentData.title;
+                detailContentEl.innerHTML = currentData.detail;
+                detailContentEl.scrollTop = 0;
+            }
+            lucide.createIcons();
+        }
+
+        function renderTabs() {
+            const navContainer = document.getElementById('nav-tabs');
+            navContainer.innerHTML = '';
+
+            Object.keys(contentData).forEach(key => {
+                const data = contentData[key];
+                const isActive = currentTab === key;
+
+                const btn = document.createElement('button');
+                btn.className = `flex items-center space-x-2 px-4 py-3 text-sm font-semibold rounded-t-lg transition-colors whitespace-nowrap border-b-2 ${isActive
+                    ? 'text-blue-400 bg-slate-800/50 border-blue-400'
+                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 border-transparent'
+                    }`;
+                btn.onclick = () => {
+                    currentTab = key;
+                    renderTabs();
+                    renderContent();
+                };
+
+                btn.innerHTML = `
+                    <i data-lucide="${data.icon}" class="w-4 h-4"></i>
+                    <span>${data.title}</span>
+                `;
+                navContainer.appendChild(btn);
+            });
+            lucide.createIcons();
+        }
+
+        function renderContent() {
+            const container = document.getElementById('content-container');
+            const data = contentData[currentTab];
+
+            container.classList.remove('fade-in');
+            void container.offsetWidth;
+            container.classList.add('fade-in');
+
+            let html = `
+                <div class="mb-10 text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">${data.title}</h2>
+                    <p class="text-lg text-slate-400">${data.intro}</p>
+                </div>
+            `;
+
+            if (currentTab === 'intro') {
+                html += renderIntro(data);
+            } else if (currentTab === 'components') {
+                html += renderComponents(data);
+            } else if (currentTab === 'journey') {
+                html += renderJourney(data);
+            } else if (currentTab === 'cheatsheet') {
+                html += renderCheatsheet(data);
+            }
+
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function renderIntro(data) {
+            let html = '<div class="space-y-12">';
+
+            data.sections.forEach(section => {
+                html += `
+                    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-8">
+                        <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                            <i data-lucide="arrow-right" class="w-6 h-6 text-blue-400 mr-3"></i>
+                            ${section.title}
+                        </h3>
+                        ${section.content}
+                    </div>
+                `;
+            });
+
+            if (data.guidesList) {
+                html += `
+                    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-8">
+                        <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                            <i data-lucide="book-open" class="w-6 h-6 text-blue-400 mr-3"></i>
+                            In-Depth Guides
+                        </h3>
+                        <p class="text-slate-400 mb-6 font-medium">Explore specialized, practical deep-dives into fundamental networking topics.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                `;
+                data.guidesList.forEach(guide => {
+                    html += `
+                        <div class="bg-slate-900 border ${guide.borderColor} rounded-2xl overflow-hidden hover:-translate-y-1 transition-transform duration-200 shadow-lg">
+                            <div class="${guide.bgClass} px-6 pt-6 pb-4">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="p-2 ${guide.iconBgClass} rounded-lg">
+                                        <i data-lucide="${guide.icon}" class="w-5 h-5 ${guide.iconColor}"></i>
+                                    </div>
+                                    <h3 class="font-bold text-white text-lg">${guide.title}</h3>
+                                </div>
+                                <p class="text-slate-400 text-sm leading-relaxed">${guide.desc}</p>
+                            </div>
+                            <div class="px-6 pb-5 pt-4">
+                                <a href="${guide.url}" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl ${guide.btnClass} text-white font-semibold text-sm transition-colors">
+                                    <i data-lucide="external-link" class="w-4 h-4"></i> Open Guide
+                                </a>
+                                <p class="text-slate-500 text-xs mt-3 text-center">${guide.subtext}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function renderComponents(data) {
+            let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
+
+            data.components.forEach(comp => {
+                html += `
+                    <div class="component-card bg-slate-800 rounded-xl border border-slate-700 p-6">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-3 bg-blue-900/50 rounded-lg">
+                                <i data-lucide="${comp.icon}" class="w-6 h-6 text-blue-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white">${comp.name}</h3>
+                        </div>
+                        <p class="text-slate-300 mb-4 leading-relaxed">${comp.definition}</p>
+                `;
+
+                if (comp.types) {
+                    html += '<div class="mb-3"><h4 class="text-sm font-bold text-blue-400 mb-2">Types:</h4><ul class="space-y-1 text-sm text-slate-400">';
+                    comp.types.forEach(t => html += `<li>• ${t}</li>`);
+                    html += '</ul></div>';
+                }
+
+                if (comp.functions) {
+                    html += '<div class="mb-3"><h4 class="text-sm font-bold text-blue-400 mb-2">Key Functions:</h4><ul class="space-y-1 text-sm text-slate-400">';
+                    comp.functions.forEach(f => html += `<li>• ${f}</li>`);
+                    html += '</ul></div>';
+                }
+
+                if (comp.records) {
+                    html += '<div class="mb-3"><h4 class="text-sm font-bold text-blue-400 mb-2">DNS Record Types:</h4><ul class="space-y-1 text-sm text-slate-400">';
+                    comp.records.forEach(r => html += `<li>• ${r}</li>`);
+                    html += '</ul></div>';
+                }
+
+                if (comp.how) {
+                    html += `<p class="text-sm text-slate-400 mb-3"><strong class="text-blue-400">How It Works:</strong> ${comp.how}</p>`;
+                }
+
+                if (comp.example) {
+                    html += `<p class="text-sm text-slate-400 mb-3 italic"><strong class="text-green-400">Example:</strong> ${comp.example}</p>`;
+                }
+
+                if (comp.process) {
+                    html += `<p class="text-sm text-slate-400 mb-3">${comp.process}</p>`;
+                }
+
+                html += `
+                        <div class="mt-4 pt-4 border-t border-slate-700">
+                            <p class="text-xs text-slate-500"><strong class="text-emerald-400">DevOps:</strong> ${comp.devops}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            return html;
+        }
+
+        function renderJourney(data) {
+            let html = `
+                <div class="space-y-8">
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 md:p-8 shadow-xl">
+                        <!-- Browser Bar Emulator -->
+                        <div class="bg-slate-900 border border-slate-700 rounded-xl p-3 flex gap-3 items-center mb-8">
+                            <div class="flex gap-1.5 px-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                            </div>
+                            <div class="flex-grow flex items-center bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-400 text-sm">
+                                <i data-lucide="lock" class="w-3.5 h-3.5 mr-2 text-emerald-500"></i>
+                                <span>https://</span>
+                                <input type="text" value="google.com" readonly class="bg-transparent border-none focus:ring-0 text-slate-200 ml-0.5 w-full outline-none">
+                            </div>
+                            <button id="journey-start-btn" onclick="startProcess()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-all shadow-lg flex items-center gap-2">
+                                <i data-lucide="zap" class="w-4 h-4"></i>
+                                Initiate Request
+                            </button>
+                        </div>
+
+                        <div class="flex flex-col lg:flex-row gap-8 min-h-[500px]">
+                            <!-- Steps Side -->
+                            <div class="lg:w-1/3 flex flex-col gap-4 overflow-y-auto max-h-[500px] pr-2 steps-list" id="journey-steps-list">
+            `;
+
+            data.steps.forEach((step, index) => {
+                const badgeClass = step.type === 'outbound' ? 'text-amber-400 bg-amber-400/10' :
+                    step.type === 'inbound' ? 'text-emerald-400 bg-emerald-400/10' : 'text-rose-400 bg-rose-400/10';
+
+                const icon = step.type === 'outbound' ? 'arrow-up-right' :
+                    step.type === 'inbound' ? 'arrow-down-left' : 'server';
+
+                html += `
+                    <div class="step-item type-${step.type} bg-slate-900/40 border border-slate-700/50 p-4 rounded-xl cursor-pointer hover:bg-slate-800/60 transition-all" 
+                         id="step-ui-${index}" onclick="jumpToStep(${index})">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${badgeClass} uppercase tracking-wider flex items-center gap-1">
+                                <i data-lucide="${icon}" class="w-2.5 h-2.5"></i>
+                                ${step.type}
+                            </span>
+                            <span class="text-[10px] text-slate-500 font-mono">Step ${index + 1}</span>
+                        </div>
+                        <strong class="text-white text-sm block mb-1">${step.title}</strong>
+                        <p class="text-[11px] text-slate-400 leading-tight">${step.brief}</p>
+                    </div>
+                `;
+            });
+
+            html += `
+                            </div>
+
+                            <!-- Details Panel -->
+                            <div class="lg:w-2/3 bg-slate-900 border border-slate-700 rounded-2xl p-8 flex flex-col shadow-inner">
+                                <div class="flex items-center gap-3 mb-6 pb-6 border-b border-slate-800">
+                                    <i data-lucide="info" class="w-6 h-6 text-blue-400"></i>
+                                    <h3 id="journey-detail-title" class="text-2xl font-bold text-white">Awaiting Execution...</h3>
+                                </div>
+                                
+                                <div class="flex-grow overflow-y-auto detail-content pr-4 text-slate-300 leading-relaxed" id="journey-detail-content">
+                                    <p class="text-lg text-slate-400 italic">Click "Initiate Request" to begin the step-by-step breakdown.</p>
+                                </div>
+
+                                <div class="mt-8 pt-6 border-t border-slate-800 flex justify-between items-center">
+                                    <button id="journey-prev-btn" onclick="prevStep()" disabled class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-semibold text-sm">
+                                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                                        Previous
+                                    </button>
+                                    <button id="journey-next-btn" onclick="nextStep()" disabled class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-semibold text-sm">
+                                        Next Step
+                                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OSI Model Reference -->
+                    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-8">
+                        <h3 class="text-2xl font-bold text-white mb-6">OSI Model Reference</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="bg-slate-900">
+                                    <tr>
+                                        <th class="px-4 py-3 text-blue-400 font-semibold">Layer</th>
+                                        <th class="px-4 py-3 text-blue-400 font-semibold">Name</th>
+                                        <th class="px-4 py-3 text-blue-400 font-semibold">Protocol/Device</th>
+                                        <th class="px-4 py-3 text-blue-400 font-semibold">What Happens</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-700">
+            `;
+
+            data.osiModel.forEach(layer => {
+                html += `
+                    <tr class="hover:bg-slate-700/50">
+                        <td class="px-4 py-3 font-mono text-green-400">${layer.layer}</td>
+                        <td class="px-4 py-3 text-white font-semibold">${layer.name}</td>
+                        <td class="px-4 py-3 text-slate-300">${layer.protocol}</td>
+                        <td class="px-4 py-3 text-slate-400">${layer.action}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Reset state when rendering
+            currentStepIndex = -1;
+
+            return html;
+        }
+
+        function renderCheatsheet(data) {
+            let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
+
+            data.categories.forEach(cat => {
+                html += `
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-lg font-bold text-white border-b border-slate-700 pb-2 mb-4 flex items-center">
+                            <i data-lucide="chevron-right" class="w-5 h-5 text-blue-400 mr-2"></i> ${cat.name}
+                        </h3>
+                        <div class="space-y-4">
+                `;
+
+                cat.commands.forEach(item => {
+                    html += `
+                        <div>
+                            <div class="bg-slate-900 text-green-400 font-mono text-sm p-2 rounded-md mb-1 border border-slate-700">
+                                <span class="text-slate-500 select-none">$ </span>${item.cmd}
+                            </div>
+                            <p class="text-sm text-slate-400 pl-1">${item.desc}</p>
+                        </div>
+                    `;
+                });
+
+                html += '</div></div>';
+            });
+
+            html += '</div>';
+            return html;
+        }
+
+        renderTabs();
+        renderContent();
+    </script>
+
+    <script src="../assets/script.js"></script>
+</body>
+
+</html>
