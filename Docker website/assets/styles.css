@@ -204,7 +204,8 @@ h1 {
   border: 1px solid var(--border);
 }
 
-.nav-tabs {
+.nav-tabs,
+#nav-tabs {
   position: sticky;
   top: 60px;
   z-index: 50;
@@ -215,6 +216,28 @@ h1 {
   border-left: none;
   border-right: none;
   border-top: none;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56, 189, 248, 0.4) rgba(15, 23, 42, 0.5);
+}
+
+.nav-tabs::-webkit-scrollbar,
+#nav-tabs::-webkit-scrollbar {
+  height: 6px;
+  display: block;
+}
+.nav-tabs::-webkit-scrollbar-track,
+#nav-tabs::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 10px;
+}
+.nav-tabs::-webkit-scrollbar-thumb,
+#nav-tabs::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.4);
+  border-radius: 10px;
+}
+.nav-tabs::-webkit-scrollbar-thumb:hover,
+#nav-tabs::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.8);
 }
 
 .tab-btn,
