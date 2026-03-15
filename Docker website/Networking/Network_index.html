@@ -170,7 +170,12 @@
                 <h1 class="text-2xl font-bold tracking-tight">Networking <span
                         class="text-slate-400 font-light">Fundamentals</span></h1>
             </div>
-            <p class="hidden sm:block text-sm text-slate-400">DevOps Infrastructure Basics</p>
+            <nav class="flex items-center gap-6">
+                <a href="../index.html"
+                    class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
+                    <i data-lucide="home" class="w-4 h-4"></i> DevOps Hub
+                </a>
+            </nav>
         </div>
     </header>
 
@@ -316,6 +321,32 @@
                                 <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"></i><span><strong class="text-white">CI/CD Pipelines:</strong> Jenkins, GitHub Actions need network access to repos and deployment targets</span></li>
                             </ul>
                         `
+                    }
+                ],
+                guidesList: [
+                    {
+                        title: "IP Addressing Guide",
+                        desc: "Visual IP calculation, classes, subnets, CIDR notation, and network troubleshooting.",
+                        url: "IP Addressing Guide.html",
+                        subtext: "Subnets • CIDR • Calculation",
+                        borderColor: "border-emerald-500/30",
+                        bgClass: "bg-emerald-900/20",
+                        iconBgClass: "bg-emerald-500/20",
+                        iconColor: "text-emerald-400",
+                        icon: "map-pin",
+                        btnClass: "bg-emerald-700 hover:bg-emerald-600"
+                    },
+                    {
+                        title: "Networking Tools Guide",
+                        desc: "Essential Linux networking tools. Categorized modern vs legacy commands with examples.",
+                        url: "Networking-Tools-Guide.html",
+                        subtext: "Connectivity • DNS • Perf",
+                        borderColor: "border-blue-500/30",
+                        bgClass: "bg-blue-900/20",
+                        iconBgClass: "bg-blue-500/20",
+                        iconColor: "text-blue-400",
+                        icon: "wrench",
+                        btnClass: "bg-blue-600 hover:bg-blue-500"
                     }
                 ]
             },
@@ -690,6 +721,43 @@
                     </div>
                 `;
             });
+
+            if (data.guidesList) {
+                html += `
+                    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-8">
+                        <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                            <i data-lucide="book-open" class="w-6 h-6 text-blue-400 mr-3"></i>
+                            In-Depth Guides
+                        </h3>
+                        <p class="text-slate-400 mb-6 font-medium">Explore specialized, practical deep-dives into fundamental networking topics.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                `;
+                data.guidesList.forEach(guide => {
+                    html += `
+                        <div class="bg-slate-900 border ${guide.borderColor} rounded-2xl overflow-hidden hover:-translate-y-1 transition-transform duration-200 shadow-lg">
+                            <div class="${guide.bgClass} px-6 pt-6 pb-4">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="p-2 ${guide.iconBgClass} rounded-lg">
+                                        <i data-lucide="${guide.icon}" class="w-5 h-5 ${guide.iconColor}"></i>
+                                    </div>
+                                    <h3 class="font-bold text-white text-lg">${guide.title}</h3>
+                                </div>
+                                <p class="text-slate-400 text-sm leading-relaxed">${guide.desc}</p>
+                            </div>
+                            <div class="px-6 pb-5 pt-4">
+                                <a href="${guide.url}" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl ${guide.btnClass} text-white font-semibold text-sm transition-colors">
+                                    <i data-lucide="external-link" class="w-4 h-4"></i> Open Guide
+                                </a>
+                                <p class="text-slate-500 text-xs mt-3 text-center">${guide.subtext}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
 
             html += '</div>';
             return html;

@@ -264,6 +264,15 @@
             animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
+        .dhcp-flow {
+            background: #111;
+            color: #00ff9c;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
         @keyframes modalPop {
             from {
                 opacity: 0;
@@ -339,7 +348,11 @@
                 <nav class="flex items-center gap-6">
                     <a href="Network_index.html"
                         class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
-                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Hub
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Networking
+                    </a>
+                    <a href="../index.html"
+                        class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
+                        <i data-lucide="home" class="w-4 h-4"></i> DevOps Hub
                     </a>
                 </nav>
             </div>
@@ -358,6 +371,8 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-[70vh]">
         <!-- Breadcrumbs -->
         <nav class="flex items-center gap-2 text-sm text-slate-500 mb-8 overflow-x-auto whitespace-nowrap pb-2">
+            <a href="../index.html" class="hover:text-blue-400 transition-colors">DevOps Hub</a>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
             <a href="Network_index.html" class="hover:text-blue-400 transition-colors">Networking</a>
             <i data-lucide="chevron-right" class="w-4 h-4"></i>
             <span class="text-slate-300">IP Addressing Guide</span>
@@ -1138,23 +1153,29 @@ sudo netplan apply</code></pre>
                                         </ul>
                                     </div>
 
-                                    <div class="diagram">
-Client                                 DHCP Server
-  |                                         |
-  |----(1) DHCP Discover (Broadcast)------>|
-  |        "I need an IP!"                  |
-  |                                         |
-  |&lt;---(2) DHCP Offer (Broadcast/Unicast)--|
-  |        "Here's 192.168.1.150"           |
-  |                                         |
-  |----(3) DHCP Request (Broadcast)-------->|
-  |        "I accept 192.168.1.150"         |
-  |                                         |
-  |&lt;---(4) DHCP ACK (Unicast)---------------|
-  |        "Confirmed! Here's your config"  |
-  |                                         |
-[Client configures IP and is online]
-                                    </div>
+                                    <h2>DHCP DORA Process</h2>
+
+                                    <pre class="dhcp-flow">
+                                    Client                         DHCP Server
+                                    |                                |
+                                    |----(1) DHCP Discover---------->| 
+                                    |        (Broadcast)             |
+                                    |        "I need an IP!"         |
+                                    |                                |
+                                    |<---(2) DHCP Offer--------------|
+                                    |        (Broadcast/Unicast)     |
+                                    |        "Here's 192.168.1.150"  |
+                                    |                                |
+                                    |----(3) DHCP Request----------->|
+                                    |        (Broadcast)             |
+                                    |        "I accept 192.168.1.150"|
+                                    |                                |
+                                    |<---(4) DHCP ACK----------------|
+                                    |        (Unicast)               |
+                                    |"Confirmed! Here's your config" |
+                                    |                                |
+                                    Client configures IP and is online
+                                    </pre>
                                 </div>
 
                                 <div>
@@ -1253,21 +1274,21 @@ ipconfig /renew</code></pre>
                                 <div>
                                     <h3>Subnet Mask Explained</h3>
                                     <p>A <strong>subnet mask</strong> determines which portion of an IP address is the network and which is the host.</p>
-                                    
-                                    <div class="diagram">
-IP Address:    192.168.1.100
-Subnet Mask:   255.255.255.0
+                                    <pre class="network-diagram">
+                                        IP Address : 192.168.1.100
+                                        Subnet Mask: 255.255.255.0
 
-Binary IP:     11000000.10101000.00000001.01100100
-Binary Mask:   11111111.11111111.11111111.00000000
-               &lt;-------- Network --------&gt;  &lt;-Host-&gt;
+                                        Binary IP  : 11000000.10101000.00000001.01100100
+                                        Binary Mask: 11111111.11111111.11111111.00000000
 
-Result:
-- First 24 bits (3 octets) = Network portion
-- Last 8 bits (1 octet) = Host portion
-- Network address: 192.168.1.0
-- Host range: 192.168.1.1 to 192.168.1.254
-                                    </div>
+                                                    <-------- Network --------> <-Host->
+
+                                        Result:
+                                        - First 24 bits (3 octets) = Network portion
+                                        - Last 8 bits (1 octet)   = Host portion
+                                        - Network address         : 192.168.1.0
+                                        - Host range              : 192.168.1.1 to 192.168.1.254
+                                    </pre>
                                 </div>
 
                                 <div>
@@ -1305,10 +1326,10 @@ Result:
                                         </ul>
                                         <strong>Example: /26 Subnet</strong>
                                         <pre><code>Subnet Mask: 255.255.255.192 (/26)
-Binary: 11111111.11111111.11111111.11000000
-        &lt;-------- 26 network bits -------&gt;|&lt;-6 host bits-&gt;
+                                        Binary: 11111111.11111111.11111111.11000000
+                                                &lt;----- 26 network bits ----&gt;|&lt;-6 host bits-&gt;
 
-Number of Hosts = 2^6 - 2 = 64 - 2 = 62 usable IPs</code></pre>
+                                        Number of Hosts = 2^6 - 2 = 64 - 2 = 62 usable IPs</code></pre>
                                     </div>
                                 </div>
 
