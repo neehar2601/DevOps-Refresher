@@ -158,6 +158,61 @@
             border-left-width: 6px;
             border-left-color: #1e8e3e;
         }
+
+        /* ── Encapsulation Panel ── */
+        #encap-panel {
+            width: 220px;
+            flex-shrink: 0;
+        }
+        .encap-layer {
+            position: relative;
+            border-radius: 0.5rem;
+            padding: 0.45rem 0.7rem;
+            margin-bottom: 3px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            opacity: 0.18;
+            transition: opacity 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+            transform: translateX(8px);
+            border-left: 3px solid transparent;
+        }
+        .encap-layer.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .encap-layer.active.just-added {
+            box-shadow: 0 0 14px rgba(255,255,255,0.12);
+        }
+        .encap-layer .pdu-badge {
+            margin-left: auto;
+            font-size: 0.55rem;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            opacity: 0.85;
+        }
+        .encap-arrow {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 6px 0;
+            transition: opacity 0.3s ease;
+        }
+        #encap-direction-label {
+            font-size: 0.62rem;
+            text-align: center;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            padding: 3px 6px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 
@@ -371,6 +426,18 @@
                         iconColor: "text-blue-400",
                         icon: "activity",
                         btnClass: "bg-blue-600 hover:bg-blue-500"
+                    },
+                    {
+                        title: "Packet Encapsulation Simulator",
+                        desc: "See how data transforms into segments, packets, and frames — and how switches, routers, and servers interpret each layer.",
+                        url: "Packet_sim.html",
+                        subtext: "Interactive • OSI Layers • X-Ray View",
+                        borderColor: "border-cyan-500/30",
+                        bgClass: "bg-cyan-900/20",
+                        iconBgClass: "bg-cyan-500/20",
+                        iconColor: "text-cyan-400",
+                        icon: "layers",
+                        btnClass: "bg-cyan-600 hover:bg-cyan-500"
                     }
                 ]
             },
@@ -671,6 +738,10 @@
                 detailContentEl.innerHTML = currentData.detail;
                 detailContentEl.scrollTop = 0;
             }
+
+            // Update encapsulation panel
+            updateEncapsulation(currentStepIndex);
+
             lucide.createIcons();
         }
 
@@ -844,6 +915,103 @@
             return html;
         }
 
+        // ── Encapsulation layer definitions (ordered L7→L1 top to bottom) ──────
+        const ENCAP_LAYERS = [
+            { id:'l7', label:'L7 Application',  pdu:'DATA',    color:'bg-purple-900/60',  border:'border-purple-500', badge:'bg-purple-500/30 text-purple-300', header:'HTTP GET /' },
+            { id:'l6', label:'L6 Presentation', pdu:'DATA',    color:'bg-indigo-900/60',  border:'border-indigo-500', badge:'bg-indigo-500/30 text-indigo-300',  header:'TLS Encrypt' },
+            { id:'l5', label:'L5 Session',      pdu:'DATA',    color:'bg-blue-900/60',    border:'border-blue-400',   badge:'bg-blue-500/30 text-blue-300',    header:'Session ID' },
+            { id:'l4', label:'L4 Transport',    pdu:'SEGMENT', color:'bg-cyan-900/60',    border:'border-cyan-400',   badge:'bg-cyan-500/30 text-cyan-300',    header:'TCP :443' },
+            { id:'l3', label:'L3 Network',      pdu:'PACKET',  color:'bg-teal-900/60',    border:'border-teal-400',   badge:'bg-teal-500/30 text-teal-300',    header:'IP Header' },
+            { id:'l2', label:'L2 Data Link',    pdu:'FRAME',   color:'bg-emerald-900/60', border:'border-emerald-400',badge:'bg-emerald-500/30 text-emerald-300',header:'MAC Header' },
+            { id:'l1', label:'L1 Physical',     pdu:'BITS',    color:'bg-green-900/60',   border:'border-green-400',  badge:'bg-green-500/30 text-green-300',  header:'Signals' },
+        ];
+
+        // Which layers are active per step (0-indexed, step index → array of layer ids)
+        // Steps: 0=DNS, 1=DNS Res, 2=ARP, 3=TCP/TLS, 4=Encap, 5=Server, 6=Server Resp, 7=De-encap, 8=Render
+        const ENCAP_STATE = [
+            [],                                           // 0: URL parsing / caches — no encap yet
+            [],                                           // 1: DNS resolution — no encap yet
+            [],                                           // 2: ARP & Routing — no encap yet
+            ['l7','l6','l5'],                             // 3: TCP/TLS — app+presentation+session
+            ['l7','l6','l5','l4','l3','l2','l1'],         // 4: Full outbound encapsulation
+            ['l7','l6','l5','l4','l3','l2','l1'],         // 5: Google processing (full frame)
+            ['l7','l6','l5','l4','l3','l2','l1'],         // 6: Response encapsulation (Google)
+            ['l7','l6','l5','l4','l3'],                   // 7: De-encap at home (L1+L2 stripped)
+            ['l7'],                                       // 8: Browser rendering (only app data)
+        ];
+
+        // Direction per step: 'out' = going to server, 'in' = coming back, '' = neutral
+        const ENCAP_DIR = ['out','out','out','out','out','server','in','in','in'];
+
+        function updateEncapsulation(stepIdx) {
+            const active   = ENCAP_STATE[stepIdx] ?? [];
+            const dir      = ENCAP_DIR[stepIdx] ?? '';
+            const dirLabel = document.getElementById('encap-direction-label');
+            const dirArrow = document.getElementById('encap-direction-arrow');
+
+            if (dirLabel) {
+                if (dir === 'out') {
+                    dirLabel.textContent = '↓ Encapsulation';
+                    dirLabel.style.background = 'rgba(251,191,36,0.12)';
+                    dirLabel.style.color = '#fbbf24';
+                    dirArrow.textContent = '↓';
+                    dirArrow.style.color = '#fbbf24';
+                } else if (dir === 'in') {
+                    dirLabel.textContent = '↑ De-encapsulation';
+                    dirLabel.style.background = 'rgba(52,211,153,0.12)';
+                    dirLabel.style.color = '#34d399';
+                    dirArrow.textContent = '↑';
+                    dirArrow.style.color = '#34d399';
+                } else {
+                    dirLabel.textContent = '◎ Processing';
+                    dirLabel.style.background = 'rgba(248,113,113,0.12)';
+                    dirLabel.style.color = '#f87171';
+                    dirArrow.textContent = '●';
+                    dirArrow.style.color = '#f87171';
+                }
+            }
+
+            ENCAP_LAYERS.forEach(layer => {
+                const el = document.getElementById('encap-' + layer.id);
+                if (!el) return;
+                if (active.includes(layer.id)) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active', 'just-added');
+                }
+            });
+        }
+
+        function buildEncapPanel() {
+            let html = `
+                <div id="encap-panel" class="hidden xl:flex flex-col bg-slate-900 border border-slate-700 rounded-2xl p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i data-lucide="layers" class="w-4 h-4 text-blue-400 shrink-0"></i>
+                        <span class="text-xs font-bold text-white uppercase tracking-widest">Packet Formation</span>
+                    </div>
+                    <div id="encap-direction-label" class="text-center text-xs font-bold uppercase tracking-widest mb-2 rounded px-2 py-1" style="background:rgba(100,116,139,0.1);color:#64748b">Waiting…</div>
+                    <div class="flex flex-col-reverse gap-0.5 flex-1">
+            `;
+            // Render layers bottom (L1) to top (L7) so L1 is at the bottom visually
+            [...ENCAP_LAYERS].reverse().forEach(layer => {
+                html += `
+                    <div class="encap-layer ${layer.color} border-l-2 ${layer.border}" id="encap-${layer.id}">
+                        <span>${layer.label}</span>
+                        <span class="pdu-badge ${layer.badge}">${layer.pdu}</span>
+                    </div>
+                `;
+            });
+            html += `
+                    </div>
+                    <div id="encap-direction-arrow" class="encap-arrow text-slate-600">↕</div>
+                    <div class="mt-2 pt-2 border-t border-slate-800">
+                        <p class="text-[10px] text-slate-500 leading-relaxed text-center">Layers illuminate as headers are added (encap) or stripped (de-encap)</p>
+                    </div>
+                </div>
+            `;
+            return html;
+        }
+
         function renderJourney(data) {
             let html = `
                 <div class="space-y-8">
@@ -866,9 +1034,11 @@
                             </button>
                         </div>
 
-                        <div class="flex flex-col lg:flex-row gap-8 min-h-[500px]">
-                            <!-- Steps Side -->
-                            <div class="lg:w-1/3 flex flex-col gap-4 overflow-y-auto max-h-[500px] pr-2 steps-list" id="journey-steps-list">
+                        <!-- Three-column layout: steps | detail | encapsulation -->
+                        <div class="flex flex-col xl:flex-row gap-6 min-h-[520px]">
+
+                            <!-- Steps List -->
+                            <div class="xl:w-56 shrink-0 flex flex-col gap-3 overflow-y-auto max-h-[520px] pr-1 steps-list" id="journey-steps-list">
             `;
 
             data.steps.forEach((step, index) => {
@@ -879,17 +1049,17 @@
                     step.type === 'inbound' ? 'arrow-down-left' : 'server';
 
                 html += `
-                    <div class="step-item type-${step.type} bg-slate-900/40 border border-slate-700/50 p-4 rounded-xl cursor-pointer hover:bg-slate-800/60 transition-all" 
+                    <div class="step-item type-${step.type} bg-slate-900/40 border border-slate-700/50 p-3 rounded-xl cursor-pointer hover:bg-slate-800/60 transition-all" 
                          id="step-ui-${index}" onclick="jumpToStep(${index})">
-                        <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center justify-between mb-1.5">
                             <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${badgeClass} uppercase tracking-wider flex items-center gap-1">
                                 <i data-lucide="${icon}" class="w-2.5 h-2.5"></i>
                                 ${step.type}
                             </span>
-                            <span class="text-[10px] text-slate-500 font-mono">Step ${index + 1}</span>
+                            <span class="text-[10px] text-slate-500 font-mono">${index + 1}</span>
                         </div>
-                        <strong class="text-white text-sm block mb-1">${step.title}</strong>
-                        <p class="text-[11px] text-slate-400 leading-tight">${step.brief}</p>
+                        <strong class="text-white text-xs block mb-0.5">${step.title}</strong>
+                        <p class="text-[10px] text-slate-400 leading-tight">${step.brief}</p>
                     </div>
                 `;
             });
@@ -897,28 +1067,28 @@
             html += `
                             </div>
 
-                            <!-- Details Panel -->
-                            <div class="lg:w-2/3 bg-slate-900 border border-slate-700 rounded-2xl p-8 flex flex-col shadow-inner">
-                                <div class="flex items-center gap-3 mb-6 pb-6 border-b border-slate-800">
-                                    <i data-lucide="info" class="w-6 h-6 text-blue-400"></i>
-                                    <h3 id="journey-detail-title" class="text-2xl font-bold text-white">Awaiting Execution...</h3>
+                            <!-- Detail Panel -->
+                            <div class="flex-1 min-w-0 bg-slate-900 border border-slate-700 rounded-2xl p-6 flex flex-col shadow-inner">
+                                <div class="flex items-center gap-3 mb-5 pb-5 border-b border-slate-800">
+                                    <i data-lucide="info" class="w-5 h-5 text-blue-400 shrink-0"></i>
+                                    <h3 id="journey-detail-title" class="text-xl font-bold text-white">Awaiting Execution...</h3>
                                 </div>
-                                
-                                <div class="flex-grow overflow-y-auto detail-content pr-4 text-slate-300 leading-relaxed" id="journey-detail-content">
-                                    <p class="text-lg text-slate-400 italic">Click "Initiate Request" to begin the step-by-step breakdown.</p>
+                                <div class="flex-grow overflow-y-auto detail-content pr-2 text-slate-300 leading-relaxed text-sm" id="journey-detail-content">
+                                    <p class="text-slate-400 italic">Click "Initiate Request" to begin the step-by-step breakdown.</p>
                                 </div>
-
-                                <div class="mt-8 pt-6 border-t border-slate-800 flex justify-between items-center">
-                                    <button id="journey-prev-btn" onclick="prevStep()" disabled class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-semibold text-sm">
-                                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                                        Previous
+                                <div class="mt-6 pt-5 border-t border-slate-800 flex justify-between items-center">
+                                    <button id="journey-prev-btn" onclick="prevStep()" disabled class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-semibold text-sm">
+                                        <i data-lucide="chevron-left" class="w-4 h-4"></i> Previous
                                     </button>
-                                    <button id="journey-next-btn" onclick="nextStep()" disabled class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-semibold text-sm">
-                                        Next Step
-                                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                                    <button id="journey-next-btn" onclick="nextStep()" disabled class="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-semibold text-sm">
+                                        Next Step <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                     </button>
                                 </div>
                             </div>
+
+                            <!-- Packet Formation Panel -->
+                            ${buildEncapPanel()}
+
                         </div>
                     </div>
 
