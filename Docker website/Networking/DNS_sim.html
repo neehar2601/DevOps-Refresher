@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNS Resolution Simulator — Recursive &amp; Iterative</title>
+    <meta name="description" content="Interactive DNS simulator comparing Recursive and Iterative resolution side by side — animated packet travel, step-by-step mode, and live activity log.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <style>
+        /* ── Canvas ── */
+        #network-area {
+            position: relative;
+            width: 100%;
+            min-height: 400px;
+            transition: opacity 0.3s ease;
+        }
+        #network-area.fading { opacity: 0; pointer-events: none; }
+
+        /* ── SVG overlay ── */
+        #sim-svg {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; overflow: visible; z-index: 1;
+        }
+
+        /* ── Connection lines ── */
+        .conn-line {
+            stroke: rgba(100,116,139,0.2);
+            stroke-width: 1.5; stroke-dasharray: 6 5; fill: none;
+            transition: stroke 0.3s ease, stroke-width 0.3s ease, opacity 0.3s ease;
+        }
+        .conn-line.hidden-line { opacity: 0; }
+        .conn-line.active-line { stroke-dasharray: none; stroke-width: 2.5; filter: url(#glow); }
+
+        /* ── Node cards ── */
+        .dns-node {
+            position: absolute; z-index: 2;
+            transform: translate(-50%,-50%);
+            transition: opacity 0.3s ease, left 0.5s cubic-bezier(0.4,0,0.2,1), top 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
+        .dns-node.hidden-node { opacity: 0; pointer-events: none; }
+
+        /* ── Type Tab switcher ── */
+        .dns-type-tab {
+            display: flex; align-items: center; gap: 0.6rem;
+            padding: 0.65rem 1.6rem; border-radius: 0.75rem;
+            font-size: 0.9rem; font-weight: 700; cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.25s ease;
+            background: rgba(15,23,42,0.5);
+            color: #64748b;
+        }
+        .dns-type-tab.tab-active-recursive {
+            background: rgba(59,130,246,0.15);
+            border-color: #3b82f6; color: #60a5fa;
+            box-shadow: 0 0 20px rgba(59,130,246,0.2);
+        }
+        .dns-type-tab.tab-active-iterative {
+            background: rgba(245,158,11,0.15);
+            border-color: #f59e0b; color: #fcd34d;
+            box-shadow: 0 0 20px rgba(245,158,11,0.2);
+        }
+
+        /* ── Mode pills ── */
+        .mode-pill {
+            padding: 0.4rem 1rem; border-radius: 9999px;
+            font-size: 0.78rem; font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(30,41,59,0.6); color: #94a3b8;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .mode-pill.pill-active-recursive {
+            background: rgba(59,130,246,0.18); border-color: #3b82f6; color: #60a5fa;
+        }
+        .mode-pill.pill-active-iterative {
+            background: rgba(245,158,11,0.18); border-color: #f59e0b; color: #fcd34d;
+        }
+
+        /* ── Step description bar ── */
+        #step-desc { min-height: 2.4rem; transition: opacity 0.2s ease; }
+
+        /* ── Line labels ── */
+        .line-label {
+            fill: #475569; font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            text-anchor: middle; pointer-events: none;
+            transition: fill 0.3s; dominant-baseline: auto;
+        }
+        .line-label.active-label { fill: #e2e8f0; }
+
+        /* ── Iterative amber active glow ── */
+        .dns-node.iter-active {
+            border-color: #f59e0b !important;
+            background: rgba(245,158,11,0.12) !important;
+            box-shadow: 0 0 22px rgba(245,158,11,0.3), 0 0 6px rgba(245,158,11,0.15) !important;
+        }
+        .dns-node.iter-active::before {
+            content: '';
+            position: absolute; inset: -6px; border-radius: 1.3rem;
+            border: 2px solid rgba(245,158,11,0.4);
+            animation: pulseAmber 1.2s ease-out infinite;
+        }
+        @keyframes pulseAmber {
+            0%   { opacity:1; transform:scale(1); }
+            100% { opacity:0; transform:scale(1.18); }
+        }
+
+        /* ── Referral badge ── */
+        #referral-badge {
+            position: absolute; z-index: 10;
+            background: rgba(245,158,11,0.12);
+            border: 1px solid rgba(245,158,11,0.35);
+            border-radius: 0.5rem; padding: 0.3rem 0.55rem;
+            font-size: 0.65rem; color: #fcd34d;
+            font-family: 'JetBrains Mono', monospace;
+            pointer-events: none; display: none;
+            max-width: 150px; text-align: center;
+            line-height: 1.4; transform: translate(-50%, -130%);
+            backdrop-filter: blur(8px);
+        }
+
+        /* ── Progress bar (colour set via JS) ── */
+        #progress-bar-fill {
+            height: 3px; border-radius: 3px;
+            transition: width 0.8s ease-in-out, background 0.4s ease;
+        }
+
+        /* ── Log scrollbar ── */
+        #log-scroll {
+            scrollbar-width: thin;
+        }
+        #log-scroll::-webkit-scrollbar { width: 4px; }
+        #log-scroll::-webkit-scrollbar-thumb {
+            border-radius: 2px; background: rgba(148,163,184,0.2);
+        }
+
+        /* ── Compact divider between type desc and info ── */
+        .type-desc {
+            transition: opacity 0.25s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-[#0b0f1a] text-slate-300 selection:bg-blue-500/30">
+
+<!-- ── Header ── -->
+<header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center gap-3">
+                <i data-lucide="activity" class="w-7 h-7 text-blue-500" id="header-icon"></i>
+                <h1 class="text-white font-bold text-xl tracking-tight">
+                    DNS <span class="text-slate-500 font-light">Resolution Simulator</span>
+                </h1>
+            </div>
+            <nav class="flex items-center gap-5">
+                <a href="DNS_guide.html" class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>DNS Guide
+                </a>
+                <a href="Network_index.html" class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>Networking
+                </a>
+                <a href="../index.html" class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
+                    <i data-lucide="home" class="w-4 h-4"></i>DevOps Hub
+                </a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- Breadcrumbs -->
+    <nav class="flex items-center gap-2 text-sm text-slate-500 mb-8 overflow-x-auto whitespace-nowrap pb-2 no-scrollbar">
+        <a href="../index.html" class="hover:text-blue-400 transition-colors">DevOps Hub</a>
+        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        <a href="Network_index.html" class="hover:text-blue-400 transition-colors">Networking</a>
+        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        <a href="DNS_guide.html" class="hover:text-blue-400 transition-colors">DNS Guide</a>
+        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        <span class="text-slate-300">DNS Simulator</span>
+    </nav>
+
+    <!-- ── DNS Type Switcher ── -->
+    <div class="mb-8 fade-in">
+        <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-3">Select Resolution Type</p>
+        <div class="flex flex-wrap gap-3">
+            <button id="tab-recursive" class="dns-type-tab tab-active-recursive" onclick="switchDnsType('recursive')">
+                <i data-lucide="repeat" class="w-5 h-5"></i>
+                Recursive DNS
+                <span class="text-xs font-normal ml-1 opacity-70">8 steps</span>
+            </button>
+            <button id="tab-iterative" class="dns-type-tab" onclick="switchDnsType('iterative')">
+                <i data-lucide="git-branch" class="w-5 h-5"></i>
+                Iterative DNS
+                <span class="text-xs font-normal ml-1 opacity-70">6 steps</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Dynamic description ── -->
+    <div id="type-desc-recursive" class="type-desc mb-6 fade-in">
+        <div class="flex items-start gap-3">
+            <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 shrink-0">
+                <i data-lucide="repeat" class="w-6 h-6 text-blue-400"></i>
+            </div>
+            <div>
+                <h2 class="text-2xl font-extrabold text-white tracking-tight mb-1">Recursive DNS Resolution</h2>
+                <p class="text-slate-400 leading-relaxed text-sm max-w-2xl">
+                    The client delegates all work to a <span class="text-blue-400 font-semibold">Recursive Resolver</span>.
+                    The resolver contacts Root, TLD, and Authoritative servers on the client's behalf — the client
+                    simply waits for the final IP answer.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="type-desc-iterative" class="type-desc mb-6 fade-in hidden">
+        <div class="flex items-start gap-3">
+            <div class="p-2.5 bg-amber-500/10 rounded-xl border border-amber-500/20 shrink-0">
+                <i data-lucide="git-branch" class="w-6 h-6 text-amber-400"></i>
+            </div>
+            <div>
+                <h2 class="text-2xl font-extrabold text-white tracking-tight mb-1">Iterative DNS Resolution</h2>
+                <p class="text-slate-400 leading-relaxed text-sm max-w-2xl">
+                    The <span class="text-amber-400 font-semibold">Client itself</span> contacts each server directly —
+                    Root, TLD, then Authoritative — following each <span class="text-orange-400 font-semibold">referral</span>
+                    hop by hop. No middleman. No delegation.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ Simulator card ══ -->
+    <div class="glass-card p-6 sm:p-8 mb-6 fade-in">
+
+        <!-- Progress bar -->
+        <div class="bg-slate-800 rounded-full mb-5 overflow-hidden" style="height:3px;">
+            <div id="progress-bar-fill" style="width:0%; background: linear-gradient(90deg,#3b82f6,#60a5fa);"></div>
+        </div>
+
+        <!-- Mode switcher + step counter -->
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+            <span class="text-xs text-slate-500 font-semibold uppercase tracking-widest">Mode:</span>
+            <button id="mode-auto" class="mode-pill pill-active-recursive" onclick="setSimMode('auto')">
+                ⚡ Auto Play
+            </button>
+            <button id="mode-step" class="mode-pill" onclick="setSimMode('step')">
+                👆 Step by Step
+            </button>
+            <span id="step-counter" class="ml-auto font-mono text-xs text-slate-500 hidden">
+                Step <span id="step-num">0</span> / <span id="step-total">8</span>
+            </span>
+        </div>
+
+        <!-- Step description -->
+        <div id="step-desc" class="text-sm text-slate-400 bg-slate-800/50 rounded-lg px-4 py-2.5 mb-5 leading-relaxed"></div>
+
+        <!-- Two-column: canvas | log -->
+        <div class="flex flex-col lg:flex-row gap-5">
+
+            <!-- ── Canvas ── -->
+            <div class="flex-1 min-w-0">
+                <div id="network-area">
+
+                    <svg id="sim-svg" aria-hidden="true">
+                        <defs>
+                            <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+                                <feGaussianBlur stdDeviation="3" result="blur"/>
+                                <feMerge>
+                                    <feMergeNode in="blur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                            <!-- Recursive arrows (blue / orange / yellow / red) -->
+                            <marker id="ar-blue"   markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#3b82f6"/></marker>
+                            <marker id="ar-orange"  markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#f97316"/></marker>
+                            <marker id="ar-yellow"  markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#eab308"/></marker>
+                            <marker id="ar-red"     markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#ef4444"/></marker>
+                            <!-- Iterative arrows (amber / orange / emerald) -->
+                            <marker id="ar-amber"   markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#f59e0b"/></marker>
+                            <marker id="ar-emerald" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#10b981"/></marker>
+                        </defs>
+
+                        <!-- ── Connection lines (all declared; shown/hidden per mode) ── -->
+                        <!-- Recursive-only -->
+                        <line class="conn-line" id="line-client-resolver" data-modes="recursive"/>
+                        <line class="conn-line" id="line-resolver-root"   data-modes="recursive"/>
+                        <line class="conn-line" id="line-resolver-tld"    data-modes="recursive"/>
+                        <line class="conn-line" id="line-resolver-auth"   data-modes="recursive"/>
+                        <!-- Iterative-only -->
+                        <line class="conn-line" id="line-client-root"  data-modes="iterative"/>
+                        <line class="conn-line" id="line-client-tld"   data-modes="iterative"/>
+                        <line class="conn-line" id="line-client-auth"  data-modes="iterative"/>
+
+                        <!-- Labels -->
+                        <text class="line-label" id="lbl-client-resolver" data-modes="recursive">Recursive</text>
+                        <text class="line-label" id="lbl-resolver-root"   data-modes="recursive">Iterative</text>
+                        <text class="line-label" id="lbl-resolver-tld"    data-modes="recursive">Iterative</text>
+                        <text class="line-label" id="lbl-resolver-auth"   data-modes="recursive">Iterative</text>
+                        <text class="line-label" id="lbl-client-root"  data-modes="iterative">Hop 1‑2</text>
+                        <text class="line-label" id="lbl-client-tld"   data-modes="iterative">Hop 3‑4</text>
+                        <text class="line-label" id="lbl-client-auth"  data-modes="iterative">Hop 5‑6</text>
+
+                        <!-- Packet dot -->
+                        <circle id="packet-dot" r="9" fill="#3b82f6" filter="url(#glow)" style="display:none;"/>
+                        <text id="packet-emoji" font-size="14" text-anchor="middle" dominant-baseline="central"
+                              style="pointer-events:none;display:none;">📦</text>
+                    </svg>
+
+                    <!-- Referral badge (iterative only) -->
+                    <div id="referral-badge"></div>
+
+                    <!-- Node cards -->
+                    <div class="dns-node" id="node-client">
+                        <div class="node-icon">💻</div>
+                        <div class="node-label">Client</div>
+                        <div class="node-desc" id="client-desc">Needs example.com</div>
+                    </div>
+                    <!-- Recursive-only middleman -->
+                    <div class="dns-node" id="node-resolver">
+                        <div class="node-icon">🔄</div>
+                        <div class="node-label">Recursive Resolver</div>
+                        <div class="node-desc">The Middleman</div>
+                    </div>
+                    <!-- Shared authoritative servers -->
+                    <div class="dns-node" id="node-root">
+                        <div class="node-icon">🌍</div>
+                        <div class="node-label">Root Server</div>
+                        <div class="node-desc">Refers to .com TLD</div>
+                    </div>
+                    <div class="dns-node" id="node-tld">
+                        <div class="node-icon">🏢</div>
+                        <div class="node-label">TLD Server</div>
+                        <div class="node-desc">Refers to Auth NS</div>
+                    </div>
+                    <div class="dns-node" id="node-auth">
+                        <div class="node-icon">🗄️</div>
+                        <div class="node-label">Authoritative NS</div>
+                        <div class="node-desc" id="auth-desc">Knows final IP</div>
+                    </div>
+
+                    <!-- Group label -->
+                    <div id="group-label" style="position:absolute;z-index:2;" class="server-group-label"></div>
+                </div><!-- /#network-area -->
+
+                <!-- Controls -->
+                <div class="flex flex-wrap items-center gap-3 mt-5">
+                    <button id="btn-play" class="btn btn-primary">
+                        <i data-lucide="play" class="w-4 h-4"></i>
+                        <span>Start Simulation</span>
+                    </button>
+                    <button id="btn-next" class="btn btn-primary hidden">
+                        <i data-lucide="skip-forward" class="w-4 h-4"></i>
+                        Next Step
+                    </button>
+                    <button id="btn-reset" class="btn btn-secondary">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                        Reset
+                    </button>
+                </div>
+            </div><!-- /canvas col -->
+
+            <!-- ── Activity Log ── -->
+            <div class="lg:w-72 xl:w-80 flex-shrink-0">
+                <div class="flex items-center gap-2 mb-3">
+                    <i data-lucide="terminal" class="w-4 h-4 text-blue-400" id="log-icon"></i>
+                    <span class="text-xs font-semibold text-white uppercase tracking-widest">Activity Log</span>
+                    <span id="log-badge" class="ml-auto text-xs font-mono text-slate-600">RECURSIVE_TRACE</span>
+                </div>
+                <div id="log-scroll" class="overflow-y-auto pr-1" style="height:400px;">
+                    <ul id="activity-log" class="space-y-1.5" aria-live="polite">
+                        <li style="border-left-color:#475569;color:#64748b;">
+                            Choose a mode and click <strong style="color:#94a3b8;">Start Simulation</strong>.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div><!-- /two-col -->
+    </div><!-- /glass-card -->
+
+    <!-- ── How each type works — side-by-side reference ── -->
+    <div class="comparison-grid mb-6 fade-in">
+        <div class="comparison-card" style="border-color:rgba(59,130,246,0.22);">
+            <h4 class="flex items-center gap-2 !text-blue-300">
+                <i data-lucide="repeat" class="w-4 h-4 text-blue-400 shrink-0"></i>
+                Recursive — How it works
+            </h4>
+            <ol class="text-xs text-slate-400 space-y-1.5 mt-3 list-decimal list-inside leading-relaxed">
+                <li>Client sends one query to the <em>Recursive Resolver</em></li>
+                <li>Resolver queries Root → gets referral to TLD</li>
+                <li>Resolver queries TLD → gets referral to Auth NS</li>
+                <li>Resolver queries Auth NS → gets the final IP</li>
+                <li>Resolver caches &amp; returns IP to the Client</li>
+            </ol>
+            <div class="mt-3 text-xs text-slate-500">
+                <span class="text-blue-400 font-semibold">Client burden:</span> minimal — one query, one answer.
+            </div>
+        </div>
+        <div class="comparison-card" style="border-color:rgba(245,158,11,0.22);">
+            <h4 class="flex items-center gap-2 !text-amber-300">
+                <i data-lucide="git-branch" class="w-4 h-4 text-amber-400 shrink-0"></i>
+                Iterative — How it works
+            </h4>
+            <ol class="text-xs text-slate-400 space-y-1.5 mt-3 list-decimal list-inside leading-relaxed">
+                <li>Client queries Root Server directly</li>
+                <li>Root returns a referral to the TLD server</li>
+                <li>Client queries TLD Server directly</li>
+                <li>TLD returns a referral to the Auth NS</li>
+                <li>Client queries Auth NS → gets the final IP</li>
+            </ol>
+            <div class="mt-3 text-xs text-slate-500">
+                <span class="text-amber-400 font-semibold">Client burden:</span> high — must follow every hop.
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Info tiles (update per active mode) ── -->
+    <div id="info-tiles-recursive" class="grid grid-cols-1 sm:grid-cols-3 gap-4 fade-in">
+        <div class="glass-card p-5">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="step-badge bg-blue-500/20 text-blue-400">R</span>
+                <span class="text-sm font-semibold text-white">Recursive Query</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">Client asks Resolver: <em>"Get me the answer."</em> The resolver does all the work and returns the final IP.</p>
+        </div>
+        <div class="glass-card p-5">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="step-badge bg-orange-500/20 text-orange-400">I</span>
+                <span class="text-sm font-semibold text-white">Internal Iterative</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">The resolver itself uses iterative queries (Root→TLD→Auth) internally while the client waits.</p>
+        </div>
+        <div class="glass-card p-5">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="step-badge bg-emerald-500/20 text-emerald-400">C</span>
+                <span class="text-sm font-semibold text-white">Caching</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">The resolver caches the result for the record's TTL, skipping the full hierarchy on repeat queries.</p>
+        </div>
+    </div>
+
+    <div id="info-tiles-iterative" class="grid grid-cols-1 sm:grid-cols-3 gap-4 fade-in hidden">
+        <div class="glass-card p-5">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="step-badge bg-amber-500/20 text-amber-400">Q</span>
+                <span class="text-sm font-semibold text-white">Direct Query</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">The client sends each DNS query itself — starting with the Root Server, no resolver in the middle.</p>
+        </div>
+        <div class="glass-card p-5">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="step-badge bg-orange-500/20 text-orange-400">↩</span>
+                <span class="text-sm font-semibold text-white">Referral Hops</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">Each server returns the address of the next server to ask — the client follows each referral itself.</p>
+        </div>
+        <div class="glass-card p-5">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="step-badge bg-emerald-500/20 text-emerald-400">✓</span>
+                <span class="text-sm font-semibold text-white">Final Answer</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">Only the Authoritative NS returns the real IP. The client collected all the referrals itself along the way.</p>
+        </div>
+    </div>
+
+</main>
+
+<a href="#" class="back-to-top" aria-label="Back to top">
+    <i data-lucide="arrow-up" class="w-5 h-5"></i>
+</a>
+
+<footer class="mt-20 border-t border-slate-800 py-10 bg-slate-900/50 backdrop-blur-sm px-4">
+    <div class="max-w-7xl mx-auto text-center">
+        <p class="text-slate-500 text-sm italic tracking-wide font-medium">Networking Hub — DNS Resolution Simulator</p>
+        <p class="text-slate-600 text-xs mt-2">Recursive &amp; Iterative · For DevOps Engineers, SysAdmins &amp; Interview Prep</p>
+    </div>
+</footer>
+
+<script>lucide.createIcons();</script>
+<script>
+/* ================================================================
+   Unified DNS Simulator — Recursive + Iterative
+   ================================================================ */
+
+// ── Step definitions ─────────────────────────────────────────────
+const ALL_STEPS = {
+    recursive: [
+        { from:'client',   to:'resolver', conn:'client-resolver', color:'#3b82f6', arrow:'ar-blue',
+          desc:'Step 1: Client → Resolver — Browser sends a recursive DNS query to its configured Recursive Resolver.',
+          log:'<strong>Step 1 — Recursive Query:</strong> Client asks Resolver to find the IP for <code style="color:#60a5fa">www.example.com</code>.', badge:null },
+        { from:'resolver', to:'root',     conn:'resolver-root',   color:'#f97316', arrow:'ar-orange',
+          desc:'Step 2: Resolver → Root — Cache miss. Resolver starts at the top of the DNS hierarchy.',
+          log:'<strong>Step 2 — Iterative Query 1:</strong> Cache miss! Resolver asks Root: <code style="color:#fb923c">"Who handles .com?"</code>', badge:null },
+        { from:'root',     to:'resolver', conn:'resolver-root',   color:'#f97316', arrow:'ar-orange',
+          desc:'Step 3: Root → Resolver — Root doesn\'t have the IP, but refers Resolver to the .com TLD servers.',
+          log:'<strong>Step 3 — Referral:</strong> Root refers Resolver to the <code style="color:#fb923c">.com TLD</code> servers.', badge:null },
+        { from:'resolver', to:'tld',      conn:'resolver-tld',    color:'#eab308', arrow:'ar-yellow',
+          desc:'Step 4: Resolver → TLD — Resolver queries the .com TLD server for example.com.',
+          log:'<strong>Step 4 — Iterative Query 2:</strong> Resolver asks TLD: <code style="color:#f59e0b">"Who handles example.com?"</code>', badge:null },
+        { from:'tld',      to:'resolver', conn:'resolver-tld',    color:'#eab308', arrow:'ar-yellow',
+          desc:'Step 5: TLD → Resolver — TLD refers Resolver to example.com\'s Authoritative Nameserver.',
+          log:'<strong>Step 5 — Referral:</strong> TLD refers Resolver to the <code style="color:#f59e0b">Authoritative NS</code> for example.com.', badge:null },
+        { from:'resolver', to:'auth',     conn:'resolver-auth',   color:'#ef4444', arrow:'ar-red',
+          desc:'Step 6: Resolver → Auth NS — Resolver asks the authoritative source for the exact IP.',
+          log:'<strong>Step 6 — Iterative Query 3:</strong> Resolver asks Auth NS: <code style="color:#f87171">"IP for www.example.com?"</code>', badge:null },
+        { from:'auth',     to:'resolver', conn:'resolver-auth',   color:'#10b981', arrow:'ar-red',
+          desc:'Step 7: Auth NS → Resolver — Authoritative server returns the A record: 93.184.216.34 (TTL 3600s).',
+          log:'<strong>Step 7 — Final Answer:</strong> Auth NS returns <code style="color:#34d399">93.184.216.34</code> (TTL 3600).', badge:null },
+        { from:'resolver', to:'client',   conn:'client-resolver', color:'#3b82f6', arrow:'ar-blue',
+          desc:'Step 8: Resolver → Client — Resolver caches the result then delivers the final IP to the client.',
+          log:'<strong>Step 8 — Recursive Response:</strong> Resolver delivers <code style="color:#34d399">93.184.216.34</code> to Client.', badge:null },
+    ],
+    iterative: [
+        { from:'client', to:'root',   conn:'client-root',  color:'#f59e0b', arrow:'ar-amber',
+          desc:'Hop 1: Client → Root Server — Client starts at the top of the DNS hierarchy with a direct query.',
+          log:'<strong>Hop 1 — Query to Root:</strong> Client asks Root: <code style="color:#fcd34d">"Who knows about example.com?"</code>', badge:null },
+        { from:'root',   to:'client', conn:'client-root',  color:'#f59e0b', arrow:'ar-amber',
+          desc:'Hop 2: Root → Client — Root doesn\'t know the IP. Returns a referral to the .com TLD at 192.5.6.30.',
+          log:'<strong>Hop 2 — Referral from Root:</strong> Root: <code style="color:#fcd34d">"Try .com TLD at 192.5.6.30"</code>', badge:'↩ Referral\n192.5.6.30 (.com TLD)' },
+        { from:'client', to:'tld',    conn:'client-tld',   color:'#f97316', arrow:'ar-orange',
+          desc:'Hop 3: Client → TLD Server — Client follows the referral and queries the .com TLD directly.',
+          log:'<strong>Hop 3 — Query to TLD:</strong> Client asks TLD: <code style="color:#fdba74">"Who handles example.com?"</code>', badge:null },
+        { from:'tld',    to:'client', conn:'client-tld',   color:'#f97316', arrow:'ar-orange',
+          desc:'Hop 4: TLD → Client — TLD knows the Auth NS. Returns another referral at 205.251.196.1.',
+          log:'<strong>Hop 4 — Referral from TLD:</strong> TLD: <code style="color:#fdba74">"Ask Auth NS at 205.251.196.1"</code>', badge:'↩ Referral\n205.251.196.1 (Auth NS)' },
+        { from:'client', to:'auth',   conn:'client-auth',  color:'#10b981', arrow:'ar-emerald',
+          desc:'Hop 5: Client → Auth NS — Client contacts the Authoritative Nameserver for example.com.',
+          log:'<strong>Hop 5 — Query to Auth NS:</strong> Client asks Auth NS: <code style="color:#6ee7b7">"IP for www.example.com?"</code>', badge:null },
+        { from:'auth',   to:'client', conn:'client-auth',  color:'#10b981', arrow:'ar-emerald',
+          desc:'Hop 6: Auth NS → Client — Authoritative NS returns the final answer. No more referrals.',
+          log:'<strong>Hop 6 — Final Answer:</strong> Auth NS returns <code style="color:#34d399">93.184.216.34</code> (TTL 3600). ✅', badge:'✅ 93.184.216.34\nTTL: 3600s' },
+    ],
+};
+
+// ── Layout positions (% of canvas W×H) ──────────────────────────
+const LAYOUTS = {
+    recursive: {
+        client:   { xPct:0.08, yPct:0.50 },
+        resolver: { xPct:0.40, yPct:0.50 },
+        root:     { xPct:0.83, yPct:0.18 },
+        tld:      { xPct:0.83, yPct:0.50 },
+        auth:     { xPct:0.83, yPct:0.82 },
+    },
+    iterative: {
+        client: { xPct:0.10, yPct:0.50 },
+        root:   { xPct:0.83, yPct:0.18 },
+        tld:    { xPct:0.83, yPct:0.50 },
+        auth:   { xPct:0.83, yPct:0.82 },
+    },
+};
+
+// ── Connection map (which nodes each SVG line connects) ──────────
+const CONN_MAP = {
+    'client-resolver': ['client','resolver'],
+    'resolver-root':   ['resolver','root'],
+    'resolver-tld':    ['resolver','tld'],
+    'resolver-auth':   ['resolver','auth'],
+    'client-root':     ['client','root'],
+    'client-tld':      ['client','tld'],
+    'client-auth':     ['client','auth'],
+};
+
+// ── DOM refs ─────────────────────────────────────────────────────
+const nodeEls = {
+    client:   document.getElementById('node-client'),
+    resolver: document.getElementById('node-resolver'),
+    root:     document.getElementById('node-root'),
+    tld:      document.getElementById('node-tld'),
+    auth:     document.getElementById('node-auth'),
+};
+const networkArea  = document.getElementById('network-area');
+const simSvg       = document.getElementById('sim-svg');
+const packetDot    = document.getElementById('packet-dot');
+const packetEmoji  = document.getElementById('packet-emoji');
+const refBadge     = document.getElementById('referral-badge');
+const activityLog  = document.getElementById('activity-log');
+const logScrollEl  = document.getElementById('log-scroll');
+const progressFill = document.getElementById('progress-bar-fill');
+const stepNumEl    = document.getElementById('step-num');
+const stepTotalEl  = document.getElementById('step-total');
+const stepCounter  = document.getElementById('step-counter');
+const stepDesc     = document.getElementById('step-desc');
+const btnPlay      = document.getElementById('btn-play');
+const btnNext      = document.getElementById('btn-next');
+const btnReset     = document.getElementById('btn-reset');
+const logIcon      = document.getElementById('log-icon');
+const logBadge     = document.getElementById('log-badge');
+
+// ── State ────────────────────────────────────────────────────────
+let dnsType   = 'recursive';
+let simMode   = 'auto';
+let isRunning = false;
+let abortCtrl = null;
+let stepResolve = null;
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// ── Layout engine ────────────────────────────────────────────────
+function getCenter(nodeId) {
+    const layout = LAYOUTS[dnsType];
+    const pos = layout[nodeId];
+    if (!pos) return { x: 0, y: 0 };
+    const W = networkArea.offsetWidth  || 680;
+    const H = networkArea.offsetHeight || 400;
+    return { x: W * pos.xPct, y: H * pos.yPct };
+}
+
+function placeNodes() {
+    const W = networkArea.offsetWidth  || 680;
+    const H = networkArea.offsetHeight || 400;
+    const layout = LAYOUTS[dnsType];
+
+    // Show/hide resolver node
+    nodeEls.resolver.classList.toggle('hidden-node', dnsType === 'iterative');
+
+    // Update client subtext
+    document.getElementById('client-desc').textContent =
+        dnsType === 'recursive' ? 'Needs example.com' : 'Queries directly';
+    document.getElementById('auth-desc').textContent =
+        dnsType === 'recursive' ? 'Knows final IP' : 'Returns final IP';
+
+    // Position each node in the active layout
+    for (const [id, pos] of Object.entries(layout)) {
+        if (!nodeEls[id]) continue;
+        nodeEls[id].style.left = (W * pos.xPct) + 'px';
+        nodeEls[id].style.top  = (H * pos.yPct) + 'px';
+    }
+
+    // Group label
+    const gl = document.getElementById('group-label');
+    const authC = getCenter('auth');
+    const rootC = getCenter('root');
+    gl.style.left = (W * 0.83) + 'px';
+    gl.style.top  = (H * 0.04) + 'px';
+    gl.style.transform = 'translateX(-50%)';
+    gl.style.width = '140px';
+    gl.style.textAlign = 'center';
+    gl.textContent = dnsType === 'recursive'
+        ? 'Authoritative Infrastructure'
+        : 'Client queries each server';
+}
+
+function drawLines() {
+    simSvg.style.width  = networkArea.offsetWidth  + 'px';
+    simSvg.style.height = networkArea.offsetHeight + 'px';
+
+    for (const [connId, [a, b]] of Object.entries(CONN_MAP)) {
+        const line  = document.getElementById('line-' + connId);
+        const label = document.getElementById('lbl-'  + connId);
+        if (!line) continue;
+
+        const aLayout = LAYOUTS[dnsType][a];
+        const bLayout = LAYOUTS[dnsType][b];
+
+        const visible = line.dataset.modes === dnsType;
+        line.classList.toggle('hidden-line', !visible);
+
+        if (aLayout && bLayout) {
+            const W = networkArea.offsetWidth  || 680;
+            const H = networkArea.offsetHeight || 400;
+            const ax = W * aLayout.xPct, ay = H * aLayout.yPct;
+            const bx = W * bLayout.xPct, by = H * bLayout.yPct;
+            line.setAttribute('x1', ax); line.setAttribute('y1', ay);
+            line.setAttribute('x2', bx); line.setAttribute('y2', by);
+            if (label) {
+                label.setAttribute('x', (ax + bx) / 2);
+                label.setAttribute('y', (ay + by) / 2 - 12);
+                label.classList.toggle('hidden-line', !visible);
+            }
+        }
+    }
+}
+
+function layout() { placeNodes(); drawLines(); }
+window.addEventListener('resize', layout);
+window.addEventListener('load',   () => { layout(); });
+setTimeout(layout, 120);
+
+// ── DNS type switch ──────────────────────────────────────────────
+function switchDnsType(type) {
+    if (isRunning) resetSim();
+
+    dnsType = type;
+    const isRec = type === 'recursive';
+
+    // Tabs
+    document.getElementById('tab-recursive').className =
+        'dns-type-tab' + (isRec ? ' tab-active-recursive' : '');
+    document.getElementById('tab-iterative').className =
+        'dns-type-tab' + (!isRec ? ' tab-active-iterative' : '');
+
+    // Descriptions + info tiles
+    document.getElementById('type-desc-recursive').classList.toggle('hidden', !isRec);
+    document.getElementById('type-desc-iterative').classList.toggle('hidden', isRec);
+    document.getElementById('info-tiles-recursive').classList.toggle('hidden', !isRec);
+    document.getElementById('info-tiles-iterative').classList.toggle('hidden', isRec);
+
+    // Progress bar + log accent colour
+    progressFill.style.background = isRec
+        ? 'linear-gradient(90deg,#3b82f6,#60a5fa)'
+        : 'linear-gradient(90deg,#f59e0b,#fbbf24)';
+
+    // Play button colour
+    btnPlay.style.background = isRec
+        ? 'linear-gradient(135deg,#3b82f6,#2563eb)'
+        : 'linear-gradient(135deg,#f59e0b,#d97706)';
+    btnPlay.style.color = isRec ? 'white' : '#111';
+    btnNext.style.background = btnPlay.style.background;
+    btnNext.style.color      = btnPlay.style.color;
+
+    // Mode pills
+    updateModePillColors();
+
+    // Log header
+    logIcon.setAttribute('class', isRec ? 'w-4 h-4 text-blue-400' : 'w-4 h-4 text-amber-400');
+    logBadge.textContent = isRec ? 'RECURSIVE_TRACE' : 'ITERATIVE_TRACE';
+
+    // Step total
+    stepTotalEl.textContent = ALL_STEPS[type].length;
+
+    // Canvas: fade out → re-layout → fade in
+    networkArea.classList.add('fading');
+    setTimeout(() => {
+        clearActiveLine(); clearNodeHighlight();
+        layout();
+        networkArea.classList.remove('fading');
+    }, 280);
+
+    resetSim(false /* don't re-clear layout */);
+}
+
+// ── Sim mode ─────────────────────────────────────────────────────
+function setSimMode(m) {
+    simMode = m;
+    updateModePillColors();
+}
+
+function updateModePillColors() {
+    const cls = dnsType === 'recursive' ? 'pill-active-recursive' : 'pill-active-iterative';
+    document.getElementById('mode-auto').className =
+        'mode-pill' + (simMode === 'auto' ? ' ' + cls : '');
+    document.getElementById('mode-step').className =
+        'mode-pill' + (simMode === 'step' ? ' ' + cls : '');
+}
+
+// ── Line helpers ─────────────────────────────────────────────────
+function activateLine(connId, color, arrowId) {
+    // clear all
+    document.querySelectorAll('.conn-line').forEach(l => {
+        l.classList.remove('active-line');
+        l.style.stroke = '';
+        l.removeAttribute('marker-end');
+    });
+    document.querySelectorAll('.line-label').forEach(l => {
+        l.classList.remove('active-label');
+        l.style.fill = '';
+    });
+    const line  = document.getElementById('line-' + connId);
+    const label = document.getElementById('lbl-'  + connId);
+    if (line)  { line.classList.add('active-line'); line.style.stroke = color; line.setAttribute('marker-end', 'url(#' + arrowId + ')'); }
+    if (label) { label.classList.add('active-label'); label.style.fill = color; }
+}
+function clearActiveLine() {
+    document.querySelectorAll('.conn-line').forEach(l => {
+        l.classList.remove('active-line'); l.style.stroke = ''; l.removeAttribute('marker-end');
+    });
+    document.querySelectorAll('.line-label').forEach(l => {
+        l.classList.remove('active-label'); l.style.fill = '';
+    });
+}
+
+// ── Node highlight ───────────────────────────────────────────────
+function highlightNode(id) {
+    // Clear all states
+    Object.values(nodeEls).forEach(n => {
+        n.classList.remove('active');
+        n.classList.remove('iter-active');
+    });
+    if (!id) return;
+    if (dnsType === 'recursive') {
+        nodeEls[id]?.classList.add('active');
+    } else {
+        nodeEls[id]?.classList.add('iter-active');
+    }
+}
+function clearNodeHighlight() {
+    Object.values(nodeEls).forEach(n => { n.classList.remove('active'); n.classList.remove('iter-active'); });
+}
+
+// ── Referral badge ───────────────────────────────────────────────
+function showBadge(text, toId) {
+    if (!text || dnsType !== 'iterative') { refBadge.style.display = 'none'; return; }
+    const c = getCenter(toId);
+    refBadge.style.left    = c.x + 'px';
+    refBadge.style.top     = c.y + 'px';
+    refBadge.style.display = 'block';
+    refBadge.textContent   = text;
+}
+
+// ── Packet animation ─────────────────────────────────────────────
+function animatePacket(fromId, toId, color, ms) {
+    return new Promise(resolve => {
+        const from = getCenter(fromId), to = getCenter(toId);
+        packetDot.style.display   = 'block';
+        packetEmoji.style.display = 'block';
+        packetEmoji.textContent   = dnsType === 'recursive' ? '📦' : '📨';
+        packetDot.setAttribute('fill', color);
+        packetDot.setAttribute('cx', from.x); packetDot.setAttribute('cy', from.y);
+        packetEmoji.setAttribute('x', from.x); packetEmoji.setAttribute('y', from.y);
+        const start = performance.now();
+        function tick(now) {
+            const t = Math.min((now - start) / ms, 1);
+            const e = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+            const cx = from.x + (to.x - from.x)*e, cy = from.y + (to.y - from.y)*e;
+            packetDot.setAttribute('cx',cx); packetDot.setAttribute('cy',cy);
+            packetEmoji.setAttribute('x',cx); packetEmoji.setAttribute('y',cy);
+            t < 1 ? requestAnimationFrame(tick) : resolve();
+        }
+        requestAnimationFrame(tick);
+    });
+}
+
+// ── Log ──────────────────────────────────────────────────────────
+function logActivity(html, color) {
+    const li = document.createElement('li');
+    li.innerHTML = html;
+    li.style.borderLeftColor = color || '#3b82f6';
+    activityLog.appendChild(li);
+    logScrollEl.scrollTop = logScrollEl.scrollHeight;
+}
+
+function setProgress(step) {
+    const total = ALL_STEPS[dnsType].length;
+    progressFill.style.width = (step / total * 100) + '%';
+    stepNumEl.textContent = step;
+}
+
+// ── Execute one step ─────────────────────────────────────────────
+async function executeStep(idx, signal) {
+    if (signal?.aborted) throw new Error('Aborted');
+    const s = ALL_STEPS[dnsType][idx];
+
+    stepDesc.innerHTML = `<span class="font-semibold text-slate-200">${s.desc}</span>`;
+
+    highlightNode(s.from);
+    refBadge.style.display = 'none';
+    activateLine(s.conn, s.color, s.arrow);
+
+    await animatePacket(s.from, s.to, s.color, 750);
+    if (signal?.aborted) throw new Error('Aborted');
+
+    highlightNode(s.to);
+    if (s.badge) showBadge(s.badge, s.to);
+
+    logActivity(s.log, s.color);
+    setProgress(idx + 1);
+
+    await sleep(simMode === 'auto' ? 550 : 200);
+    if (signal?.aborted) throw new Error('Aborted');
+
+    clearNodeHighlight();
+    packetDot.style.display   = 'none';
+    packetEmoji.style.display = 'none';
+}
+
+// ── Auto play ────────────────────────────────────────────────────
+async function runAuto() {
+    const { signal } = abortCtrl;
+    activityLog.innerHTML = ''; setProgress(0); stepDesc.innerHTML = '';
+    const steps = ALL_STEPS[dnsType];
+    const isRec = dnsType === 'recursive';
+    try {
+        for (let i = 0; i < steps.length; i++) {
+            await executeStep(i, signal);
+            await sleep(350);
+            if (signal.aborted) throw new Error('Aborted');
+        }
+        clearActiveLine(); clearNodeHighlight(); refBadge.style.display = 'none';
+        const completeColor = '#10b981';
+        stepDesc.innerHTML  = isRec
+            ? '✅ <strong style="color:#34d399">Resolution Complete!</strong> Resolver delivered <code style="color:#34d399">93.184.216.34</code> to Client.'
+            : '✅ <strong style="color:#34d399">Query Complete!</strong> Client obtained <code style="color:#34d399">93.184.216.34</code> after 3 direct hops.';
+        logActivity(isRec
+            ? '✅ <strong>Done!</strong> IP <code style="color:#34d399">93.184.216.34</code> delivered to Client.'
+            : '✅ <strong>Done!</strong> IP <code style="color:#34d399">93.184.216.34</code> — 3 referral hops completed.',
+            completeColor);
+    } catch(e) {
+        if (e.message !== 'Aborted') console.error(e);
+    } finally {
+        packetDot.style.display = 'none'; packetEmoji.style.display = 'none';
+        isRunning = false; btnPlay.disabled = false;
+        btnPlay.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i><span>Start Simulation</span>';
+        lucide.createIcons();
+    }
+}
+
+// ── Step mode ────────────────────────────────────────────────────
+async function runStepMode() {
+    activityLog.innerHTML = ''; setProgress(0);
+    stepDesc.innerHTML = 'Click <strong style="color:#94a3b8">Next Step</strong> to walk through the resolution manually.';
+    btnPlay.classList.add('hidden'); btnNext.classList.remove('hidden');
+    stepCounter.classList.remove('hidden');
+    const { signal } = abortCtrl;
+    const steps = ALL_STEPS[dnsType];
+    const isRec = dnsType === 'recursive';
+    try {
+        for (let i = 0; i < steps.length; i++) {
+            await new Promise((res, rej) => {
+                stepResolve = res;
+                if (signal.aborted) rej(new Error('Aborted'));
+                btnNext.onclick = () => { btnNext.disabled = true; res(); };
+            });
+            if (signal.aborted) throw new Error('Aborted');
+            await executeStep(i, signal);
+            btnNext.disabled = false;
+            if (i === steps.length - 1) {
+                btnNext.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Done';
+                lucide.createIcons();
+            }
+        }
+        await new Promise(res => { btnNext.onclick = res; });
+        clearActiveLine(); clearNodeHighlight(); refBadge.style.display = 'none';
+        stepDesc.innerHTML  = isRec
+            ? '✅ <strong style="color:#34d399">Resolution Complete!</strong> IP <code style="color:#34d399">93.184.216.34</code> delivered.'
+            : '✅ <strong style="color:#34d399">Query Complete!</strong> IP <code style="color:#34d399">93.184.216.34</code> — 3 hops.';
+        logActivity('✅ <strong>Done!</strong> <code style="color:#34d399">93.184.216.34</code>', '#10b981');
+    } catch(e) {
+        if (e.message !== 'Aborted') console.error(e);
+    } finally {
+        packetDot.style.display = 'none'; packetEmoji.style.display = 'none';
+        isRunning = false;
+        btnNext.classList.add('hidden'); btnPlay.classList.remove('hidden');
+        btnPlay.disabled = false;
+        btnNext.innerHTML = '<i data-lucide="skip-forward" class="w-4 h-4"></i> Next Step';
+        lucide.createIcons();
+    }
+}
+
+// ── Start / Reset ────────────────────────────────────────────────
+btnPlay.addEventListener('click', () => {
+    if (isRunning) return;
+    isRunning = true; btnPlay.disabled = true;
+    abortCtrl = new AbortController();
+    stepCounter.classList.remove('hidden');
+    simMode === 'auto' ? runAuto() : runStepMode();
+});
+
+function resetSim(clearLog = true) {
+    abortCtrl?.abort(); stepResolve = null;
+    isRunning = false;
+    packetDot.style.display   = 'none';
+    packetEmoji.style.display = 'none';
+    refBadge.style.display    = 'none';
+    clearActiveLine(); clearNodeHighlight();
+    setProgress(0); stepNumEl.textContent = '0';
+    stepCounter.classList.add('hidden');
+    btnPlay.classList.remove('hidden'); btnPlay.disabled = false;
+    btnNext.classList.add('hidden'); btnNext.onclick = null;
+    btnNext.disabled = false;
+    btnNext.innerHTML = '<i data-lucide="skip-forward" class="w-4 h-4"></i> Next Step';
+    stepDesc.innerHTML = '';
+    if (clearLog) {
+        activityLog.innerHTML = '<li style="border-left-color:#475569;color:#64748b;">Simulation reset. Choose a mode and click <strong style="color:#94a3b8;">Start Simulation</strong>.</li>';
+        logScrollEl.scrollTop = 0;
+    }
+    lucide.createIcons();
+}
+
+btnReset.addEventListener('click', () => resetSim(true));
+
+// ── Init ─────────────────────────────────────────────────────────
+switchDnsType('recursive');
+</script>
+</body>
+</html>
