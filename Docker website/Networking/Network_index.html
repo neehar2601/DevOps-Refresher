@@ -691,7 +691,7 @@
         let currentStepIndex = -1;
 
         // SVG Simulation Variables
-        let packet, terminal, toast, nodes, paths;
+        let packet, terminal, stepToastEl, nodes, paths;
 
         function updateTerminal(msg, type = 'info') {
             if (!terminal) return;
@@ -775,7 +775,7 @@
             // Initialize SVG elements if present
             packet = document.getElementById('packet');
             terminal = document.getElementById('terminal');
-            toast = document.getElementById('stepToast');
+            stepToastEl = document.getElementById('stepToast');
             if (packet && (!nodes || !nodes.pc)) {
                 nodes = {
                     pc: document.getElementById('node-pc'),
@@ -818,14 +818,14 @@
                 switch (currentStepIndex) {
                     case 0: // URL PARSING
                         if(currentStepIndex === 0 && terminal) terminal.innerHTML = '<p class="text-slate-500">> System Ready.</p>';
-                        toast.innerText = "STATUS: URL PARSING & CACHES";
+                        stepToastEl.innerText = "STATUS: URL PARSING & CACHES";
                         updateTerminal("Checking HSTS and Local DNS cache...");
                         setNodeActive('pc');
                         packet.setAttribute('cx', 150);
                         packet.setAttribute('cy', 200);
                         break;
                     case 1: // DNS
-                        toast.innerText = "STATUS: DNS RESOLUTION";
+                        stepToastEl.innerText = "STATUS: DNS RESOLUTION";
                         updateTerminal("Cache Miss. Querying DNS Resolver...", 'warn');
                         paths.pcDns.classList.add('active');
                         setNodeActive('dns');
@@ -840,7 +840,7 @@
                         }, 800);
                         break;
                     case 2: // ARP
-                        toast.innerText = "STATUS: ARP & ROUTING";
+                        stepToastEl.innerText = "STATUS: ARP & ROUTING";
                         updateTerminal("Querying MAC address for Default Gateway...");
                         paths.pcRouter.classList.add('active');
                         setNodeActive('router');
@@ -855,7 +855,7 @@
                         }, 800);
                         break;
                     case 3: // TCP/TLS
-                        toast.innerText = "STATUS: TCP/TLS HANDSHAKE";
+                        stepToastEl.innerText = "STATUS: TCP/TLS HANDSHAKE";
                         updateTerminal("Initiating TCP 3-Way Handshake and TLS setup...");
                         paths.routerServer.classList.add('active');
                         packet.setAttribute('cx', 650);
@@ -870,14 +870,14 @@
                         }, 800);
                         break;
                     case 4: // ENCAP
-                        toast.innerText = "STATUS: OUTBOUND ENCAPSULATION";
+                        stepToastEl.innerText = "STATUS: OUTBOUND ENCAPSULATION";
                         updateTerminal("Building HTTP Request, adding TCP, IP, and Ethernet headers...");
                         setNodeActive('pc');
                         packet.setAttribute('cx', 150);
                         packet.setAttribute('cy', 200);
                         break;
                     case 5: // SERVER PROCESSING
-                        toast.innerText = "STATUS: SERVER PROCESSING";
+                        stepToastEl.innerText = "STATUS: SERVER PROCESSING";
                         updateTerminal("Packet traversing network via BGP...");
                         setNodeActive('router');
                         packet.setAttribute('cx', 350);
@@ -891,14 +891,14 @@
                         }, 800);
                         break;
                     case 6: // RESPONSE ENCAP
-                        toast.innerText = "STATUS: RESPONSE ENCAPSULATION";
+                        stepToastEl.innerText = "STATUS: RESPONSE ENCAPSULATION";
                         updateTerminal("Server generating HTTP 200 OK Response...");
                         setNodeActive('server');
                         packet.setAttribute('cx', 650);
                         packet.setAttribute('cy', 200);
                         break;
                     case 7: // DE-ENCAP
-                        toast.innerText = "STATUS: DE-ENCAPSULATION";
+                        stepToastEl.innerText = "STATUS: DE-ENCAPSULATION";
                         updateTerminal("Response arriving at local network...");
                         packet.style.fill = "#10b981";
                         setNodeActive('router');
@@ -913,7 +913,7 @@
                         }, 800);
                         break;
                     case 8: // BROWSER
-                        toast.innerText = "STATUS: BROWSER RENDERING";
+                        stepToastEl.innerText = "STATUS: BROWSER RENDERING";
                         updateTerminal("Parsing HTML/CSS and rendering page.", 'success');
                         packet.style.fill = "#10b981";
                         packet.setAttribute('cx', 150);
