@@ -2,3 +2,8 @@ git-dual-layer-guide.md
 kubectl
 minikube-linux-amd64
 
+# Playwright
+node_modules/
+playwright-report/
+test-results/
+tests/.discovered/
