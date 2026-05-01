@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetProtocol Master: ARP & BGP Visualizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020617;
+            color: #f1f5f9;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .glass {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* SVG Cabling */
+        .cable {
+            stroke: #1e293b;
+            stroke-width: 2;
+            stroke-dasharray: 8 6;
+            transition: stroke 0.3s, stroke-width 0.3s;
+            fill: none;
+            vector-effect: non-scaling-stroke;
+        }
+
+        .cable.active {
+            stroke: #38bdf8;
+            stroke-width: 3;
+            stroke-dasharray: none;
+        }
+
+        .cable.bgp-active {
+            stroke: #a855f7;
+            stroke-width: 3;
+            stroke-dasharray: none;
+        }
+
+        /* Packet Animation Core */
+        .packet {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            pointer-events: none;
+            display: none;
+            box-shadow: 0 0 15px currentColor;
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .node-icon {
+            transition: all 0.3s ease;
+        }
+
+        .node-container:hover .node-icon {
+            transform: translateY(-5px);
+            filter: drop-shadow(0 0 10px #38bdf8);
+        }
+
+        /* Table Transitions */
+        .table-row {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .tab-btn.active {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border-bottom: 2px solid #38bdf8;
+        }
+
+        .as-cloud {
+            transition: all 0.5s ease;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="p-4 glass border-b border-white/10 flex justify-between items-center z-50">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-sky-500/20 rounded-xl flex items-center justify-center border border-sky-500/40">
+                <i data-lucide="network" class="text-sky-400"></i>
+            </div>
+            <div>
+                <h1 class="text-sm font-bold tracking-tighter uppercase">NetProtocol <span
+                        class="text-sky-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 font-mono tracking-widest">REAL-TIME TRAFFIC SIMULATOR</p>
+            </div>
+        </div>
+
+        <div class="flex bg-slate-900 p-1 rounded-xl border border-white/5">
+            <button onclick="setMode('arp')" id="btn-arp"
+                class="tab-btn active px-6 py-2 rounded-lg text-xs font-bold transition-all">L2 SWITCHING & ARP</button>
+            <button onclick="setMode('bgp')" id="btn-bgp"
+                class="tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-all">L3 BGP INTERNET</button>
+        </div>
+
+        <button onclick="location.reload()" class="text-xs text-slate-400 hover:text-white flex items-center gap-2">
+            <i data-lucide="refresh-ccw" size="14"></i> Reset Simulation
+        </button>
+    </header>
+
+    <main class="flex-1 grid grid-cols-12 overflow-hidden">
+
+        <!-- Sidebar -->
+        <aside class="col-span-3 border-r border-white/10 p-6 flex flex-col gap-8 bg-slate-950/40 overflow-y-auto">
+
+            <!-- ARP Controls -->
+            <section id="ctrl-arp" class="space-y-4">
+                <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Traffic Generator</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[10px] text-slate-500 uppercase">From</label>
+                        <select id="src-node" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs"
+                            onchange="renderTables()">
+                            <option value="1">PC-1 (.10)</option>
+                            <option value="2">PC-2 (.20)</option>
+                            <option value="3">PC-3 (.30)</option>
+                            <option value="4">PC-4 (.40)</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] text-slate-500 uppercase">To IP</label>
+                        <select id="dest-ip" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs">
+                            <option value="10.0.0.20">10.0.0.20 (PC-2)</option>
+                            <option value="10.0.0.10">10.0.0.10 (PC-1)</option>
+                            <option value="10.0.0.30">10.0.0.30 (PC-3)</option>
+                            <option value="10.0.0.40">10.0.0.40 (PC-4)</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="sim-btn" onclick="startArpSim()"
+                    class="w-full py-3 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-sky-900/20 transition-all flex items-center justify-center gap-2">
+                    Send Packet <i data-lucide="send" size="14"></i>
+                </button>
+            </section>
+
+            <!-- BGP Controls -->
+            <section id="ctrl-bgp" class="space-y-4 hidden">
+                <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-purple-400">BGP
+                    Controller</h2>
+                <p class="text-[11px] text-slate-400">Trigger AS-400 to advertise the prefix <code
+                        class="text-emerald-400">8.8.8.0/24</code>.</p>
+                <button id="bgp-btn" onclick="startBgpSim()"
+                    class="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-purple-900/20 transition-all flex items-center justify-center gap-2">
+                    Announce Prefix <i data-lucide="rss" size="14"></i>
+                </button>
+            </section>
+
+            <!-- Tables -->
+            <div id="table-stack" class="space-y-6">
+                <!-- MAC Table -->
+                <section id="mac-section" class="space-y-2">
+                    <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex justify-between">
+                        Switch MAC Table <span class="text-[8px] text-slate-600">(MAC <i data-lucide="arrow-right"
+                                size="8" class="inline"></i> Port)</span>
+                    </h2>
+                    <div class="glass rounded-xl p-3 max-h-40 overflow-y-auto">
+                        <table class="w-full text-[10px] font-mono">
+                            <thead class="text-slate-600 border-b border-white/5">
+                                <tr>
+                                    <th class="text-left pb-1">Port</th>
+                                    <th class="text-right pb-1">MAC Addr</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mac-rows" class="text-sky-400">
+                                <tr>
+                                    <td colspan="2" class="py-2 text-center text-slate-700 italic">Empty</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- ARP Cache -->
+                <section id="arp-section" class="space-y-2">
+                    <h2 id="arp-header"
+                        class="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex justify-between">
+                        Host ARP Cache <span class="text-[8px] text-slate-600">(IP <i data-lucide="arrow-right" size="8"
+                                class="inline"></i> MAC)</span>
+                    </h2>
+                    <div class="glass rounded-xl p-3 max-h-40 overflow-y-auto">
+                        <table class="w-full text-[10px] font-mono">
+                            <thead class="text-slate-600 border-b border-white/5">
+                                <tr>
+                                    <th class="text-left pb-1">IP Addr</th>
+                                    <th class="text-right pb-1">MAC Addr</th>
+                                </tr>
+                            </thead>
+                            <tbody id="arp-rows" class="text-amber-400">
+                                <tr>
+                                    <td colspan="2" class="py-2 text-center text-slate-700 italic">Empty</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- BGP RIB Table -->
+                <section id="bgp-section" class="space-y-2 hidden">
+                    <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">AS-100 BGP Table</h2>
+                    <div class="glass rounded-xl p-3 max-h-40 overflow-y-auto">
+                        <table class="w-full text-[10px] font-mono">
+                            <thead class="text-slate-600 border-b border-white/5">
+                                <tr>
+                                    <th class="text-left pb-1">Prefix</th>
+                                    <th class="text-right pb-1">AS-Path</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bgp-rows" class="text-purple-400">
+                                <tr>
+                                    <td colspan="2" class="py-2 text-center text-slate-700 italic">No Routes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </aside>
+
+        <!-- Viewport -->
+        <div class="col-span-9 relative flex flex-col">
+            <div id="canvas" class="flex-1 relative overflow-hidden">
+
+                <!-- SVG Cabling Layer -->
+                <svg id="svg-layer" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <!-- ARP Paths -->
+                    <path id="cable-1" class="cable arp-node" d="M 15 20 L 50 50" />
+                    <path id="cable-2" class="cable arp-node" d="M 85 20 L 50 50" />
+                    <path id="cable-3" class="cable arp-node" d="M 15 80 L 50 50" />
+                    <path id="cable-4" class="cable arp-node" d="M 85 80 L 50 50" />
+
+                    <!-- BGP Paths -->
+                    <path id="cable-bgp-1" class="cable bgp-node hidden" d="M 85 50 L 50 20" />
+                    <path id="cable-bgp-2" class="cable bgp-node hidden" d="M 85 50 L 50 80" />
+                    <path id="cable-bgp-3" class="cable bgp-node hidden" d="M 50 20 L 15 50" />
+                </svg>
+
+                <!-- ARP Nodes -->
+                <div id="pc-1"
+                    class="node-container arp-node absolute left-[15%] top-[20%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                    <div
+                        class="node-icon w-16 h-16 bg-slate-900 border border-white/10 rounded-2xl flex items-center justify-center text-sky-400">
+                        <i data-lucide="monitor"></i></div>
+                    <p class="text-[10px] font-bold mt-2">PC-1 (.10)</p>
+                    <p class="text-[8px] text-slate-600">MAC: AA</p>
+                </div>
+
+                <div id="pc-2"
+                    class="node-container arp-node absolute left-[85%] top-[20%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                    <div
+                        class="node-icon w-16 h-16 bg-slate-900 border border-white/10 rounded-2xl flex items-center justify-center text-emerald-400">
+                        <i data-lucide="monitor"></i></div>
+                    <p class="text-[10px] font-bold mt-2">PC-2 (.20)</p>
+                    <p class="text-[8px] text-slate-600">MAC: BB</p>
+                </div>
+
+                <div id="pc-3"
+                    class="node-container arp-node absolute left-[15%] top-[80%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                    <div
+                        class="node-icon w-16 h-16 bg-slate-900 border border-white/10 rounded-2xl flex items-center justify-center text-amber-400">
+                        <i data-lucide="monitor"></i></div>
+                    <p class="text-[10px] font-bold mt-2">PC-3 (.30)</p>
+                    <p class="text-[8px] text-slate-600">MAC: CC</p>
+                </div>
+
+                <div id="pc-4"
+                    class="node-container arp-node absolute left-[85%] top-[80%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                    <div
+                        class="node-icon w-16 h-16 bg-slate-900 border border-white/10 rounded-2xl flex items-center justify-center text-rose-400">
+                        <i data-lucide="monitor"></i></div>
+                    <p class="text-[10px] font-bold mt-2">PC-4 (.40)</p>
+                    <p class="text-[8px] text-slate-600">MAC: DD</p>
+                </div>
+
+                <div id="switch-node"
+                    class="arp-node absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 bg-slate-900 border-2 border-slate-700 rounded-3xl shadow-2xl flex flex-col items-center justify-center">
+                    <i data-lucide="layers" class="text-slate-500 mb-1" size="32"></i>
+                    <span class="text-[8px] font-bold text-slate-500 uppercase">L2 Switch</span>
+                </div>
+
+                <!-- BGP Nodes -->
+                <div id="as-400"
+                    class="node-container bgp-node hidden absolute left-[85%] top-[50%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                    <div
+                        class="as-cloud w-32 h-20 bg-emerald-900/20 border-2 border-emerald-500/40 rounded-full flex flex-col items-center justify-center">
+                        <span class="font-bold text-emerald-400">AS 400</span>
+                        <span class="text-[8px] text-emerald-300/50 uppercase tracking-widest">Origin</span>
+                    </div>
+                </div>
+
+                <div id="as-200"
+                    class="node-container bgp-node hidden absolute left-[50%] top-[20%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                    <div
+                        class="as-cloud w-32 h-20 bg-purple-900/20 border-2 border-purple-500/40 rounded-full flex flex-col items-center justify-center">
+                        <span class="font-bold text-purple-400">AS 200</span>
+                        <span class="text-[8px] text-purple-300/50 uppercase tracking-widest">Regional</span>
+                    </div>
+                </div>
+
+                <div id="as-300"
+                    class="node-container bgp-node hidden absolute left-[50%] top-[80%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                    <div
+                        class="as-cloud w-32 h-20 bg-purple-900/20 border-2 border-purple-500/40 rounded-full flex flex-col items-center justify-center">
+                        <span class="font-bold text-purple-400">AS 300</span>
+                        <span class="text-[8px] text-purple-300/50 uppercase tracking-widest">Regional</span>
+                    </div>
+                </div>
+
+                <div id="as-100"
+                    class="node-container bgp-node hidden absolute left-[15%] top-[50%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                    <div
+                        class="as-cloud w-32 h-20 bg-indigo-900/20 border-2 border-indigo-500/40 rounded-full flex flex-col items-center justify-center">
+                        <span class="font-bold text-indigo-400">AS 100</span>
+                        <span class="text-[8px] text-indigo-300/50 uppercase tracking-widest">Tier 1 ISP</span>
+                    </div>
+                </div>
+
+                <!-- Active Packet Layer -->
+                <div id="packet-layer" class="absolute inset-0 pointer-events-none"></div>
+            </div>
+
+            <!-- Logger -->
+            <div
+                class="h-40 border-t border-white/10 bg-black/50 p-4 font-mono text-[11px] flex flex-col overflow-hidden">
+                <div
+                    class="flex justify-between items-center text-[10px] text-slate-500 uppercase font-bold mb-2 border-b border-white/5 pb-2">
+                    <span>Diagnostic Engine</span>
+                    <span id="status-text" class="text-sky-500">READY</span>
+                </div>
+                <div id="console" class="flex-1 overflow-y-auto space-y-1 pr-2">
+                    <div class="text-slate-600">> System Ready. Awaiting user interaction.</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Data Structures
+        const macTable = new Map(); // Port -> MAC
+        const arpCaches = { 1: new Map(), 2: new Map(), 3: new Map(), 4: new Map() };
+        const bgpRib = new Map(); // Prefix -> AS Path
+
+        const config = {
+            1: { mac: 'AA', ip: '10.0.0.10', color: '#38bdf8', elId: 'pc-1' },
+            2: { mac: 'BB', ip: '10.0.0.20', color: '#10b981', elId: 'pc-2' },
+            3: { mac: 'CC', ip: '10.0.0.30', color: '#f59e0b', elId: 'pc-3' },
+            4: { mac: 'DD', ip: '10.0.0.40', color: '#f43f5e', elId: 'pc-4' },
+            switch: { elId: 'switch-node' },
+            as400: { elId: 'as-400', color: '#10b981' },
+            as200: { elId: 'as-200', color: '#a855f7' },
+            as300: { elId: 'as-300', color: '#a855f7' },
+            as100: { elId: 'as-100', color: '#6366f1' }
+        };
+
+        function log(msg, type = 'info') {
+            const colors = { info: 'text-slate-500', success: 'text-emerald-400', warn: 'text-amber-400', error: 'text-rose-400' };
+            const div = document.createElement('div');
+            div.className = colors[type];
+            div.innerHTML = `<span class="text-slate-700 mr-2">[${new Date().toLocaleTimeString([], { hour12: false, second: '2-digit' })}]</span> ${msg}`;
+            const consoleEl = document.getElementById('console');
+            consoleEl.prepend(div);
+        }
+
+        // Helper to get absolute center of an element relative to canvas
+        function getCenter(id) {
+            const el = document.getElementById(id);
+            const rect = el.getBoundingClientRect();
+            const canvasRect = document.getElementById('canvas').getBoundingClientRect();
+            return {
+                x: rect.left + rect.width / 2 - canvasRect.left,
+                y: rect.top + rect.height / 2 - canvasRect.top
+            };
+        }
+
+        function createPacket(id, color, icon = 'mail') {
+            const coords = getCenter(id);
+            const p = document.createElement('div');
+            p.className = 'packet';
+            p.style.backgroundColor = color;
+            p.style.color = color;
+            p.style.left = `${coords.x}px`;
+            p.style.top = `${coords.y}px`;
+            p.style.display = 'block';
+            p.innerHTML = `<i data-lucide="${icon}" style="width:10px; height:10px; color:white; margin: 3px;"></i>`;
+            document.getElementById('packet-layer').appendChild(p);
+            lucide.createIcons();
+            return p;
+        }
+
+        async function animatePacket(packet, targetId, cableId = null) {
+            if (cableId) {
+                const c = document.getElementById(cableId);
+                if (c) c.classList.add(document.getElementById('btn-bgp').classList.contains('active') ? 'bgp-active' : 'active');
+            }
+
+            const coords = getCenter(targetId);
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    packet.style.left = `${coords.x}px`;
+                    packet.style.top = `${coords.y}px`;
+                    setTimeout(() => {
+                        if (cableId) {
+                            const c = document.getElementById(cableId);
+                            if (c) c.classList.remove('active', 'bgp-active');
+                        }
+                        resolve();
+                    }, 750);
+                }, 50);
+            });
+        }
+
+        async function startArpSim() {
+            const srcId = document.getElementById('src-node').value;
+            const dstIp = document.getElementById('dest-ip').value;
+            const src = config[srcId];
+
+            // Find destination config by IP
+            const dstId = Object.keys(config).find(k => config[k].ip === dstIp);
+            if (!dstId) {
+                log("Destination IP not found in configuration.", "error");
+                return;
+            }
+            const dst = config[dstId];
+
+            if (srcId === dstId) return log("Source and destination are the same.", "error");
+
+            const btn = document.getElementById('sim-btn');
+            btn.disabled = true;
+            document.getElementById('status-text').innerText = "RUNNING";
+
+            log(`PC-${srcId}: Checking ARP cache for ${dstIp}...`, 'info');
+
+            // PHASE 1: ARP Check
+            if (!arpCaches[srcId].has(dstIp)) {
+                log(`PC-${srcId}: ARP Cache Miss. Triggering Broadcast Request.`, 'warn');
+
+                // 1. Send ARP to Switch
+                const p = createPacket(src.elId, '#38bdf8', 'search');
+                await animatePacket(p, config.switch.elId, `cable-${srcId}`);
+
+                // SWITCH LEARNS
+                log(`SWITCH: Frame from Port ${srcId}. Learning MAC ${src.mac}.`, 'success');
+                macTable.set(src.mac, srcId);
+                renderTables();
+
+                // SWITCH FLOODS
+                log(`SWITCH: Destination unknown. Flooding to all ports...`, 'warn');
+                p.remove();
+
+                const floodPromises = [1, 2, 3, 4].filter(id => id != srcId).map(async (id) => {
+                    const cp = createPacket(config.switch.elId, '#38bdf8', 'search');
+                    await animatePacket(cp, config[id].elId, `cable-${id}`);
+                    if (id == dstId) {
+                        log(`PC-${id}: IP Match! Learning PC-${srcId} and replying.`, 'success');
+                        arpCaches[id].set(src.ip, src.mac);
+                    }
+                    cp.remove();
+                });
+                await Promise.all(floodPromises);
+
+                // ARP REPLY (Unicast back)
+                const rp = createPacket(dst.elId, '#10b981', 'check');
+                await animatePacket(rp, config.switch.elId, `cable-${dstId}`);
+
+                // SWITCH LEARNS DEST
+                log(`SWITCH: Frame from Port ${dstId}. Learning MAC ${dst.mac}.`, 'success');
+                macTable.set(dst.mac, dstId);
+                renderTables();
+
+                // SWITCH FORWARDS
+                log(`SWITCH: Known path to Port ${srcId}. Forwarding Unicast...`, 'success');
+                await animatePacket(rp, src.elId, `cable-${srcId}`);
+
+                arpCaches[srcId].set(dst.ip, dst.mac);
+                log(`PC-${srcId}: ARP Cache updated. Connection ready.`, 'success');
+                rp.remove();
+                renderTables();
+            } else {
+                log(`PC-${srcId}: ARP Cache Hit! Destination MAC is ${dst.mac}.`, 'success');
+            }
+
+            // PHASE 2: DATA Transfer
+            log(`PC-${srcId}: Sending DATA packet to MAC ${dst.mac}.`, 'info');
+            const dataP = createPacket(src.elId, '#f43f5e', 'mail');
+            await animatePacket(dataP, config.switch.elId, `cable-${srcId}`);
+
+            const port = macTable.get(dst.mac);
+            log(`SWITCH: MAC ${dst.mac} found at Port ${port}. Forwarding Unicast.`, 'success');
+            await animatePacket(dataP, dst.elId, `cable-${port}`);
+
+            log(`SUCCESS: Data delivered to PC-${dstId}.`, 'success');
+            dataP.remove();
+
+            btn.disabled = false;
+            document.getElementById('status-text').innerText = "READY";
+        }
+
+        // --- BGP Logic ---
+        async function startBgpSim() {
+            const btn = document.getElementById('bgp-btn');
+            btn.disabled = true;
+            document.getElementById('status-text').innerText = "BGP UPDATE";
+            log("AS 400: Originating Prefix 8.8.8.0/24. Advertising to neighbors.", "success");
+
+            // Step 1: AS400 -> AS200 & AS300
+            const p1 = createPacket(config.as400.elId, config.as400.color, 'rss');
+            const p2 = createPacket(config.as400.elId, config.as400.color, 'rss');
+
+            await Promise.all([
+                animatePacket(p1, config.as200.elId, 'cable-bgp-1'),
+                animatePacket(p2, config.as300.elId, 'cable-bgp-2')
+            ]);
+
+            log("AS 200 & 300: Route learned. Prepending AS IDs.", "info");
+            p2.remove();
+
+            // Step 2: AS200 -> AS100
+            await animatePacket(p1, config.as100.elId, 'cable-bgp-3');
+            log("AS 100: New Route! Prefix: 8.8.8.0/24, AS-Path: [200, 400]", "success");
+
+            bgpRib.set('8.8.8.0/24', '200, 400');
+            renderTables();
+            p1.remove();
+
+            btn.disabled = false;
+            document.getElementById('status-text').innerText = "READY";
+        }
+
+        function renderTables() {
+            // MAC Rows
+            const macBody = document.getElementById('mac-rows');
+            macBody.innerHTML = '';
+            if (macTable.size === 0) {
+                macBody.innerHTML = '<tr><td colspan="2" class="py-2 text-center text-slate-700 italic">Empty</td></tr>';
+            } else {
+                macTable.forEach((port, mac) => {
+                    macBody.innerHTML += `<tr class="table-row"><td>Port ${port}</td><td class="text-right">${mac}</td></tr>`;
+                });
+            }
+
+            // ARP Rows
+            const srcId = document.getElementById('src-node').value;
+            document.getElementById('arp-header').innerHTML = `PC-${srcId} ARP Cache <span class="text-[8px] text-slate-600">(IP <i data-lucide="arrow-right" size="8" class="inline"></i> MAC)</span>`;
+            const arpBody = document.getElementById('arp-rows');
+            arpBody.innerHTML = '';
+            const cache = arpCaches[srcId];
+            if (!cache || cache.size === 0) {
+                arpBody.innerHTML = '<tr><td colspan="2" class="py-2 text-center text-slate-700 italic">Empty</td></tr>';
+            } else {
+                cache.forEach((mac, ip) => {
+                    arpBody.innerHTML += `<tr class="table-row"><td>${ip}</td><td class="text-right">${mac}</td></tr>`;
+                });
+            }
+
+            // BGP Rows
+            const bgpBody = document.getElementById('bgp-rows');
+            bgpBody.innerHTML = '';
+            if (bgpRib.size === 0) {
+                bgpBody.innerHTML = '<tr><td colspan="2" class="py-2 text-center text-slate-700 italic">No Routes</td></tr>';
+            } else {
+                bgpRib.forEach((path, prefix) => {
+                    bgpBody.innerHTML += `<tr class="table-row"><td>${prefix}</td><td class="text-right">${path}</td></tr>`;
+                });
+            }
+            lucide.createIcons();
+        }
+
+        function setMode(mode) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + mode).classList.add('active');
+
+            const isArp = mode === 'arp';
+            document.querySelectorAll('.arp-node').forEach(el => el.classList.toggle('hidden', !isArp));
+            document.querySelectorAll('.bgp-node').forEach(el => el.classList.toggle('hidden', isArp));
+
+            document.getElementById('ctrl-arp').classList.toggle('hidden', !isArp);
+            document.getElementById('ctrl-bgp').classList.toggle('hidden', isArp);
+
+            document.getElementById('mac-section').classList.toggle('hidden', !isArp);
+            document.getElementById('arp-section').classList.toggle('hidden', !isArp);
+            document.getElementById('bgp-section').classList.toggle('hidden', isArp);
+
+            log(`Switched to ${mode.toUpperCase()} simulation environment.`);
+        }
+
+        window.addEventListener('load', () => renderTables());
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
