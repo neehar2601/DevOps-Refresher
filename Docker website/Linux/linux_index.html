@@ -94,6 +94,114 @@
       </div>
     </section>
 
+    <!-- Core Concepts (from linux_index.md) -->
+    <section>
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="p-3 bg-amber-500/15 border border-amber-500/25 rounded-xl flex-shrink-0">
+            <i data-lucide="book-open" class="w-6 h-6 text-amber-400"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-white">Core Linux Concepts</h2>
+            <p class="text-slate-400 text-sm mt-1">The fundamental building blocks of every Linux system.</p>
+          </div>
+        </div>
+
+        <!-- Kernel + Distros -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+
+          <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 hover:border-amber-500/40 transition-colors">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="cpu" class="w-4 h-4 text-amber-400"></i>
+              <h3 class="font-bold text-white text-sm">The Kernel</h3>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              The kernel is the <strong class="text-white">brain</strong> of Linux — it controls hardware and makes it interact with applications. It manages the CPU, memory, devices, and all running programs. The latest kernel is always available at <span class="font-mono text-amber-300 text-xs">kernel.org</span>.
+            </p>
+          </div>
+
+          <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 hover:border-emerald-500/40 transition-colors">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="package" class="w-4 h-4 text-emerald-400"></i>
+              <h3 class="font-bold text-white text-sm">Distributions (Distros)</h3>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed mb-3">A distro bundles the kernel, tools, utilities, libraries, and a desktop environment into a complete installable OS.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-emerald-300">Red Hat Enterprise Linux</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-emerald-300">Fedora</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-emerald-300">Ubuntu</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-emerald-300">Gentoo</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Bootloaders + Services + Filesystems + Desktop/Shell -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+          <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 hover:border-orange-500/40 transition-colors">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="power" class="w-4 h-4 text-orange-400"></i>
+              <h3 class="font-bold text-white text-sm">Boot Loaders</h3>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed mb-3">The first program to run after BIOS — loads and hands off to the OS kernel.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-orange-300">GRUB</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-orange-300">ISOLINUX</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 hover:border-blue-500/40 transition-colors">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="server" class="w-4 h-4 text-blue-400"></i>
+              <h3 class="font-bold text-white text-sm">Services (Daemons)</h3>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed mb-3">Programs that run as background processes, started at boot.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-blue-300">httpd</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-blue-300">nfsd</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-blue-300">ntpd</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-blue-300">ftpd</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-blue-300">named</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 hover:border-purple-500/40 transition-colors">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="folder-tree" class="w-4 h-4 text-purple-400"></i>
+              <h3 class="font-bold text-white text-sm">Filesystems</h3>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed mb-3">Methods for organising files on disk. The X Window System provides the GUI protocol layer.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-purple-300">ext3</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-purple-300">ext4</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-purple-300">FAT</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-purple-300">XFS</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-purple-300">Btrfs</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 hover:border-rose-500/40 transition-colors">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="monitor" class="w-4 h-4 text-rose-400"></i>
+              <h3 class="font-bold text-white text-sm">Desktop &amp; Shell</h3>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed mb-3">The desktop is the graphical UI. The shell interprets commands and instructs the OS.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-rose-300">GNOME</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-rose-300">KDE</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-rose-300">Xfce</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-slate-300">bash</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-slate-300">zsh</span>
+              <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-slate-300">tcsh</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
     <!-- Topic Pages -->
     <section>
       <div class="mb-5">
@@ -166,6 +274,28 @@
               Open Permissions
             </a>
             <p class="text-slate-500 text-xs mt-2 text-center">chmod • chown • 755 • SUID</p>
+          </div>
+        </div>
+
+        <!-- Boot Process -->
+        <div class="bg-slate-800 border border-orange-500/30 rounded-2xl overflow-hidden hover:-translate-y-1 transition-transform duration-200 shadow-lg">
+          <div class="bg-orange-900/20 px-6 pt-6 pb-4">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="p-2 bg-orange-500/20 rounded-lg">
+                <i data-lucide="power" class="w-5 h-5 text-orange-400"></i>
+              </div>
+              <h3 class="font-bold text-white">Boot Process</h3>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              From power button to login prompt — BIOS, GRUB, kernel, initramfs, and init explained interactively.
+            </p>
+          </div>
+          <div class="px-6 pb-5 pt-3">
+            <a href="linux_boot.html" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-orange-700 hover:bg-orange-600 text-white font-semibold text-sm transition-colors">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+              Open Boot Simulator
+            </a>
+            <p class="text-slate-500 text-xs mt-2 text-center">BIOS • GRUB • Kernel • initramfs • PID 1</p>
           </div>
         </div>
 
