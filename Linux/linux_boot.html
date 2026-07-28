@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Linux Boot Process — Interactive Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','sans-serif'],mono:['JetBrains Mono','monospace']}}}}</script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    body{font-family:'Inter',sans-serif;}
+    .fade-in{animation:fadeIn 0.4s ease-in-out;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+    .step-card{cursor:pointer;transition:all 0.25s;}
+    .step-card:hover{transform:translateX(4px);}
+    .step-card.active{border-color:rgb(245 158 11/0.7)!important;background:rgb(245 158 11/0.06)!important;}
+    .detail-panel{transition:opacity 0.3s,transform 0.3s;}
+    .connector-line{width:2px;background:linear-gradient(to bottom,rgb(245 158 11/0.4),rgb(245 158 11/0.1));margin-left:19px;}
+    .step-num{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;border:2px solid rgb(245 158 11/0.5);background:rgb(245 158 11/0.1);color:#f59e0b;}
+    .step-num.active-num{background:#f59e0b;color:#000;border-color:#f59e0b;box-shadow:0 0 14px rgb(245 158 11/0.5);}
+    .tag-pill{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600;letter-spacing:.04em;}
+    .sub-item{border-left:2px solid rgb(245 158 11/0.3);padding-left:12px;margin-top:10px;}
+    .note-item{margin-top:14px;background:rgb(234 179 8/0.07);border:1px solid rgb(234 179 8/0.25);border-left:3px solid rgb(234 179 8/0.7);border-radius:0 10px 10px 0;padding:10px 14px;}
+    .note-item .note-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fbbf24;margin-bottom:4px;display:flex;align-items:center;gap:5px;}
+    .note-item .note-text{font-size:12px;color:rgb(203 213 225);line-height:1.65;}
+  </style>
+</head>
+<body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+
+<header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50 shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <i data-lucide="power" class="w-7 h-7 text-amber-500"></i>
+      <h1 class="text-xl font-bold tracking-tight">Linux <span class="text-slate-400 font-light">Boot Process</span></h1>
+    </div>
+    <a href="linux_index.html" class="flex items-center gap-2 text-sm text-slate-400 hover:text-amber-500 transition-colors">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      <span class="hidden sm:inline">Back to Linux Hub</span>
+    </a>
+  </div>
+</header>
+
+<main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full fade-in">
+
+  <!-- Intro -->
+  <section class="mb-10">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+      <div class="flex items-start gap-4 mb-4">
+        <div class="p-3 bg-amber-500/15 border border-amber-500/25 rounded-xl flex-shrink-0">
+          <i data-lucide="zap" class="w-6 h-6 text-amber-400"></i>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-white mb-2">From Power Button to Login Prompt</h2>
+          <p class="text-slate-400 leading-relaxed">Every time you press the power button, Linux orchestrates a precise sequence of events — from the first electrical signal through the BIOS, bootloader, kernel, and init system — before you ever see a prompt. Click each step to explore what's really happening inside.</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2 mt-4">
+        <span class="tag-pill bg-orange-500/15 text-orange-300 border border-orange-500/30">BIOS/UEFI</span>
+        <span class="tag-pill bg-blue-500/15 text-blue-300 border border-blue-500/30">Bootloader</span>
+        <span class="tag-pill bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Kernel</span>
+        <span class="tag-pill bg-purple-500/15 text-purple-300 border border-purple-500/30">initramfs</span>
+        <span class="tag-pill bg-rose-500/15 text-rose-300 border border-rose-500/30">init / systemd</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Simulator -->
+  <section>
+    <div class="flex flex-col lg:flex-row gap-6">
+
+      <!-- Left: Step List -->
+      <div class="lg:w-5/12 flex flex-col gap-0" id="step-list"></div>
+
+      <!-- Right: Detail Panel -->
+      <div class="lg:w-7/12">
+        <div id="detail-panel" class="bg-slate-800 border border-slate-700 rounded-2xl p-7 sticky top-24 detail-panel">
+          <div id="detail-icon" class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-2xl bg-amber-500/15 border border-amber-500/25"></div>
+          <div class="flex items-center gap-3 mb-1">
+            <span id="detail-num" class="tag-pill bg-amber-500/15 text-amber-300 border border-amber-500/30"></span>
+            <h3 id="detail-title" class="text-xl font-bold text-white"></h3>
+          </div>
+          <p id="detail-intro" class="text-amber-300 text-sm font-medium mt-2 mb-4 leading-relaxed"></p>
+          <div id="detail-body" class="text-slate-300 text-sm leading-relaxed space-y-4"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="bg-slate-950 border-t border-slate-800 text-slate-500 py-5 text-center text-sm mt-auto">
+  <p>Linux Learning Hub &middot; <a href="linux_index.html" class="text-amber-500 hover:underline">&larr; Linux Hub</a></p>
+</footer>
+
+<script>
+const STEPS = [
+  {
+    icon:"⚡", num:"01", color:"orange",
+    title:"Power-On & BIOS",
+    intro:"The BIOS acts as a bridge between hardware and OS, ensuring everything is ready before handoff.",
+    body:[
+      {h:"What is BIOS?", t:"BIOS (Basic Input/Output System) is a small program stored on a read-only memory (ROM) chip on the motherboard. It is the very first software that runs when you power on your computer — even before the operating system is involved."},
+      {h:"Power-On Self-Test (POST)", t:"The BIOS performs POST, initialising critical hardware: screen, keyboard, and memory. It checks that everything is functioning correctly before the OS loads. The BIOS then locates and loads the bootloader, which starts the OS."},
+      {h:"Why it matters", t:"Without POST passing, the system cannot proceed. Hardware failures (bad RAM, dead CPU) are caught here — often signalled by beep codes before any display output is possible."},
+      {note:"Calling BIOS firmware \"ROM\" is a historical simplification. Modern systems store firmware in flash memory (EEPROM), which is rewritable — that's precisely how BIOS/UEFI updates work. True read-only ROM hasn't been used in PC motherboards for decades."}
+    ]
+  },
+  {
+    icon:"🔀", num:"02", color:"blue",
+    title:"BIOS → Bootloader Handoff",
+    intro:"Control passes from BIOS to a small bootloader stored on the system's storage device.",
+    body:[
+      {h:"Where the bootloader lives", t:"On traditional BIOS/MBR systems, the bootloader resides in the boot sector (first 512 bytes of disk). On modern EFI/UEFI systems, it lives in the EFI System Partition (ESP). The CMOS chip (a small battery-powered memory) retains the current date, time, and hardware configuration across power cycles."},
+      {h:"Common Linux bootloaders", t:"• GRUB (GRand Unified Bootloader) — the most common for Linux distributions.\n• ISOLINUX — used for booting from removable media such as CDs or USB drives.\n• DAS U-Boot — used for embedded systems and appliances."},
+      {h:"What the bootloader does", t:"Most Linux bootloaders present a menu so you can choose between OS versions or kernel versions. The bootloader's main job is to load the kernel image and the Initial RAM Disk (initrd/initramfs) into memory — the toolkit that keeps the system booting until the full OS is ready."},
+      {note:"Saying CMOS \"stores hardware configuration\" is a simplification. CMOS accurately stores the RTC (real-time clock) and legacy BIOS settings. Modern UEFI systems have largely moved BIOS/boot settings to NVRAM on the firmware chip itself, making the CMOS battery's role much smaller than it once was."}
+    ]
+  },
+  {
+    icon:"🥾", num:"03", color:"blue",
+    title:"Bootloader Stages",
+    intro:"The bootloader works in two stages to get the kernel into RAM.",
+    body:[
+      {h:"Stage 1 — MBR (BIOS/MBR systems)", t:"The first sector of the hard disk (MBR) is only 512 bytes, so it holds minimal code. This code: (a) examines the partition table to find a bootable partition, and (b) loads the second-stage bootloader (GRUB) into RAM."},
+      {h:"Stage 1 — EFI/UEFI systems", t:"UEFI firmware reads its Boot Manager data to find the correct UEFI application and its location (disk + EFI System Partition). It launches the defined UEFI application (e.g. GRUB). This method is more complex than MBR but offers far greater flexibility and configurability."},
+      {h:"Stage 2 — Under /boot", t:"The second-stage bootloader lives under /boot. At this stage: (a) A splash screen lets you choose the OS and kernel version to boot. (b) Once selected, the bootloader loads the kernel into RAM and passes control to it."},
+      {note:"The clean \"Stage 1 / Stage 2\" split described above applies to legacy GRUB (0.9x). Modern GRUB2 uses a more nuanced multi-stage design: the 446-byte MBR stub loads core.img (which sits in the gap between the MBR and first partition, or in the ESP), and core.img then loads the full set of GRUB modules. There is no single binary Stage 2 in GRUB2."}
+    ]
+  },
+  {
+    icon:"🗜️", num:"04", color:"emerald",
+    title:"Kernel Decompression & Hardware Probe",
+    intro:"The kernel is almost always compressed. Its first task is to uncompress itself.",
+    body:[
+      {h:"Self-decompression", t:"Because the kernel image (vmlinuz) is compressed for storage efficiency, the very first thing it does when loaded into RAM is decompress itself in-place. This is all handled by a small stub of code prepended to the compressed kernel."},
+      {h:"Hardware probe & driver init", t:"After decompression, the kernel checks and analyses the system hardware, initialising any built-in device drivers. This ensures the OS can continue loading properly with knowledge of what hardware is available."},
+      {h:"CPU mode switch", t:"The kernel sets up early page tables and switches the CPU from 16-bit real mode (BIOS legacy) to 64-bit long mode, enabling access to all system RAM and modern CPU features."},
+      {note:"The jump from \"16-bit to 64-bit\" is not a single step. On x86-64 systems the kernel transitions through three distinct modes: 16-bit real mode → 32-bit protected mode → 64-bit long mode. The 32-bit protected mode stage is brief but real — the CPU must pass through it before long mode can be enabled."}
+    ]
+  },
+  {
+    icon:"💾", num:"05", color:"purple",
+    title:"initramfs — Temporary Root",
+    intro:"A chicken-and-egg problem: the kernel needs drivers to read the disk, but drivers are on the disk.",
+    body:[
+      {h:"The problem", t:"Once the kernel is decompressed and finishes its initial hardware probe, it faces a limitation: it needs to mount the root filesystem to access system tools, but the drivers required to communicate with storage hardware are often stored on that very filesystem."},
+      {h:"The solution: initramfs", t:"The initramfs (Initial RAM Filesystem) is a small compressed filesystem image that the bootloader loads into memory alongside the kernel. It acts as a specialised toolkit containing binaries and programs needed to prepare the system for its final environment. Without it, the boot process would stall."},
+      {h:"Driver Loading via udev", t:"The initramfs uses the udev (user device) system to scan hardware. It identifies which mass-storage controllers are present, finds the matching drivers, and loads them so the kernel can 'see' the disk."},
+      {h:"Filesystem Support", t:"It provides the kernel with logic to read the filesystem type used by the root partition — whether that's Ext4, XFS, Btrfs, or another format."},
+      {h:"Validation & Mounting", t:"Once hardware is reachable, initramfs locates the root filesystem, performs an error check (fsck if needed), and prepares it for final mounting."}
+    ]
+  },
+  {
+    icon:"🔄", num:"06", color:"purple",
+    title:"initramfs Hand-off to Real Root",
+    intro:"The temporary RAM environment pivots to the real filesystem on disk.",
+    body:[
+      {h:"Mounting", t:"The mount program attaches the physical storage device to a specific point in the system hierarchy (the mount point), notifying the OS that the filesystem is live and accessible."},
+      {h:"Pivoting (switch_root)", t:"The system performs a 'switch root' — pivoting from the temporary initramfs environment to the real root filesystem on disk. The in-memory initramfs is then wiped to free RAM."},
+      {h:"Executing init (PID 1)", t:"With the real filesystem established, the initramfs hands control to the init program (/sbin/init). This becomes the 'parent of all processes' and is responsible for starting the rest of the system. /sbin/init is the first process to run in user space and is always assigned PID 1."}
+    ]
+  },
+  {
+    icon:"🖥️", num:"07", color:"cyan",
+    title:"Login Prompts & Virtual Terminals",
+    intro:"As boot nears completion, the init process launches text-mode login prompts.",
+    body:[
+      {h:"Text-mode login", t:"The init process launches several text-mode login prompts (TTYs). These allow you to enter your username and password to access a command shell. If a graphical login interface (such as GNOME or KDE) is configured, these text prompts run in the background."},
+      {h:"Virtual terminals", t:"Linux handles multiple sessions simultaneously through virtual terminals:\n• Text-mode switching: ALT + Function key (e.g. ALT+F2)\n• From a GUI: CTRL+ALT + Function key to reach a text console\n• Standard config: most distros provide 6 text terminals and 1 graphical terminal\n• Return to GUI: F1 or F7 (combined with CTRL+ALT) typically leads back to the graphical interface."},
+      {h:"Why multiple TTYs?", t:"Virtual terminals are a fundamental multi-user feature of Linux. Even in an emergency where the GUI has crashed, you can switch to a text terminal (e.g. CTRL+ALT+F2) to diagnose and fix the system — the OS keeps running."},
+      {note:"\"6 text terminals and 1 graphical terminal\" is the common Debian/Ubuntu default, not a universal standard. The number of TTYs is distro-dependent and fully configurable via systemd or getty settings. Minimal and embedded installs often use far fewer, while some server distros may allocate none at all to graphical sessions."}
+    ]
+  },
+  {
+    icon:"⚙️", num:"08", color:"emerald",
+    title:"systemd / Init — Service Manager",
+    intro:"systemd (or init) takes over as PID 1 and brings the system to a fully usable state.",
+    body:[
+      {h:"What systemd does", t:"systemd reads target unit files and concurrently starts all required background services — things like NetworkManager, SSH daemon, logging (journald), display manager, and more. Unlike the old SysVinit, systemd parallelises service startup for faster boot times."},
+      {h:"SysVinit (historical context)", t:"Historically, Linux used SysVinit — a sequential service loader from 1980s UNIX. Services started one by one in a fixed order through 'runlevels'. While reliable, it was slow and rigid. systemd replaced it across nearly all mainstream distros."},
+      {h:"Process Initiation", t:"init/systemd starts all background services and applications required for the system to function (network, logging, cron, display manager, etc.)."},
+      {h:"System Management", t:"Almost every process on your system can trace its origin back to init/systemd. The only exceptions are kernel threads, which the kernel starts directly to manage internal OS details."},
+      {h:"Ongoing Maintenance", t:"systemd acts as a supervisor for all non-kernel processes — cleaning up after them when they exit, restarting failed services, and managing login sessions as users log in and out."}
+    ]
+  },
+  {
+    icon:"🔴", num:"09", color:"rose",
+    title:"The Role of Init — Shutdown",
+    intro:"init is also responsible for clean system shutdown — ensuring no data is lost.",
+    body:[
+      {h:"Shutdown responsibility", t:"When you run shutdown, poweroff, or reboot, init/systemd orchestrates the teardown in the reverse order of startup. It sends SIGTERM to running processes, waits for them to exit gracefully, then SIGKILL for any that don't respond."},
+      {h:"Service stop order", t:"systemd stops services in dependency order — no service is stopped before the services that depend on it have already been stopped. This prevents data corruption."},
+      {h:"Filesystem unmounting", t:"Before the system powers off, init ensures all filesystems are unmounted cleanly (or remounted read-only). This flushes all write buffers to disk and prevents filesystem corruption on next boot."},
+      {h:"Final note", t:"The kernel is loaded and init takes over with PID 1. From that moment until the last process exits at shutdown, init is the supervisor of the entire user-space universe."}
+    ]
+  }
+];
+
+const colorMap = {
+  orange:  {bg:"bg-orange-500/10",  border:"border-orange-500/30",  text:"text-orange-300",  num:"bg-orange-500/20 text-orange-300 border-orange-500/40"},
+  blue:    {bg:"bg-blue-500/10",    border:"border-blue-500/30",    text:"text-blue-300",    num:"bg-blue-500/20 text-blue-300 border-blue-500/40"},
+  emerald: {bg:"bg-emerald-500/10", border:"border-emerald-500/30", text:"text-emerald-300", num:"bg-emerald-500/20 text-emerald-300 border-emerald-500/40"},
+  purple:  {bg:"bg-purple-500/10",  border:"border-purple-500/30",  text:"text-purple-300",  num:"bg-purple-500/20 text-purple-300 border-purple-500/40"},
+  cyan:    {bg:"bg-cyan-500/10",    border:"border-cyan-500/30",    text:"text-cyan-300",    num:"bg-cyan-500/20 text-cyan-300 border-cyan-500/40"},
+  rose:    {bg:"bg-rose-500/10",    border:"border-rose-500/30",    text:"text-rose-300",    num:"bg-rose-500/20 text-rose-300 border-rose-500/40"}
+};
+
+let active = 0;
+
+function renderList() {
+  const list = document.getElementById('step-list');
+  STEPS.forEach((s, i) => {
+    const c = colorMap[s.color];
+    const wrap = document.createElement('div');
+    wrap.className = 'flex items-start gap-0';
+
+    const lineCol = document.createElement('div');
+    lineCol.className = 'flex flex-col items-center';
+    const num = document.createElement('div');
+    num.id = 'num-' + i;
+    num.className = 'step-num ' + (i===0?'active-num':'');
+    num.textContent = s.num;
+    const line = document.createElement('div');
+    line.className = 'connector-line flex-1 ' + (i===STEPS.length-1?'opacity-0':'');
+    line.style.minHeight = '24px';
+    lineCol.appendChild(num);
+    lineCol.appendChild(line);
+
+    const card = document.createElement('div');
+    card.id = 'card-' + i;
+    card.className = 'step-card flex-1 ml-4 mb-2 bg-slate-800 border border-slate-700 rounded-xl p-4 ' + (i===0?'active':'');
+    card.innerHTML = '<div class="flex items-center gap-3"><span class="text-xl">' + s.icon + '</span><div><p class="font-semibold text-white text-sm">' + s.title + '</p><p class="text-slate-400 text-xs mt-0.5">' + s.intro + '</p></div></div>';
+    card.addEventListener('click', () => activate(i));
+
+    wrap.appendChild(lineCol);
+    wrap.appendChild(card);
+    list.appendChild(wrap);
+  });
+}
+
+function activate(i) {
+  // deactivate old
+  document.getElementById('card-' + active).classList.remove('active');
+  document.getElementById('num-' + active).classList.remove('active-num');
+  active = i;
+  document.getElementById('card-' + i).classList.add('active');
+  document.getElementById('num-' + i).classList.add('active-num');
+
+  const s = STEPS[i];
+  const c = colorMap[s.color];
+  document.getElementById('detail-icon').textContent = s.icon;
+  document.getElementById('detail-icon').className = 'w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-2xl ' + c.bg + ' border ' + c.border;
+  document.getElementById('detail-num').textContent = 'Step ' + s.num;
+  document.getElementById('detail-num').className = 'tag-pill ' + c.num;
+  document.getElementById('detail-title').textContent = s.title;
+  document.getElementById('detail-intro').textContent = s.intro;
+
+  const body = document.getElementById('detail-body');
+  body.innerHTML = '';
+  s.body.forEach(b => {
+    const block = document.createElement('div');
+    if (b.note) {
+      block.className = 'note-item';
+      block.innerHTML = '<div class="note-label"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Accuracy Note</div><div class="note-text">' + b.note + '</div>';
+    } else {
+      block.className = 'sub-item';
+      block.innerHTML = '<p class="font-semibold ' + c.text + ' mb-1">' + b.h + '</p><p class="text-slate-300 whitespace-pre-line">' + b.t + '</p>';
+    }
+    body.appendChild(block);
+  });
+}
+
+renderList();
+activate(0);
+lucide.createIcons();
+</script>
+</body>
+</html>

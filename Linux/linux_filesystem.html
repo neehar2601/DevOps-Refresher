@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linux File System Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } } } }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── Filesystem Tree ── */
+    #fs-tree {
+      line-height: 1;
+      user-select: none;
+    }
+
+    .tree-node {
+      position: relative;
+    }
+
+    .tree-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.12s;
+      white-space: nowrap;
+    }
+
+    .tree-row:hover {
+      background: rgba(245, 158, 11, 0.10);
+      transform: translateX(2px);
+    }
+
+    .tree-row.active {
+      background: rgba(245, 158, 11, 0.18);
+    }
+
+    /* connector lines */
+    .tree-children {
+      margin-left: 20px;
+      padding-left: 12px;
+      border-left: 1px dashed rgba(100, 116, 139, 0.4);
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.35s ease, opacity 0.25s ease;
+      opacity: 0;
+    }
+
+    .tree-children.open {
+      max-height: 2000px;
+      opacity: 1;
+    }
+
+    .toggle-icon {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #94a3b8;
+      transition: transform 0.25s;
+      flex-shrink: 0;
+    }
+
+    .toggle-icon.rotated {
+      transform: rotate(90deg);
+    }
+
+    .dir-icon {
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .dir-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .dir-tag {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 99px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+    }
+
+    /* colour classes */
+    .c-root {
+      color: #f59e0b;
+    }
+
+    .c-sys {
+      color: #60a5fa;
+    }
+
+    .c-usr {
+      color: #34d399;
+    }
+
+    .c-home {
+      color: #f472b6;
+    }
+
+    .c-var {
+      color: #fb923c;
+    }
+
+    .c-virt {
+      color: #a78bfa;
+    }
+
+    .c-media {
+      color: #38bdf8;
+    }
+
+    .c-file {
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .tag-sys {
+      background: rgba(96, 165, 250, 0.15);
+      color: #60a5fa;
+    }
+
+    .tag-usr {
+      background: rgba(52, 211, 153, 0.15);
+      color: #34d399;
+    }
+
+    .tag-home {
+      background: rgba(244, 114, 182, 0.15);
+      color: #f472b6;
+    }
+
+    .tag-var {
+      background: rgba(251, 146, 60, 0.15);
+      color: #fb923c;
+    }
+
+    .tag-virt {
+      background: rgba(167, 139, 250, 0.15);
+      color: #a78bfa;
+    }
+
+    .tag-media {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+    }
+
+    /* info panel */
+    #tree-info {
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    #tree-info.hidden-panel {
+      opacity: 0;
+      transform: translateY(6px);
+      pointer-events: none;
+    }
+
+    /* expand-all btn */
+    #btn-expand-all,
+    #btn-collapse-all {
+      transition: background 0.2s, color 0.2s;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+
+  <!-- Sticky Header -->
+  <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <i data-lucide="folder-tree" class="w-7 h-7 text-amber-500"></i>
+        <h1 class="text-xl font-bold tracking-tight">Linux <span class="text-slate-400 font-light">File System</span>
+        </h1>
+      </div>
+      <a href="linux_index.html"
+        class="flex items-center gap-2 text-sm text-slate-400 hover:text-amber-500 transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span class="hidden sm:inline">Back to Linux Hub</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-10 fade-in">
+
+    <!-- Overview -->
+    <section>
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="p-3 bg-amber-500/15 border border-amber-500/25 rounded-xl flex-shrink-0">
+            <i data-lucide="network" class="w-6 h-6 text-amber-400"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-white mb-2">The Hierarchy</h2>
+            <p class="text-slate-400 leading-relaxed">
+              In Linux, everything lives in one big tree that starts at <code
+                class="bg-slate-900 px-1.5 py-0.5 rounded text-amber-300 font-mono">/</code> (the root directory) and
+              then branches into standard folders with well-defined purposes.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Directories Grid -->
+    <section>
+      <!-- Partitioning Section -->
+      <section class="mb-8">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+
+          <!-- Header -->
+          <div class="flex items-start gap-4 mb-6">
+            <div class="p-3 bg-blue-500/15 border border-blue-500/25 rounded-xl flex-shrink-0">
+              <i data-lucide="hard-drive" class="w-6 h-6 text-blue-400"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-white mb-2">Storage: Physical vs Logical</h2>
+              <p class="text-slate-400 leading-relaxed">
+                It is essential to distinguish between the <strong class="text-white">physical storage</strong> (the hardware) and
+                <strong class="text-white">logical organisation</strong> (the software). This is often described as the difference
+                between the physical <em class="text-blue-300">"container"</em> and the logical <em class="text-blue-300">"method"</em> of storage.
+              </p>
+            </div>
+          </div>
+
+          <!-- Three concepts: Partition → Filesystem → Mount -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+
+            <!-- Partition -->
+            <div class="bg-slate-900/70 border border-blue-500/30 rounded-xl p-5" style="border-top:3px solid #3b82f6">
+              <div class="flex items-center gap-2 mb-3">
+                <i data-lucide="layout-panel-left" class="w-4 h-4 text-blue-400"></i>
+                <h3 class="font-bold text-white text-sm">1. Partition — The Container</h3>
+              </div>
+              <p class="text-slate-400 text-sm leading-relaxed">
+                Imagine your hard drive as a physical office building. A <strong class="text-white">partition</strong> is a dedicated subsection of that physical media — like a specific floor or suite.
+                It defines a <em>fixed area</em> managed as a single unit. In Linux, partitions appear as device files:
+              </p>
+              <div class="mt-3 flex flex-wrap gap-1.5">
+                <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-blue-300">/dev/sda1</span>
+                <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-blue-300">/dev/sdb2</span>
+                <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-blue-300">/dev/nvme0n1p1</span>
+              </div>
+            </div>
+
+            <!-- Filesystem -->
+            <div class="bg-slate-900/70 border border-emerald-500/30 rounded-xl p-5" style="border-top:3px solid #10b981">
+              <div class="flex items-center gap-2 mb-3">
+                <i data-lucide="folder-tree" class="w-4 h-4 text-emerald-400"></i>
+                <h3 class="font-bold text-white text-sm">2. Filesystem — The Method</h3>
+              </div>
+              <p class="text-slate-400 text-sm leading-relaxed">
+                If the partition is the empty office suite, the <strong class="text-white">filesystem</strong> is the filing cabinets and indexing system. Without it, a partition is just raw ones and zeros.
+                <strong class="text-white">Formatting</strong> a partition installs a filesystem to organise that space:
+              </p>
+              <div class="mt-3 flex flex-wrap gap-1.5">
+                <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-emerald-300">ext4</span>
+                <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-emerald-300">XFS</span>
+                <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-emerald-300">Btrfs</span>
+                <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-emerald-300">FAT32</span>
+              </div>
+            </div>
+
+            <!-- Mounting -->
+            <div class="bg-slate-900/70 border border-amber-500/30 rounded-xl p-5" style="border-top:3px solid #f59e0b">
+              <div class="flex items-center gap-2 mb-3">
+                <i data-lucide="link" class="w-4 h-4 text-amber-400"></i>
+                <h3 class="font-bold text-white text-sm">3. Mounting — The Bridge</h3>
+              </div>
+              <p class="text-slate-400 text-sm leading-relaxed">
+                <strong class="text-white">Mounting</strong> attaches a partition's filesystem to a directory (a <em>mount point</em>) in the tree. There are no drive letters — you "attach" storage to a path:
+              </p>
+              <div class="mt-3 bg-slate-800 border border-slate-700 rounded-lg p-3 font-mono text-xs text-amber-300 leading-relaxed">
+                /dev/sdb1 → /home<br>
+                /dev/sdc1 → /var/log
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Detail callout: filesystem can span partitions -->
+          <div class="bg-blue-950/40 border border-blue-500/25 border-l-4 border-l-blue-500 rounded-xl rounded-l-none p-4 mb-6">
+            <p class="text-slate-300 text-sm leading-relaxed">
+              <strong class="text-blue-400">Note:</strong> Generally a filesystem resides within a single partition. However, in some
+              circumstances a filesystem can <strong class="text-white">span more than one partition</strong> using symbolic links — a topic covered later in this course.
+            </p>
+          </div>
+
+          <!-- Windows vs Linux comparison table -->
+          <div>
+            <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="arrow-left-right" class="w-4 h-4 text-slate-400"></i>
+              Windows vs Linux: Storage Concepts
+            </h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-700">
+                    <th class="text-left py-3 px-4 text-slate-400 font-semibold w-1/3">Concept</th>
+                    <th class="text-left py-3 px-4 text-blue-300 font-semibold w-1/3">
+                      <i data-lucide="monitor" class="w-3.5 h-3.5 inline mr-1"></i>Windows
+                    </th>
+                    <th class="text-left py-3 px-4 text-amber-300 font-semibold w-1/3">
+                      <i data-lucide="terminal" class="w-3.5 h-3.5 inline mr-1"></i>Linux
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                  <tr class="hover:bg-slate-900/40 transition-colors">
+                    <td class="py-3 px-4 text-slate-300 font-medium">Storage access</td>
+                    <td class="py-3 px-4 text-slate-400">Drive letters (C:, D:, E:)</td>
+                    <td class="py-3 px-4 text-slate-400">Mount points in a single unified tree</td>
+                  </tr>
+                  <tr class="hover:bg-slate-900/40 transition-colors">
+                    <td class="py-3 px-4 text-slate-300 font-medium">Physical unit</td>
+                    <td class="py-3 px-4 text-slate-400">Volume / Partition</td>
+                    <td class="py-3 px-4 font-mono text-blue-300 text-xs">/dev/sda1, /dev/nvme0n1p1</td>
+                  </tr>
+                  <tr class="hover:bg-slate-900/40 transition-colors">
+                    <td class="py-3 px-4 text-slate-300 font-medium">Default filesystem</td>
+                    <td class="py-3 px-4 font-mono text-slate-400 text-xs">NTFS</td>
+                    <td class="py-3 px-4 font-mono text-emerald-300 text-xs">ext4 / XFS / Btrfs</td>
+                  </tr>
+                  <tr class="hover:bg-slate-900/40 transition-colors">
+                    <td class="py-3 px-4 text-slate-300 font-medium">Attach storage</td>
+                    <td class="py-3 px-4 text-slate-400">Auto-assign drive letter</td>
+                    <td class="py-3 px-4 font-mono text-amber-300 text-xs">mount /dev/sdb1 /home</td>
+                  </tr>
+                  <tr class="hover:bg-slate-900/40 transition-colors">
+                    <td class="py-3 px-4 text-slate-300 font-medium">Result</td>
+                    <td class="py-3 px-4 text-slate-400">New drive letter appears</td>
+                    <td class="py-3 px-4 text-slate-400">Directory becomes the partition's root</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Case-sensitivity callout -->
+      <div class="bg-amber-950/40 border border-amber-500/30 border-l-4 border-l-amber-500 rounded-xl rounded-l-none p-4 mb-6 flex items-start gap-3">
+        <i data-lucide="case-sensitive" class="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5"></i>
+        <p class="text-slate-300 text-sm leading-relaxed">
+          <strong class="text-amber-400">Linux is case-sensitive.</strong>
+          Uppercase and lowercase letters in filenames and directory names are treated as completely distinct.
+          <code class="bg-slate-900 px-1.5 py-0.5 rounded text-amber-300 font-mono">/boot</code>,
+          <code class="bg-slate-900 px-1.5 py-0.5 rounded text-amber-300 font-mono">/Boot</code>, and
+          <code class="bg-slate-900 px-1.5 py-0.5 rounded text-amber-300 font-mono">/BOOT</code>
+          are three entirely separate directories as far as Linux is concerned.
+        </p>
+      </div>
+
+      <h2 class="text-xl font-bold text-white mb-6">Top-Level Directories (FHS)</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-500/50 transition-colors">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="p-2 bg-slate-700 rounded-lg"><span class="text-xl">🌳</span></div>
+            <h3 class="font-bold text-amber-400 font-mono text-lg">/ (root)</h3>
+          </div>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            The top of the filesystem hierarchy. Every file and directory is somewhere under <code
+              class="text-slate-300">/</code>; there are no C: or D: drives.
+            The directories directly under <code class="text-slate-300">/</code> contain only what is strictly necessary to boot the system and perform basic recovery tasks — the minimum needed before anything else is loaded. Think of these as the tools a technician would need if the system were damaged and they had to repair it from scratch.
+          </p>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-500/50 transition-colors">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="p-2 bg-slate-700 rounded-lg"><span class="text-xl">🧰</span></div>
+            <h3 class="font-bold text-amber-400 font-mono text-lg">/bin & /sbin</h3>
+          </div>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            <strong class="text-white">/bin:</strong> Essential user binaries (ls, cp).<br>
+            <strong class="text-white">/sbin:</strong> System administration binaries (mount).<br>
+            <strong class="text-white">/lib:</strong> Essential shared libraries for these.
+          </p>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-500/50 transition-colors">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="p-2 bg-slate-700 rounded-lg"><span class="text-xl">⚙️</span></div>
+            <h3 class="font-bold text-amber-400 font-mono text-lg">/etc & /boot</h3>
+          </div>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            <strong class="text-white">/etc:</strong> System configuration files (fstab, passwd).<br>
+            <strong class="text-white">/boot:</strong> Files required for booting (kernel, GRUB).
+          </p>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-500/50 transition-colors">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="p-2 bg-slate-700 rounded-lg"><span class="text-xl">👤</span></div>
+            <h3 class="font-bold text-amber-400 font-mono text-lg">/home & /root</h3>
+          </div>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            <strong class="text-white">/home:</strong> Home directories for normal users.<br>
+            <strong class="text-white">/root:</strong> Home directory of the root user (kept separate).
+          </p>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-500/50 transition-colors">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="p-2 bg-slate-700 rounded-lg"><span class="text-xl">📦</span></div>
+            <h3 class="font-bold text-amber-400 font-mono text-lg">/usr & /opt</h3>
+          </div>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            <strong class="text-white">/usr:</strong> Installed applications and shared data (/usr/bin).<br>
+            <strong class="text-white">/opt:</strong> Optional or third‑party software.
+          </p>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-500/50 transition-colors">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="p-2 bg-slate-700 rounded-lg"><span class="text-xl">🔄</span></div>
+            <h3 class="font-bold text-amber-400 font-mono text-lg">/var, /tmp, /run</h3>
+          </div>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            <strong class="text-white">/var:</strong> Variable data like logs (/var/log).<br>
+            <strong class="text-white">/tmp:</strong> Temporary files.<br>
+            <strong class="text-white">/run:</strong> Runtime state (PIDs, sockets).
+          </p>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-500/50 transition-colors">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="p-2 bg-slate-700 rounded-lg"><span class="text-xl">💾</span></div>
+            <h3 class="font-bold text-amber-400 font-mono text-lg">/dev & /media</h3>
+          </div>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            <strong class="text-white">/dev:</strong> Device files (/dev/sda, /dev/null).<br>
+            <strong class="text-white">/media & /mnt:</strong> Mount points for removable media.
+          </p>
+        </div>
+
+        <div
+          class="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-500/50 transition-colors md:col-span-2 lg:col-span-1">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="p-2 bg-slate-700 rounded-lg"><span class="text-xl">🧠</span></div>
+            <h3 class="font-bold text-amber-400 font-mono text-lg">/proc & /sys</h3>
+          </div>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Virtual filesystems exposing kernel and process information.<br>
+            <strong class="text-white">/proc:</strong> Process info (e.g. /proc/cpuinfo).
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Filesystem Tree Visualiser -->
+    <section>
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+        <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+          <div class="flex items-center gap-3">
+            <div class="p-3 bg-amber-500/15 border border-amber-500/25 rounded-xl">
+              <i data-lucide="folder-tree" class="w-6 h-6 text-amber-400"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-white">Interactive Tree</h2>
+              <p class="text-slate-400 text-sm">Click any node to expand — and see what lives there</p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button id="btn-expand-all"
+              class="text-xs px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-amber-500/20 hover:text-amber-400 text-slate-300 font-medium">Expand
+              All</button>
+            <button id="btn-collapse-all"
+              class="text-xs px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium">Collapse
+              All</button>
+          </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-6">
+          <!-- Tree -->
+          <div id="fs-tree" class="flex-1 bg-slate-900 rounded-xl p-5 overflow-x-auto min-w-0"></div>
+
+          <!-- Info panel -->
+          <div id="tree-info" class="lg:w-72 bg-slate-900 rounded-xl p-5 hidden-panel self-start">
+            <p class="text-xs text-slate-500 uppercase tracking-widest mb-2 font-semibold">Selected</p>
+            <p id="info-path" class="font-mono text-amber-400 text-sm font-bold mb-3"></p>
+            <p id="info-desc" class="text-slate-300 text-sm leading-relaxed"></p>
+            <div id="info-examples" class="mt-3 space-y-1"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Summary -->
+    <section>
+      <div class="bg-slate-800 border-l-4 border-l-emerald-500 rounded-xl p-6">
+        <h3 class="text-lg font-bold text-white mb-3">💡 How to make this "click" in practice</h3>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">
+          Next time you run a program, mentally trace where things live:
+        </p>
+        <ul class="list-disc list-inside text-sm text-slate-300 space-y-2 ml-2">
+          <li>The binary comes from <code class="text-emerald-400 font-mono">/bin</code> or <code
+              class="text-emerald-400 font-mono">/usr/bin</code>.</li>
+          <li>It loads libraries from <code class="text-emerald-400 font-mono">/lib</code> or <code
+              class="text-emerald-400 font-mono">/usr/lib</code>.</li>
+          <li>It reads system configs from <code class="text-emerald-400 font-mono">/etc</code>.</li>
+          <li>It writes logs to <code class="text-emerald-400 font-mono">/var/log</code>.</li>
+          <li>It uses <code class="text-emerald-400 font-mono">/tmp</code> for temporary data.</li>
+          <li>The kernel surfaces info via <code class="text-emerald-400 font-mono">/proc</code> and <code
+              class="text-emerald-400 font-mono">/sys</code>.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 border-t border-slate-800 text-slate-500 py-5 text-center text-sm mt-auto">
+    <p>Linux Learning Hub · <a href="linux_index.html" class="text-amber-500 hover:underline">← Linux Hub</a></p>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+
+    /* ── Filesystem tree data ── */
+    const FS = {
+      label: '/', icon: '🌳', color: 'c-root', desc: 'The root — the single top of the entire Linux filesystem hierarchy. Everything lives under here.',
+      examples: [],
+      children: [
+        {
+          label: '/bin', icon: '🔧', color: 'c-sys', tag: 'tag-sys', tagText: 'sys', desc: 'Essential user-space binaries available to all users, even in single-user mode.', examples: ['ls', 'cp', 'mv', 'cat', 'bash'],
+          children: []
+        },
+        {
+          label: '/sbin', icon: '🔧', color: 'c-sys', tag: 'tag-sys', tagText: 'sys', desc: 'System administration binaries — typically only run as root.', examples: ['mount', 'fsck', 'reboot', 'iptables'],
+          children: []
+        },
+        {
+          label: '/boot', icon: '🚀', color: 'c-sys', tag: 'tag-sys', tagText: 'sys', desc: 'Bootloader files, the kernel image, and initrd/initramfs live here.', examples: ['vmlinuz', 'initrd.img', 'grub/'],
+          children: [
+            { label: 'grub/', icon: '📁', color: 'c-sys', desc: 'GRUB bootloader config files.', examples: ['grub.cfg'], children: [] }
+          ]
+        },
+        {
+          label: '/dev', icon: '💾', color: 'c-media', tag: 'tag-media', tagText: 'device', desc: 'Device files — block devices, char devices, special pseudo-devices.', examples: ['/dev/sda', '/dev/null', '/dev/tty'],
+          children: [
+            { label: 'sda', icon: '🖴', color: 'c-media', desc: 'First SATA/SCSI block device (your hard disk).', examples: ['sda1', 'sda2'], children: [] },
+            { label: 'null', icon: '🕳️', color: 'c-media', desc: 'The null device — discards all writes.', examples: [], children: [] }
+          ]
+        },
+        {
+          label: '/etc', icon: '⚙️', color: 'c-sys', tag: 'tag-sys', tagText: 'config', desc: 'System-wide configuration files. No binaries — only text configs.', examples: ['fstab', 'passwd', 'hostname', 'ssh/'],
+          children: [
+            { label: 'ssh/', icon: '📁', color: 'c-sys', desc: 'SSH daemon and client config.', examples: ['sshd_config', 'ssh_config'], children: [] },
+            { label: 'apt/', icon: '📁', color: 'c-sys', desc: 'APT package manager config (Debian/Ubuntu).', examples: ['sources.list'], children: [] }
+          ]
+        },
+        {
+          label: '/home', icon: '🏠', color: 'c-home', tag: 'tag-home', tagText: 'user', desc: 'Home directories for all regular users. Each user owns their own subdirectory.', examples: ['/home/alice', '/home/bob'],
+          children: [
+            { label: 'alice/', icon: '👤', color: 'c-home', desc: 'Home dir for user alice — contains personal files, configs (.bashrc, .ssh/).', examples: ['.bashrc', '.ssh/', 'Documents/'], children: [] }
+          ]
+        },
+        { label: '/lib', icon: '📚', color: 'c-sys', tag: 'tag-sys', tagText: 'lib', desc: 'Shared libraries needed by /bin and /sbin.', examples: ['libc.so.6', 'libm.so'], children: [] },
+        { label: '/media', icon: '💿', color: 'c-media', tag: 'tag-media', tagText: 'mount', desc: 'Auto-mount point for removable media (USB drives, CDs).', examples: ['/media/usb0', '/media/cdrom'], children: [] },
+        { label: '/mnt', icon: '🔗', color: 'c-media', tag: 'tag-media', tagText: 'mount', desc: 'Temporary mount point for manually mounted filesystems.', examples: ['/mnt/data'], children: [] },
+        { label: '/opt', icon: '📦', color: 'c-usr', tag: 'tag-usr', tagText: 'opt', desc: 'Optional / third-party software packages that are self-contained.', examples: ['google/', 'zoom/'], children: [] },
+        {
+          label: '/proc', icon: '🧠', color: 'c-virt', tag: 'tag-virt', tagText: 'virtual', desc: 'Virtual filesystem — kernel exposes process and system info here. Nothing on disk.', examples: ['/proc/cpuinfo', '/proc/meminfo', '/proc/1/'],
+          children: [
+            { label: 'cpuinfo', icon: '📄', color: 'c-file', desc: 'CPU details (cores, model, flags) as seen by the kernel.', examples: [], children: [] },
+            { label: 'meminfo', icon: '📄', color: 'c-file', desc: 'Memory usage statistics.', examples: [], children: [] }
+          ]
+        },
+        { label: '/root', icon: '👑', color: 'c-home', tag: 'tag-home', tagText: 'user', desc: 'Home directory of the superuser (root). Kept separate from /home for safety.', examples: ['.bashrc', '.ssh/'], children: [] },
+        { label: '/run', icon: '⚡', color: 'c-virt', tag: 'tag-virt', tagText: 'runtime', desc: 'Runtime data since last boot — PID files, sockets, lock files. Cleared on reboot.', examples: ['sshd.pid', 'systemd/'], children: [] },
+        { label: '/srv', icon: '🌐', color: 'c-usr', tag: 'tag-usr', tagText: 'service', desc: 'Data for services hosted by this system (web server, FTP).', examples: ['www/', 'ftp/'], children: [] },
+        {
+          label: '/sys', icon: '🧬', color: 'c-virt', tag: 'tag-virt', tagText: 'virtual', desc: 'Virtual filesystem exposing kernel device tree and hardware info.', examples: ['/sys/class/net/', '/sys/block/'],
+          children: [
+            { label: 'class/', icon: '📁', color: 'c-virt', desc: 'Devices grouped by class (net, input, block…).', examples: ['net/', 'input/'], children: [] }
+          ]
+        },
+        { label: '/tmp', icon: '🗑️', color: 'c-var', tag: 'tag-var', tagText: 'temp', desc: 'Temporary files — any user can write here. Usually cleared on reboot.', examples: [], children: [] },
+        {
+          label: '/usr', icon: '📦', color: 'c-usr', tag: 'tag-usr', tagText: 'usr', desc: 'The largest directory — installed user programs, libraries and documentation.', examples: [],
+          children: [
+            { label: 'bin/', icon: '🔧', color: 'c-usr', desc: 'Most user-facing commands installed by the package manager.', examples: ['python3', 'gcc', 'git'], children: [] },
+            { label: 'lib/', icon: '📚', color: 'c-usr', desc: 'Libraries for programs in /usr/bin.', examples: [], children: [] },
+            { label: 'local/', icon: '📁', color: 'c-usr', desc: 'Locally compiled/installed software (outside the package manager).', examples: ['bin/', 'lib/', 'share/'], children: [] },
+            { label: 'share/', icon: '📁', color: 'c-usr', desc: 'Architecture-independent data: man pages, icons, locale files.', examples: ['man/', 'doc/', 'icons/'], children: [] }
+          ]
+        },
+        {
+          label: '/var', icon: '🔄', color: 'c-var', tag: 'tag-var', tagText: 'variable', desc: 'Variable data that changes as the system runs — logs, caches, mail spools.', examples: [],
+          children: [
+            { label: 'log/', icon: '📋', color: 'c-var', desc: 'System and application log files.', examples: ['syslog', 'auth.log', 'kern.log'], children: [] },
+            { label: 'cache/', icon: '📁', color: 'c-var', desc: 'Cached data for applications (apt cache, etc).', examples: ['apt/'], children: [] },
+            { label: 'lib/', icon: '📁', color: 'c-var', desc: 'Persistent application state data.', examples: ['dpkg/', 'mysql/'], children: [] }
+          ]
+        }
+      ]
+    };
+
+    /* ── Render tree ── */
+    function buildNode(node, isRoot = false) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'tree-node';
+
+      const row = document.createElement('div');
+      row.className = 'tree-row' + (isRoot ? ' active' : '');
+
+      const hasChildren = node.children && node.children.length > 0;
+
+      // toggle chevron
+      const chevron = document.createElement('span');
+      chevron.className = 'toggle-icon' + (isRoot ? ' rotated' : '');
+      chevron.innerHTML = hasChildren ? '▶' : '&nbsp;';
+
+      const icon = document.createElement('span');
+      icon.className = 'dir-icon';
+      icon.textContent = node.icon;
+
+      const label = document.createElement('span');
+      label.className = `dir-label ${node.color}`;
+      label.textContent = node.label;
+
+      row.appendChild(chevron);
+      row.appendChild(icon);
+      row.appendChild(label);
+
+      if (node.tag) {
+        const tag = document.createElement('span');
+        tag.className = `dir-tag ${node.tag}`;
+        tag.textContent = node.tagText;
+        row.appendChild(tag);
+      }
+
+      wrapper.appendChild(row);
+
+      // children container
+      const childWrap = document.createElement('div');
+      childWrap.className = 'tree-children' + (isRoot ? ' open' : '');
+
+      if (hasChildren) {
+        node.children.forEach(c => childWrap.appendChild(buildNode(c)));
+      }
+      wrapper.appendChild(childWrap);
+
+      // click: toggle expand + show info
+      row.addEventListener('click', () => {
+        if (hasChildren) {
+          const open = childWrap.classList.toggle('open');
+          chevron.classList.toggle('rotated', open);
+        }
+        showInfo(node);
+        document.querySelectorAll('.tree-row.active').forEach(r => r.classList.remove('active'));
+        row.classList.add('active');
+      });
+
+      return wrapper;
+    }
+
+    function showInfo(node) {
+      const panel = document.getElementById('tree-info');
+      document.getElementById('info-path').textContent = node.label;
+      document.getElementById('info-desc').textContent = node.desc;
+      const ex = document.getElementById('info-examples');
+      ex.innerHTML = '';
+      if (node.examples && node.examples.length) {
+        node.examples.forEach(e => {
+          const chip = document.createElement('span');
+          chip.className = 'inline-block font-mono text-xs bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-amber-300 mr-1 mb-1';
+          chip.textContent = e;
+          ex.appendChild(chip);
+        });
+      }
+      panel.classList.remove('hidden-panel');
+    }
+
+    // init
+    const treeEl = document.getElementById('fs-tree');
+    treeEl.appendChild(buildNode(FS, true));
+    showInfo(FS);
+
+    // expand / collapse all
+    document.getElementById('btn-expand-all').addEventListener('click', () => {
+      document.querySelectorAll('.tree-children').forEach(el => { el.classList.add('open'); });
+      document.querySelectorAll('.toggle-icon').forEach(el => { if (el.innerHTML === '▶') el.classList.add('rotated'); });
+    });
+    document.getElementById('btn-collapse-all').addEventListener('click', () => {
+      document.querySelectorAll('.tree-children').forEach(el => { el.classList.remove('open'); });
+      document.querySelectorAll('.toggle-icon').forEach(el => el.classList.remove('rotated'));
+    });
+  </script>
+</body>
+
+</html>
