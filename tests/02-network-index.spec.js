@@ -9,7 +9,7 @@
 
 const { test, expect } = require('@playwright/test');
 
-const NETWORK_INDEX = '/Docker+website/Networking/Network_index.html';
+const NETWORK_INDEX = '/Networking/Network_index.html';
 
 test.describe('2 – Networking Hub', () => {
   test.beforeEach(async ({ page }) => {

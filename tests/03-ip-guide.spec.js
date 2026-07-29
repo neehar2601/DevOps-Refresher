@@ -13,7 +13,7 @@
 
 const { test, expect } = require('@playwright/test');
 
-const IP_GUIDE = '/Docker+website/Networking/IP%20Addressing%20Guide.html';
+const IP_GUIDE = '/Networking/IP%20Addressing%20Guide.html';
 
 test.describe('3 – IP Addressing Guide', () => {
   test.beforeEach(async ({ page }) => {

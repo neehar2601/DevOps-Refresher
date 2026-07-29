@@ -14,7 +14,7 @@ module.exports = defineConfig({
   ],
 
   use: {
-    baseURL: process.env.BASE_URL || 'https://devops-learner.s3.us-east-2.amazonaws.com',
+    baseURL: process.env.BASE_URL || 'http://devops-learner.s3-website.us-east-2.amazonaws.com/',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     trace: 'on-first-retry',

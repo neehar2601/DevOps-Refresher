@@ -10,7 +10,7 @@
 
 const { test, expect } = require('@playwright/test');
 
-const PACKET_SIM = '/Docker+website/Networking/Packet_sim.html';
+const PACKET_SIM = '/Networking/Packet_sim.html';
 
 test.describe('5 – Packet Simulator', () => {
   test.beforeEach(async ({ page }) => {

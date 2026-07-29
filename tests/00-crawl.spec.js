@@ -13,8 +13,8 @@ const { test, expect } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
 
-const ENTRY = '/Docker+website/index.html';
-const ORIGIN = process.env.BASE_URL || 'https://devops-learner.s3.us-east-2.amazonaws.com';
+const ENTRY = '/index.html';
+const ORIGIN = process.env.BASE_URL || 'http://devops-learner.s3-website.us-east-2.amazonaws.com/';
 // URLs to skip (external CDN, fonts, etc.)
 const SKIP_PATTERNS = [
   /^https?:\/\/(?!devops-learner\.s3)/,

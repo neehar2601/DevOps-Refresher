@@ -10,7 +10,7 @@
 
 const { test, expect } = require('@playwright/test');
 
-const HOME = '/Docker+website/index.html';
+const HOME = '/index.html';
 
 test.describe('1 – Homepage', () => {
   test.beforeEach(async ({ page }) => {
@@ -43,17 +43,23 @@ test.describe('1 – Homepage', () => {
     await expect(link).toContainText('Open Networking Hub');
   });
 
-  test('Live badges visible for Git, Docker, Networking', async ({ page }) => {
+  test('Linux card links to linux hub', async ({ page }) => {
+    const link = page.locator('a[href*="linux_index.html"]').first();
+    await expect(link).toBeVisible();
+    await expect(link).toContainText('Open Linux Hub');
+  });
+
+  test('Live badges visible for Git, Docker, Networking, Linux', async ({ page }) => {
     const liveBadges = page.locator('span:has-text("Live")');
-    await expect(liveBadges).toHaveCount(3);
+    await expect(liveBadges).toHaveCount(4);
   });
 
   test('"Coming soon" cards show toast on click', async ({ page }) => {
     const toast = page.locator('#toast');
-    // Click Linux card (first "coming soon")
-    await page.locator('h3:has-text("Linux")').click();
+    // Click Kubernetes card (first "coming soon")
+    await page.locator('h3:has-text("Kubernetes")').click();
     await expect(toast).toBeVisible({ timeout: 3000 });
-    await expect(toast).toContainText('Linux');
+    await expect(toast).toContainText('Kubernetes');
   });
 
   test('Footer is visible', async ({ page }) => {

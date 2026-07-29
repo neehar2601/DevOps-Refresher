@@ -12,7 +12,7 @@
 
 const { test, expect } = require('@playwright/test');
 
-const DNS_SIM = '/Docker+website/Networking/DNS_sim.html';
+const DNS_SIM = '/Networking/DNS_sim.html';
 
 test.describe('4 – DNS Simulator', () => {
   test.beforeEach(async ({ page }) => {
