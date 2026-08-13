@@ -77,6 +77,46 @@
       </div>
     </section>
 
+    <!-- Package Management -->
+    <section>
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="p-2 bg-rose-500/10 rounded-lg"><i data-lucide="package" class="w-6 h-6 text-rose-400"></i></div>
+        <h2 class="text-2xl font-bold text-white">Package Management (APT)</h2>
+      </div>
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+        <ul class="space-y-4">
+          <li class="flex items-start gap-4">
+            <code class="font-mono text-sm bg-slate-950 text-rose-400 px-3 py-1.5 rounded border border-slate-800 w-32 text-center whitespace-nowrap">apt update</code>
+            <span class="text-slate-400 text-sm mt-1">Syncs local system catalog with the remote repository.</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <code class="font-mono text-sm bg-slate-950 text-rose-400 px-3 py-1.5 rounded border border-slate-800 w-32 text-center whitespace-nowrap">apt upgrade</code>
+            <span class="text-slate-400 text-sm mt-1">Downloads and installs the newest versions of all installed packages.</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <code class="font-mono text-sm bg-slate-950 text-rose-400 px-3 py-1.5 rounded border border-slate-800 w-32 text-center whitespace-nowrap">apt search</code>
+            <span class="text-slate-400 text-sm mt-1">Searches the repository for packages matching a keyword.</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <code class="font-mono text-sm bg-slate-950 text-rose-400 px-3 py-1.5 rounded border border-slate-800 w-32 text-center whitespace-nowrap">apt install</code>
+            <span class="text-slate-400 text-sm mt-1">Downloads and installs a specific package.</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <code class="font-mono text-sm bg-slate-950 text-rose-400 px-3 py-1.5 rounded border border-slate-800 w-32 text-center whitespace-nowrap">apt remove</code>
+            <span class="text-slate-400 text-sm mt-1">Uninstalls the software binary but leaves configuration files.</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <code class="font-mono text-sm bg-slate-950 text-rose-400 px-3 py-1.5 rounded border border-slate-800 w-32 text-center whitespace-nowrap">apt purge</code>
+            <span class="text-slate-400 text-sm mt-1">Completely removes the software and all of its configuration files.</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <code class="font-mono text-sm bg-slate-950 text-rose-400 px-3 py-1.5 rounded border border-slate-800 w-32 text-center whitespace-nowrap">apt autoremove</code>
+            <span class="text-slate-400 text-sm mt-1">Safely removes orphaned dependencies.</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
   </main>
   <script>lucide.createIcons();</script>
 </body>

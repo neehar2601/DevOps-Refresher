@@ -1,0 +1,30 @@
+From SysVinit to Modern Standards
+
+Historically, Linux used a method called SysVinit (System V init), a convention based on 1980s UNIX systems.
+
+•
+Sequential Loading
+SysVinit started services one by one in a specific order.
+
+•
+Runlevels
+The system moved through different "runlevels," which were collections of scripts that started or stopped specific services depending on the system mode (such as single-user mode or multi-user graphical mode).
+
+While this method was the standard for decades, it was slow and rigid. To improve boot speeds and management flexibility, systemd adoption is now near-universal across mainstream desktop and server distributions. Most have moved away from the sequential SysVinit approach, with only deliberate exceptions remaining, such as anti-systemd forks or lightweight/embedded distributions (Alpine).
+
+here a link to page with sysvinit process vs systemd process
+
+
+
+
+@contextScopeItemMention 
+Minor inaccuracies or things worth clarifying:
+
+
+
+FIle system:
+/etc/passwd contains user account details.
+
+/etc/group contains group information.
+
+/etc/shadow stores password-related data and is protected.
