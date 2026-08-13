@@ -30,13 +30,53 @@
     </div>
   </header>
   <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-10">
+    
+    <!-- System Awareness -->
     <section>
-      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 text-center">
-        <i data-lucide="wrench" class="w-12 h-12 text-slate-500 mx-auto mb-4"></i>
-        <h2 class="text-2xl font-bold text-white mb-2">Commands Guide Content</h2>
-        <p class="text-slate-400">This page will contain the commands reference, text processing utilities, and package managers.</p>
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="p-2 bg-emerald-500/10 rounded-lg"><i data-lucide="eye" class="w-6 h-6 text-emerald-400"></i></div>
+        <h2 class="text-2xl font-bold text-white">System Awareness</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg hover:border-emerald-500/30 transition-colors">
+          <code class="font-mono text-lg text-emerald-400 mb-2 block">pwd</code>
+          <p class="text-slate-400 text-sm">Prints the current working directory path.</p>
+        </div>
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg hover:border-emerald-500/30 transition-colors">
+          <code class="font-mono text-lg text-emerald-400 mb-2 block">whoami</code>
+          <p class="text-slate-400 text-sm">Prints the current effective username.</p>
+        </div>
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg hover:border-emerald-500/30 transition-colors">
+          <code class="font-mono text-lg text-emerald-400 mb-2 block">uname -a</code>
+          <p class="text-slate-400 text-sm">Displays system and kernel information; does not list users.</p>
+        </div>
       </div>
     </section>
+
+    <!-- Navigation -->
+    <section>
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="p-2 bg-blue-500/10 rounded-lg"><i data-lucide="navigation" class="w-6 h-6 text-blue-400"></i></div>
+        <h2 class="text-2xl font-bold text-white">Navigation</h2>
+      </div>
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+        <ul class="space-y-4">
+          <li class="flex items-start gap-4">
+            <code class="font-mono text-sm bg-slate-950 text-blue-400 px-3 py-1.5 rounded border border-slate-800 w-24 text-center">cd</code>
+            <span class="text-slate-400 text-sm mt-1">Changes the current directory (returns to user's home directory by default).</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <code class="font-mono text-sm bg-slate-950 text-blue-400 px-3 py-1.5 rounded border border-slate-800 w-24 text-center">cd ..</code>
+            <span class="text-slate-400 text-sm mt-1">Moves to the parent directory.</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <code class="font-mono text-sm bg-slate-950 text-blue-400 px-3 py-1.5 rounded border border-slate-800 w-24 text-center">cd /</code>
+            <span class="text-slate-400 text-sm mt-1">Moves to the filesystem root directory.</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
   </main>
   <script>lucide.createIcons();</script>
 </body>
