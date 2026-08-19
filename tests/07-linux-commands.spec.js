@@ -24,7 +24,7 @@ test.describe('7 – Linux Commands Guide', () => {
   });
 
   test('Package Management (APT) section is visible', async ({ page }) => {
-    await page.locator('button', { hasText: 'Package Management' }).click();
+    await page.locator('button', { hasText: 'Packages' }).click();
     const section = page.locator('h2', { hasText: 'Package Management (APT)' });
     await expect(section).toBeVisible();
   });
