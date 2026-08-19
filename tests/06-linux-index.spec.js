@@ -44,6 +44,11 @@ test.describe('6 – Linux Hub', () => {
     await expect(link).toBeVisible();
   });
 
+  test('Networking link is present', async ({ page }) => {
+    const link = page.locator('a[href*="linux_networking.html"]').first();
+    await expect(link).toBeVisible();
+  });
+
   test('Filesystem Guide page loads from nav link', async ({ page }) => {
     const link = page.locator('a[href*="linux_filesystem.html"]').first();
     const [response] = await Promise.all([
@@ -57,6 +62,15 @@ test.describe('6 – Linux Hub', () => {
     const link = page.locator('a[href*="linux_package_management.html"]').first();
     const [response] = await Promise.all([
       page.waitForResponse(resp => resp.url().includes('linux_package_management') && resp.status() < 400),
+      link.click(),
+    ]);
+    expect(response.status()).toBeLessThan(400);
+  });
+
+  test('Networking page loads from nav link', async ({ page }) => {
+    const link = page.locator('a[href*="linux_networking.html"]').first();
+    const [response] = await Promise.all([
+      page.waitForResponse(resp => resp.url().includes('linux_networking') && resp.status() < 400),
       link.click(),
     ]);
     expect(response.status()).toBeLessThan(400);

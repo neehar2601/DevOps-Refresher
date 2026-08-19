@@ -11,17 +11,20 @@ test.describe('7 – Linux Commands Guide', () => {
     await expect(page).toHaveTitle(/Commands/i);
   });
 
-  test('System Awareness section is visible', async ({ page }) => {
-    const section = page.locator('h2', { hasText: 'System Awareness' });
+  test('System & Basic Info section is visible', async ({ page }) => {
+    await page.locator('button', { hasText: 'System & Basic Info' }).click();
+    const section = page.locator('h2', { hasText: 'System & Basic Info' });
     await expect(section).toBeVisible();
   });
 
-  test('Navigation section is visible', async ({ page }) => {
-    const section = page.locator('h2', { hasText: 'Navigation' });
+  test('Navigation & File Operations section is visible', async ({ page }) => {
+    await page.locator('button', { hasText: 'Nav & File Ops' }).click();
+    const section = page.locator('h2', { hasText: 'Navigation & File Operations' });
     await expect(section).toBeVisible();
   });
 
   test('Package Management (APT) section is visible', async ({ page }) => {
+    await page.locator('button', { hasText: 'Package Management' }).click();
     const section = page.locator('h2', { hasText: 'Package Management (APT)' });
     await expect(section).toBeVisible();
   });
