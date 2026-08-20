@@ -23,7 +23,7 @@
         <i data-lucide="package" class="w-7 h-7 text-rose-500"></i>
         <h1 class="text-xl font-bold tracking-tight">Linux <span class="text-slate-400 font-light">Package Management (APT)</span></h1>
       </div>
-      <a href="linux_index.html" class="flex items-center gap-2 text-sm text-slate-400 hover:text-rose-500 transition-colors">
+      <a id="back-link" href="linux_index.html" class="flex items-center gap-2 text-sm text-slate-400 hover:text-rose-500 transition-colors">
         <i data-lucide="arrow-left" class="w-4 h-4"></i>
         <span class="hidden sm:inline">Back to Linux Hub</span>
       </a>
@@ -149,6 +149,23 @@
 
   </main>
   
-  <script>lucide.createIcons();</script>
+  <script>
+    lucide.createIcons();
+
+    // Dynamic Back Navigation
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    const backLink = document.getElementById('back-link');
+    
+    if (ref === 'fs') {
+      backLink.href = 'linux_filesystem.html';
+      backLink.innerHTML = '<i data-lucide="arrow-left" class="w-4 h-4"></i><span class="hidden sm:inline">Back to Filesystem</span>';
+      lucide.createIcons();
+    } else if (ref === 'cmd') {
+      backLink.href = 'linux_commands.html';
+      backLink.innerHTML = '<i data-lucide="arrow-left" class="w-4 h-4"></i><span class="hidden sm:inline">Back to Commands</span>';
+      lucide.createIcons();
+    }
+  </script>
 </body>
 </html>

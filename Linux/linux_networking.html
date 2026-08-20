@@ -23,21 +23,124 @@
         <i data-lucide="activity" class="w-7 h-7 text-purple-400"></i>
         <h1 class="text-xl font-bold tracking-tight">Linux <span class="text-slate-400 font-light">Processes & Networking</span></h1>
       </div>
-      <a href="linux_index.html" class="flex items-center gap-2 text-sm text-slate-400 hover:text-purple-400 transition-colors">
+      <a id="back-link" href="linux_index.html" class="flex items-center gap-2 text-sm text-slate-400 hover:text-purple-400 transition-colors">
         <i data-lucide="arrow-left" class="w-4 h-4"></i>
         <span class="hidden sm:inline">Back to Linux Hub</span>
       </a>
     </div>
   </header>
   <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-10">
+    <!-- Process Management -->
     <section>
-      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 text-center">
-        <i data-lucide="server" class="w-12 h-12 text-slate-500 mx-auto mb-4"></i>
-        <h2 class="text-2xl font-bold text-white mb-2">Processes & Networking Content</h2>
-        <p class="text-slate-400">This page will contain the process management, signals, and linux networking tool references.</p>
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="p-2 bg-blue-500/10 rounded-lg"><i data-lucide="cpu" class="w-6 h-6 text-blue-400"></i></div>
+        <h2 class="text-2xl font-bold text-white">Process Management</h2>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+          <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Monitoring Processes</h3>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <code class="font-mono text-sm bg-slate-950 text-blue-400 px-2 py-1 rounded border border-slate-800 w-16 text-center shrink-0">ps</code>
+              <span class="text-slate-400 text-sm mt-1">Displays a snapshot of current running processes. Use <code class="text-blue-300 font-mono">ps aux</code> for a detailed view of all users' processes.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <code class="font-mono text-sm bg-slate-950 text-blue-400 px-2 py-1 rounded border border-slate-800 w-16 text-center shrink-0">top</code>
+              <span class="text-slate-400 text-sm mt-1">Real-time, dynamic view of running processes. Shows CPU, Memory usage, and system load.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <code class="font-mono text-sm bg-slate-950 text-blue-400 px-2 py-1 rounded border border-slate-800 w-16 text-center shrink-0">htop</code>
+              <span class="text-slate-400 text-sm mt-1">An enhanced, interactive version of top (usually requires installation). Allows scrolling and color-coded meters.</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+          <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Terminating Processes</h3>
+          <p class="text-slate-400 text-sm mb-4">Processes are terminated by sending them signals using the <code class="font-mono text-rose-400 bg-slate-950 px-1 py-0.5 rounded border border-slate-800">kill</code> command.</p>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <code class="font-mono text-sm bg-slate-950 text-rose-400 px-2 py-1 rounded border border-slate-800 w-24 text-center shrink-0">kill PID</code>
+              <span class="text-slate-400 text-sm mt-1">Sends a graceful termination signal (SIGTERM) to the specific Process ID.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <code class="font-mono text-sm bg-slate-950 text-rose-400 px-2 py-1 rounded border border-slate-800 w-24 text-center shrink-0">kill -9 PID</code>
+              <span class="text-slate-400 text-sm mt-1">Sends a forceful kill signal (SIGKILL). Use only when a process is unresponsive.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <code class="font-mono text-sm bg-slate-950 text-rose-400 px-2 py-1 rounded border border-slate-800 w-24 text-center shrink-0">killall name</code>
+              <span class="text-slate-400 text-sm mt-1">Kills all processes matching the specified name.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Networking Tools -->
+    <section>
+      <div class="flex items-center space-x-3 mb-6 mt-10">
+        <div class="p-2 bg-emerald-500/10 rounded-lg"><i data-lucide="globe" class="w-6 h-6 text-emerald-400"></i></div>
+        <h2 class="text-2xl font-bold text-white">Networking Essentials</h2>
+      </div>
+      
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50 hover:border-emerald-500/50 transition-colors">
+            <h4 class="font-bold text-emerald-400 mb-2 flex items-center gap-2"><i data-lucide="network" class="w-4 h-4"></i> ip</h4>
+            <p class="text-xs text-slate-400 mb-3">Replaces the deprecated <code>ifconfig</code> command.</p>
+            <code class="font-mono text-sm text-slate-300 bg-slate-950 px-2 py-1 rounded border border-slate-800 block mb-2">ip a</code>
+            <p class="text-xs text-slate-500">Shows all IP addresses associated with all network interfaces.</p>
+          </div>
+          
+          <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50 hover:border-emerald-500/50 transition-colors">
+            <h4 class="font-bold text-emerald-400 mb-2 flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4"></i> ping</h4>
+            <p class="text-xs text-slate-400 mb-3">Tests connectivity to another host.</p>
+            <code class="font-mono text-sm text-slate-300 bg-slate-950 px-2 py-1 rounded border border-slate-800 block mb-2">ping google.com</code>
+            <p class="text-xs text-slate-500">Sends ICMP ECHO_REQUEST packets. Use <code class="bg-slate-800 px-1 rounded">-c 4</code> to limit count.</p>
+          </div>
+
+          <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50 hover:border-emerald-500/50 transition-colors">
+            <h4 class="font-bold text-emerald-400 mb-2 flex items-center gap-2"><i data-lucide="server" class="w-4 h-4"></i> ss</h4>
+            <p class="text-xs text-slate-400 mb-3">Utility to investigate sockets (modern replacement for <code class="bg-slate-800 px-1 rounded">netstat</code>).</p>
+            <code class="font-mono text-sm text-slate-300 bg-slate-950 px-2 py-1 rounded border border-slate-800 block mb-2">ss -tuln</code>
+            <p class="text-xs text-slate-500">Shows all listening TCP/UDP ports numerically.</p>
+          </div>
+
+          <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50 hover:border-emerald-500/50 transition-colors">
+            <h4 class="font-bold text-emerald-400 mb-2 flex items-center gap-2"><i data-lucide="download-cloud" class="w-4 h-4"></i> curl</h4>
+            <p class="text-xs text-slate-400 mb-3">Transfers data from or to a server.</p>
+            <code class="font-mono text-sm text-slate-300 bg-slate-950 px-2 py-1 rounded border border-slate-800 block mb-2 overflow-hidden text-ellipsis">curl -I https://api.io</code>
+            <p class="text-xs text-slate-500">Fetches only the HTTP headers. Extremely versatile for API testing.</p>
+          </div>
+
+          <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50 hover:border-emerald-500/50 transition-colors lg:col-span-2">
+            <h4 class="font-bold text-emerald-400 mb-2 flex items-center gap-2"><i data-lucide="shield" class="w-4 h-4"></i> SSH (Secure Shell)</h4>
+            <p class="text-xs text-slate-400 mb-3">Used for securely connecting to remote servers.</p>
+            <code class="font-mono text-sm text-slate-300 bg-slate-950 px-2 py-1 rounded border border-slate-800 block mb-2">ssh user@192.168.1.10</code>
+            <p class="text-xs text-slate-500">By default uses port 22. Can use identity files via <code class="bg-slate-800 px-1 rounded">-i key.pem</code>.</p>
+          </div>
+        </div>
       </div>
     </section>
   </main>
-  <script>lucide.createIcons();</script>
+  <script>
+    lucide.createIcons();
+
+    // Dynamic Back Navigation
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    const backLink = document.getElementById('back-link');
+    
+    if (ref === 'fs') {
+      backLink.href = 'linux_filesystem.html';
+      backLink.innerHTML = '<i data-lucide="arrow-left" class="w-4 h-4"></i><span class="hidden sm:inline">Back to Filesystem</span>';
+      lucide.createIcons();
+    } else if (ref === 'cmd') {
+      backLink.href = 'linux_commands.html';
+      backLink.innerHTML = '<i data-lucide="arrow-left" class="w-4 h-4"></i><span class="hidden sm:inline">Back to Commands</span>';
+      lucide.createIcons();
+    }
+  </script>
 </body>
 </html>
