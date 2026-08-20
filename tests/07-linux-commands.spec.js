@@ -33,4 +33,10 @@ test.describe('7 – Linux Commands Guide', () => {
     const section = page.locator('h2', { hasText: 'Text Editors (Vim)' });
     await expect(section).toBeVisible();
   });
+
+  test('Text Processing & Diff section is visible', async ({ page }) => {
+    await page.locator('button', { hasText: 'Text Processing' }).click();
+    const section = page.locator('h2', { hasText: 'Text Processing & Diff' });
+    await expect(section).toBeVisible();
+  });
 });
