@@ -28,4 +28,9 @@ test.describe('7 – Linux Commands Guide', () => {
     const section = page.locator('h2', { hasText: 'Package Management (APT)' });
     await expect(section).toBeVisible();
   });
+  test('Text Editors (Vim) section is visible', async ({ page }) => {
+    await page.locator('button', { hasText: 'Text Editors' }).click();
+    const section = page.locator('h2', { hasText: 'Text Editors (Vim)' });
+    await expect(section).toBeVisible();
+  });
 });
