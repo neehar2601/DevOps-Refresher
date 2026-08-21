@@ -14,7 +14,9 @@
   <style>
     body { font-family: 'Inter', sans-serif; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
-  </style>
+      .tab-content { animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+</style>
 </head>
 <body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
   <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50 shadow-lg">
@@ -30,7 +32,17 @@
     </div>
   </header>
 
-  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-10">
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+    <!-- Tabs Navigation -->
+    <div class="mb-10">
+      <div class="border-b border-slate-800">
+        <nav class="flex space-x-2 overflow-x-auto py-3 no-scrollbar" id="nav-tabs">
+        </nav>
+      </div>
+    </div>
+
+    <!-- Permissions Tab -->
+    <div id="sec-permissions" class="tab-content space-y-10 active">
 
 
     <!-- File Listing & File System Identity -->
@@ -380,6 +392,10 @@
 
     </section>
 
+        </div>
+
+    <!-- Users & Groups Tab -->
+    <div id="sec-users" class="tab-content hidden space-y-10">
     <!-- Identity Management -->
     <section>
       <div class="flex items-center space-x-3 mb-6 mt-10">
@@ -499,9 +515,45 @@
 
     </section>
 
+    </div>
   </main>
   
   <script>
+    
+    const tabs = [
+      { id: 'permissions', title: 'File Permissions & Ownership', icon: 'lock' },
+      { id: 'users', title: 'Users & Groups', icon: 'users' }
+    ];
+    let currentTab = window.location.hash ? window.location.hash.replace('#sec-', '') : tabs[0].id;
+    if (!tabs.find(t => t.id === currentTab)) currentTab = tabs[0].id;
+    
+    function renderTabs() {
+        const nav = document.getElementById('nav-tabs');
+        nav.innerHTML = '';
+        tabs.forEach(tab => {
+            const isActive = currentTab === tab.id;
+            const btn = document.createElement('button');
+            btn.className = `tab-btn flex items-center space-x-2 px-4 py-3 text-sm font-semibold rounded-t-lg transition-colors whitespace-nowrap border-b-2 ${isActive ? 'text-amber-400 bg-slate-800/50 border-amber-400' : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 border-transparent'}`;
+            btn.onclick = () => { currentTab = tab.id; renderTabs(); renderContent(); };
+            btn.innerHTML = `<i data-lucide="${tab.icon}" class="w-4 h-4"></i><span>${tab.title}</span>`;
+            nav.appendChild(btn);
+        });
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+    
+    function renderContent() {
+        document.querySelectorAll('.tab-content').forEach(c => {
+            c.classList.add('hidden');
+            c.classList.remove('active');
+        });
+        document.getElementById('sec-' + currentTab).classList.remove('hidden');
+        document.getElementById('sec-' + currentTab).classList.add('active');
+        window.location.hash = 'sec-' + currentTab;
+    }
+    renderTabs();
+    renderContent();
+    
+    
     lucide.createIcons();
 
     // Dynamic Back Navigation
