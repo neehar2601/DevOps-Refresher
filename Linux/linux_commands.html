@@ -186,6 +186,42 @@
           </ul>
         </div>
       </div>
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg mt-6">
+        <h3 class="font-bold text-white mb-3 text-lg border-b border-slate-700 pb-2 flex items-center gap-2">
+          <i data-lucide="power-off" class="w-5 h-5 text-emerald-400"></i>
+          System Shutdown
+        </h3>
+        <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+          The <code class="font-mono text-emerald-400">shutdown</code> command is used to turn off a system safely. It warns all users, closes files, and performs necessary tasks.
+        </p>
+        <p class="text-slate-400 text-sm mb-4">Syntax: <code class="font-mono text-emerald-400 bg-slate-900 px-1.5 py-0.5 rounded">shutdown [-t seconds] [-options] time [warning message]</code></p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+            <code class="font-mono text-emerald-300 block mb-2">-r</code>
+            <p class="text-xs text-slate-400">Reboot the system after shutdown.</p>
+          </div>
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+            <code class="font-mono text-emerald-300 block mb-2">-h</code>
+            <p class="text-xs text-slate-400">Halt the system after shutdown (safely turn off power).</p>
+          </div>
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+            <code class="font-mono text-emerald-300 block mb-2">-c</code>
+            <p class="text-xs text-slate-400">Cancel a shutdown in progress.</p>
+          </div>
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+            <code class="font-mono text-emerald-300 block mb-2">-k</code>
+            <p class="text-xs text-slate-400">Send warning messages to everyone, but don't actually shutdown.</p>
+          </div>
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+            <code class="font-mono text-emerald-300 block mb-2">-f / -F</code>
+            <p class="text-xs text-slate-400">Skip (-f) or force (-F) filesystem check on reboot.</p>
+          </div>
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+            <code class="font-mono text-emerald-300 block mb-2">-t seconds</code>
+            <p class="text-xs text-slate-400">Wait specified seconds before changing runlevel.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
 

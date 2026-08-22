@@ -1,36 +1,343 @@
-In this demonstration, we're ​going to look at permissions. ​Permissions are access rights assigned to users which ​enable them to access or modify files and directories. ​They can be assigned to users or groups. ​Permissions can be set at different levels ​and for different access categories. ​But the ls dash l command ​can be used to view the permissions of a file, ​and that gives us a long listing. ​Let's do an ls dash l here. ​You can see I'm in my home folder. 
-​We see a number of different columns when we do this. ​The very first column, ​this information right here, ​is the permission string. ​This is will identify if the item is a file or ​a directory and then ​what permissions have been assigned, ​and if there's an alternate access method ​that would be there as well. ​The second column counts the number of links. ​Files generally have a link count of one. ​There's only one file in here, ​and you can see it does in fact have a link count of one. ​For directories, the link count is ​the number of directories under it plus 2, ​one for the directory itself and one for the parent. 
-​For example, you can see that ​this A temp directory just has a two, ​there's no sub-directories, ​but data files has 10 sub-directories, ​so we're getting a link count of 12. ​Links are similar to Windows shortcuts. ​They point to the location where the file or directory ​exists and allow you to access and view it. ​The third column displays ​the owner of the file or directory, ​so the user that it belongs to. ​The fourth column displays ​the group to which the file or directory belongs. ​All members of this group have ​the group permissions listed in the permission string. ​The fifth column lists the size ​of the file or directory in bytes. 
-​The sixth column is actually all of this stuff. ​It's weird because it looks ​like this would be 6, 7, and 8, ​but actually, all of that ​together is really considered the sixth column. ​This is the date and time the file was ​created or last modified, file or directory. ​Then the seventh or last column is ​the name of the file or directory. ​In this particular video, ​we're interested in permissions. ​We really want to dig into that permission string. ​This permission string might have 10 or 11 characters. 
-​The very first character, ​this D here for this particular directory, ​it's a D if it's a directory. ​You can see it's actually a dash ​or a hyphen if it's a file. ​This is the only file in this listing. ​The next three characters are ​the permissions assigned to the user, ​whatever is listed in that third column. ​You can see here we've got r, w, and x. ​The possible permissions that anybody could have. ​R is for read, ​meaning you can read the contents of ​a file or you can view the contents of a directory, ​you can navigate to it in a file system. 
-​W is for write. ​It allows you to create files in ​a directory or modify files that already exist. ​Then X is for execute. ​It allows you to run files, ​but this only applies to things that can be run, ​like applications or scripts. ​If it's a text file, ​it doesn't matter if you have execute. ​Text files can't really be executed. ​Typically they're not script. 
-​The next three characters, ​so this would be the 5th, 6th, ​and 7th positions, ​are the permissions of the group, ​whatever is in that fourth column here. ​You can see in ​this particular directory that ​shared group has read, write, and execute. ​If you see a dash somewhere, ​we can come down to documents, ​you can see there's a dash where the W should be, ​it means that permission is missing. ​That particular entry tells us that ​the group has read and execute the documents, ​it doesn't have write. ​Then the last three characters that we see here, ​which is really the 8th, 9th, ​and 10th positions, ​are the permissions for others. ​Anybody that's not that user ​and not a member of that group, ​this is what they have. ​For this A temp directory they've got everything, ​but you can see for a lot of ​the other directories they just have read ​and execute down here for permissions. 
-​SH, they just have read. ​If there was an 11th character, ​that would indicate the access method for the file. ​It'd be a period if it's SELinux security contexts, ​a plus for other combinations. ​We're not seeing that here, ​so none of these directories or files ​have any special access methods. ​That's it for this demonstration. ​In this demonstration, we looked at permissions, ​we looked at the ls dash l command ​and the format of the output from that command, ​and then we dug into ​the permission string looking ​at that first character that tells us if it's ​a directory or a file and ​then the different parts that ​identify the permissions for the user, ​the group, and then all others. 
-In this demonstration, we're ​going to look at permissions. ​Permissions are access rights assigned to users which ​enable them to access or modify files and directories. ​They can be assigned to users or groups. ​Permissions can be set at different levels ​and for different access categories. ​But the ls dash l command ​can be used to view the permissions of a file, ​and that gives us a long listing. ​Let's do an ls dash l here. ​You can see I'm in my home folder. ​We see a number of different columns when we do this. ​The very first column, ​this information right here, ​is the permission string. ​This is will identify if the item is a file or ​a directory and then ​what permissions have been assigned, ​and if there's an alternate access method ​that would be there as well. ​The second column counts the number of links. ​Files generally have a link count of one. ​There's only one file in here, ​and you can see it does in fact have a link count of one. ​For directories, the link count is ​the number of directories under it plus 2, ​one for the directory itself and one for the parent. ​For example, you can see that ​this A temp directory just has a two, ​there's no sub-directories, ​but data files has 10 sub-directories, ​so we're getting a link count of 12. ​Links are similar to Windows shortcuts. ​They point to the location where the file or directory ​exists and allow you to access and view it. ​The third column displays ​the owner of the file or directory, ​so the user that it belongs to. ​The fourth column displays ​the group to which the file or directory belongs. ​All members of this group have ​the group permissions listed in the permission string. ​The fifth column lists the size ​of the file or directory in bytes. ​The sixth column is actually all of this stuff. ​It's weird because it looks ​like this would be 6, 7, and 8, ​but actually, all of that ​together is really considered the sixth column. ​This is the date and time the file was ​created or last modified, file or directory. ​Then the seventh or last column is ​the name of the file or directory. ​In this particular video, ​we're interested in permissions. ​We really want to dig into that permission string. ​This permission string might have 10 or 11 characters. ​The very first character, ​this D here for this particular directory, ​it's a D if it's a directory. ​You can see it's actually a dash ​or a hyphen if it's a file. ​This is the only file in this listing. ​The next three characters are ​the permissions assigned to the user, ​whatever is listed in that third column. ​You can see here we've got r, w, and x. ​The possible permissions that anybody could have. ​R is for read, ​meaning you can read the contents of ​a file or you can view the contents of a directory, ​you can navigate to it in a file system. ​W is for write. ​It allows you to create files in ​a directory or modify files that already exist. ​Then X is for execute. ​It allows you to run files, ​but this only applies to things that can be run, ​like applications or scripts. ​If it's a text file, ​it doesn't matter if you have execute. ​Text files can't really be executed. ​Typically they're not script. ​The next three characters, ​so this would be the 5th, 6th, ​and 7th positions, ​are the permissions of the group, ​whatever is in that fourth column here. ​You can see in ​this particular directory that ​shared group has read, write, and execute. ​If you see a dash somewhere, ​we can come down to documents, ​you can see there's a dash where the W should be, ​it means that permission is missing. ​That particular entry tells us that ​the group has read and execute the documents, ​it doesn't have write. ​Then the last three characters that we see here, ​which is really the 8th, 9th, ​and 10th positions, ​are the permissions for others. ​Anybody that's not that user ​and not a member of that group, ​this is what they have. ​For this A temp directory they've got everything, ​but you can see for a lot of ​the other directories they just have read ​and execute down here for permissions. ​SH, they just have read. ​If there was an 11th character, ​that would indicate the access method for the file. ​It'd be a period if it's SELinux security contexts, ​a plus for other combinations. ​We're not seeing that here, ​so none of these directories or files ​have any special access methods. ​That's it for this demonstration. ​In this demonstration, we looked at permissions, ​we looked at the ls dash l command ​and the format of the output from that command, ​and then we dug into ​the permission string looking ​at that first character that tells us if it's ​a directory or a file and ​then the different parts that ​identify the permissions for the user, ​the group, and then all others.  In this demonstration, we're ​going to look at permissions. ​Permissions are access rights assigned to users which ​enable them to access or modify files and directories. ​They can be assigned to users or groups. ​Permissions can be set at different levels ​and for different access categories. ​But the ls dash l command ​can be used to view the permissions of a file, ​and that gives us a long listing. ​Let's do an ls dash l here. ​You can see I'm in my home folder. ​We see a number of different columns when we do this. ​The very first column, ​this information right here, ​is the permission string. ​This is will identify if the item is a file or ​a directory and then ​what permissions have been assigned, ​and if there's an alternate access method ​that would be there as well. ​The second column counts the number of links. ​Files generally have a link count of one. ​There's only one file in here, ​and you can see it does in fact have a link count of one. ​For directories, the link count is ​the number of directories under it plus 2, ​one for the directory itself and one for the parent. ​For example, you can see that ​this A temp directory just has a two, ​there's no sub-directories, ​but data files has: Added to Selection. Press [CTRL + S] to save as a note Transcript Notes Files: Added to Selection. Press [CTRL + S] to save as a note
+File Systems
+A file system is a method that is used by an operating system to store, retrieve, organize, and manage files and directories on mass storage devices. A file system maintains information, such as the date of creation and modification of individual files, their file size, file type, and permissions. It also provides a structured form for data storage. A file system by itself does not interpret the data contained in files because this task is handled by specific applications. File systems vary depending on several parameters, such as the purpose of the file systems, the information they store about individual files, the way they store data, and data security.
 
 
+File System Labels
+File system labels are assigned to file systems for easy identification. The labels may be up to 16 characters long and can be displayed or changed using the e2label command.
 
-​In this demonstration, we're going to take ​a look at effective permissions. ​Effective permissions are the permissions the subject ​actually has to the object in a particular situation. ​You can see that we're here in the root test directory. ​I'm going to do an ls - ​l. Here's the file that we're going to be working with. ​The way we calculate ​effective permissions in Linux is as follows. ​If the user is the user listed to the file, ​if I'm going to Shad user, ​my effective permissions will ​be the permission string of the user. 
-​In this case, you can see that's ​just the read permission. ​If I am not the user but I ​am a member of the group listed on the file, ​in this case the p-test group, ​then my effective permissions ​will be the group permission string. ​In this case, read and write. ​If I am not the user Shad and ​I'm not a member of the group p-test, ​then my effective permissions ​will be the permission string for other, ​in this case, read, write, and execute. ​
-
-
-​In this demonstration, we're going to take a look at the chmod command. ​So the chmod command is used to change permissions on a file or directory. ​And so it's a little bit tricky because it supports two modes, ​the character mode and the numeric mode. ​So we're going to look at the character mode first, ​we're going to start out by just doing an ls-l, and we'll take a look at ​the permissions equally use this last one here, permissions.sh. ​You can see right now the user permissions are just read, the group permissions ​are read, write and for all others it's read, write and execute. ​So the syntax is chmod, and then you have to ​specify which part of the permission string you're going to be modifying. ​So for example, let's say for the users, and then if you want to grant a permission ​or add a permission in, it's really easy, it's just the plus sign, and then ​you use the symbol for the permission, R for read, W for write, X for execute. 
-​So let's say I want to add in, write, and then let's say for the group, ​if you want to take away a permission, then that's the minus symbol. ​So I'll subtract write, and then for the other, so ​it's O for other let's subtract, execute. ​And then at the very end you put the name of the file, ​which is permissions.sh, let's do our ls-l, and so ​you can see it's modified the permission string. ​Now, if that seems too tedious, ​the other way you can do it is with the chmod, and I can say, all right, ​well, I want the user permissions to be read, write and execute. ​I'll have the group permissions be, read and execute, and ​I'll have the other permissions be write and execute. ​And you put the name of your file, so the equals just says look it doesn't matter ​what's there, just make it equal to this. ​And so if we do our ls-l, you can see it did exactly what I asked it to do. 
-​So that's character mode, where you're actually using the characters, ​you can use plus to add a permission to what's there, ​minus to subtract the permission, they usually use grant and deny but ​you can think of it as add and subtract or equals just to say what you want. ​The other way is with numeric mode. ​So in numeric mode you have to come up with a number for ​what you want the permission to be, and you have in there, ​4 is read, 2 is write, 1 is execute. ​So let's say we wanted to put together a situation where it's like right ​now the user has read, write and execute. ​So I want to do something different, so ​let's just say the user is going to have read and write. ​So if reed is worth 4, and write is worth 2, then at 6. ​So you do chmod, so for the user I want it to be 6, for the group, ​let's say we want it to be read and execute, so execute is worth 1. 
-​So if I want read, that's worth 4, execute is worth 1, then I want a total of 5 for ​the group, and then we'll do all three of them for the other. ​So if I had all three of them would be 7. ​So whatever digit is in the first place that represents the user, second place is ​the group, third place is the other, and you just add up the number that you want. ​And then you put the name of the file just like we did last time, and ​if I do my ls-l, you can see that's what happened. ​So the 6 gave me the read write for the user over here, the 5 gave me the read and ​execute for the group, and then the 7 gave me all three of them. ​And there is at the end of this chapter, a permissions reference that has all of ​those numbers in there, so you don't have to be frantically taking notes, ​you can look at that, it'll give you all the numbers and so ​there are lots of different ones that you might see. ​Like I could do a chmod and say I want everybody to have everything, ​And you can see it did that or you can sort of play with them from there. 
-​So that's really all there is to the chmod command. ​chmod is used to change the permissions and you can do it either in character ​mode, where you can add or subtract permissions or just say, hey, ​make this part of the permission string equal to these permissions, or ​you can do it in numeric mode where you put in the number that you want. ​So that's it for this video. ​We don't need a long video to understand them, but it really, ​really important because they control who can do what to files and directories, ​and they're also super important if you need to run scripts and things like that. 
-​In this demonstration, we're going to take a look at the chmod command. ​So the chmod command is used to change permissions on a file or directory. ​And so it's a little bit tricky because it supports two modes, ​the character mode and the numeric mode. ​So we're going to look at the character mode first, ​we're going to start out by just doing an ls-l, and we'll take a look at ​the permissions equally use this last one here, permissions.sh. ​You can see right now the user permissions are just read, the group permissions ​are read, write and for all others it's read, write and execute. ​So the syntax is chmod, and then you have to ​specify which part of the permission string you're going to be modifying. ​So for example, let's say for the users, and then if you want to grant a permission ​or add a permission in, it's really easy, it's just the plus sign, and then ​you use the symbol for the permission, R for read, W for write, X for execute. ​So let's say I want to add in, write, and then let's say for the group, ​if you want to take away a permission, then that's the minus symbol. ​So I'll subtract write, and then for the other, so ​it's O for other let's subtract, execute. ​And then at the very end you put the name of the file, ​which is permissions.sh, let's do our ls-l, and so ​you can see it's modified the permission string. ​Now, if that seems too tedious, ​the other way you can do it is with the chmod, and I can say, all right, ​well, I want the user permissions to be read, write and execute. ​I'll have the group permissions be, read and execute, and ​I'll have the other permissions be write and execute. ​And you put the name of your file, so the equals just says look it doesn't matter ​what's there, just make it equal to this. ​And so if we do our ls-l, you can see it did exactly what I asked it to do. ​So that's character mode, where you're actually using the characters, ​you can use plus to add a permission to what's there, ​minus to subtract the permission, they usually use grant and deny but ​you can think of it as add and subtract or equals just to say what you want. ​The other way is with numeric mode. ​So in numeric mode you have to come up with a number for ​what you want the permission to be, and you have in there, ​4 is read, 2 is write, 1 is execute. ​So let's say we wanted to put together a situation where it's like right ​now the user has read, write and execute. ​So I want to do something different, so ​let's just say the user is going to have read and write. ​So if reed is worth 4, and write is worth 2, then at 6. ​So you do chmod, so for the user I want it to be 6, for the group, ​let's say we want it to be read and execute, so execute is worth 1. ​So if I want read, that's worth 4, execute is worth 1, then I want a total of 5 for ​the group, and then we'll do all three of them for the other. ​So if I had all three of them would be 7. ​So whatever digit is in the first place that represents the user, second place is ​the group, third place is the other, and you just add up the number that you want. ​And then you put the name of the file just like we did last time, and ​if I do my ls-l, you can see that's what happened. ​So the 6 gave me the read write for the user over here, the 5 gave me the read and ​execute for the group, and then the 7 gave me all three of them. ​And there is at the end of this chapter, a permissions reference that has all of ​those numbers in there, so you don't have to be frantically taking notes, ​you can look at that, it'll give you all the numbers and so ​there are lots of different ones that you might see. ​Like I could do a chmod and say I want everybody to have everything, ​And you can see it did that or you can sort of play with them from there. ​So that's really all there is to the chmod command. ​chmod is used to change the permissions and you can do it either in character ​mode, where you can add or subtract permissions or just say, hey, ​make this part of the permission string equal to these permissions, or ​you can do it in numeric mode where you put in the number that you want. ​So that's it for this video. ​We don't need a long video to understand them, but it really, ​really important because they control who can do what to files and directories, ​and they're also super important if you need to run scripts and things like that. ​In this demonstration, we're going to take a look at the chmod command. ​So the chmod command is used to change permissions on a file or directory. ​And so it's a little bit tricky because it supports two modes, ​the character mode and the numeric mode. ​So we're going to look at the character mode first, ​we're going to start out by just doing an ls-l, and we'll take a look at ​the permissions equally use this last one here, permissions.sh. ​You can see right now the user permissions are just read, the group permissions ​are read, write and for all others it's read, write and execute. ​So the syntax is chmod, and then you have to ​specify which part of the permission string you're going to be modifying. ​So for example, let's say for the users, and then if you want to grant a permission ​or add a permission in, it's really easy, it's just the plus sign, and then ​you use the symbol for the permission, R for read, W for write, X for execute. ​So let's say I want to add in, write, and then let's say for the group, ​if you want to take away a permission, then that's the minus symbol. ​So I'll subtract write, and then for the other, so ​it's O for other let's subtract, execute. ​And then at the very end you put the name of the file, ​which is permissions.sh, let's do our ls-l, and so ​you can see it's modified the permission string. ​Now, if that seems too tedious, ​the other way you can do it is with the chmod, and I can say, all right, ​well, I want the user permissions to be read, write and execute. ​I'll have the group permissions be, read and execute, and ​I'll have the other permissions be write and execute. ​And you put the name of your file, so the equals just says look it doesn't matter ​what's there, just make it equal to this. ​And so if we do our ls-l, you can see it did exactly what I asked it to do. ​So that's character mode, where you're actually using the characters, ​you can use plus to add a permission to what's there, ​minus to subtract the permission, they usually use grant and deny but ​you can think of it as add and subtract or equals just to say what you want. ​The other way is with numeric mode. ​So in numeric mode you have to come up with a number for ​what you want the permission to be, and you have in there, ​4 is read, 2 is write, 1 is execute. ​So let's say we wanted to put together a situation where it's like right ​now the user has read, write and execute. ​So I want to do something different, so ​let's just say the user is going to have read and write. ​So if reed is worth 4, and write is worth 2, then at 6. ​So you do chmod, so for the user I want it to be 6, for the group, ​let's say we want it to be read and execute, so execute is worth 1. ​So if I want read, that's worth 4, execute is worth 1, then I want a total of 5 for ​the group, and then we'll do all three of them for the other. ​So if I had all three of them would be 7. ​So whatever digit is in the first place that represents the user, second place is ​the group, third place is the other, and you just add up the number that you want. ​And then you put the name of the file just like we did last time, and ​if I do my ls-l, you can see that's what happened. ​So the 6 gave me the read write for the user over here, the 5 gave me the read and ​execute for the group, and then the 7 gave me all three of them. ​And there is at the end of this chapter, a permissions reference that has all of ​those numbers in there, so you don't have to be frantically taking notes, ​you can look at that, it'll give you all the numbers and so ​there are lots of different ones that you might see. ​Like I could do a chmod and say I want everybody to have everything, ​And you can see it did that or you can sort of play with them from there. ​So that's really all there is to the chmod command. ​chmod is used to change the permissions and you can do it either in character ​mode, where you can add or subtract permissions or just say, hey, ​make this part of the permission string equal to these permissions, or ​you can do it in numeric mode where you put in the number that you want. ​So that's it for this video. ​We don't need a long video to understand them, but it really, ​really important because they control who can do what to files and directories, ​and they're also super important if you need to run scripts and things like that. ​In this demonstration, we're going to take a look at the chmod command. ​So the chmod command is used to change permissions on a file or directory. ​And so it's a little bit tricky because it supports two modes, ​the character mode and the numeric mode. ​So we're going to look at the character mode first, ​we're going to start out by just doing an ls-l, and we'll take a look at ​the permissions equally use this last one here, permissions.sh. ​You can see right now the user permissions are just read, the group permissions ​are read, write and for all others it's read, write and execute. ​So the syntax is chmod, and then you have to ​specify which part of the permission string you're going to be modifying. ​So for example, let's say for the users, and then if you want to grant a permission ​or add a permission in, it's really easy, it's just the plus sign, and then ​you use the symbol for the permission, R for read, W for write, X for execute. ​So let's say I want to add in, write, and then let's say for the group, ​if you want to take away a permission, then that's the minus symbol. ​So I'll subtract write, and then for the other, so ​it's O for other let's subtract, execute. ​And then at the very end you put the name of the file, ​which is permissions.sh, let's do our ls-l, and so ​you can see it's modified the permission string. ​Now, if that seems too tedious, ​the other way you can do it is with the chmod, and I can say, all right, ​well, I want the user permissions to be read, write and execute. ​I'll have the group permissions be, read and execute, and ​I'll have the other permissions be write and execute. ​And you put the name of your file, so the equals just says look it doesn't matter ​what's there, just make it equal to this. ​And so if we do our ls-l, you can see it did exactly what I asked it to do. ​So that's character mode, where you're actually using the characters, ​you can use plus to add a permission to what's there, ​minus to subtract the permission, they usually use grant and deny but ​you can think of it as add and subtract or equals just to say what you want. ​The other way is with numeric mode. ​So in numeric mode you have to come up with a number for ​what you want the permission to be, and you have in there, ​4 is read, 2 is write, 1 is execute. ​So let's say we wanted to put together a situation where it's like right ​now the user has read, write and execute. ​So I want to do something different, so ​let's just say the user is going to have read and write. ​So if reed is worth 4, and write is worth 2, then at 6. ​So you do chmod, so for the user I want it to be 6, for the group, ​let's say we want it to be read and execute, so execute is worth 1. ​So if I want read, that's worth 4, execute is worth 1, then I want a total of 5 for ​the group, and then we'll do all three of them for the other. ​So if I had all three of them would be 7. ​So whatever digit is in the first place that represents the user, second place is ​the group, third place is the other, and you just add up the number that you want. ​And then you put the name of the file just like we did last time, and ​if I do my ls-l, you can see that's what happened. ​So the 6 gave me the read write for the user over here, the 5 gave me the read and ​execute for the group, and then the 7 gave me all three of them. ​And there is at the end of this chapter, a permissions reference that has all of ​those numbers in there, so you don't have to be frantically taking notes, ​you can look at that, it'll give you all the numbers and so ​there are lots of different ones that you might see. ​Like I could do a chmod and say I want everybody to have everything, ​And you can see it did that or you can sort of play with them from there. ​So that's really all there is to the chmod command. ​chmod is used to change the permissions and you can do it either in character ​mode, where you can add or subtract permissions or just say, hey, ​make this part of the permission string equal to these permissions, or ​you can do it in numeric mode where you put in the number that you want. ​So that's it for this video. ​We don't need a long video to understand them, but it really, ​really important because they control who can do what to files and directories, ​and they're also super important if you need to run scripts and things like that. ​In this demonstration, we're going to take a look at the chmod command. ​So the chmod command is used to change permissions on a file or directory. ​And so it's a little bit tricky because it supports two modes, ​the character mode and the numeric mode. ​So we're going to look at the character mode first, ​we're going to start out by just doing an ls-l, and we'll take a look at ​the permissions equally use this last one here, permissions.sh. ​You can see right now the user permissions are just read, the group permissions ​are read, write and for all others it's read, write and execute. ​So the syntax is chmod, and then you have to ​specify which part of the permission string you're going to be modifying. ​So for example, let's say for the users, and then if you want to grant a permission ​or add a permission in, it's really easy, it's just the plus sign, and then ​you use the symbol for the permission, R for read, W for write, X for execute. ​So let's say I want to add in, write, and then let's say for the group, ​if you want to take away a permission, then that's the minus symbol. ​So I'll subtract write, and then for the other, so ​it's O for other let's subtract, execute. ​And then at the very end you put the name of the file, ​which is permissions.sh, let's do our ls-l, and so ​you can see it's modified the permission string. ​Now, if that seems too tedious, ​the other way you can do it is with the chmod, and I can say, all right, ​well, I want the user permissions to be read, write and execute. ​I'll have the group permissions be, read and execute, and ​I'll have the other permissions be write and execute. ​And you put the name of your file, so the equals just says look it doesn't matter ​what's there, just make it equal to this. ​And so if we do our ls-l, you can see it did exactly what I asked it to do. ​So that's character mode, where you're actually using the characters, ​you can use plus to add a permission to what's there, ​minus to subtract the permission, they usually use grant and deny but ​you can think of it as add and subtract or equals just to say what you want. ​The other way is with numeric mode. ​So in numeric mode you have to come up with a number for ​what you want the permission to be, and you have in there, ​4 is read, 2 is write, 1 is execute. ​So let's say we wanted to put together a situation where it's like right ​now the user has read, write and execute. ​So I want to do something different, so ​let's just say the user is going to have read and write. ​So if reed is worth 4, and write is worth 2, then at 6. ​So you do chmod, so for the user I want it to be 6, for the group, ​let's say we want it to be read and execute, so execute is worth 1. ​So if I want read, that's worth 4, execute is worth 1, then I want a total of 5 for ​the group, and then we'll do all three of them for the other. ​So if I had all three of them would be 7. ​So whatever digit is in the first place that represents the user, second place is ​the group, third place is the other, and you just add up the number that you want. ​And then you put the name of the file just like we did last time, and ​if I do my ls-l, you can see that's what happened. ​So the 6 gave me the read write for the user over here, the 5 gave me the read and ​execute for the group, and then the 7 gave me all three of them. ​And there is at the end of this chapter, a permissions reference that has all of ​those numbers in there, so you don't have to be frantically taking notes, ​you can look at that, it'll give you all the numbers and so ​there are lots of different ones that you might see. ​Like I could do a chmod and say I want everybody to have everything, ​And you can see it did that or you can sort of play with them from there. ​So that's really all there is to the chmod command. ​chmod is used to change the permissions and you can do it either in character ​mode, where you can add or subtract permissions or just say, hey, ​make this part of the permission string equal to these permissions, or ​you can do it in numeric mode where you put in the number that you want. ​So that's it for this video. ​We don't need a long video to understand them, but it really, ​really important because they control who can do what to files and directories, ​and they're also super important if you need to run scripts
+The syntax for setting file system labels is e2label /dev/{device name}{partition number} {label name}. They can also be set using the tune2fs -L {volume label} {device} command.
 
 
-​In this demonstration, we're going to take a look at default permissions for ​files and directories. ​In Linux default permissions are assigned to newly created files and ​directories based on user privileges, for files created by the root user. ​The default permission is 6,4,4, which means that the root user has read and ​write permissions while groups and others, will have only read permission. ​If that doesn't make sense. ​You really have got to go back and watch the video, the CH mod command, ​because those numbers will make a lot more sense. ​So let's just test that, ​let's do a sudo vim test dot txt. ​So I'm just going to go ahead and save an exit. 
-​We'll do an Ls- L, and you can see that's exactly what happened, right. ​The root user got read and write, group and ​others got read, for directories created by the root user. ​The default permission is 7,5,5. ​So let's go ahead, and try that we'll do ​a make directory as the root, test, and our Ls-L. ​And you can see, the root user got read write and execute. ​That's R seven, it's that first part here, ​the group got read and execute which is the 5. ​And the other got read and execute which is the 5, in the case of regular users. 
-​So anybody who's not the root, for newly created files it's going to be 6,6,4. ​So let's try that, ​just do a vim, test2, txt. ​I'm going to save and quit, so ​you can see that test2 got read and write for the user. ​There's R6, read and write for the user? ​There's R6 and read for others, there's R4. ​And then for directories, it's going to to be 7,7,5. ​So let's do a make directory, test2. 
-​We'll do our Ls-L, and you can see there's the directory, ​read, write and execute for the user. ​There's seven, and then read and execute, which is the 5. ​So those default permissions are determined by the usual file ​creation mask, or the U-Mask. ​So the U-Mask command, allows you to alter what the default permissions on ​newly created files and directories are going to be. ​And may be that's for security reasons, or ​you just want things to automatically be a little bit different way. ​If you type U-Mask by itself, it'll show you the U-Mask for your user account. ​If you want to change it, you can type U-Mask and specify a number. 
-​So that number can be a three or four digit number, ​here we can see it's a four digit number, so ​that four digit number basically takes away, from based permissions. ​So the base permission for files in Linux would be, 0,6,6,6. ​So that first zero in the U-Mask, would represent kind of advanced permissions. ​So there are no advanced permissions, and then the 6,6,6 means the default ​permissions are read and write for the user. ​The group, and the other, you might be thinking of saying but ​shad, that's not what happened, right. ​What happened when you created that? ​Test2, txt was you got read and write for the user in the group, ​but only read for the other. 
-​And that's because the U-Mask. ​So, that first zero talks about the advanced permissions which were not ​involved with. ​The second zero says we'll take away zero permissions from that default of 6,6,6. ​Well if you take away zero permissions from the six, that means you get read and ​write, and that's exactly what happened. ​I got read and write for the user. ​That third zero says don't take away anything or take away zero, ​from the group permissions. ​So if the group permissions were six and I took away zero, ​I got six which is read and write. 
-​The 2 says take away two which is right, from the default permission of six. ​Well, if I had read and write and I took away right, I'm just going to get read. ​So that combination of the default permissions being 6,6,6. ​And the U-Mask of 0002, is what gives me the effective default ​permissions, that we see here, which is the 6,6,4. ​So let's say I wanted to have a situation where I wanted all the new ​files to be created with, the 6,6,6 permission. ​In that case I could change the U-Mask, and I could do something like okay, ​I want the U-Mask now to be, 1,2,3,4 zeros. ​Now if I make a new file, so we'll do test3, ​txt, little test in here. 
-​Save and exit, and do my Ls- L. ​You can see, because the U-Mask it didn't take away anything from that base ​permission of 6,6,6. ​So what I got was 6,6,6 or read and write for all three of them. ​So U-Mask always says what we're going to take away, ​for the permissions on new directories. ​It would be 7,7,7, everybody would get everything. ​So if I go in right now, when I have a U-Mask of four zeros, meaning don't take ​away anything from the base permissions, and I were to make a directory. ​Guess we're up to test3, I do my Ls-L. 
-​What do we get? ​We get 7,7,7, so that's the U-Mask command. ​And those are sort of the default settings, ​this applies only the particular session. ​So if I were to reboot the computer now, ​it's going to go back to default U-Mask of 0002, and ​I will get those default permissions of 6,6,4 and 7,7,5. ​If you want it to be system wide, you can set the U-Mask value in ​the pam underscore U-Mask dot s O, or the etcetera profile file. ​If you want it on a per user basis, you can edit the user's shell ​configuration file, like the bash RC file, that's in the home directory. ​But, U-Mask really just sets up default permissions. 
-​And so let's say you had a situation where you have a user that's going to log in, ​and anything they create should have particular permissions. ​Not the standard permissions, edit their bashar C file, ​put in the default U -Mask value. ​That's going to take away the permissions you don't want. ​And then, the effect of that plus the base permissions will be the default ​permissions for that particular user, or you could just have them type U-Mask in. ​And then that will change it for that current setting. ​So that's it for this demonstration and this demonstration, ​we looked at the default file and directory permissions, ​that you get when you create new files and directories as both the root and the user. ​And then we looked at the U-Mask, ​which sort of takes away from the base permissions, ​which are more permission than we normally would get, from the default permissions. 
-​Because the base permissions plus the U-Mask is what gives us our ​default permissions. ​And then we look on how to change the U-Mask, both for ​the current session, and on a more permanent basis. ​All of this is also in that permissions reference at the end of this lesson, ​so, you can go and you can kind of read about it at your leisure. ​But hopefully seeing it in the computer helps a little bit. 
-​In this demonstration, we're going to take a look at default permissions for ​files and directories. ​In Linux default permissions are assigned to newly created files and ​directories based on user privileges, for files created by the root user. ​The default permission is 6,4,4, which means that the root user has read and ​write permissions while groups and others, will have only read permission. ​If that doesn't make sense. ​You really have got to go back and watch the video, the CH mod command, ​because those numbers will make a lot more sense. ​So let's just test that, ​let's do a sudo vim test dot txt. ​So I'm just going to go ahead and save an exit. ​We'll do an Ls- L, and you can see that's exactly what happened, right. ​The root user got read and write, group and ​others got read, for directories created by the root user. ​The default permission is 7,5,5. ​So let's go ahead, and try that we'll do ​a make directory as the root, test, and our Ls-L. ​And you can see, the root user got read write and execute. ​That's R seven, it's that first part here, ​the group got read and execute which is the 5. ​And the other got read and execute which is the 5, in the case of regular users. ​So anybody who's not the root, for newly created files it's going to be 6,6,4. ​So let's try that, ​just do a vim, test2, txt. ​I'm going to save and quit, so ​you can see that test2 got read and write for the user. ​There's R6, read and write for the user? ​There's R6 and read for others, there's R4. ​And then for directories, it's going to to be 7,7,5. ​So let's do a make directory, test2. ​We'll do our Ls-L, and you can see there's the directory, ​read, write and execute for the user. ​There's seven, and then read and execute, which is the 5. ​So those default permissions are determined by the usual file ​creation mask, or the U-Mask. ​So the U-Mask command, allows you to alter what the default permissions on ​newly created files and directories are going to be. ​And may be that's for security reasons, or ​you just want things to automatically be a little bit different way. ​If you type U-Mask by itself, it'll show you the U-Mask for your user account. ​If you want to change it, you can type U-Mask and specify a number. ​So that number can be a three or four digit number, ​here we can see it's a four digit number, so ​that four digit number basically takes away, from based permissions. ​So the base permission for files in Linux would be, 0,6,6,6. ​So that first zero in the U-Mask, would represent kind of advanced permissions. ​So there are no advanced permissions, and then the 6,6,6 means the default ​permissions are read and write for the user. ​The group, and the other, you might be thinking of saying but ​shad, that's not what happened, right. ​What happened when you created that? ​Test2, txt was you got read and write for the user in the group, ​but only read for the other. ​And that's because the U-Mask. ​So, that first zero talks about the advanced permissions which were not ​involved with. ​The second zero says we'll take away zero permissions from that default of 6,6,6. ​Well if you take away zero permissions from the six, that means you get read and ​write, and that's exactly what happened. ​I got read and write for the user. ​That third zero says don't take away anything or take away zero, ​from the group permissions. ​So if the group permissions were six and I took away zero, ​I got six which is read and write. ​The 2 says take away two which is right, from the default permission of six. ​Well, if I had read and write and I took away right, I'm just going to get read. ​So that combination of the default permissions being 6,6,6. ​And the U-Mask of 0002, is what gives me the effective default ​permissions, that we see here, which is the 6,6,4. ​So let's say I wanted to have a situation where I wanted all the new ​files to be created with, the 6,6,6 permission. ​In that case I could change the U-Mask, and I could do something like okay, ​I want the U-Mask now to be, 1,2,3,4 zeros. ​Now if I make a new file, so we'll do test3, ​txt, little test in here. ​Save and exit, and do my Ls- L. ​You can see, because the U-Mask it didn't take away anything from that base ​permission of 6,6,6. ​So what I got was 6,6,6 or read and write for all three of them. ​So U-Mask always says what we're going to take away, ​for the permissions on new directories. ​It would be 7,7,7, everybody would get everything. ​So if I go in right now, when I have a U-Mask of four zeros, meaning don't take ​away anything from the base permissions, and I were to make a directory. ​Guess we're up to test3, I do my Ls-L. ​What do we get? ​We get 7,7,7, so that's the U-Mask command. ​And those are sort of the default settings, ​this applies only the particular session. ​So if I were to reboot the computer now, ​it's going to go back to default U-Mask of 0002, and ​I will get those default permissions of 6,6,4 and 7,7,5. ​If you want it to be system wide, you can set the U-Mask value in ​the pam underscore U-Mask dot s O, or the etcetera profile file. ​If you want it on a per user basis, you can edit the user's shell ​configuration file, like the bash RC file, that's in the home directory. ​But, U-Mask really just sets up default permissions. ​And so let's say you had a situation where you have a user that's going to log in, ​and anything they create should have particular permissions. ​Not the standard permissions, edit their bashar C file, ​put in the default U -Mask value. ​That's going to take away the permissions you don't want. ​And then, the effect of that plus the base permissions will be the default ​permissions for that particular user, or you could just have them type U-Mask in. ​And then that will change it for that current setting. ​So that's it for this demonstration and this demonstration, ​we looked at the default file and directory permissions, ​that you get when you create new files and directories as both the root and the user. ​And then we looked at the U-Mask, ​which sort of takes away from the base permissions, ​which are more permission than we normally would get, from the default permissions. ​Because the base permissions plus the U-Mask is what gives us our ​default permissions. ​And then we look on how to change the U-Mask, both for ​the current session, and on a more permanent basis. ​All of this is also in that permissions reference at the end of this lesson, ​so, you can go and you can kind of read about it at your leisure. ​But hopefully seeing it in the computer helps a little bit. ​In this demonstration, we're going to take a look at default permissions for ​files and directories. ​In Linux default permissions are assigned to newly created files and ​directories based on user privileges, for files created by the root user. ​The default permission is 6,4,4, which means that the root user has read and ​write permissions while groups and others, will have only read permission. ​If that doesn't make sense. ​You really have got to go back and watch the video, the CH mod command, ​because those numbers will make a lot more sense. ​So let's just test that, ​let's do a sudo vim test dot txt. ​So I'm just going to go ahead and save an exit. ​We'll do an Ls- L, and you can see that's exactly what happened, right. ​The root user got read and write, group and ​others got read, for directories created by the root user. ​The default permission is 7,5,5. ​So let's go ahead, and try that we'll do ​a make directory as the root, test, and our Ls-L. ​And you can see, the root user got read write and execute. ​That's R seven, it's that first part here, ​the group got read and execute which is the 5. ​And the other got read and execute which is the 5, in the case of regular users. ​So anybody who's not the root, for newly created files it's going to be 6,6,4. ​So let's try that, ​just do a vim, test2, txt. ​I'm going to save and quit, so ​you can see that test2 got read and write for the user. ​There's R6, read and write for the user? ​There's R6 and read for others, there's R4. ​And then for directories, it's going to to be 7,7,5. ​So let's do a make directory, test2. ​We'll do our Ls-L, and you can see there's the directory, ​read, write and execute for the user. ​There's seven, and then read and execute, which is the 5. ​So those default permissions are determined by the usual file ​creation mask, or the U-Mask. ​So the U-Mask command, allows you to alter what the default permissions on ​newly created files and directories are going to be. ​And may be that's for security reasons, or ​you just want things to automatically be a little bit different way. ​If you type U-Mask by itself, it'll show you the U-Mask for your user account. ​If you want to change it, you can type U-Mask and specify a number. ​So that number can be a three or four digit number, ​here we can see it's a four digit number, so ​that four digit number basically takes away, from based permissions. ​So the base permission for files in Linux would be, 0,6,6,6. ​So that first zero in the U-Mask, would represent kind of advanced permissions. ​So there are no advanced permissions, and then the 6,6,6 means the default ​permissions are read and write for the user. ​The group, and the other, you might be thinking of saying but ​shad, that's not what happened, right. ​What happened when you created that? ​Test2, txt was you got read and write for the user in the group, ​but only read for the other. ​And that's because the U-Mask. ​So, that first zero talks about the advanced permissions which were not ​involved with. ​The second zero says we'll take away zero permissions from that default of 6,6,6. ​Well if you take away zero permissions from the six, that means you get read and ​write, and that's exactly what happened. ​I got read and write for the user. ​That third zero says don't take away anything or take away zero, ​from the group permissions. ​So if the group permissions were six and I took away zero, ​I got six which is read and write. ​The 2 says take away two which is right, from the default permission of six. ​Well, if I had read and write and I took away right, I'm just going to get read. ​So that combination of the default permissions being 6,6,6. ​And the U-Mask of 0002, is what gives me the effective default ​permissions, that we see here, which is the 6,6,4. ​So let's say I wanted to have a situation where I wanted all the new ​files to be created with, the 6,6,6 permission. ​In that case I could change the U-Mask, and I could do something like okay, ​I want the U-Mask now to be, 1,2,3,4 zeros. ​Now if I make a new file, so we'll do test3, ​txt, little test in here. ​Save and exit, and do my Ls- L. ​You can see, because the U-Mask it didn't take away anything from that base ​permission of 6,6,6. ​So what I got was 6,6,6 or read and write for all three of them. ​So U-Mask always says what we're going to take away, ​for the permissions on new directories. ​It would be 7,7,7, everybody would get everything. ​So if I go in right now, when I have a U-Mask of four zeros, meaning don't take ​away anything from the base permissions, and I were to make a directory. ​Guess we're up to test3, I do my Ls-L. ​What do we get? ​We get 7,7,7, so that's the U-Mask command. ​And those are sort of the default settings, ​this applies only the particular session. ​So if I were to reboot the computer now, ​it's going to go back to default U-Mask of 0002, and ​I will get those default permissions of 6,6,4 and 7,7,5. ​If you want it to be system wide, you can set the U-Mask value in ​the pam underscore U-Mask dot s O, or the etcetera profile file. ​If you want it on a per user basis, you can edit the user's shell ​configuration file, like the bash RC file, that's in the home directory. ​But, U-Mask really just sets up default permissions. ​And so let's say you had a situation where you have a user that's going to log in, ​and anything they create should have particular permissions. ​Not the standard permissions, edit their bashar C file, ​put in the default U -Mask value. ​That's going to take away the permissions you don't want. ​And then, the effect of that plus the base permissions will be the default ​permissions for that particular user, or you could just have them type U-Mask in. ​And then that will change it for that current setting. ​So that's it for this demonstration and this demonstration, ​we looked at the default file and directory permissions, ​that you get when you create new files and directories as both the root and the user. ​And then we looked at the U-Mask, ​which sort of takes away from the base permissions, ​which are more permission than we normally would get, from the default permissions. ​Because the base permissions plus the U-Mask is what gives us our ​default permissions. ​And then we look on how to change the U-Mask, both for ​the current session, and on a more permanent basis. ​All of this is also in that permissions reference at the end of this lesson, ​so, you can go and you can kind of read about it at your leisure. ​But hopefully seeing it in the computer helps a little bit. ​In this demonstration, we're going to take a look at default permissions for ​files and directories. ​In Linux default permissions are assigned to newly created files and ​directories based on user privileges, for files created by the root user. ​The default permission is 6,4,4, which means that the root user has read and ​write permissions while groups and others, will have only read permission. ​If that doesn't make sense. ​You really have got to go back and watch the video, the CH mod command, ​because those numbers will make a lot more sense. ​So let's just test that, ​let's do a sudo vim test dot txt. ​So I'm just going to go ahead and save an exit. : Added to Selection. Press [CTRL + S] to save as a note : Added to Selection. Press [CTRL + S] to save as a note Transcript Notes Files: Added to Selection. Press [CTRL + S] to save as a note
+File System Types
+Linux supports many common file system types. Some are described in the following table.
+
+File System Type 
+
+Description 
+
+ext2 
+
+This used to be the native Linux file system of some of the previous releases. It is still supported in the current releases of Linux.
+
+ext3 
+
+This is an improved version of ext2. In case of an abrupt system shutdown, ext3 is faster in recovering data and better ensures data integrity. You can easily upgrade your file system from ext2 to ext3. 
+
+ext4 
+
+The newest default file system for Linux distributions. It is backwards- compatible with the ext2 and ext3 file systems. Among ext4’s improvements over ext3 are journaling, support of volumes of up to one exbibyte (EiB), and files up to 16 TiB in size. Ext4 is the default filesystem for CentOS/RHEL 7 and Ubuntu installations. 
+
+XFS 
+
+This is a 64-bit, high-performance journaling file system that provides fast recovery and can handle large files efficiently. XFS is the default file system for CentOS/RHEL 7 installations. 
+
+ReiserFS
+
+This can handle small files efficiently. It handles files smaller than 1K and is faster than ext2 and ext3. If appropriately configured, it can store more data than ext2. 
+
+vfat
+
+This is a 32-bit file system and supports long file names. It is compatible with the FAT file system of Microsoft Windows XP and Microsoft Windows NT.
+
+JFS
+
+This is a 64-bit journaling file system that is fast and reliable. It is better equipped to handle power failures and system crashes. 
+
+swap
+
+This is not a true file system, but rather is a portion of the hard disk that is used in situations when Linux runs out of physical memory and needs more of it. Linux pushes some of the unused files from RAM to “swap” to free up memory. 
+
+ISO 9660
+
+This is a file system standard defined by the International Organization for Standardization (ISO), and is also called a CDFS (Compact Disc File System). Linux allows you to access DVDs and CDs that use this file system. 
+
+btrfs (Better FS) 
+
+This is a modern copy on write (CoW) file system for Linux aimed at implementing advanced features while also focusing on fault tolerance, repair, and easy administration. btrfs is licensed under the GPL. 
+
+
+Access to Other File Systems
+Linux allows you to access other file systems and mount them when required. However, you cannot install Linux on these file systems.
+
+File System 
+
+Description 
+
+FAT 
+
+The FAT (File Allocation Table) file system is compatible with different operating systems, including all versions of Windows, MS-DOS, and UNIX. It is primarily used for formatting floppy disks.
+
+NTFS
+
+NTFS (New Technology File System) is the recommended file system for Windows-based computers. NTFS provides many enhanced features over FAT or vfat, including file- and folder-level security, file encryption, disk compression, and scalability to very large drives and files. 
+
+
+Partitions
+A partition is a section of the hard disk that logically acts as a separate disk. Partitions enable you to convert a large hard disk to smaller manageable chunks, leading to better organization of information. A partition must be formatted and assigned a filesystem before data can be stored on it. Partitions are identified using a partition table, which is stored in the boot record. The partition table can contain entries for a maximum of four primary partitions. The size of each partition can vary but cannot exceed the total free space of the hard disk.
+
+
+Hard Disk Size Specification
+Before proceeding with the installation process, you need to plan the hard disk layout based on your requirements. Each partition has a recommended size specification. The following table lists the recommended size specification for partitions.
+
+Partition 
+
+Recommended Size 
+
+/ 
+
+Minimum 1 GB. 
+
+/boot
+
+100 MB. 
+
+swap 
+
+Double the RAM size. 
+
+/var
+
+Minimum 250 MB. If the possibility of the installation of many applications exists in the future, allocate the appropriate size. 
+
+/home
+
+Varies based on the number of users. 
+
+
+Disk Partitioning
+Most operating systems, including Linux, use disk partitions. Data of different types can be stored in separate locations on the hard disk. The partition size can be specified by a user. However, the filesystem size must be considered before specifying the partition size. Disk partitioning enables the user to separate system files from user accessible ones. Corrupted partitions do not affect the other partitions, and they can be recovered separately.
+
+Partition Type 
+
+Description 
+
+Primary 
+
+A disk partition that can contain one filesystem or logical drive and is sometimes referred to as volumes. A maximum of four primary partitions are allowed. The swap filesystem and the boot partition are normally created in a primary partition. 
+
+Extended 
+
+An extended partition can contain several filesystems, which are referred to as logical disks or logical drives. There can be only one extended partition, which can be further subdivided. This partition type does not contain any data and has a separate partition table. 
+
+Logical 
+
+A part of a physical disk drive that has been partitioned and allocated as an independent unit and functions as a separate drive. A logical partition is created within an extended partition. There is no restriction on the number of logical partitions, but it is advisable to limit it to 12 logical partitions per disk drive.
+
+
+The fdisk Utility
+fdisk is a menu-driven utility program that is used for creating, modifying, or deleting partitions on a disk drive. Using fdisk, a new partition table can be created, or existing entries in the partition table can be modified. The fdisk utility understands the DOS and Linux type partition tables. Depending on the partition table created, the DOS FDISK or the Linux fdisk program is invoked. The fdisk utility also allows you to specify the size of partitions.
+
+The syntax of the fdisk utility is fdisk [options] {device name}.
+
+The fdisk utility supports a number of command line options.
+
+Option
+
+Enables You To 
+
+-b sector size 
+
+Specify the number of disk sectors. 
+
+-H heads 
+
+Specify the number of disk heads. 
+
+-S sectors 
+
+Specify the number of sectors per track. 
+
+-s partition 
+
+Print the partition size in blocks. 
+
+-v 
+
+List the fdisk version. 
+
+-l 
+
+List partition tables for devices. 
+
+
+fdisk Utility Options
+The fdisk utility provides various options for partitioning disks according to the requirements of users. Some of the fdisk options are described in the following table.
+
+Option
+
+Enables You To 
+
+n 
+
+Create a new partition. The sub-options allow you specify the partition type and partition size. 
+
+d 
+
+Remove a partition. 
+
+p 
+
+List the existing partitions. 
+
+w 
+
+Write the changes to the disk and exit the utility. 
+
+q 
+
+Cancel the changes made and exit the utility.
+
+
+The fstab File
+The fstab file is a configuration file that stores information about storage devices and partitions and where and how the partitions should be mounted.
+
+The fstab file is located in the /etc directory. It can be edited only by a root user. The fstab file consists of a number of lines—one for each filesystem. Each line in an fstab file has six fields that are separated by spaces.
+
+Field 
+
+Description 
+
+Device or partition name 
+
+Specifies the name of the device or filesystem that has to be mounted. 
+
+Default mount point 
+
+Indicates where the filesystem has to be mounted.
+
+Filesystem type 
+
+Specifies the type of filesystem used by the device or partition. 
+
+Mount options 
+
+Specifies a set of comma-separated options that will be activated when the filesystem is mounted. 
+
+Dump options 
+
+Indicates if the dump utility should back up the filesystem. Usually, zero is specified as the dump option to indicate that dump can ignore the filesystem. 
+
+fsck options 
+
+Specifies the order in which the fsck utility should check filesystems. 
+
+
+The mkfs Command
+The mkfs command is used to build a Linux filesystem on a device, which is usually a hard disk partition. 
+
+The syntax of the mkfs command is mkfs [filesystem type] [options] {device}.
+
+The following table lists some options of the mkfs command and their description.
+
+Option
+
+Allows You To 
+
+-v 
+
+Produce verbose output, where the output message will keep changing constantly as the program is processing. 
+
+-V 
+
+Produce verbose output, including all filesystem-specific commands that are executed. 
+
+-t {fstype} 
+
+Specify the type of filesystem to be built. 
+
+fs-options 
+
+Pass filesystem-specific options to the filesystem builder. 
+
+-c 
+
+Check the device for bad blocks before building the filesystem. 
+
+-l {file name} 
+
+Read the list of bad blocks from a specified file. 
+
+
+Building New Linux Filesystems Using the mkfs Commands
+The mkfs commands are used to build a new Linux filesystem. The different mkfs commands are given in the following table.
+
+If You Need To Build 
+
+Use This mkfs Command 
+
+An ext2 filesystem 
+
+mkfs.ext2 /dev/hdaPartition number 
+
+An ext3 filesystem 
+
+mkfs.ext3 /dev/hdaPartition number 
+
+An ext4 filesystem 
+
+mkfs.ext4 /dev/hdaPartition number 
+
+An XFS filesystem 
+
+mkfs.xfs /dev/hdaPartition number 
+
+A reiserfs filesystem 
+
+mkfs.reiserfs /dev/hdaPartition number
+
+A btrfs filesystem 
+
+mkfs.btrfs /dev/hdaPartition number 
+
+A vfat filesystem 
+
+mkfs.vfat /dev/hdaPartition number 
+
+A JFS filesystem 
+
+mkfs.jfs /dev/hdaPartition number 
+
+
+The mke2fs Command
+The mke2fs utility is used to create ext2, ext3, and ext4 filesystems, and it has various options. This command is a more specific version of the mkfs command described previously that may be used to create ext2, ext3, and ext4 filesystems only. 
+
+The syntax of the mke2fs utility is mke2fs[options] {device}.
+
+Some of the options for mke2fs are listed in the following table.
+
+Option
+
+Enables You To 
+
+-t {filesystem type} 
+
+Specify the filesystem type to create (i.e., ext2, ext3, ext4, etc.). 
+
+-b {block size} 
+
+Specify the size of the block in bytes.
+
+-c 
+
+Check the device for errors in the blocks, before creating the filesystem. 
+
+-f 
+
+Specify the fragment size in bytes. 
+
+-j 
+
+Create a journaled ext3 filesystem. 
+
+-M 
+
+Set the directory that was last accessed for the filesystem to be mounted. 
+
+-V 
+
+Print the version number of the mke2fs utility. 
+
+Note: The command mke2fs -t ext4 /dev/sdaPartition number will allow you to build an ext4 filesystem. 
+
+WARNING: Running this command will format your disk, deleting all contents!
+
