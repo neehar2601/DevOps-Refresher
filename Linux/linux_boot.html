@@ -176,18 +176,26 @@ const STEPS = [
   },
   {
     icon:"⚙️", num:"08", color:"emerald",
-    title:"systemd / Init — Service Manager",
-    intro:"systemd (or init) takes over as PID 1 and brings the system to a fully usable state.",
+    title:"System Initialization & SysVinit",
+    intro:"System initialization begins when a system is booted, carried out by the init program (PID 1).",
     body:[
-      {h:"What systemd does", t:"systemd reads target unit files and concurrently starts all required background services — things like NetworkManager, SSH daemon, logging (journald), display manager, and more. Unlike the old SysVinit, systemd parallelises service startup for faster boot times."},
-      {h:"SysVinit (historical context)", t:"Historically, Linux used SysVinit — a sequential service loader from 1980s UNIX. Services started one by one in a fixed order through 'runlevels'. While reliable, it was slow and rigid. systemd replaced it across nearly all mainstream distros."},
-      {h:"Process Initiation", t:"init/systemd starts all background services and applications required for the system to function (network, logging, cron, display manager, etc.)."},
-      {h:"System Management", t:"Almost every process on your system can trace its origin back to init/systemd. The only exceptions are kernel threads, which the kernel starts directly to manage internal OS details."},
-      {h:"Ongoing Maintenance", t:"systemd acts as a supervisor for all non-kernel processes — cleaning up after them when they exit, restarting failed services, and managing login sessions as users log in and out."}
+      {h:"System Initialization", t:"System initialization involves the loading of the operating system and its various components. Programs on the system will not run without it. The init program refers to configuration files and initiates processes to prepare the system to run the required software."},
+      {h:"SysVinit (historical context)", t:"Historically, Linux used SysVinit — a sequential service loader from 1980s UNIX. Services started one by one in a fixed order through 'runlevels'."},
+      {h:"The /etc/init.d Directory", t:"The init.d directory stores initialization scripts for services (System V scripts). These scripts control the initiation of services in a particular runlevel. They are invoked from the /etc/inittab file when initialization begins. Syntax for running scripts: /{service name} {start|stop|status|restart}."}
     ]
   },
   {
-    icon:"🔴", num:"09", color:"rose",
+    icon:"📦", num:"09", color:"emerald",
+    title:"systemd & Service Management",
+    intro:"systemd provides a modern system and service manager that runs as PID 1 and starts the rest of the system.",
+    body:[
+      {h:"What systemd does", t:"In systemd, the targets of most actions are 'units', defined with unit files. For service management, the target unit will be service units (.service). Systemd parallelises service startup for faster boot times."},
+      {h:"The systemctl Command", t:"systemctl is used to manage services and daemons for the server at any point while the system is running. (Note: you can usually omit the .service suffix when operating on a service)."},
+      {h:"Common systemctl Options", t:"• start {service} — Start (activate) a service immediately.\n• stop {service} — Stop (deactivate) a service immediately.\n• restart {service} — Restart a service immediately.\n• enable {service} — Enable a service to be started on boot.\n• disable {service} — Disable a service so it is no longer started on boot.\n• list-unit-files — List configured system services and their boot configuration."}
+    ]
+  },
+  {
+    icon:"🔴", num:"10", color:"rose",
     title:"The Role of Init — Shutdown",
     intro:"init is also responsible for clean system shutdown — ensuring no data is lost.",
     body:[
