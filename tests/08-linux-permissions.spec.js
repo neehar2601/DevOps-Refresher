@@ -12,16 +12,19 @@ test.describe('8 – Linux Permissions Guide', () => {
   });
 
   test('Listing Files & System Identity section is visible', async ({ page }) => {
+    await page.locator('button', { hasText: 'File Permissions & Ownership' }).click();
     const section = page.locator('h2', { hasText: 'Listing Files' });
     await expect(section).toBeVisible();
   });
 
   test('Permissions Basics section is visible', async ({ page }) => {
+    await page.locator('button', { hasText: 'File Permissions & Ownership' }).click();
     const section = page.locator('h2', { hasText: 'Permissions Basics' });
     await expect(section).toBeVisible();
   });
 
   test('Identity Management section is visible', async ({ page }) => {
+    await page.locator('button', { hasText: 'Users & Groups' }).click();
     const section = page.locator('h2', { hasText: 'Identity Management' });
     await expect(section).toBeVisible();
   });
