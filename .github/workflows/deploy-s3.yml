@@ -110,7 +110,8 @@ jobs:
             echo "❌ Some tests failed — download the HTML report artifact for details" >> $GITHUB_STEP_SUMMARY
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Tested URL:** ${{ env.BASE_URL }}/Docker+website/index.html" >> $GITHUB_STEP_SUMMARY
+          echo "**Tested URL (Test Env):** ${{ env.BASE_URL }}/Docker+website/index.html" >> $GITHUB_STEP_SUMMARY
+          echo "📥 [Download Test Report Artifacts here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
           echo "**Run:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
 
   # ──────────────────────────────────────────────────────────────────────────
@@ -151,3 +152,9 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
+
+      - name: Post production deployment summary
+        run: |
+          echo "## 🚀 Production Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Successfully deployed to production and invalidated CloudFront cache!" >> $GITHUB_STEP_SUMMARY
+          echo "**CloudFront URL:** https://d1j5qg30u3jr3u.cloudfront.net/Docker+website/index.html" >> $GITHUB_STEP_SUMMARY
