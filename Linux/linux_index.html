@@ -48,9 +48,23 @@
           </div>
           <div>
             <h2 class="text-2xl font-bold text-white mb-2">What is Linux?</h2>
-            <p class="text-slate-400 leading-relaxed">
-              Linux is the foundational operating system of the cloud and modern infrastructure. From web servers and containers to supercomputers and Android devices, mastering Linux is the first step in any DevOps engineer's journey.
-            </p>
+            <div class="text-slate-400 leading-relaxed space-y-4">
+              <p>
+                Linux is the foundational operating system of the cloud and modern infrastructure. From web servers and containers to supercomputers and Android devices, mastering Linux is the first step in any DevOps engineer's journey.
+              </p>
+              <p>
+                The Linux operating system is a complete, open source operating system that combines the GNU utilities and the Linux kernel. The kernel is the central core of the Linux operating system. It manages all the computer's physical devices. The term kernel is generally used to describe the main part of any operating system.
+              </p>
+              <p>
+                The Linux kernel was developed by Linus Torvalds in 1991, while he was a student at the University of Helsinki. He developed a UNIX-like operating system kernel for his own use. He posted his creation on the Internet and asked other programmers to help him further develop it. Until Torvalds agreed to release Linux under GPL, the GNU project was not a complete operating system. And the kernel itself was incomplete as an operating system without utilities. 
+              </p>
+              <p>
+                Over the past few years, Linux has rapidly gained ground in the competitive operating system marketplace. For example, Linux is now widely preferred for web servers and Internet systems. Many individuals and organizations have accepted it as a desktop and server alternative because of its high security, low cost, and ease of licensing. 
+              </p>
+              <p>
+                Linux is used on servers, workstations, and desktops. Servers are computers optimized for supplying services to other computers. Workstations are computers optimized for use by business users. Desktops are used primarily by home users and small businesses.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -144,7 +158,9 @@
               <i data-lucide="power" class="w-4 h-4 text-orange-400"></i>
               <h3 class="font-bold text-white text-sm">Boot Loaders</h3>
             </div>
-            <p class="text-slate-400 text-sm leading-relaxed mb-3">The first program to run after BIOS — loads and hands off to the OS kernel.</p>
+            <p class="text-slate-400 text-sm leading-relaxed mb-3">
+              A boot loader is a program that loads the kernel so that Linux and other operating systems can boot. During installation, it is put on the Master Boot Record (MBR). <strong>GRand Unified Bootloader (GRUB)</strong> is the standard Linux boot loader. <a href="linux_boot.html" class="text-orange-400 hover:underline">See the Boot Process Guide for details.</a>
+            </p>
             <div class="flex flex-wrap gap-1.5">
               <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-orange-300">GRUB</span>
               <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-orange-300">ISOLINUX</span>
@@ -184,9 +200,11 @@
           <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 hover:border-rose-500/40 transition-colors">
             <div class="flex items-center gap-2 mb-3">
               <i data-lucide="monitor" class="w-4 h-4 text-rose-400"></i>
-              <h3 class="font-bold text-white text-sm">Desktop &amp; Shell</h3>
+              <h3 class="font-bold text-white text-sm">Desktop &amp; Shell (Terminal)</h3>
             </div>
-            <p class="text-slate-400 text-sm leading-relaxed mb-3">The desktop is the graphical UI. The shell interprets commands and instructs the OS.</p>
+            <p class="text-slate-400 text-sm leading-relaxed mb-3">
+              The desktop is the graphical UI. A command line interpreter, often called a command line shell, is a program that interprets commands. It analyzes the input provided by the user, interprets the text in context, and supplies the output. The terms <em>shell</em>, <em>command line</em>, and <em>terminal</em> are frequently used interchangeably to describe this environment.
+            </p>
             <div class="flex flex-wrap gap-1.5">
               <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-rose-300">GNOME</span>
               <span class="text-xs font-mono bg-slate-800 border border-slate-600 rounded px-2 py-0.5 text-rose-300">KDE</span>
@@ -320,6 +338,48 @@
             <p class="text-slate-500 text-xs mt-2 text-center">ps • kill • ip • ss</p>
           </div>
         </div>
+
+        <!-- Package Management -->
+        <div class="bg-slate-800 border border-rose-500/30 rounded-2xl overflow-hidden hover:-translate-y-1 transition-transform duration-200 shadow-lg">
+          <div class="bg-rose-900/20 px-6 pt-6 pb-4">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="p-2 bg-rose-500/20 rounded-lg">
+                <i data-lucide="package-search" class="w-5 h-5 text-rose-400"></i>
+              </div>
+              <h3 class="font-bold text-white">Package Management</h3>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Master APT to securely download, install, update, and remove software on Debian-based systems.
+            </p>
+          </div>
+          <div class="px-6 pb-5 pt-3">
+            <a href="linux_package_management.html" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-rose-700 hover:bg-rose-600 text-white font-semibold text-sm transition-colors">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+              Open Package Mgmt
+            </a>
+            <p class="text-slate-500 text-xs mt-2 text-center">apt update • install • purge</p>
+          </div>
+        </div>
+
+        <!-- Logging & Monitoring -->
+        <div class="bg-slate-800 border border-teal-500/30 rounded-2xl overflow-hidden hover:-translate-y-1 transition-transform duration-200 shadow-lg">
+          <div class="bg-teal-900/20 px-6 pt-6 pb-4">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="p-2 bg-teal-500/20 rounded-lg">
+                <i data-lucide="activity" class="w-5 h-5 text-teal-400"></i>
+              </div>
+              <h3 class="font-bold text-white">Logging & Monitoring</h3>
+            </div>
+            <p class="text-slate-400 text-sm h-14">Syslogd, rsyslog, journalctl, and log rotation for system maintenance.</p>
+          </div>
+          <div class="px-6 py-4 border-t border-slate-700/50 bg-slate-800/50 flex justify-between items-center">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">6 Topics</span>
+            <a href="linux_logging.html" class="flex items-center gap-1 text-sm font-medium text-teal-400 hover:text-teal-300 transition-colors">
+              Read Guide <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
 
       </div>
     </section>

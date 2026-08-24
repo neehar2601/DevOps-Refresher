@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,254 +10,1425 @@
     tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } } } }
   </script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="../assets/styles.css">
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .tab-content {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
+
 <body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
   <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <i data-lucide="shield" class="w-7 h-7 text-amber-500"></i>
-        <h1 class="text-xl font-bold tracking-tight">Linux <span class="text-slate-400 font-light">Permissions & Ownership</span></h1>
+        <h1 class="text-xl font-bold tracking-tight">Linux <span class="text-slate-400 font-light">Permissions &
+            Ownership</span></h1>
       </div>
-      <a href="linux_index.html" class="flex items-center gap-2 text-sm text-slate-400 hover:text-amber-500 transition-colors">
+      <a id="back-link" href="linux_index.html"
+        class="flex items-center gap-2 text-sm text-slate-400 hover:text-amber-500 transition-colors">
         <i data-lucide="arrow-left" class="w-4 h-4"></i>
         <span class="hidden sm:inline">Back to Linux Hub</span>
       </a>
     </div>
   </header>
 
-  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-10">
-
-
-    <!-- File Listing & File System Identity -->
-    <section>
-      <div class="flex items-center space-x-3 mb-6">
-        <div class="p-2 bg-indigo-500/10 rounded-lg"><i data-lucide="files" class="w-6 h-6 text-indigo-400"></i></div>
-        <h2 class="text-2xl font-bold text-white">Listing Files & System Identity</h2>
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+    <!-- Tabs Navigation -->
+    <div class="mb-10">
+      <div class="border-b border-slate-800">
+        <nav class="flex space-x-2 overflow-x-auto py-3 no-scrollbar" id="nav-tabs">
+        </nav>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
-          <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">ls Command Variations</h3>
-          <ul class="space-y-3">
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-sm bg-slate-950 text-indigo-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">ls</code>
-              <span class="text-slate-400 text-sm">Shows visible files and directories.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-sm bg-slate-950 text-indigo-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">ls -a</code>
-              <span class="text-slate-400 text-sm">Also shows hidden files (starting with `.`).</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-sm bg-slate-950 text-indigo-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">ls -l</code>
-              <span class="text-slate-400 text-sm">Detailed view: permissions, owner, group, size, modification time.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-sm bg-slate-950 text-indigo-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">ls -la</code>
-              <span class="text-slate-400 text-sm">Combines detailed view with hidden files.</span>
-            </li>
-          </ul>
+    </div>
+
+    <!-- Permissions Tab -->
+    <div id="sec-permissions" class="tab-content space-y-10 active">
+
+
+      <!-- File Listing & File System Identity -->
+      <section>
+        <div class="flex items-center space-x-3 mb-6">
+          <div class="p-2 bg-indigo-500/10 rounded-lg"><i data-lucide="files" class="w-6 h-6 text-indigo-400"></i></div>
+          <h2 class="text-2xl font-bold text-white">Listing Files & System Identity</h2>
         </div>
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
-          <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">System Account Files</h3>
-          <ul class="space-y-3">
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-sm bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800">/etc/passwd</code>
-              <span class="text-slate-400 text-sm">Contains user account details.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-sm bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800">/etc/group</code>
-              <span class="text-slate-400 text-sm">Contains group information.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-sm bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800">/etc/shadow</code>
-              <span class="text-slate-400 text-sm">Stores password-related data and is protected.</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- Permissions Basics -->
-    <section>
-      <div class="flex items-center space-x-3 mb-6">
-        <div class="p-2 bg-amber-500/10 rounded-lg"><i data-lucide="lock" class="w-6 h-6 text-amber-400"></i></div>
-        <h2 class="text-2xl font-bold text-white">Permissions Basics</h2>
-      </div>
-      
-      <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-lg mb-6">
-        <div class="p-6">
-          <p class="text-slate-300 mb-4 text-sm leading-relaxed">
-            Linux permissions are expressed with <code class="bg-slate-950 px-1 py-0.5 rounded text-amber-400 font-mono">r</code>, <code class="bg-slate-950 px-1 py-0.5 rounded text-amber-400 font-mono">w</code>, and <code class="bg-slate-950 px-1 py-0.5 rounded text-amber-400 font-mono">x</code>, and they apply separately to the <strong>owner</strong>, <strong>group</strong>, and <strong>others</strong>. Numeric permissions use octal values.
-          </p>
-          <div class="grid grid-cols-3 gap-4 text-center mb-6">
-            <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50 shadow-inner">
-              <div class="text-3xl font-mono text-emerald-400 mb-2">r</div>
-              <div class="font-bold text-slate-200">Read</div>
-              <div class="text-xs text-slate-400 mt-1">Value: 4</div>
-            </div>
-            <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50 shadow-inner">
-              <div class="text-3xl font-mono text-amber-400 mb-2">w</div>
-              <div class="font-bold text-slate-200">Write</div>
-              <div class="text-xs text-slate-400 mt-1">Value: 2</div>
-            </div>
-            <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50 shadow-inner">
-              <div class="text-3xl font-mono text-rose-400 mb-2">x</div>
-              <div class="font-bold text-slate-200">Execute</div>
-              <div class="text-xs text-slate-400 mt-1">Value: 1</div>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+            <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">ls Command Variations
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-sm bg-slate-950 text-indigo-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">ls</code>
+                <span class="text-slate-400 text-sm">Shows visible files and directories.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-sm bg-slate-950 text-indigo-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">ls -a</code>
+                <span class="text-slate-400 text-sm">Also shows hidden files (starting with `.`).</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-sm bg-slate-950 text-indigo-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">ls -l</code>
+                <span class="text-slate-400 text-sm">Detailed view: permissions, owner, group, size, modification
+                  time.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-sm bg-slate-950 text-indigo-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">ls -la</code>
+                <span class="text-slate-400 text-sm">Combines detailed view with hidden files.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-sm bg-slate-950 text-indigo-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">ls -ld</code>
+                <span class="text-slate-400 text-sm">Lists directory entries of the specified directory, not its contents.</span>
+              </li>
+            </ul>
           </div>
-          
-          <div class="bg-slate-900 rounded-xl p-4 border border-slate-700 font-mono text-sm shadow-inner">
-            <div class="text-slate-400 mb-2">Reading a permission string <span class="text-white bg-slate-800 px-2 py-0.5 rounded ml-2">-rwxr-xr--</span> :</div>
-            <ul class="space-y-1 text-slate-300 mt-3">
-              <li><span class="text-slate-500 font-bold">-</span> : Regular file (d for directory)</li>
-              <li><span class="text-amber-400 font-bold">rwx</span> : Owner can read, write, and execute (7)</li>
-              <li><span class="text-amber-400 font-bold">r-x</span> : Group can read and execute (5)</li>
-              <li><span class="text-amber-400 font-bold">r--</span> : Others can only read (4)</li>
+          <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+            <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">System Account Files
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-sm bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800">/etc/passwd</code>
+                <span class="text-slate-400 text-sm">Contains user account details.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-sm bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800">/etc/group</code>
+                <span class="text-slate-400 text-sm">Contains group information.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-sm bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800">/etc/shadow</code>
+                <span class="text-slate-400 text-sm">Stores password-related data and is protected.</span>
+              </li>
             </ul>
           </div>
         </div>
-        
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm whitespace-nowrap">
-            <thead class="bg-slate-900/80 text-slate-300 border-y border-slate-700">
-              <tr>
-                <th class="px-6 py-4 font-semibold">Numeric</th>
-                <th class="px-6 py-4 font-semibold">Symbolic</th>
-                <th class="px-6 py-4 font-semibold">Meaning / Typical Use Case</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-700/50 text-slate-400">
-              <tr class="hover:bg-slate-700/30 transition-colors">
-                <td class="px-6 py-4 font-mono text-amber-400 font-bold">644</td>
-                <td class="px-6 py-4 font-mono">-rw-r--r--</td>
-                <td class="px-6 py-4 whitespace-normal">Owner can read/write; group/others can read only. Used for normal files.</td>
-              </tr>
-              <tr class="hover:bg-slate-700/30 transition-colors">
-                <td class="px-6 py-4 font-mono text-amber-400 font-bold">750</td>
-                <td class="px-6 py-4 font-mono">-rwxr-x---</td>
-                <td class="px-6 py-4 whitespace-normal">Owner has full access; group can read/execute; others have no access.</td>
-              </tr>
-              <tr class="hover:bg-slate-700/30 transition-colors">
-                <td class="px-6 py-4 font-mono text-amber-400 font-bold">700</td>
-                <td class="px-6 py-4 font-mono">-rwx------</td>
-                <td class="px-6 py-4 whitespace-normal">Only the owner has full access. Used for private scripts or keys.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
 
-    <!-- Modifying Permissions & Ownership -->
-    <section>
-      <div class="flex items-center space-x-3 mb-6">
-        <div class="p-2 bg-rose-500/10 rounded-lg"><i data-lucide="key" class="w-6 h-6 text-rose-400"></i></div>
-        <h2 class="text-2xl font-bold text-white">Modifying Permissions & Ownership</h2>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg flex flex-col">
-          <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Changing Permissions: <code>chmod</code></h3>
-          <p class="text-slate-400 text-sm mb-4">The <code class="bg-slate-950 px-1.5 py-0.5 rounded text-rose-400 font-mono text-xs border border-slate-700">chmod</code> command changes file or directory permissions.</p>
-          <div class="bg-slate-900 p-4 rounded-xl font-mono text-sm text-slate-300 border border-slate-700/80 space-y-2 mb-4 flex-grow shadow-inner">
-            <div><span class="text-rose-400">chmod</span> 700 deploy.sh</div>
-            <div><span class="text-rose-400">chmod</span> 750 deploy.sh</div>
-            <div><span class="text-rose-400">chmod</span> 644 notes.txt</div>
+        <div class="mt-6 bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+          <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Deconstructing the <code class="font-mono text-indigo-400">ls -l</code> Output</h3>
+          <p class="text-slate-400 text-sm mb-4">A long listing gives exactly 7 columns of information for each file or directory. Here is a typical example:</p>
+          
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-700 font-mono text-sm text-slate-300 shadow-inner mb-6 overflow-x-auto whitespace-nowrap flex gap-4">
+            <span class="text-indigo-400" title="1. Permission String">-rwxr-xr--</span>
+            <span class="text-emerald-400" title="2. Link Count">1</span>
+            <span class="text-amber-400" title="3. Owner">shad</span>
+            <span class="text-rose-400" title="4. Group">shared</span>
+            <span class="text-cyan-400" title="5. Size">4096</span>
+            <span class="text-purple-400" title="6. Date & Time">Oct 24 10:30</span>
+            <span class="text-slate-200" title="7. Name">example.txt</span>
           </div>
-          <p class="text-slate-500 text-xs italic mt-auto">Note: Only the owner (or root) can change permissions.</p>
-        </div>
-        
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg flex flex-col">
-          <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Changing Ownership: <code>chown</code> & <code>chgrp</code></h3>
-          <p class="text-slate-400 text-sm mb-4">Every file has both an owner user and an owner group. Usually requires <code class="bg-slate-950 px-1.5 py-0.5 rounded text-blue-400 font-mono text-xs border border-slate-700">sudo</code>.</p>
-          <ul class="space-y-3 mb-4 flex-grow">
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-xs bg-slate-950 text-rose-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap">chown user file</code>
-              <span class="text-slate-400 text-xs">Changes the owner of a file.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-xs bg-slate-950 text-rose-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap">chown user:group file</code>
-              <span class="text-slate-400 text-xs">Changes both owner and group.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-xs bg-slate-950 text-rose-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap">chgrp group file</code>
-              <span class="text-slate-400 text-xs">Changes only the group.</span>
-            </li>
-          </ul>
-          <div class="bg-slate-900 p-3 rounded-xl font-mono text-xs text-slate-300 border border-slate-700/80 space-y-2 shadow-inner mt-auto">
-            <div><span class="text-blue-400">sudo</span> chown root demo.txt</div>
-            <div><span class="text-blue-400">sudo</span> chown root:developers demo.txt</div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-700/50">
+              <div class="text-indigo-400 font-bold mb-1 font-mono text-sm">1. Permission String</div>
+              <div class="text-xs text-slate-400">10 characters detailing file type and user/group/other access rights.</div>
+            </div>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-700/50">
+              <div class="text-indigo-400 font-bold mb-1 font-mono text-sm">2. Link Count</div>
+              <div class="text-xs text-slate-400">Number of links. For directories, it's sub-directories + 2 (itself and parent).</div>
+            </div>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-700/50">
+              <div class="text-indigo-400 font-bold mb-1 font-mono text-sm">3. Owner</div>
+              <div class="text-xs text-slate-400">The user account that owns the file.</div>
+            </div>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-700/50">
+              <div class="text-indigo-400 font-bold mb-1 font-mono text-sm">4. Group</div>
+              <div class="text-xs text-slate-400">The group that owns the file.</div>
+            </div>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-700/50">
+              <div class="text-indigo-400 font-bold mb-1 font-mono text-sm">5. Size</div>
+              <div class="text-xs text-slate-400">The size of the file or directory in bytes.</div>
+            </div>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-700/50 sm:col-span-2">
+              <div class="text-indigo-400 font-bold mb-1 font-mono text-sm">6. Date & Time</div>
+              <div class="text-xs text-slate-400">The date and time the file was created or last modified.</div>
+            </div>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-700/50">
+              <div class="text-indigo-400 font-bold mb-1 font-mono text-sm">7. Name</div>
+              <div class="text-xs text-slate-400">The actual name of the file or directory.</div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- Identity Management -->
-    <section>
-      <div class="flex items-center space-x-3 mb-6 mt-10">
-        <div class="p-2 bg-purple-500/10 rounded-lg"><i data-lucide="users" class="w-6 h-6 text-purple-400"></i></div>
-        <h2 class="text-2xl font-bold text-white">Identity Management (Users & Groups)</h2>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg flex flex-col">
-          <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Core Concepts</h3>
-          <ul class="space-y-4 mb-4 flex-grow">
+      </section>
+
+      <!-- Permissions Basics -->
+      <section>
+        <div class="flex items-center space-x-3 mb-6">
+          <div class="p-2 bg-amber-500/10 rounded-lg"><i data-lucide="lock" class="w-6 h-6 text-amber-400"></i></div>
+          <h2 class="text-2xl font-bold text-white">Permissions Basics</h2>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-lg mb-6">
+          <div class="p-6">
+            <p class="text-slate-300 mb-4 text-sm leading-relaxed">
+              Linux permissions are expressed with <code
+                class="bg-slate-950 px-1 py-0.5 rounded text-amber-400 font-mono">r</code>, <code
+                class="bg-slate-950 px-1 py-0.5 rounded text-amber-400 font-mono">w</code>, and <code
+                class="bg-slate-950 px-1 py-0.5 rounded text-amber-400 font-mono">x</code>, and they apply separately to
+              the <strong>owner</strong>, <strong>group</strong>, and <strong>others</strong>. Numeric permissions use
+              octal values.
+            </p>
+            <div class="grid grid-cols-3 gap-4 text-center mb-6">
+              <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50 shadow-inner">
+                <div class="text-3xl font-mono text-emerald-400 mb-2">r</div>
+                <div class="font-bold text-slate-200">Read</div>
+                <div class="text-xs text-slate-400 mt-1">Value: 4</div>
+              </div>
+              <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50 shadow-inner">
+                <div class="text-3xl font-mono text-amber-400 mb-2">w</div>
+                <div class="font-bold text-slate-200">Write</div>
+                <div class="text-xs text-slate-400 mt-1">Value: 2</div>
+              </div>
+              <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50 shadow-inner">
+                <div class="text-3xl font-mono text-rose-400 mb-2">x</div>
+                <div class="font-bold text-slate-200">Execute</div>
+                <div class="text-xs text-slate-400 mt-1">Value: 1</div>
+              </div>
+            </div>
+
+            <div class="bg-slate-900 rounded-xl p-4 border border-slate-700 font-mono text-sm shadow-inner">
+              <div class="text-slate-400 mb-2">Reading an 11-character permission string <span
+                  class="text-white bg-slate-800 px-2 py-0.5 rounded ml-2">-rwxr-xr--.</span> :</div>
+              <ul class="space-y-1 text-slate-300 mt-3">
+                <li><span class="text-slate-500 font-bold">-</span> : Regular file (d for directory)</li>
+                <li><span class="text-amber-400 font-bold">rwx</span> : Owner can read, write, and execute (7)</li>
+                <li><span class="text-amber-400 font-bold">r-x</span> : Group can read and execute (5)</li>
+                <li><span class="text-amber-400 font-bold">r--</span> : Others can only read (4)</li>
+                <li><span class="text-slate-500 font-bold">.</span> : Access method (period for SELinux, <span class="text-slate-500 font-bold">+</span> for alternate access methods like ACLs)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/80 p-6 border-t border-slate-700">
+            <h4 class="text-md font-bold text-amber-400 mb-3 flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
+              Effective Permissions (How Linux Decides)
+            </h4>
+            <p class="text-sm text-slate-300 mb-2">When you try to access a file, Linux calculates your effective permissions in a strict top-down order:</p>
+            <ol class="list-decimal list-inside text-sm text-slate-400 space-y-2 ml-2">
+              <li><strong class="text-slate-200">Are you the Owner?</strong> If yes, it applies the <em>User</em> permissions and stops checking.</li>
+              <li><strong class="text-slate-200">Are you in the Group?</strong> If not the owner, but in the group, it applies the <em>Group</em> permissions and stops checking.</li>
+              <li><strong class="text-slate-200">Everyone Else:</strong> If you are neither, it applies the <em>Others</em> permissions.</li>
+            </ol>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm whitespace-nowrap">
+              <thead class="bg-slate-900/80 text-slate-300 border-y border-slate-700">
+                <tr>
+                  <th class="px-6 py-4 font-semibold">Numeric</th>
+                  <th class="px-6 py-4 font-semibold">Symbolic</th>
+                  <th class="px-6 py-4 font-semibold">Meaning / Typical Use Case</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-700/50 text-slate-400">
+                <tr class="hover:bg-slate-700/30 transition-colors">
+                  <td class="px-6 py-4 font-mono text-amber-400 font-bold">644</td>
+                  <td class="px-6 py-4 font-mono">-rw-r--r--</td>
+                  <td class="px-6 py-4 whitespace-normal">Owner can read/write; group/others can read only. Used for
+                    normal files.</td>
+                </tr>
+                <tr class="hover:bg-slate-700/30 transition-colors">
+                  <td class="px-6 py-4 font-mono text-amber-400 font-bold">750</td>
+                  <td class="px-6 py-4 font-mono">-rwxr-x---</td>
+                  <td class="px-6 py-4 whitespace-normal">Owner has full access; group can read/execute; others have no
+                    access.</td>
+                </tr>
+                <tr class="hover:bg-slate-700/30 transition-colors">
+                  <td class="px-6 py-4 font-mono text-amber-400 font-bold">700</td>
+                  <td class="px-6 py-4 font-mono">-rwx------</td>
+                  <td class="px-6 py-4 whitespace-normal">Only the owner has full access. Used for private scripts or
+                    keys.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+      </section>
+
+      <!-- Modifying Permissions & Ownership -->
+      <section>
+        <div class="flex items-center space-x-3 mb-6">
+          <div class="p-2 bg-rose-500/10 rounded-lg"><i data-lucide="key" class="w-6 h-6 text-rose-400"></i></div>
+          <h2 class="text-2xl font-bold text-white">Modifying Permissions & Ownership</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg flex flex-col">
+            <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Changing Permissions:
+              <code>chmod</code>
+            </h3>
+            <p class="text-slate-400 text-sm mb-4">The <code
+                class="bg-slate-950 px-1.5 py-0.5 rounded text-rose-400 font-mono text-xs border border-slate-700">chmod</code>
+              command changes file or directory permissions.</p>
+            <div class="space-y-4 mb-4 flex-grow">
+              <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+                <h4 class="font-bold text-slate-300 mb-2 text-sm">1. Character Mode</h4>
+                <p class="text-xs text-slate-400 mb-2">Use characters to Add (<code class="text-rose-400 font-mono bg-slate-950 px-1 rounded">+</code>), Subtract (<code class="text-rose-400 font-mono bg-slate-950 px-1 rounded">-</code>), or explicitly Set (<code class="text-rose-400 font-mono bg-slate-950 px-1 rounded">=</code>) permissions.</p>
+                <div class="font-mono text-xs text-slate-300 space-y-1 bg-slate-950 p-2 rounded border border-slate-800">
+                  <div><span class="text-rose-400">chmod</span> u+w file.txt <span class="text-slate-500 float-right"># Adds Write to User</span></div>
+                  <div><span class="text-rose-400">chmod</span> g-x script.sh <span class="text-slate-500 float-right"># Removes Execute from Group</span></div>
+                  <div><span class="text-rose-400">chmod</span> u=rwx,g=rx app <span class="text-slate-500 float-right"># Explicitly sets perms</span></div>
+                  <div><span class="text-rose-400">chmod</span> u+w,g-x,o+x app <span class="text-slate-500 float-right"># Chain multiple changes</span></div>
+                </div>
+              </div>
+              
+              <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+                <h4 class="font-bold text-slate-300 mb-2 text-sm">2. Numeric Mode</h4>
+                <p class="text-xs text-slate-400 mb-2">Add the values (Read=4, Write=2, Execute=1) for each user level.</p>
+                <div class="font-mono text-xs text-slate-300 space-y-1 bg-slate-950 p-2 rounded border border-slate-800">
+                  <div><span class="text-rose-400">chmod</span> 755 app <span class="text-slate-500 float-right"># u=7(rwx), g=5(rx), o=5(rx)</span></div>
+                  <div><span class="text-rose-400">chmod</span> 644 doc <span class="text-slate-500 float-right"># u=6(rw), g=4(r), o=4(r)</span></div>
+                </div>
+              </div>
+
+              <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+                <h4 class="font-bold text-slate-300 mb-2 text-sm">Options</h4>
+                <p class="text-xs text-slate-400 mb-1"><code class="text-rose-400">-R</code>: Modify recursively</p>
+                <p class="text-xs text-slate-400 mb-1"><code class="text-rose-400">-v</code>: Verbose (diagnostic entry for every file)</p>
+                <p class="text-xs text-slate-400 mb-1"><code class="text-rose-400">-c</code>: Report changes</p>
+                <p class="text-xs text-slate-400"><code class="text-rose-400">-f</code>: Hide most error messages</p>
+              </div>
+            </div>
+            <p class="text-slate-500 text-xs italic mt-auto">Note: Only the owner (or root) can change permissions.</p>
+          </div>
+
+          <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg flex flex-col">
+            <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Changing Ownership:
+              <code>chown</code> & <code>chgrp</code>
+            </h3>
+            <p class="text-slate-400 text-sm mb-4">Every file has both an owner user and an owner group. Changing them usually
+              requires <code
+                class="bg-slate-950 px-1.5 py-0.5 rounded text-blue-400 font-mono text-xs border border-slate-700">sudo</code>.
+            </p>
+            <ul class="space-y-3 mb-4 flex-grow">
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-rose-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap">chown user file</code>
+                <span class="text-slate-400 text-xs">Changes the owner of a file.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-rose-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap">chown user:group file</code>
+                <span class="text-slate-400 text-xs">Changes both owner and group simultaneously.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-rose-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap">chown user: file</code>
+                <span class="text-slate-400 text-xs">Changes owner and automatically sets group to user's login group.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-rose-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap">chown :group file</code>
+                <span class="text-slate-400 text-xs">Shortcut to change <em>only</em> the group.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-emerald-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap">chgrp group file</code>
+                <span class="text-slate-400 text-xs">Dedicated command to change only the group.</span>
+              </li>
+            </ul>
+            <p class="text-slate-500 text-xs italic mb-4">Note: Add the <code class="text-rose-400 font-mono">-R</code> flag to recursively change ownership through a directory structure.</p>
+            <div
+              class="bg-slate-900 p-3 rounded-xl font-mono text-xs text-slate-300 border border-slate-700/80 space-y-2 shadow-inner mt-auto">
+              <div><span class="text-blue-400">sudo</span> chown chris notes.txt</div>
+              <div><span class="text-blue-400">sudo</span> chown chris:developers script.sh</div>
+              <div><span class="text-blue-400">sudo</span> chown :developers data.csv</div>
+            </div>
+          </div>
+        </div>
+
+
+      </section>
+
+      <!-- Default Permissions & Umask -->
+      <section>
+        <div class="flex items-center space-x-3 mb-6 mt-10">
+          <div class="p-2 bg-purple-500/10 rounded-lg"><i data-lucide="shield" class="w-6 h-6 text-purple-400"></i></div>
+          <h2 class="text-2xl font-bold text-white">Default Permissions & <code>umask</code></h2>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-lg mb-6">
+          <div class="p-6">
+            <p class="text-slate-300 mb-4 text-sm leading-relaxed">
+              When you create a new file or directory, Linux automatically assigns default permissions based on a starting "base" permission minus a subtractive mask known as the <code class="bg-slate-950 px-1 py-0.5 rounded text-purple-400 font-mono">umask</code>.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50 shadow-inner">
+                <h4 class="font-bold text-slate-200 mb-2">Base Permissions</h4>
+                <ul class="text-sm text-slate-400 space-y-2">
+                  <li><strong>Files:</strong> Start at <code class="text-amber-400 font-mono">0666</code> (Read/Write for everyone)</li>
+                  <li><strong>Directories:</strong> Start at <code class="text-amber-400 font-mono">0777</code> (Read/Write/Execute for everyone)</li>
+                </ul>
+              </div>
+              <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50 shadow-inner">
+                <h4 class="font-bold text-slate-200 mb-2">Typical User Defaults</h4>
+                <ul class="text-sm text-slate-400 space-y-2">
+                  <li><strong>Root User:</strong> umask <code class="text-purple-400 font-mono">0022</code> &rarr; Files <code class="text-amber-400 font-mono">644</code>, Dirs <code class="text-amber-400 font-mono">755</code></li>
+                  <li><strong>Regular User:</strong> umask <code class="text-purple-400 font-mono">0002</code> &rarr; Files <code class="text-amber-400 font-mono">664</code>, Dirs <code class="text-amber-400 font-mono">775</code></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="bg-slate-900 rounded-xl p-4 border border-slate-700 font-mono text-sm shadow-inner mb-6">
+              <div class="text-slate-400 mb-2">Calculating effective defaults (Base 666 - Umask 002):</div>
+              <div class="text-slate-300 space-y-1 ml-4 overflow-x-auto whitespace-nowrap">
+                <div>Base File: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-amber-400">666</span> (rw-rw-rw-)</div>
+                <div>Subtract Umask: &nbsp;<span class="text-purple-400">002</span> (-------w-)</div>
+                <div class="border-t border-slate-700 pt-1 mt-1 w-64">Result: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-emerald-400">664</span> (rw-rw-r--)</div>
+              </div>
+            </div>
+            
+            <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Configuring Umask</h3>
+            <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+              Running <code class="bg-slate-950 px-1 py-0.5 rounded text-purple-400 font-mono">umask</code> by itself displays your current mask. Running <code class="bg-slate-950 px-1 py-0.5 rounded text-purple-400 font-mono">umask 0027</code> changes it for the current session. To make the change permanent, it must be added to a configuration file:
+            </p>
+            <ul class="list-disc list-inside text-sm text-slate-400 space-y-2 ml-2">
+              <li><strong>System-wide:</strong> Set in <code class="text-slate-300">/etc/profile</code>, <code class="text-slate-300">/etc/bash.bashrc</code>, or <code class="text-slate-300">/etc/pam.d/common-session</code></li>
+              <li><strong>User-specific:</strong> Add <code class="text-purple-400 font-mono">umask 0027</code> to the bottom of your <code class="text-slate-300">~/.bashrc</code> (which gets its initial copy from <code class="text-slate-300">/etc/skel</code>).</li>
+            </ul>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Special Permissions -->
+      <section>
+        <div class="flex items-center space-x-3 mb-6 mt-10">
+          <div class="p-2 bg-pink-500/10 rounded-lg"><i data-lucide="zap" class="w-6 h-6 text-pink-400"></i></div>
+          <h2 class="text-2xl font-bold text-white">Special Permissions (SUID, SGID, Sticky Bit)</h2>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg mb-6">
+          <p class="text-slate-300 mb-4 text-sm leading-relaxed">
+            Special permissions are used in place of the execute permission (<code class="bg-slate-950 px-1 py-0.5 rounded text-amber-400 font-mono">x</code>). They allow users or groups to execute files with privileges they wouldn't normally have, or provide special restrictions on directories.
+          </p>
+          <div class="bg-slate-900/50 border-l-4 border-pink-500 p-4 mb-6 rounded-r-xl">
+            <p class="text-slate-300 text-sm italic">
+              "Thinking of it as a 'role' is the exact right mindset for a DevOps engineer. You are not just getting the ability to run the file; you are temporarily putting on the 'ID badge' of the file's owner (SUID) or the file's group (SGID) for the exact duration of that program. Once the program finishes, you go right back to being your normal user."
+            </p>
+          </div>
+
+          <div class="space-y-6">
+            <!-- SUID -->
+            <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+              <h3 class="text-lg font-bold text-pink-400 mb-2 flex items-center gap-2">
+                <i data-lucide="user-check" class="w-5 h-5"></i> SUID (Set Owner User ID)
+              </h3>
+              <p class="text-sm text-slate-300 mb-3">
+                Applied to the <strong>Owner</strong>. When an executable file has SUID set, a user executing it temporarily inherits the permissions of the file's owner.
+              </p>
+              <ul class="text-sm text-slate-400 space-y-2 mb-4 list-disc list-inside ml-2">
+                <li><strong>Command:</strong> <code class="font-mono text-xs bg-slate-950 text-rose-400 px-1.5 py-0.5 rounded">chmod u+s file</code></li>
+                <li><strong>Appearance:</strong> Replaces the user's <code class="font-mono text-xs text-amber-400">x</code> with an <code class="font-mono text-xs text-pink-400">s</code> (e.g., <code class="font-mono text-xs text-indigo-400">-rwsr-xr-x</code>).</li>
+                <li><strong>Real-world Use:</strong> The <code class="font-mono text-xs bg-slate-950 px-1.5 py-0.5 rounded text-slate-300">passwd</code> command is owned by root and has SUID set. This allows normal users to temporarily gain root privileges just long enough to change their password in the protected <code class="font-mono text-xs text-slate-300">/etc/shadow</code> file.</li>
+                <li><em>Note: Linux completely ignores SUID on directories.</em></li>
+              </ul>
+            </div>
+
+            <!-- SGID -->
+            <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+              <h3 class="text-lg font-bold text-pink-400 mb-2 flex items-center gap-2">
+                <i data-lucide="users" class="w-5 h-5"></i> SGID (Set Group ID)
+              </h3>
+              <p class="text-sm text-slate-300 mb-3">
+                Applied to the <strong>Group</strong>. Can be used on files (similar to SUID but for group permissions) but is considered a <em>DevOps Superpower</em> when applied to directories.
+              </p>
+              <ul class="text-sm text-slate-400 space-y-2 mb-4 list-disc list-inside ml-2">
+                <li><strong>Command:</strong> <code class="font-mono text-xs bg-slate-950 text-rose-400 px-1.5 py-0.5 rounded">chmod g+s directory</code></li>
+                <li><strong>Appearance:</strong> Replaces the group's <code class="font-mono text-xs text-amber-400">x</code> with an <code class="font-mono text-xs text-pink-400">s</code> (e.g., <code class="font-mono text-xs text-indigo-400">drwxrws---</code>).</li>
+                <li><strong>Real-world Use:</strong> Setting SGID on a shared team folder ensures that any new files created inside it automatically inherit the directory's group ownership (e.g., <code class="font-mono text-xs text-slate-300">devteam</code>) rather than the creator's primary personal group. This guarantees the whole team can collaborate on new files without permission issues.</li>
+              </ul>
+            </div>
+
+            <!-- Sticky Bit -->
+            <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+              <h3 class="text-lg font-bold text-pink-400 mb-2 flex items-center gap-2">
+                <i data-lucide="pin" class="w-5 h-5"></i> Sticky Bit
+              </h3>
+              <p class="text-sm text-slate-300 mb-3">
+                Applied to <strong>Others</strong>. Used almost exclusively on directories that give write access to everyone, to prevent users from deleting each other's work.
+              </p>
+              <ul class="text-sm text-slate-400 space-y-2 mb-4 list-disc list-inside ml-2">
+                <li><strong>Command:</strong> <code class="font-mono text-xs bg-slate-950 text-rose-400 px-1.5 py-0.5 rounded">chmod o+t directory</code></li>
+                <li><strong>Appearance:</strong> Replaces others' <code class="font-mono text-xs text-amber-400">x</code> with a <code class="font-mono text-xs text-pink-400">t</code> (e.g., <code class="font-mono text-xs text-indigo-400">drwxrwxrwt</code>).</li>
+                <li><strong>Real-world Use:</strong> The <code class="font-mono text-xs bg-slate-950 px-1.5 py-0.5 rounded text-slate-300">/tmp</code> directory has the sticky bit set. Anyone can write files to it, but you are only permitted to delete or rename files that you personally own.</li>
+              </ul>
+            </div>
+            
+            <!-- Broken Permissions Warning -->
+            <div class="bg-rose-900/20 border border-rose-500/30 p-4 rounded-xl mt-6">
+              <h4 class="text-rose-400 font-bold mb-2 flex items-center gap-2 text-sm">
+                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                Broken Permissions: Lowercase vs. Uppercase
+              </h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                If you ever see a capital <strong class="text-rose-300">S</strong> (or <strong class="text-rose-300">T</strong> for sticky bit) instead of a lowercase one, it is a visual warning from Linux that the configuration is broken. It means the special permission was applied, but the underlying execute (<code class="font-mono text-amber-400">x</code>) permission is missing. Special execution rules cannot work if the file isn't allowed to be executed in the first place!
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- File Attributes -->
+      <section>
+        <div class="flex items-center space-x-3 mb-6 mt-10">
+          <div class="p-2 bg-orange-500/10 rounded-lg"><i data-lucide="layers" class="w-6 h-6 text-orange-400"></i></div>
+          <h2 class="text-2xl font-bold text-white">File Attributes: <code>lsattr</code> & <code>chattr</code></h2>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg mb-6">
+          <p class="text-slate-300 mb-6 text-sm leading-relaxed">
+            While permissions control <em class="text-slate-200">who</em> can access a file, <strong>attributes</strong> control <em class="text-slate-200">how the operating system manages</em> the file. Attributes can override standard permissions. For example, an attribute can make a file completely undeletable, even by users who otherwise have full write permissions.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- lsattr -->
+            <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50 flex flex-col">
+              <h3 class="text-lg font-bold text-orange-400 mb-2 font-mono border-b border-slate-700 pb-2">lsattr</h3>
+              <p class="text-sm text-slate-300 mb-3">Lists the attributes of files or directories.</p>
+              <div class="bg-slate-950 p-2 rounded text-xs font-mono text-emerald-400 mb-3">lsattr [ -RVadv ] [files]</div>
+              <ul class="text-sm text-slate-400 space-y-1 mt-auto">
+                <li><code class="text-slate-200">-R</code>: Recursively list attributes</li>
+                <li><code class="text-slate-200">-a</code>: List all files (including hidden)</li>
+                <li><code class="text-slate-200">-d</code>: List directories like files</li>
+              </ul>
+            </div>
+
+            <!-- chattr -->
+            <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50 flex flex-col">
+              <h3 class="text-lg font-bold text-orange-400 mb-2 font-mono border-b border-slate-700 pb-2">chattr</h3>
+              <p class="text-sm text-slate-300 mb-3">Changes the attributes of files or directories.</p>
+              <div class="bg-slate-950 p-2 rounded text-xs font-mono text-rose-400 mb-3">chattr {+|-|=}[attrs] [files]</div>
+              <ul class="text-sm text-slate-400 space-y-1 mt-auto">
+                <li><code class="text-emerald-400 font-bold">+</code>: Add attributes</li>
+                <li><code class="text-rose-400 font-bold">-</code>: Remove attributes</li>
+                <li><code class="text-blue-400 font-bold">=</code>: Set exactly these attributes</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- The Immutable Flag Highlight -->
+          <div class="bg-indigo-900/20 border border-indigo-500/30 p-5 rounded-xl mb-6">
+            <h3 class="text-indigo-400 font-bold mb-3 flex items-center gap-2 text-lg">
+              <i data-lucide="lock" class="w-5 h-5"></i> The Immutable Flag (<code class="font-mono text-white">i</code>)
+            </h3>
+            <p class="text-sm text-slate-300 leading-relaxed mb-4">
+              This is the most critical attribute for a DevOps engineer to know. When the immutable flag is set on a file, it <strong>cannot be modified, deleted, renamed, or linked to</strong>. This applies even if the file's standard permissions give you write access. 
+            </p>
+            <p class="text-sm text-slate-300 leading-relaxed mb-4">
+              It is heavily used to protect critical configuration files from accidental or malicious modification. Modifying this attribute requires <code class="text-rose-400 font-mono">root</code> privileges (using <code class="text-slate-400 font-mono">sudo</code>).
+            </p>
+            <div class="bg-slate-950 p-3 rounded-lg font-mono text-xs text-slate-300 space-y-2">
+              <div><span class="text-slate-500"># Make a configuration file immutable</span></div>
+              <div><span class="text-blue-400">sudo</span> chattr +i config.yaml</div>
+              <div class="mt-2"><span class="text-slate-500"># Verify the attribute (you will see an 'i' in the output)</span></div>
+              <div>lsattr config.yaml <span class="text-emerald-400 pl-4">----i---------e---- config.yaml</span></div>
+              <div class="mt-2"><span class="text-slate-500"># Make it editable again</span></div>
+              <div><span class="text-blue-400">sudo</span> chattr -i config.yaml</div>
+            </div>
+          </div>
+
+          <!-- Other common attributes -->
+          <h4 class="text-slate-200 font-semibold mb-3">Other Notable Attributes</h4>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="bg-slate-900/80 border-b border-slate-700">
+                  <th class="p-3 text-slate-300 font-semibold w-24">Attribute</th>
+                  <th class="p-3 text-slate-300 font-semibold w-48">Name</th>
+                  <th class="p-3 text-slate-300 font-semibold">Description</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800">
+                <tr class="hover:bg-slate-700/20 transition-colors">
+                  <td class="p-3 font-mono text-orange-400">e</td>
+                  <td class="p-3 text-slate-300">Block extents</td>
+                  <td class="p-3 text-slate-400 text-xs">File is stored using block extents (contiguous data blocks). Often enabled by default on modern filesystems.</td>
+                </tr>
+                <tr class="hover:bg-slate-700/20 transition-colors">
+                  <td class="p-3 font-mono text-orange-400">a</td>
+                  <td class="p-3 text-slate-300">Append only</td>
+                  <td class="p-3 text-slate-400 text-xs">File can only be opened for writing in append mode. Existing data cannot be overwritten. Excellent for log files.</td>
+                </tr>
+                <tr class="hover:bg-slate-700/20 transition-colors">
+                  <td class="p-3 font-mono text-orange-400">s</td>
+                  <td class="p-3 text-slate-300">Secure deletion</td>
+                  <td class="p-3 text-slate-400 text-xs">If deleted, its data is overwritten with zeroes (secure wipe).</td>
+                </tr>
+                <tr class="hover:bg-slate-700/20 transition-colors">
+                  <td class="p-3 font-mono text-orange-400">u</td>
+                  <td class="p-3 text-slate-300">Undeletable</td>
+                  <td class="p-3 text-slate-400 text-xs">When deleted, contents are saved to allow for later undeletion using recovery tools.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- File Systems & Standard Directories (From Transcript) -->
+      <section>
+        <div class="flex items-center space-x-3 mb-6 mt-10">
+          <div class="p-2 bg-emerald-500/10 rounded-lg"><i data-lucide="hard-drive"
+              class="w-6 h-6 text-emerald-400"></i></div>
+          <h2 class="text-2xl font-bold text-white">File Systems & Standard Directories</h2>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg mb-6">
+          <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">File Systems & Mount
+            Points</h3>
+          <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+            Similar to how a dresser uses drawers to organize clothing, a hard drive uses directories to organize files.
+            Drives are divided into <strong>partitions</strong>, and each partition contains a <strong>file
+              system</strong> (a method for storing files).
+          </p>
+          <ul class="space-y-3 mb-4">
             <li class="flex items-start gap-3">
-              <code class="font-mono text-sm bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">id</code>
-              <span class="text-slate-400 text-sm mt-1">Displays UID, GID, and group memberships.</span>
+              <code
+                class="font-mono text-sm bg-slate-950 text-emerald-400 px-2 py-1 rounded border border-slate-800">lsblk</code>
+              <span class="text-slate-400 text-sm mt-1">Lists all disks and partitions.</span>
             </li>
             <li class="flex items-start gap-3">
-              <code class="font-mono text-sm bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">sudo</code>
-              <span class="text-slate-400 text-sm mt-1">Runs a permitted command with elevated privileges, usually as root.</span>
+              <code
+                class="font-mono text-sm bg-slate-950 text-emerald-400 px-2 py-1 rounded border border-slate-800">lsblk -f</code>
+              <span class="text-slate-400 text-sm mt-1">Shows the different file systems and mount points in the
+                drives.</span>
             </li>
             <li class="flex items-start gap-3">
-              <div class="flex-shrink-0 mt-1"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i></div>
-              <span class="text-slate-400 text-sm"><strong>Primary Group:</strong> The user's default group (GID in passwd entry).</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <div class="flex-shrink-0 mt-1"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i></div>
-              <span class="text-slate-400 text-sm"><strong>Supplementary Group:</strong> Additional group memberships shown by <code class="text-emerald-400 font-mono">id</code>.</span>
+              <code
+                class="font-mono text-sm bg-slate-950 text-emerald-400 px-2 py-1 rounded border border-slate-800">/</code>
+              <span class="text-slate-400 text-sm mt-1">The root directory. Every directory is a subdirectory of the
+                root. A mount point is a directory through which we access the space on a partition.</span>
             </li>
           </ul>
         </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg flex flex-col">
+            <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">System Directories</h3>
+            <p class="text-slate-400 text-sm mb-4">Standard directories in the root belong to the OS and are protected.
+            </p>
+            <ul class="space-y-3 flex-grow">
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">/bin</code>
+                <span class="text-slate-400 text-xs mt-1">Essential command line utilities and binaries.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">/dev</code>
+                <span class="text-slate-400 text-xs mt-1">Hardware and software device drivers.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">/etc</code>
+                <span class="text-slate-400 text-xs mt-1">Basic configuration files.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">/lib</code>
+                <span class="text-slate-400 text-xs mt-1">Shared program libraries required by the kernel and
+                  binaries.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">/media</code>
+                <span class="text-slate-400 text-xs mt-1">Access to temporary and removable file systems (CD-ROMs,
+                  etc).</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">/sbin</code>
+                <span class="text-slate-400 text-xs mt-1">Binaries for booting and root user administration.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">/var</code>
+                <span class="text-slate-400 text-xs mt-1">System logs, printer spools, network service configs.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg flex flex-col">
+            <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">User Directories</h3>
+            <p class="text-slate-400 text-sm mb-4">Each user has an assigned folder in <code
+                class="font-mono text-xs text-amber-400">/home</code> named with their user account.</p>
+            <ul class="space-y-3 flex-grow">
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-blue-400 px-2 py-1 rounded border border-slate-800 w-24 text-center">/home/user</code>
+                <span class="text-slate-400 text-xs mt-1">Area where the user can create subdirectories and work with
+                  files. Other users cannot access it by default.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-blue-400 px-2 py-1 rounded border border-slate-800 w-24 text-center">Desktop/</code>
+                <span class="text-slate-400 text-xs mt-1">Directory representing the desktop environment for the
+                  user.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-blue-400 px-2 py-1 rounded border border-slate-800 w-24 text-center">Documents/</code>
+                <span class="text-slate-400 text-xs mt-1">Default save location for most applications.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-blue-400 px-2 py-1 rounded border border-slate-800 w-24 text-center">Downloads/</code>
+                <span class="text-slate-400 text-xs mt-1">Default directory for files downloaded from the
+                  Internet.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Users & Groups Tab -->
+    <div id="sec-users" class="tab-content hidden space-y-10">
+      <!-- Identity Management -->
+      <section>
+        <div class="flex items-center space-x-3 mb-6 mt-10">
+          <div class="p-2 bg-purple-500/10 rounded-lg"><i data-lucide="users" class="w-6 h-6 text-purple-400"></i></div>
+          <h2 class="text-2xl font-bold text-white">Identity Management (Users & Groups)</h2>
+        </div>
+
+        <div class="mb-8 bg-rose-950/20 border border-rose-900/50 rounded-xl p-5 shadow-inner">
+          <h3 class="text-lg font-bold text-rose-400 mb-2 flex items-center gap-2">
+            <i data-lucide="shield-alert" class="w-5 h-5"></i>
+            The root User
+          </h3>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Every Linux system has at least one system administrator whose job is to maintain the system and make it
+            available to users. This user is the <strong class="text-rose-300">root user</strong>. The root user can
+            perform any task on the Linux system without restrictions. System administrators are also responsible for
+            adding new users to the system and for setting up their initial environment.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg flex flex-col">
+            <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Core Concepts</h3>
+            <ul class="space-y-4 mb-4 flex-grow">
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-sm bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">id</code>
+                <span class="text-slate-400 text-sm mt-1">Displays UID, GID, and group memberships.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-sm bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 w-16 text-center">sudo</code>
+                <span class="text-slate-400 text-sm mt-1">Runs a permitted command with elevated privileges, usually as
+                  root.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <div class="flex-shrink-0 mt-1"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                </div>
+                <span class="text-slate-400 text-sm"><strong>Primary Group:</strong> The user's default group (GID in
+                  passwd entry).</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <div class="flex-shrink-0 mt-1"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                </div>
+                <span class="text-slate-400 text-sm"><strong>Supplementary Group:</strong> Additional group memberships
+                  shown by <code class="text-emerald-400 font-mono">id</code>.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg flex flex-col">
+            <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Management Commands
+            </h3>
+            <ul class="space-y-3 flex-grow">
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap w-24 text-center">useradd -m</code>
+                <span class="text-slate-400 text-xs mt-1">Creates a new user and sets up their home directory.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap w-24 text-center">groupadd</code>
+                <span class="text-slate-400 text-xs mt-1">Creates a local group.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap w-24 text-center">groupdel</code>
+                <span class="text-slate-400 text-xs mt-1">Removes a local group.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code
+                  class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap w-24 text-center">usermod -aG</code>
+                <span class="text-slate-400 text-xs mt-1">Appends a supplementary group without replacing existing
+                  groups.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- User Account Creation Deep Dive -->
+        <div class="mt-6 bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+          <h3 class="text-xl font-semibold text-white mb-4 border-b border-slate-700 pb-2 flex items-center gap-2">
+            <i data-lucide="user-plus" class="w-5 h-5 text-purple-400"></i>
+            Creating User Accounts
+          </h3>
+
+          <p class="text-slate-300 text-sm mb-6 leading-relaxed">
+            A user account is a collection of information that defines a user on a system. It includes the username,
+            password, groups, and access rights.
+            When an account is created, it is assigned a unique <strong class="text-white">User ID (UID)</strong>.
+            Usernames and UIDs must be completely unique on the computer. By default, a <strong class="text-white">User
+              Private Group (UPG)</strong> is also created with the same name as the user.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- useradd vs adduser -->
+            <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+              <h4 class="text-lg font-bold text-purple-400 font-mono mb-3">useradd vs adduser</h4>
+              <ul class="space-y-4 text-sm">
+                <li>
+                  <code class="text-purple-300 font-mono bg-slate-950 px-1.5 py-0.5 rounded block mb-1">useradd</code>
+                  <p class="text-slate-400">A low-level utility. It creates the user and private group, but by default
+                    it <strong>does not</strong> create a home directory or prompt for a password. (An account with no
+                    password is disabled).</p>
+                </li>
+                <li>
+                  <code class="text-purple-300 font-mono bg-slate-950 px-1.5 py-0.5 rounded block mb-1">adduser</code>
+                  <p class="text-slate-400">A high-level, interactive script. It automatically sets up the home
+                    directory, prompts you to set a password, and asks for optional contact information.</p>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Special / System Accounts -->
+            <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+              <h4 class="text-lg font-bold text-purple-400 mb-3">Special / Daemon Accounts</h4>
+              <p class="text-slate-400 text-sm mb-3">
+                Some accounts aren't intended for real people, but are instead used by services or daemons (like a
+                backup service).
+              </p>
+              <ul class="list-disc list-inside text-slate-400 text-sm space-y-2 mb-3">
+                <li>They typically have a UID less than 1000 (e.g., 998).</li>
+                <li>They usually do not have a home directory.</li>
+              </ul>
+              <div class="bg-slate-950 p-3 rounded border border-slate-800">
+                <code class="text-emerald-400 text-xs font-mono">sudo useradd -r backup_account</code>
+                <p class="text-slate-500 text-xs mt-1">The <code>-r</code> flag creates a system account.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+            <h4 class="text-lg font-bold text-white mb-3">Default System Accounts</h4>
+            <p class="text-slate-400 text-sm mb-3">
+              Numerous user accounts are created by default upon system installation to manage various background
+              services. Some of the main default accounts include:
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <code
+                class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">root</code>
+              <code
+                class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">bin</code>
+              <code
+                class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">daemon</code>
+              <code
+                class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">ftp</code>
+              <code
+                class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">sshd</code>
+              <code
+                class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">nfsnobody</code>
+              <code
+                class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">apache</code>
+              <code
+                class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">rpc</code>
+              <code
+                class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">gnome</code>
+            </div>
+          </div>
+
+          <div class="bg-rose-950/30 border-l-4 border-l-rose-500 rounded-r-xl p-4 mt-6">
+            <h4 class="text-sm font-bold text-rose-400 mb-1 flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-4 h-4"></i> Danger: Editing /etc/passwd directly
+            </h4>
+            <p class="text-slate-300 text-sm">
+              Linux allows adding users by editing <code
+                class="bg-slate-900 px-1 py-0.5 rounded text-rose-300 font-mono text-xs border border-slate-700">/etc/passwd</code>,
+              but this is <strong>highly discouraged</strong>. Accidentally corrupting this file can prevent all logins,
+              including the root user, requiring a full system reinstall to fix.
+            </p>
+          </div>
+        </div>
+
+        <!-- Deleting User Accounts & Groups -->
+        <div class="mt-6 bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+          <h3 class="text-xl font-semibold text-white mb-4 border-b border-slate-700 pb-2 flex items-center gap-2">
+            <i data-lucide="user-minus" class="w-5 h-5 text-rose-500"></i>
+            Deleting Users & Groups
+          </h3>
+
+          <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+            The <code class="text-rose-400 font-mono bg-slate-950 px-1.5 py-0.5 rounded">userdel</code> command removes a user from the system. By default, it deletes the user account and the user private group, but <strong>does not</strong> delete the home directory.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+              <h4 class="text-lg font-bold text-rose-400 mb-3 font-mono">Standard Deletion</h4>
+              <p class="text-slate-400 text-sm mb-3">
+                <code class="text-rose-300 font-mono">userdel username</code>
+                <br><br>
+                Retains the user's home directory. This is useful when an employee leaves, but you want to keep their files.
+              </p>
+            </div>
+            <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+              <h4 class="text-lg font-bold text-rose-400 mb-3 font-mono">Complete Wipe</h4>
+              <p class="text-slate-400 text-sm mb-3">
+                <code class="text-rose-300 font-mono">userdel -r username</code>
+                <br><br>
+                Adding the <code class="text-rose-300 font-mono">-r</code> option forces the removal of the user's home directory and mail spool.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-amber-900/20 border border-amber-500/30 p-5 rounded-xl mb-6">
+            <h4 class="text-amber-400 font-bold mb-3 flex items-center gap-2 text-md">
+              <i data-lucide="shield-check" class="w-4 h-4"></i> Safely Deleting a User (Best Practices)
+            </h4>
+            <p class="text-sm text-slate-300 mb-3">
+              Before completely wiping a user, DevOps engineers often follow a safe off-boarding process:
+            </p>
+            <ol class="list-decimal list-inside text-sm text-slate-400 space-y-2 mb-4 ml-2">
+              <li><strong>Lock the account:</strong> Prevent new logins (<code class="font-mono text-emerald-400">usermod -L username</code>).</li>
+              <li><strong>Kill running processes:</strong> You cannot delete a user who is currently logged in.</li>
+              <li><strong>Archive their home directory:</strong> Use the <a href="linux_commands.html#sec-tar" class="text-blue-400 hover:underline"><code>tar</code> command</a> to compress and save their data.
+                <div class="font-mono bg-slate-950 p-2 rounded text-xs mt-1 text-slate-300 border border-slate-800">tar -czvf /archive/user_backup.tar.gz /home/username</div>
+              </li>
+              <li><strong>Track Orphan Files:</strong> Files outside the home directory owned by the user will become "orphaned" (showing a raw UID instead of a name). Find them using:
+                <div class="font-mono bg-slate-950 p-2 rounded text-xs mt-1 text-slate-300 border border-slate-800">find / -uid [USER_ID] -ls</div>
+              </li>
+              <li><strong>Delete the user:</strong> Finally run <code class="font-mono text-rose-400">userdel -r username</code>.</li>
+            </ol>
+          </div>
+
+          <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50 mb-6">
+            <h4 class="text-lg font-bold text-white mb-2">Deleting Groups</h4>
+            <p class="text-slate-400 text-sm mb-3">
+              The <code class="text-purple-400 font-mono bg-slate-950 px-1.5 py-0.5 rounded">groupdel</code> command removes a group. However, Linux has a safety mechanism: <strong>You cannot delete a group if it is the primary group of any existing user.</strong>
+            </p>
+            <div class="font-mono text-xs text-rose-300 bg-slate-950 p-3 rounded border border-slate-800">
+              $ groupdel devteam<br>
+              groupdel: cannot remove the primary group of user 'shad'
+            </div>
+            <p class="text-slate-400 text-sm mt-3">
+              To fix this, you must either delete the user first, or assign the user to a different primary group using <code class="text-emerald-400 font-mono">usermod -g newgroup shad</code>.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- User Account Modification Deep Dive -->
+        <div class="mt-6 bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+          <h3 class="text-xl font-semibold text-white mb-4 border-b border-slate-700 pb-2 flex items-center gap-2">
+            <i data-lucide="user-cog" class="w-5 h-5 text-amber-500"></i>
+            Modifying User Accounts
+          </h3>
+
+          <p class="text-slate-300 text-sm mb-6 leading-relaxed">
+            Before modifying users, it is often helpful to view their current account information using identity
+            utilities.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- Info Commands -->
+            <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+              <h4 class="text-lg font-bold text-amber-500 mb-3">Viewing Identity Info</h4>
+              <ul class="space-y-4 text-sm">
+                <li>
+                  <div class="flex items-center gap-2 mb-1">
+                    <code class="text-amber-400 font-mono bg-slate-950 px-1.5 py-0.5 rounded">id</code>
+                    <span class="text-slate-400 text-xs">or</span>
+                    <code class="text-amber-400 font-mono bg-slate-950 px-1.5 py-0.5 rounded">id user_name</code>
+                  </div>
+                  <p class="text-slate-400">Shows the UID, primary GID, and a list of all supplementary groups to which
+                    the user belongs.</p>
+                </li>
+                <li>
+                  <div class="flex items-center gap-2 mb-1">
+                    <code class="text-amber-400 font-mono bg-slate-950 px-1.5 py-0.5 rounded">finger user_name</code>
+                  </div>
+                  <p class="text-slate-400">Displays the user's login name, full name, home directory, and their default
+                    shell.</p>
+                </li>
+                <li>
+                  <div class="flex items-center gap-2 mb-1">
+                    <code class="text-amber-400 font-mono bg-slate-950 px-1.5 py-0.5 rounded">chage -l user_name</code>
+                  </div>
+                  <p class="text-slate-400">Lists the account and password expiration details.</p>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Modifying Commands -->
+            <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+              <h4 class="text-lg font-bold text-amber-500 mb-3">Making Modifications (<code
+                  class="text-purple-400 font-mono text-sm">usermod</code>)</h4>
+              <p class="text-slate-400 text-sm mb-3">
+                The <code class="text-purple-400 font-mono bg-slate-950 px-1 rounded">usermod</code> utility requires
+                root access (sudo) and takes various flags to modify specific properties of an account.
+              </p>
+              <ul class="space-y-3 text-sm">
+                <li class="flex flex-col gap-1 border-b border-slate-800 pb-2">
+                  <code
+                    class="text-amber-300 font-mono bg-slate-950 px-1.5 py-0.5 rounded w-max">usermod -l new_name old_name</code>
+                  <span class="text-slate-400">Changes the user's login name.</span>
+                </li>
+                <li class="flex flex-col gap-1 border-b border-slate-800 pb-2">
+                  <code
+                    class="text-amber-300 font-mono bg-slate-950 px-1.5 py-0.5 rounded w-max">usermod -d /path/to/dir user</code>
+                  <span class="text-slate-400">Changes the user's home directory.</span>
+                </li>
+                <li class="flex flex-col gap-1 border-b border-slate-800 pb-2">
+                  <code
+                    class="text-amber-300 font-mono bg-slate-950 px-1.5 py-0.5 rounded w-max">usermod -c "Full Name" user</code>
+                  <span class="text-slate-400">Updates the comments field (often the full name).</span>
+                </li>
+                <li class="flex flex-col gap-1 border-b border-slate-800 pb-2">
+                  <code
+                    class="text-amber-300 font-mono bg-slate-950 px-1.5 py-0.5 rounded w-max">usermod -e YYYY-MM-DD user</code>
+                  <span class="text-slate-400">Sets an account expiration date (useful for contractors).</span>
+                </li>
+                <li class="flex flex-col gap-1 border-b border-slate-800 pb-2">
+                  <code
+                    class="text-amber-300 font-mono bg-slate-950 px-1.5 py-0.5 rounded w-max">usermod -G group user</code>
+                  <span class="text-slate-400">Adds the user to the specified group (use <code
+                      class="text-amber-200">-aG</code> to append without replacing).</span>
+                </li>
+                <li class="flex flex-col gap-1">
+                  <div class="flex gap-2">
+                    <code
+                      class="text-rose-300 font-mono bg-slate-950 px-1.5 py-0.5 rounded w-max">usermod -L user</code>
+                    <span class="text-slate-500 text-xs italic mt-1">or</span>
+                    <code class="text-rose-300 font-mono bg-slate-950 px-1.5 py-0.5 rounded w-max">passwd -l user</code>
+                  </div>
+                  <span class="text-slate-400"><strong>Locks</strong> a user's login temporarily to prevent unauthorized
+                    usage.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Password Aging & Expiration (chage) -->
+        <div class="mt-6 bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+          <h3 class="text-xl font-semibold text-white mb-4 border-b border-slate-700 pb-2 flex items-center gap-2">
+            <i data-lucide="calendar-clock" class="w-5 h-5 text-indigo-400"></i>
+            Password Aging & Expiration (<code>chage</code>)
+          </h3>
+
+          <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+            The <code
+              class="bg-slate-950 px-1.5 py-0.5 rounded text-indigo-400 font-mono text-xs border border-slate-700">chage</code>
+            command manages password aging and account expiration. Running it with no options (<code
+              class="text-indigo-400 font-mono text-xs">chage user_name</code>) launches an interactive prompt. You can
+            also pass flags for direct modification:
+          </p>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm whitespace-nowrap">
+              <thead class="bg-slate-900/80 text-slate-300 border-y border-slate-700">
+                <tr>
+                  <th class="px-4 py-3 font-semibold">Option</th>
+                  <th class="px-4 py-3 font-semibold">Purpose</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-700/50 text-slate-400">
+                <tr class="hover:bg-slate-700/30 transition-colors">
+                  <td class="px-4 py-3 font-mono text-indigo-300">-d {date}</td>
+                  <td class="px-4 py-3 whitespace-normal">Sets the date of the last password change.</td>
+                </tr>
+                <tr class="hover:bg-slate-700/30 transition-colors">
+                  <td class="px-4 py-3 font-mono text-indigo-300">-E {date}</td>
+                  <td class="px-4 py-3 whitespace-normal">Sets the date when the account should expire.</td>
+                </tr>
+                <tr class="hover:bg-slate-700/30 transition-colors">
+                  <td class="px-4 py-3 font-mono text-indigo-300">-m {days}</td>
+                  <td class="px-4 py-3 whitespace-normal">Minimum password age. 0 allows changing immediately.</td>
+                </tr>
+                <tr class="hover:bg-slate-700/30 transition-colors">
+                  <td class="px-4 py-3 font-mono text-indigo-300">-M {days}</td>
+                  <td class="px-4 py-3 whitespace-normal">Maximum password age. 99999 means never expire.</td>
+                </tr>
+                <tr class="hover:bg-slate-700/30 transition-colors">
+                  <td class="px-4 py-3 font-mono text-indigo-300">-I {days}</td>
+                  <td class="px-4 py-3 whitespace-normal">Number of days the account will be inactive after expiration
+                    before being locked.</td>
+                </tr>
+                <tr class="hover:bg-slate-700/30 transition-colors">
+                  <td class="px-4 py-3 font-mono text-indigo-300">-W {days}</td>
+                  <td class="px-4 py-3 whitespace-normal">Warning period before password expiration.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Password Management & Security -->
+        <div class="mt-6 bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+          <h3 class="text-xl font-semibold text-white mb-4 border-b border-slate-700 pb-2 flex items-center gap-2">
+            <i data-lucide="key-round" class="w-5 h-5 text-teal-400"></i>
+            Password Management & Security
+          </h3>
+
+          <div class="space-y-6">
+            <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+              <h4 class="text-lg font-bold text-teal-400 mb-3 font-mono">passwd</h4>
+              <p class="text-slate-400 text-sm mb-3">
+                The <code class="text-teal-300 font-mono bg-slate-950 px-1.5 py-0.5 rounded">passwd</code> command is
+                used to set or change user passwords. User accounts created without a password are locked automatically
+                to prevent unauthorized access.
+              </p>
+              <ul class="list-disc list-inside text-slate-400 text-sm space-y-2 mb-3">
+                <li>Regular users can change their own password by simply running <code
+                    class="text-teal-300 font-mono">passwd</code> (passwords do not echo to the screen).</li>
+                <li>Root users can change any user's password using <code
+                    class="text-teal-300 font-mono bg-slate-950 px-1.5 py-0.5 rounded">passwd user_name</code>.</li>
+                <li>Setting a password to a dictionary word will yield a warning, though root can bypass this.</li>
+              </ul>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+                <h4 class="text-lg font-bold text-purple-400 mb-3 font-mono">/etc/passwd File</h4>
+                <p class="text-slate-400 text-sm mb-3">
+                  Historically stored passwords, but now only stores account info. Contains 7 colon-separated fields:
+                </p>
+                <ol class="list-decimal list-inside text-slate-400 text-sm space-y-1">
+                  <li>Username</li>
+                  <li>Password (usually <code>x</code> indicating it's in shadow, stored in /etc/shadow)</li>
+                  <li>User ID (UID)</li>
+                  <li>Group ID (GID)</li>
+                  <li>Comment (Full Name, Phone, etc)</li>
+                  <li>Home Directory</li>
+                  <li>Login Shell</li>
+                </ol>
+              </div>
+
+              <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+                <h4 class="text-lg font-bold text-rose-400 mb-3 font-mono">/etc/shadow File</h4>
+                <p class="text-slate-400 text-sm mb-3">
+                  Created to securely store encrypted passwords. It is readable <strong>only by the root user</strong>.
+                  Contains 9 colon-separated fields:
+                </p>
+                <ol class="list-decimal list-inside text-slate-400 text-sm space-y-1">
+                  <li>Username</li>
+                  <li>Encrypted Password</li>
+                  <li>Last changed (days since epoch)</li>
+                  <li>Minimum password age (may)</li>
+                  <li>Maximum password age (must)</li>
+                  <li>Warning period (warn)</li>
+                  <li>Inactivity period (expire)</li>
+                  <li>Account disable date</li>
+                  <li>Reserved</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      <!-- Group Management & Security -->
+      <div class="mt-6 bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+        <h3 class="text-xl font-semibold text-white mb-4 border-b border-slate-700 pb-2 flex items-center gap-2">
+          <i data-lucide="users-2" class="w-5 h-5 text-indigo-400"></i>
+          Group Management & Security
+        </h3>
         
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg flex flex-col">
-          <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Management Commands</h3>
-          <ul class="space-y-3 flex-grow">
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap w-24 text-center">useradd -m</code>
-              <span class="text-slate-400 text-xs mt-1">Creates a new user and sets up their home directory.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap w-24 text-center">userdel -r</code>
-              <span class="text-slate-400 text-xs mt-1">Removes account and home directory.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap w-24 text-center">groupadd</code>
-              <span class="text-slate-400 text-xs mt-1">Creates a local group.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap w-24 text-center">groupdel</code>
-              <span class="text-slate-400 text-xs mt-1">Removes a local group.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <code class="font-mono text-xs bg-slate-950 text-purple-400 px-2 py-1 rounded border border-slate-800 whitespace-nowrap w-24 text-center">usermod -aG</code>
-              <span class="text-slate-400 text-xs mt-1">Appends a supplementary group without replacing existing groups.</span>
-            </li>
-          </ul>
+        <div class="space-y-6">
+          <p class="text-slate-300 text-sm leading-relaxed">
+            A group is a collection of system users having the same access rights. Every user must be a member of at least one group (their primary group) and can optionally join multiple supplementary groups. This simplifies assigning access rights to files and resources. By default, when a user is created, a <strong>User Private Group (UPG)</strong> is also created exclusively for that user.
+          </p>
+
+          <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+            <h4 class="text-lg font-bold text-indigo-400 mb-3 font-mono">Group Commands</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-slate-950 p-4 rounded border border-slate-800">
+                <code class="text-indigo-300 font-mono text-sm block mb-1">groupadd {group}</code>
+                <p class="text-slate-400 text-xs">Creates a new group. Use <code class="text-amber-400 font-mono">-g {GID}</code> to explicitly set the Group ID.</p>
+              </div>
+              <div class="bg-slate-950 p-4 rounded border border-slate-800">
+                <code class="text-indigo-300 font-mono text-sm block mb-1">groupdel {group}</code>
+                <p class="text-slate-400 text-xs">Deletes an existing group from the system.</p>
+              </div>
+              <div class="bg-slate-950 p-4 rounded border border-slate-800">
+                <code class="text-indigo-300 font-mono text-sm block mb-1">groupmod -g {GID} {group}</code>
+                <p class="text-slate-400 text-xs">Modifies an existing group, for example, changing its numeric ID.</p>
+              </div>
+              <div class="bg-slate-950 p-4 rounded border border-slate-800">
+                <code class="text-indigo-300 font-mono text-sm block mb-1">usermod -aG {group} {user}</code>
+                <p class="text-slate-400 text-xs">The safest way to append a user to a group without manually editing files.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+            <h4 class="text-lg font-bold text-emerald-400 mb-3 font-mono">/etc/group File</h4>
+            <p class="text-slate-400 text-sm mb-3">
+              The group database. It lists all groups, with each line containing 4 colon-separated fields:
+            </p>
+            <ol class="list-decimal list-inside text-slate-400 text-sm space-y-1">
+              <li><strong>Group Name</strong></li>
+              <li><strong>Group Password</strong> (Encrypted, typically an <code>x</code>. Encrypted passwords are actually in <code>/etc/gpasswd</code>)</li>
+              <li><strong>GID</strong> (Group Identifier. Default GIDs often start at 500 or 1000)</li>
+              <li><strong>Members</strong> (Comma-separated list of usernames in the group)</li>
+            </ol>
+          </div>
+
+          <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
+            <h4 class="text-lg font-bold text-white mb-3">Standard System Groups</h4>
+            <p class="text-slate-400 text-sm mb-3">Many groups are created by default during installation (with GIDs usually &lt; 100):</p>
+            <div class="flex flex-wrap gap-2">
+              <code class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">root (0)</code>
+              <code class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">bin (1)</code>
+              <code class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">daemon (2)</code>
+              <code class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">sys (3)</code>
+              <code class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">adm (4)</code>
+              <code class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">tty (5)</code>
+              <code class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">disk (6)</code>
+              <code class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">lp (7)</code>
+              <code class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">mem (8)</code>
+              <code class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">kmem (9)</code>
+              <code class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">wheel (10)</code>
+              <code class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">nobody (99)</code>
+              <code class="text-xs font-mono bg-slate-950 text-slate-300 px-2 py-1 rounded border border-slate-800">users (100)</code>
+            </div>
+          </div>
         </div>
       </div>
+
     </section>
 
+    </div>
+
+    <!-- User Profiles Tab -->
+    <div id="sec-profiles" class="tab-content hidden space-y-10">
+      <section>
+        <div class="flex items-center space-x-3 mb-6 mt-10">
+          <div class="p-2 bg-blue-500/10 rounded-lg"><i data-lucide="folder-key" class="w-6 h-6 text-blue-400"></i></div>
+          <h2 class="text-2xl font-bold text-white">User Profiles & Environment</h2>
+        </div>
+
+        <div class="space-y-6">
+          <p class="text-slate-300 text-sm leading-relaxed">
+            A <strong>user profile</strong> is a collection of files and settings that define a user's environment. 
+            When you create a new user (e.g., using <code class="text-blue-300 font-mono text-xs">sudo useradd -m</code>), the system creates a folder in the <code class="text-blue-300 font-mono text-xs">/home</code> directory. 
+            It then automatically copies all the files from the <strong>Skeleton Directory (<code class="text-blue-300 font-mono text-xs">/etc/skel</code>)</strong> to this new home directory.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg flex flex-col">
+              <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">The Skeleton Directory (<code class="font-mono text-sm text-blue-400">/etc/skel</code>)</h3>
+              <p class="text-slate-400 text-sm mb-4">
+                Acts as a master blueprint for all new accounts. "Skel" comes from skeleton, meaning a basic file/folder structure.
+              </p>
+              <ul class="space-y-3 mb-4 text-sm text-slate-300">
+                <li class="flex items-start gap-2">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 mt-1 flex-shrink-0"></i>
+                  <span><strong>Root Privileges:</strong> Owned by root. System administrators customize it to distribute company-wide policies, standard aliases, and default configurations.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 mt-1 flex-shrink-0"></i>
+                  <span><strong>Real-time Copy:</strong> When a user is created, the system performs a direct copy of whatever is currently inside <code class="font-mono text-xs bg-slate-900 px-1 rounded">/etc/skel</code>. There is no hidden "original" backup.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <i data-lucide="x-circle" class="w-4 h-4 text-rose-400 mt-1 flex-shrink-0"></i>
+                  <span><strong>No Retroactive Changes:</strong> Updating <code class="font-mono text-xs bg-slate-900 px-1 rounded">/etc/skel</code> only affects <em>future</em> users, not existing ones.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg flex flex-col">
+              <h3 class="text-lg font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Hidden Profile Files</h3>
+              <p class="text-slate-400 text-sm mb-4">
+                By default, <code class="font-mono text-xs text-blue-400">/etc/skel</code> contains hidden files (files starting with a period <code class="font-mono text-xs text-blue-400">.</code>). Use <code class="font-mono text-xs bg-slate-900 px-1 rounded text-blue-300">ls -a</code> to view them.
+              </p>
+              <ul class="space-y-4">
+                <li class="flex items-start gap-3">
+                  <code class="font-mono text-xs bg-slate-950 text-blue-400 px-2 py-1 rounded border border-slate-800 text-center w-28">.bashrc</code>
+                  <span class="text-slate-400 text-xs mt-1">Executed for non-login interactive shells. Sets up coloring, aliases, and shell history.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <code class="font-mono text-xs bg-slate-950 text-blue-400 px-2 py-1 rounded border border-slate-800 text-center w-28">.profile</code>
+                  <span class="text-slate-400 text-xs mt-1">Executed for login shells. Overrides variables set in <code class="font-mono bg-slate-900 px-1 rounded text-blue-300">/etc/profile</code>. Used for custom prompts and environment variables.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <code class="font-mono text-xs bg-slate-950 text-blue-400 px-2 py-1 rounded border border-slate-800 text-center w-28">.bash_logout</code>
+                  <span class="text-slate-400 text-xs mt-1">Executed when logging out (e.g., used for clearing the console screen or cleaning up temp files).</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700/50 mt-6">
+            <h3 class="text-lg font-semibold text-blue-400 mb-4 border-b border-slate-800 pb-2 flex items-center gap-2">
+              <i data-lucide="layers" class="w-5 h-5 text-blue-400"></i>
+              System-Wide vs. User-Specific Configurations
+            </h3>
+            <p class="text-slate-400 text-sm mb-4">
+              Linux applies configurations in a hierarchy. System-wide configurations affect all users, while user-specific configurations (copied from <code class="font-mono text-xs text-blue-400">/etc/skel</code>) only affect the individual user and can override system-wide settings.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div class="bg-slate-950/80 p-4 rounded-lg border border-slate-800">
+                <h4 class="font-bold text-slate-300 mb-2">System-Wide (Global)</h4>
+                <ul class="space-y-2 text-slate-400">
+                  <li><code class="text-blue-300 font-mono text-xs">/etc/profile</code>: Applied to all users upon login.</li>
+                  <li><code class="text-blue-300 font-mono text-xs">/etc/bash.bashrc</code>: Applied to all users for non-login shells.</li>
+                  <li>Requires root privileges to edit.</li>
+                </ul>
+              </div>
+              <div class="bg-slate-950/80 p-4 rounded-lg border border-slate-800">
+                <h4 class="font-bold text-slate-300 mb-2">User-Specific (Local)</h4>
+                <ul class="space-y-2 text-slate-400">
+                  <li><code class="text-blue-300 font-mono text-xs">~/.profile</code> or <code class="text-blue-300 font-mono text-xs">~/.bash_profile</code>: Applied to the specific user upon login. Overrides <code class="text-blue-300 font-mono text-xs">/etc/profile</code>.</li>
+                  <li><code class="text-blue-300 font-mono text-xs">~/.bashrc</code>: Applied to the specific user for non-login shells.</li>
+                  <li>Users can freely edit their own files.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700/50 mt-6">
+            <h3 class="text-lg font-semibold text-rose-400 mb-4 border-b border-slate-800 pb-2 flex items-center gap-2">
+              <i data-lucide="terminal-square" class="w-5 h-5 text-rose-400"></i>
+              Login vs. Non-Login Shells
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="bg-slate-950/80 p-4 rounded-lg border border-slate-800 flex flex-col">
+                <h4 class="font-bold text-slate-200 mb-2 font-mono flex items-center gap-2">
+                  <i data-lucide="log-in" class="w-4 h-4 text-emerald-400"></i>
+                  .profile (Login Shell)
+                </h4>
+                <p class="text-slate-400 text-sm mb-4">
+                  Executes only <strong>once</strong> when you actively log in (e.g., SSH into a server, switch users via <code class="text-emerald-300">su -</code>). 
+                  Used for heavy, one-time tasks like defining foundational environment variables (<code class="text-emerald-300">PATH</code>, <code class="text-emerald-300">JAVA_HOME</code>).
+                </p>
+                <div class="bg-slate-900 p-3 rounded text-xs text-slate-300 border border-slate-700/50 mt-auto">
+                  <strong class="text-amber-400 block mb-1">The Bash Fallback Hierarchy:</strong>
+                  Bash is "greedy" when reading login profiles. It checks in this exact order and reads <em>only the first one</em> it finds:
+                  <ol class="list-decimal list-inside mt-1 ml-1 text-slate-400 space-y-1">
+                    <li><code class="text-amber-300">~/.bash_profile</code> (Bash specific)</li>
+                    <li><code class="text-amber-300">~/.bash_login</code></li>
+                    <li><code class="text-amber-300">~/.profile</code> (Universal standard fallback)</li>
+                  </ol>
+                </div>
+              </div>
+              
+              <div class="bg-slate-950/80 p-4 rounded-lg border border-slate-800 flex flex-col">
+                <h4 class="font-bold text-slate-200 mb-2 font-mono flex items-center gap-2">
+                  <i data-lucide="terminal" class="w-4 h-4 text-emerald-400"></i>
+                  .bashrc (Non-Login Shell)
+                </h4>
+                <p class="text-slate-400 text-sm mb-4">
+                  Executes <strong>every time</strong> you open a new terminal window or tab after you are already logged in. 
+                  "rc" stands for "run commands". Used for terminal customizations that affect the look and feel (colors, prompt layout, aliases).
+                </p>
+                <div class="bg-slate-900 p-3 rounded text-xs text-slate-300 border border-slate-700/50 mt-auto">
+                  <strong class="text-indigo-400 block mb-1 flex items-center gap-1"><i data-lucide="lightbulb" class="w-3 h-3"></i>The "Ubuntu Gotcha"</strong>
+                  If you SSH (login shell), will your <code class="text-indigo-300">.bashrc</code> aliases fail to load? No! By default, Ubuntu's <code class="text-indigo-300">~/.profile</code> contains code that says: <em>"If a .bashrc exists, run it right now."</em> This ensures universal variables load first, immediately followed by your terminal tweaks.
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
   </main>
-  
-  <script>lucide.createIcons();</script>
+
+  <script>
+
+    const tabs = [
+      { id: 'users', title: 'Users & Groups', icon: 'users' },
+      { id: 'profiles', title: 'User Profiles', icon: 'folder-key' },
+      { id: 'permissions', title: 'File Permissions & Ownership', icon: 'lock' }
+    ];
+    let currentTab = window.location.hash ? window.location.hash.replace('#sec-', '') : tabs[0].id;
+    if (!tabs.find(t => t.id === currentTab)) currentTab = tabs[0].id;
+
+    function renderTabs() {
+      const nav = document.getElementById('nav-tabs');
+      nav.innerHTML = '';
+      tabs.forEach(tab => {
+        const isActive = currentTab === tab.id;
+        const btn = document.createElement('button');
+        btn.className = `tab-btn flex items-center space-x-2 px-4 py-3 text-sm font-semibold rounded-t-lg transition-colors whitespace-nowrap border-b-2 ${isActive ? 'text-amber-400 bg-slate-800/50 border-amber-400' : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 border-transparent'}`;
+        btn.onclick = () => { currentTab = tab.id; renderTabs(); renderContent(); };
+        btn.innerHTML = `<i data-lucide="${tab.icon}" class="w-4 h-4"></i><span>${tab.title}</span>`;
+        nav.appendChild(btn);
+      });
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function renderContent() {
+      document.querySelectorAll('.tab-content').forEach(c => {
+        c.classList.add('hidden');
+        c.classList.remove('active');
+      });
+      document.getElementById('sec-' + currentTab).classList.remove('hidden');
+      document.getElementById('sec-' + currentTab).classList.add('active');
+      window.location.hash = 'sec-' + currentTab;
+    }
+    renderTabs();
+    renderContent();
+
+
+    lucide.createIcons();
+
+    // Dynamic Back Navigation
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    const backLink = document.getElementById('back-link');
+
+    if (ref === 'fs') {
+      backLink.href = 'linux_filesystem.html';
+      backLink.innerHTML = '<i data-lucide="arrow-left" class="w-4 h-4"></i><span class="hidden sm:inline">Back to Filesystem</span>';
+      lucide.createIcons();
+    } else if (ref === 'cmd') {
+      backLink.href = 'linux_commands.html';
+      backLink.innerHTML = '<i data-lucide="arrow-left" class="w-4 h-4"></i><span class="hidden sm:inline">Back to Commands</span>';
+      lucide.createIcons();
+    }
+  </script>
 </body>
+
 </html>
