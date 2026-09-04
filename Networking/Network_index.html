@@ -164,6 +164,7 @@
             width: 220px;
             flex-shrink: 0;
         }
+
         .encap-layer {
             position: relative;
             border-radius: 0.5rem;
@@ -180,13 +181,16 @@
             transform: translateX(8px);
             border-left: 3px solid transparent;
         }
+
         .encap-layer.active {
             opacity: 1;
             transform: translateX(0);
         }
+
         .encap-layer.active.just-added {
-            box-shadow: 0 0 14px rgba(255,255,255,0.12);
+            box-shadow: 0 0 14px rgba(255, 255, 255, 0.12);
         }
+
         .encap-layer .pdu-badge {
             margin-left: auto;
             font-size: 0.55rem;
@@ -196,12 +200,14 @@
             letter-spacing: 0.06em;
             opacity: 0.85;
         }
+
         .encap-arrow {
             text-align: center;
             font-size: 1.2rem;
             margin: 6px 0;
             transition: opacity 0.3s ease;
         }
+
         #encap-direction-label {
             font-size: 0.62rem;
             text-align: center;
@@ -218,7 +224,7 @@
         :root {
             --accent-blue: #38bdf8;
         }
-        
+
         .node {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -401,6 +407,40 @@
                         `
                     },
                     {
+                        title: "Types of Networks",
+                        content: `
+                            <p class="text-slate-300 leading-relaxed mb-4">
+                                Networks are often classified by their size, scope, and who manages them:
+                            </p>
+                            <div class="space-y-4">
+                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                                    <h4 class="font-bold text-white mb-1">Local Area Network (LAN)</h4>
+                                    <p class="text-sm text-slate-400">A self-contained network in a small area (like a single building or room). All nodes connect directly without an ISP. Known for high speeds and typically uses Ethernet.</p>
+                                </div>
+                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                                    <h4 class="font-bold text-white mb-1">Wide Area Network (WAN)</h4>
+                                    <p class="text-sm text-slate-400">Spans large areas (countries, continents) by connecting multiple LANs using long-range media provided by telecom companies. Can be private (corporate) or public (the Internet).</p>
+                                </div>
+                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                                    <h4 class="font-bold text-white mb-1">Metropolitan Area Network (MAN)</h4>
+                                    <p class="text-sm text-slate-400">Larger than a LAN but smaller than a WAN, typically covering a city or a large campus.</p>
+                                </div>
+                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                                    <h4 class="font-bold text-white mb-1">Intranet, Extranet & Enterprise Networks</h4>
+                                    <ul class="text-sm text-slate-400 space-y-1 mt-2 pl-4 list-disc">
+                                        <li><strong>Intranet:</strong> A private network sharing company info strictly with employees.</li>
+                                        <li><strong>Extranet:</strong> An extension of an intranet allowing controlled access to outside partners or vendors.</li>
+                                        <li><strong>Enterprise Network:</strong> Combines LANs and WANs to interlink all resources of a single organization, built for scale and security.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                                    <h4 class="font-bold text-white mb-1">Small Office / Home Office (SOHO)</h4>
+                                    <p class="text-sm text-slate-400">A small network (usually up to 10 nodes) at a single physical location. Often connected using a multifunction "home router" that acts as a switch, router, and DHCP server.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
                         title: "Why Networks Matter for DevOps",
                         content: `
                             <p class="text-slate-300 leading-relaxed mb-4">
@@ -485,11 +525,39 @@
                 intro: "Understanding the building blocks that make modern networks function.",
                 components: [
                     {
-                        name: "Node (Device)",
+                        name: "Node (Host / Device)",
                         icon: "laptop",
-                        definition: "Any device connected to a network that can send, receive, or process data.",
-                        types: ["<strong>Endpoints:</strong> Laptops, desktops, smartphones, IoT devices", "<strong>Servers:</strong> Web servers (Nginx, Apache), database servers (PostgreSQL, MySQL)", "<strong>Network Devices:</strong> Routers, switches, firewalls"],
+                        definition: "A node or host is anything connected to the network that can send, receive, or process data.",
+                        types: [
+                            "<strong>Servers:</strong> Computers designed to provide central services and resources (files, apps) to other devices, typically with redundant hardware and specialized OS (e.g., Linux, Windows Server).",
+                            "<strong>Clients:</strong> End-user computers (desktops, workstations) that use the resources of servers, while also performing their own local processing.",
+                            "<strong>Peers:</strong> Computers that act as both client and server to others, typically in smaller networks without a centralized security server.",
+                            "<strong>Host Computers:</strong> Traditionally central mainframes doing all processing for terminals. Today, the term is generalized for any node on a TCP/IP network.",
+                            "<strong>Terminals:</strong> 'Dumb' devices (just keyboard/monitor) that rely entirely on a central host for processing and memory."
+                        ],
                         devops: "Virtual Machines (EC2, Azure VMs, GCP Compute Engine), Containers (Docker), Kubernetes Pods"
+                    },
+                    {
+                        name: "Network Interface Card (NIC)",
+                        icon: "cpu",
+                        definition: "Hardware component that connects a device to the network medium, allowing it to put data onto and take data off the network.",
+                        example: "In human communication, mouths put data (sound) onto the medium (air), and ears take it off. A NIC does both for a computer.",
+                        devops: "Virtual NICs (vNICs) connect virtual machines and containers to virtual networks."
+                    },
+                    {
+                        name: "Transmission Medium",
+                        icon: "wifi",
+                        definition: "The physical or wireless path that carries data between devices on a network.",
+                        types: ["<strong>Copper Wires:</strong> Ethernet cables carrying electrical signals", "<strong>Wireless:</strong> Wi-Fi or cellular networks using radio waves", "<strong>Fiber Optics:</strong> Cables carrying light signals"],
+                        example: "Just as air carries sound waves when people talk, the network medium carries data signals."
+                    },
+                    {
+                        name: "Protocols",
+                        icon: "book-open",
+                        definition: "A set of rules that determine how devices communicate and interpret data.",
+                        types: ["<strong>Protocol Suite:</strong> A collection of protocols that work together, like TCP/IP (the main protocol suite used on the Internet)."],
+                        example: "Protocols are like languages in human communication; both sides must use the exact same rules to accurately receive and interpret the message.",
+                        devops: "HTTP/HTTPS for web traffic, SSH for secure server access, BGP for cloud routing."
                     },
                     {
                         name: "Switch",
@@ -758,7 +826,7 @@
             startBtn.disabled = false;
             startBtn.innerHTML = '<i data-lucide="refresh-cw" class="w-4 h-4"></i> Restart Request';
             currentStepIndex = contentData.journey.steps.length;
-            if(counter) counter.innerText = `Finished`;
+            if (counter) counter.innerText = `Finished`;
 
             document.querySelectorAll('.step-item').forEach(el => el.classList.remove('active'));
             lucide.createIcons();
@@ -794,7 +862,7 @@
             nextBtn.disabled = false;
             nextBtn.innerHTML = currentStepIndex === steps.length - 1 ? 'Finish Process <i data-lucide="check" class="w-4 h-4"></i>' : 'Next Step <i data-lucide="chevron-right" class="w-4 h-4"></i>';
 
-            if(counter) {
+            if (counter) {
                 counter.innerText = `${currentStepIndex + 1} / ${steps.length}`;
             }
 
@@ -817,7 +885,7 @@
 
                 switch (currentStepIndex) {
                     case 0: // URL PARSING
-                        if(currentStepIndex === 0 && terminal) terminal.innerHTML = '<p class="text-slate-500">> System Ready.</p>';
+                        if (currentStepIndex === 0 && terminal) terminal.innerHTML = '<p class="text-slate-500">> System Ready.</p>';
                         stepToastEl.innerText = "STATUS: URL PARSING & CACHES";
                         updateTerminal("Checking HSTS and Local DNS cache...");
                         setNodeActive('pc');
@@ -832,7 +900,7 @@
                         packet.setAttribute('cx', 400);
                         packet.setAttribute('cy', 100);
                         setTimeout(() => {
-                            if(currentStepIndex !== 1) return;
+                            if (currentStepIndex !== 1) return;
                             updateTerminal("DNS Found: 142.250.190.46", 'success');
                             packet.setAttribute('cx', 150);
                             packet.setAttribute('cy', 200);
@@ -847,7 +915,7 @@
                         packet.setAttribute('cx', 350);
                         packet.setAttribute('cy', 250);
                         setTimeout(() => {
-                            if(currentStepIndex !== 2) return;
+                            if (currentStepIndex !== 2) return;
                             updateTerminal("ARP Reply: MAC 00:1A:2B:3C:4D:5E", 'success');
                             packet.setAttribute('cx', 150);
                             packet.setAttribute('cy', 200);
@@ -862,7 +930,7 @@
                         packet.setAttribute('cy', 200);
                         setNodeActive('server');
                         setTimeout(() => {
-                            if(currentStepIndex !== 3) return;
+                            if (currentStepIndex !== 3) return;
                             updateTerminal("Connection established & secured.", 'success');
                             packet.setAttribute('cx', 150);
                             packet.setAttribute('cy', 200);
@@ -883,7 +951,7 @@
                         packet.setAttribute('cx', 350);
                         packet.setAttribute('cy', 250);
                         setTimeout(() => {
-                            if(currentStepIndex !== 5) return;
+                            if (currentStepIndex !== 5) return;
                             updateTerminal("Packet arrived at Google's edge network.");
                             packet.setAttribute('cx', 650);
                             packet.setAttribute('cy', 200);
@@ -905,7 +973,7 @@
                         packet.setAttribute('cx', 350);
                         packet.setAttribute('cy', 250);
                         setTimeout(() => {
-                            if(currentStepIndex !== 7) return;
+                            if (currentStepIndex !== 7) return;
                             updateTerminal("Stripping headers and decrypting payload...");
                             packet.setAttribute('cx', 150);
                             packet.setAttribute('cy', 200);
@@ -1098,13 +1166,13 @@
 
         // ── Encapsulation layer definitions (ordered L7→L1 top to bottom) ──────
         const ENCAP_LAYERS = [
-            { id:'l7', label:'L7 Application',  pdu:'DATA',    color:'bg-purple-900/60',  border:'border-purple-500', badge:'bg-purple-500/30 text-purple-300', header:'HTTP GET /' },
-            { id:'l6', label:'L6 Presentation', pdu:'DATA',    color:'bg-indigo-900/60',  border:'border-indigo-500', badge:'bg-indigo-500/30 text-indigo-300',  header:'TLS Encrypt' },
-            { id:'l5', label:'L5 Session',      pdu:'DATA',    color:'bg-blue-900/60',    border:'border-blue-400',   badge:'bg-blue-500/30 text-blue-300',    header:'Session ID' },
-            { id:'l4', label:'L4 Transport',    pdu:'SEGMENT', color:'bg-cyan-900/60',    border:'border-cyan-400',   badge:'bg-cyan-500/30 text-cyan-300',    header:'TCP :443' },
-            { id:'l3', label:'L3 Network',      pdu:'PACKET',  color:'bg-teal-900/60',    border:'border-teal-400',   badge:'bg-teal-500/30 text-teal-300',    header:'IP Header' },
-            { id:'l2', label:'L2 Data Link',    pdu:'FRAME',   color:'bg-emerald-900/60', border:'border-emerald-400',badge:'bg-emerald-500/30 text-emerald-300',header:'MAC Header' },
-            { id:'l1', label:'L1 Physical',     pdu:'BITS',    color:'bg-green-900/60',   border:'border-green-400',  badge:'bg-green-500/30 text-green-300',  header:'Signals' },
+            { id: 'l7', label: 'L7 Application', pdu: 'DATA', color: 'bg-purple-900/60', border: 'border-purple-500', badge: 'bg-purple-500/30 text-purple-300', header: 'HTTP GET /' },
+            { id: 'l6', label: 'L6 Presentation', pdu: 'DATA', color: 'bg-indigo-900/60', border: 'border-indigo-500', badge: 'bg-indigo-500/30 text-indigo-300', header: 'TLS Encrypt' },
+            { id: 'l5', label: 'L5 Session', pdu: 'DATA', color: 'bg-blue-900/60', border: 'border-blue-400', badge: 'bg-blue-500/30 text-blue-300', header: 'Session ID' },
+            { id: 'l4', label: 'L4 Transport', pdu: 'SEGMENT', color: 'bg-cyan-900/60', border: 'border-cyan-400', badge: 'bg-cyan-500/30 text-cyan-300', header: 'TCP :443' },
+            { id: 'l3', label: 'L3 Network', pdu: 'PACKET', color: 'bg-teal-900/60', border: 'border-teal-400', badge: 'bg-teal-500/30 text-teal-300', header: 'IP Header' },
+            { id: 'l2', label: 'L2 Data Link', pdu: 'FRAME', color: 'bg-emerald-900/60', border: 'border-emerald-400', badge: 'bg-emerald-500/30 text-emerald-300', header: 'MAC Header' },
+            { id: 'l1', label: 'L1 Physical', pdu: 'BITS', color: 'bg-green-900/60', border: 'border-green-400', badge: 'bg-green-500/30 text-green-300', header: 'Signals' },
         ];
 
         // Which layers are active per step (0-indexed, step index → array of layer ids)
@@ -1113,20 +1181,20 @@
             [],                                           // 0: URL parsing / caches — no encap yet
             [],                                           // 1: DNS resolution — no encap yet
             [],                                           // 2: ARP & Routing — no encap yet
-            ['l7','l6','l5'],                             // 3: TCP/TLS — app+presentation+session
-            ['l7','l6','l5','l4','l3','l2','l1'],         // 4: Full outbound encapsulation
-            ['l7','l6','l5','l4','l3','l2','l1'],         // 5: Google processing (full frame)
-            ['l7','l6','l5','l4','l3','l2','l1'],         // 6: Response encapsulation (Google)
-            ['l7','l6','l5','l4','l3'],                   // 7: De-encap at home (L1+L2 stripped)
+            ['l7', 'l6', 'l5'],                             // 3: TCP/TLS — app+presentation+session
+            ['l7', 'l6', 'l5', 'l4', 'l3', 'l2', 'l1'],         // 4: Full outbound encapsulation
+            ['l7', 'l6', 'l5', 'l4', 'l3', 'l2', 'l1'],         // 5: Google processing (full frame)
+            ['l7', 'l6', 'l5', 'l4', 'l3', 'l2', 'l1'],         // 6: Response encapsulation (Google)
+            ['l7', 'l6', 'l5', 'l4', 'l3'],                   // 7: De-encap at home (L1+L2 stripped)
             ['l7'],                                       // 8: Browser rendering (only app data)
         ];
 
         // Direction per step: 'out' = going to server, 'in' = coming back, '' = neutral
-        const ENCAP_DIR = ['out','out','out','out','out','server','in','in','in'];
+        const ENCAP_DIR = ['out', 'out', 'out', 'out', 'out', 'server', 'in', 'in', 'in'];
 
         function updateEncapsulation(stepIdx) {
-            const active   = ENCAP_STATE[stepIdx] ?? [];
-            const dir      = ENCAP_DIR[stepIdx] ?? '';
+            const active = ENCAP_STATE[stepIdx] ?? [];
+            const dir = ENCAP_DIR[stepIdx] ?? '';
             const dirLabel = document.getElementById('encap-direction-label');
             const dirArrow = document.getElementById('encap-direction-arrow');
 
