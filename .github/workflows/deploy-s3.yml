@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - development
+    paths-ignore:
+      - ".github/workflows/**"
 
 jobs:
   # ──────────────────────────────────────────────────────────────────────────
@@ -43,7 +45,7 @@ jobs:
 
       - name: Export S3 website URL
         id: set-url
-        run: echo "Pushed to test ENV" >> "$GITHUB_OUTPUT"
+        run: echo "Pushed to test ENV"
 
   # ──────────────────────────────────────────────────────────────────────────
   # Job 2: E2E Tests (runs AFTER deploy, blocks merge if tests fail)
