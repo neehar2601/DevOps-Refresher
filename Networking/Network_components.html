@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Components, Hardware & Architecture Guide - Networking Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .component-card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .component-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px -6px rgba(0, 0, 0, 0.45);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
+
+    <!-- ── Smart Auto-Hiding Top Navigation Container ─────────────────── -->
+    <div id="smart-nav-container" class="fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ease-in-out">
+        <!-- Top Header Bar -->
+        <header class="bg-slate-900/95 border-b border-slate-800 text-white shadow-lg backdrop-blur-md">
+            <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-400">
+                        <i data-lucide="box" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                            Network Components, Hardware <span class="text-blue-400 font-light hidden sm:inline">&amp; Architecture</span>
+                        </h1>
+                        <p class="text-xs text-slate-400 hidden md:block">Physical &amp; Virtual Building Blocks, Network Scopes, Protocols &amp; Topologies</p>
+                    </div>
+                </div>
+                <nav class="flex items-center gap-3">
+                    <a href="Network_index.html"
+                        class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-all flex items-center gap-2 text-xs font-semibold shadow-sm">
+                        <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-blue-400"></i> Networking Hub
+                    </a>
+                    <a href="../index.html"
+                        class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-all flex items-center gap-2 text-xs font-semibold shadow-sm">
+                        <i data-lucide="home" class="w-3.5 h-3.5 text-blue-400"></i> DevOps Hub
+                    </a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Sub-Header Quick-Jump Bar -->
+        <div class="bg-slate-900/90 border-b border-slate-800 backdrop-blur-md shadow-md">
+            <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
+                <nav class="flex space-x-2 md:space-x-3 overflow-x-auto py-2.5 no-scrollbar text-xs font-medium text-slate-400" id="quick-jump-nav-links">
+                    <a href="#transmission" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
+                        <i data-lucide="radio-receiver" class="w-3.5 h-3.5 text-emerald-400"></i> Transmission Methods
+                    </a>
+                    <a href="#mac-ethernet" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
+                        <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i> MAC &amp; Ethernet
+                    </a>
+                    <a href="#network-types" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
+                        <i data-lucide="globe" class="w-3.5 h-3.5 text-indigo-400"></i> LAN / MAN / WAN Scopes
+                    </a>
+                    <a href="#topologies" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
+                        <i data-lucide="git-merge" class="w-3.5 h-3.5 text-cyan-400"></i> Topologies
+                    </a>
+                    <a href="#tcp-udp" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
+                        <i data-lucide="arrow-right-left" class="w-3.5 h-3.5 text-rose-400"></i> TCP vs UDP
+                    </a>
+                    <a href="#hierarchy" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
+                        <i data-lucide="layers" class="w-3.5 h-3.5 text-purple-400"></i> Hardware Hierarchy
+                    </a>
+                    <a href="#components-grid" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
+                        <i data-lucide="cpu" class="w-3.5 h-3.5 text-blue-400"></i> 10 Core Components
+                    </a>
+                    <a href="#ports" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
+                        <i data-lucide="hash" class="w-3.5 h-3.5 text-emerald-400"></i> Ports Reference
+                    </a>
+                    <a href="#protocols-deep-dive" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
+                        <i data-lucide="book-open" class="w-3.5 h-3.5 text-blue-400"></i> Protocols Deep Dive
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Main Content Container ─────────────────────────── -->
+    <main class="flex-grow max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-10">
+
+        <!-- Page Hero Banner -->
+        <div class="mb-8 text-center max-w-4xl mx-auto">
+            <span class="text-xs font-mono text-blue-400 bg-blue-950/60 px-3 py-1 rounded-full border border-blue-800 inline-block mb-3">Comprehensive Reference &amp; Architecture Guide</span>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">Network Components, Hardware &amp; Architecture</h2>
+            <p class="text-sm sm:text-base text-slate-400 leading-relaxed">
+                The complete guide covering physical &amp; virtual components, media access control (CSMA/CD &amp; CSMA/CA), network boundaries (LAN/MAN/WAN), topologies, TCP vs UDP transport, common DevOps port references, and deep-dive protocol breakdowns.
+            </p>
+        </div>
+
+        <!-- ── SECTION 1: Transmission Methods ──────────────── -->
+        <section id="transmission" class="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xl">
+            <h3 class="text-xl sm:text-2xl font-bold text-white mb-5 flex items-center">
+                <i data-lucide="chevron-right" class="w-5 h-5 text-blue-400 mr-2 shrink-0"></i>
+                Network Transmission Methods: Unicast, Broadcast, &amp; Multicast
+            </h3>
+            <p class="text-slate-300 leading-relaxed mb-6 text-sm">
+                Data routing across network interfaces is categorized by how target recipient nodes are addressed—ranging from targeted one-to-one delivery to selective group distribution and segment-wide broadcasts:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-4">
+
+                <!-- Unicast -->
+                <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 flex flex-col justify-between hover:border-emerald-500/40 transition-all shadow-lg">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400">
+                                    <i data-lucide="arrow-right-left" class="w-5 h-5"></i>
+                                </div>
+                                <h4 class="text-base font-bold text-white">Unicast Transmission</h4>
+                            </div>
+                            <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">One-to-One</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                            Transmits data from a <strong>single source to a single destination</strong>. Unicast transmissions require the sending device to address the data specifically to the receiving device. Any nodes that receive the data, but are not involved in the transfer, ignore the data. Unicast transmission is the main mode used on LANs and the Internet.
+                        </p>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-xs space-y-1.5 mb-4">
+                            <div class="text-slate-400"><strong class="text-slate-200">Scope:</strong> Primary transmission mode on LANs &amp; public Internet.</div>
+                            <div class="text-slate-400"><strong class="text-slate-200">Addressing:</strong> Specific host IP &amp; MAC address.</div>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-800/80 pt-3 text-xs">
+                        <span class="text-emerald-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Standard Examples:</span>
+                        <p class="text-slate-400">HyperText Transfer Protocol (HTTP/HTTPS), Simple Mail Transfer Protocol (SMTP), File Transfer Protocol (FTP/SFTP), SSH sessions.</p>
+                    </div>
+                </div>
+
+                <!-- Broadcast -->
+                <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 flex flex-col justify-between hover:border-amber-500/40 transition-all shadow-lg">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-2 bg-amber-500/10 rounded-xl border border-amber-500/20 text-amber-400">
+                                    <i data-lucide="radio-receiver" class="w-5 h-5"></i>
+                                </div>
+                                <h4 class="text-base font-bold text-white">Broadcast Transmission</h4>
+                            </div>
+                            <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">One-to-All</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                            Transmits data from a <strong>source to all the other nodes on a network</strong>. Data is sent to a special broadcast address that all nodes process. Nodes use broadcasts to advertise or find services on the network (or send service requests if no advertisements exist). Network services relying on broadcasts generate high traffic volume.
+                        </p>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-xs space-y-1.5 mb-4">
+                            <div class="text-slate-400"><strong class="text-slate-200">Scope:</strong> Confined to local Layer 2 broadcast domain.</div>
+                            <div class="text-slate-400"><strong class="text-slate-200">Addressing:</strong> MAC <code>FF:FF:FF:FF:FF:FF</code>, IP <code>255.255.255.255</code>.</div>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-800/80 pt-3 text-xs">
+                        <span class="text-amber-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Standard Examples:</span>
+                        <p class="text-slate-400">Nodes relying on DHCP to obtain an IP address broadcast to find the DHCP server; ARP requests discovering host MAC addresses.</p>
+                    </div>
+                </div>
+
+                <!-- Multicast -->
+                <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 flex flex-col justify-between hover:border-purple-500/40 transition-all shadow-lg">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-2 bg-purple-500/10 rounded-xl border border-purple-500/20 text-purple-400">
+                                    <i data-lucide="users" class="w-5 h-5"></i>
+                                </div>
+                                <h4 class="text-base font-bold text-white">Multicast Transmission</h4>
+                            </div>
+                            <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 font-medium">One-to-Many</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                            Transmits data to <strong>more than one device but not all of them</strong>. Uses special multicast group addresses. Predefined group members process data sent to the group address; non-members ignore it. Communication outside a multicast group must use unicast or broadcast.
+                        </p>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-xs space-y-1.5 mb-4">
+                            <div class="text-slate-400"><strong class="text-slate-200">Scope:</strong> Subscribed multicast group members across networks.</div>
+                            <div class="text-slate-400"><strong class="text-slate-200">Addressing:</strong> Class D IPv4 block (<code>224.0.0.0/4</code>), IGMP protocol.</div>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-800/80 pt-3 text-xs">
+                        <span class="text-purple-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Standard Examples:</span>
+                        <p class="text-slate-400">Video server transmitting video conferencing (only nodes in the meeting process data), IPTV feeds, OSPF router neighbor discovery.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ── SECTION 2: MAC & Ethernet Evolution ──────────── -->
+        <section id="mac-ethernet" class="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xl">
+            <h3 class="text-xl sm:text-2xl font-bold text-white mb-5 flex items-center">
+                <i data-lucide="chevron-right" class="w-5 h-5 text-blue-400 mr-2 shrink-0"></i>
+                Media Access Control (MAC) &amp; Ethernet Evolution: Pre-Ethernet vs. Modern MAC
+            </h3>
+            <p class="text-slate-300 leading-relaxed mb-6 text-sm">
+                At a bare minimum, every network requires hardware to put data onto and take data off a physical medium, a medium to transport the signal, and agreed protocols. Just like human speech relies on mouths (transmitters), air (medium), ears (receivers), and shared language (protocols), computer networks fail if the medium or protocol is missing.
+            </p>
+
+            <!-- Packet Sniffers & Port Mirroring Callout Box -->
+            <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 mb-6">
+                <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+                    <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i data-lucide="eye" class="w-4 h-4 text-purple-400"></i>
+                        Network Telemetry &amp; Analysis: Packet Sniffers, Port Mirroring &amp; Promiscuous Mode
+                    </h4>
+                    <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 font-semibold">Security &amp; Diagnostics</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <strong class="text-purple-400 font-bold block">1. Switch Port Mirroring</strong>
+                        <p class="text-slate-300 leading-relaxed">
+                            Because switches route frames directly to destination ports based on CAM tables, a packet sniffer connected to Port 3 cannot see traffic between Port 1 and Port 2. Network admins configure <strong>Port Mirroring</strong> on managed switches to copy all traffic passing through the switch to the sniffer's port.
+                        </p>
+                    </div>
+                    <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <strong class="text-cyan-400 font-bold block">2. NIC Promiscuous Mode</strong>
+                        <p class="text-slate-300 leading-relaxed">
+                            By default, NICs drop all frames not addressed to their MAC address or broadcast <code>FF:FF:FF:FF:FF:FF</code>. When running tools like <strong>Wireshark</strong> or <strong>tcpdump</strong>, the NIC is put into <strong>Promiscuous Mode</strong>, forcing it to accept ALL incoming frames and send them up the stack for analysis.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Human vs Network Analogy Grid -->
+            <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 mb-6">
+                <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                    <i data-lucide="message-square" class="w-4 h-4 text-blue-400"></i>
+                    The 4 Pillars of Communication: Human Speech vs. Computer Networks
+                </h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                    <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                        <span class="text-blue-400 font-bold block mb-1">1. Transmitter (Hardware)</span>
+                        <p class="text-slate-300 mb-1"><strong>Human:</strong> Mouth producing acoustic sound waves.</p>
+                        <p class="text-slate-400"><strong>Network:</strong> NIC / Radio transmitter serializing electrical, light, or RF signals onto copper, fiber, or air.</p>
+                    </div>
+                    <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                        <span class="text-emerald-400 font-bold block mb-1">2. Transmission Medium</span>
+                        <p class="text-slate-300 mb-1"><strong>Human:</strong> Air carrying sound waves.</p>
+                        <p class="text-slate-400"><strong>Network:</strong> Twisted-pair copper (Cat6), glass fiber strands, or electromagnetic spectrum (Wi-Fi 802.11).</p>
+                    </div>
+                    <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                        <span class="text-cyan-400 font-bold block mb-1">3. Receiver (Hardware)</span>
+                        <p class="text-slate-300 mb-1"><strong>Human:</strong> Ears receiving acoustic vibrations.</p>
+                        <p class="text-slate-400"><strong>Network:</strong> NIC receiver circuit / antenna capturing and decoding signal pulses.</p>
+                    </div>
+                    <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                        <span class="text-purple-400 font-bold block mb-1">4. Protocol / Rules</span>
+                        <p class="text-slate-300 mb-1"><strong>Human:</strong> Shared spoken language &amp; turn-taking rules.</p>
+                        <p class="text-slate-400"><strong>Network:</strong> Layer 2 &amp; Layer 3 protocol suites (Ethernet IEEE 802.3, IP, TCP, MAC addressing).</p>
+                    </div>
+                </div>
+                <div class="mt-3.5 p-3 bg-slate-900/90 rounded-xl border border-amber-500/20 text-xs text-slate-400 leading-relaxed">
+                    <strong class="text-amber-400">Why Medium &amp; Protocols Matter:</strong> If humans try communicating in deep space (a vacuum), speech fails because there is <em>no medium</em>. If two people talk with no shared language, communication fails because there is <em>no protocol</em>.
+                </div>
+            </div>
+
+            <!-- The Shared Medium Problem & MAC -->
+            <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 mb-6">
+                <h4 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+                    <i data-lucide="shield-alert" class="w-5 h-5 text-amber-400"></i>
+                    The Shared Medium Problem: Why We Need Media Access Control (MAC)
+                </h4>
+                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+                    Imagine a packed conference room where 50 people talk simultaneously. When everyone speaks at once, sound waves overlap, words get scrambled, and <strong>no one is heard</strong>. 
+                    Similarly, in computer networks where multiple devices share the same physical cable or radio frequency, if two devices transmit simultaneously, their signals collide and corrupt data frames. 
+                    <strong>Media Access Control (MAC)</strong> provides the essential rules governing which node can access the shared medium at any given instant.
+                </p>
+
+                <h5 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-3">Pre-Ethernet Early MAC Experiments (What WAS Before Ethernet):</h5>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs mb-4">
+
+                    <!-- Polling -->
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-amber-400 text-sm">1. Polling (Master-Slave)</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/60 text-amber-300 border border-amber-800/60">Centralized Query</span>
+                        </div>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            A central master node queries each device sequentially: <em>"Node A, got data to send? No. Node B, got data? No. Node C, got data? Yes!"</em>
+                        </p>
+                        <div class="space-y-1 text-slate-400 border-t border-slate-800 pt-2.5">
+                            <p><strong class="text-emerald-400">Pros:</strong> Zero collisions; deterministic access.</p>
+                            <p><strong class="text-rose-400">Cons:</strong> Wastes substantial network bandwidth asking idle nodes that have no data to send.</p>
+                        </div>
+                    </div>
+
+                    <!-- Token Passing -->
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-cyan-400 text-sm">2. Token Passing (Token Ring)</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800/60">Passed "Talk Show Microphone"</span>
+                        </div>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Nodes pass a small control frame (a <strong>token</strong>, like a talk show host passing a microphone) sequentially around a ring topology. Only the node holding the token is allowed to transmit data.
+                        </p>
+                        <div class="space-y-1 text-slate-400 border-t border-slate-800 pt-2.5">
+                            <p><strong class="text-emerald-400">Pros:</strong> Completely collision-free; fair bandwidth distribution under heavy loads.</p>
+                            <p><strong class="text-rose-400">Cons:</strong> Passing tokens through silent, non-transmitting nodes introduces latency and wastes channel time.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Ethernet & CSMA/CD vs CSMA/CA -->
+                <div class="bg-slate-950 p-4 rounded-xl border border-blue-500/30 text-xs space-y-4">
+                    <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
+                        <h5 class="font-bold text-white text-sm flex items-center gap-2">
+                            <i data-lucide="zap" class="w-4 h-4 text-emerald-400"></i> Media Access Control Mechanisms: CSMA/CD vs CSMA/CA
+                        </h5>
+                        <span class="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded border border-emerald-800">IEEE 802.3 Wired &amp; IEEE 802.11 Wireless</span>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed">
+                        Invented in the 1970s by Robert Metcalfe at Xerox PARC and standardized by IEEE, <strong>Ethernet</strong> replaced central polling and token passing with opportunistic, decentralized media access control.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-300">
+                        <!-- CSMA/CD Card -->
+                        <div class="bg-slate-900/90 p-4 rounded-xl border border-emerald-800/60 space-y-2.5">
+                            <div class="flex items-center justify-between">
+                                <strong class="text-emerald-400 text-sm font-bold flex items-center gap-1.5">
+                                    <i data-lucide="cable" class="w-4 h-4 text-emerald-400"></i> CSMA/CD (Wired Networks)
+                                </strong>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">Collision Detection</span>
+                            </div>
+                            <p class="text-slate-300 leading-relaxed">
+                                <strong>Carrier Sense Multiple Access with Collision Detection</strong> is the standard access method for <strong>wired Ethernet</strong>.
+                            </p>
+                            <ul class="list-disc list-inside space-y-1 text-slate-300 text-[11px]">
+                                <li><strong>Carrier Sense:</strong> Nodes <em>listen to the wire</em> before talking to check if anyone is currently transmitting.</li>
+                                <li><strong>Multiple Access:</strong> Multiple computers share access to the same physical cable medium.</li>
+                                <li><strong>Collision Detection:</strong> If two nodes listen, see a clear line, and transmit at the exact same instant, a <strong>collision</strong> occurs and data is destroyed.</li>
+                                <li><strong>Recovery:</strong> Both nodes detect the collision, abort transmission, and start a <strong>random backoff timer</strong>. Whichever timer expires first starts transmitting while the second node listens and waits.</li>
+                            </ul>
+                            <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-[11px] text-amber-300/90 italic">
+                                💡 <strong>Dinner Table Analogy:</strong> Multiple children sit at a dinner table. If everyone speaks at once, adults can't understand anything (collision). When one child speaks (<em>"Dad, let me tell you about my day"</em>), the other kids pause and wait for them to finish before speaking.
+                            </div>
+                        </div>
+
+                        <!-- CSMA/CA Card -->
+                        <div class="bg-slate-900/90 p-4 rounded-xl border border-cyan-800/60 space-y-2.5">
+                            <div class="flex items-center justify-between">
+                                <strong class="text-cyan-400 text-sm font-bold flex items-center gap-1.5">
+                                    <i data-lucide="wifi" class="w-4 h-4 text-cyan-400"></i> CSMA/CA (Wireless Wi-Fi)
+                                </strong>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">Collision Avoidance</span>
+                            </div>
+                            <p class="text-slate-300 leading-relaxed">
+                                <strong>Carrier Sense Multiple Access with Collision Avoidance</strong> is used for <strong>wireless (802.11) networks</strong>.
+                            </p>
+                            <ul class="list-disc list-inside space-y-1 text-slate-300 text-[11px]">
+                                <li><strong>Why Avoidance?</strong> Wireless radio nodes transmit over airwaves and <em>cannot detect collisions while transmitting</em>. Therefore, they must <strong>avoid</strong> collisions entirely.</li>
+                                <li><strong>Jam Signal / RTS (Request to Send):</strong> Before sending data, a wireless node broadcasts a <strong>jam signal / RTS frame</strong> (electronic warning saying <em>"I am about to transmit!"</em>).</li>
+                                <li><strong>Channel Hold:</strong> Other wireless devices hearing the jam signal pause their transmission until the channel clears.</li>
+                            </ul>
+                            <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-[11px] text-cyan-300/90 italic">
+                                💡 <strong>Mother's Warning Analogy:</strong> A mother's warning phrase (<em>"Now look..."</em>) acts as an intentional jam signal telling everyone in the room to hold back speaking to prevent a collision before it happens.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Power over Ethernet (PoE) Card -->
+                    <div class="bg-slate-900/80 p-3.5 rounded-xl border border-purple-800/50 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-slate-300">
+                        <div>
+                            <strong class="text-purple-300 font-bold text-sm flex items-center gap-2 mb-1">
+                                <i data-lucide="plug-zap" class="w-4 h-4 text-purple-400"></i> Power over Ethernet (PoE — IEEE 802.3af/at/bt)
+                            </strong>
+                            <p class="text-slate-300 text-[11px] leading-relaxed">
+                                Delivers electrical power alongside network data over standard twisted-pair Ethernet cabling. Eliminates the need for AC wall power outlets at remote device locations.
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap text-[10px] font-mono shrink-0">
+                            <span class="bg-purple-950 text-purple-300 px-2.5 py-1 rounded border border-purple-800">VoIP Phones</span>
+                            <span class="bg-purple-950 text-purple-300 px-2.5 py-1 rounded border border-purple-800">Attic Wireless Access Points</span>
+                            <span class="bg-purple-950 text-purple-300 px-2.5 py-1 rounded border border-purple-800">IP Security Cameras</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── SECTION 3: Deep Dive: Network Types & Boundaries ── -->
+        <section id="network-types" class="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xl">
+            <h3 class="text-xl sm:text-2xl font-bold text-white mb-5 flex items-center">
+                <i data-lucide="chevron-right" class="w-5 h-5 text-blue-400 mr-2 shrink-0"></i>
+                Deep Dive: Types of Networks &amp; Boundaries
+            </h3>
+            <p class="text-slate-300 leading-relaxed mb-6 text-sm">
+                Networks are classified by their geographic footprint, access control boundaries, and administrative ownership:
+            </p>
+
+            <div class="space-y-6">
+                <!-- LAN Deep Dive -->
+                <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-6">
+                    <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
+                                <i data-lucide="home" class="w-5 h-5 text-emerald-400"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-white">Local Area Network (LAN)</h4>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono font-medium">Self-Contained • High Speed • Low Latency</span>
+                    </div>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                        A <strong>Local Area Network (LAN)</strong> is a self-contained network existing within a confined physical area such as a single room, floor, or office building. All nodes connect directly using high-speed twisted-pair copper cables (Ethernet) or short-range wireless (Wi-Fi).
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                        <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/60 text-xs">
+                            <span class="text-emerald-400 font-bold block mb-1">No ISP Required</span>
+                            <p class="text-slate-400">LANs function completely autonomously. Devices communicate and share data locally without needing an Internet Service Provider (ISP).</p>
+                        </div>
+                        <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/60 text-xs">
+                            <span class="text-emerald-400 font-bold block mb-1">High Bandwidth</span>
+                            <p class="text-slate-400">Because distances are short and media is dedicated, LANs typically operate at 1 Gbps, 10 Gbps, or even 100 Gbps speeds.</p>
+                        </div>
+                        <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/60 text-xs">
+                            <span class="text-emerald-400 font-bold block mb-1">Standard: Ethernet</span>
+                            <p class="text-slate-400">Most modern wired LANs run on IEEE 802.3 Ethernet, utilizing MAC addresses for Layer 2 frame forwarding.</p>
+                        </div>
+                    </div>
+
+                    <!-- What does Local mean -->
+                    <div class="bg-slate-950/80 rounded-xl p-4 border border-blue-500/30 text-xs leading-relaxed">
+                        <span class="text-blue-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5 mb-2">
+                            <i data-lucide="help-circle" class="w-4 h-4"></i> What Does "Local" Truly Mean?
+                        </span>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-slate-300">
+                            <div>
+                                <strong class="text-white block">1. Local on a Computer:</strong>
+                                Data or services contained inside the host itself (loopback <code>127.0.0.1</code>, Unix sockets, memory bus).
+                            </div>
+                            <div>
+                                <strong class="text-white block">2. Local on a Network:</strong>
+                                All nodes that can talk to each other directly via Layer 2 MAC addresses <em>without needing a router</em> (same broadcast domain).
+                            </div>
+                            <div>
+                                <strong class="text-white block">3. Remote Network:</strong>
+                                Any node residing on a different subnet or network segment, requiring a Layer 3 router to forward packets.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MAN Deep Dive -->
+                <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-6">
+                    <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-cyan-500/10 rounded-lg border border-cyan-500/20">
+                                <i data-lucide="building-2" class="w-5 h-5 text-cyan-400"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-white">Metropolitan Area Network (MAN)</h4>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-mono font-medium">City / Campus Scale • Metro Ethernet • Dark Fiber Rings</span>
+                    </div>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                        A <strong>Metropolitan Area Network (MAN)</strong> covers a geographic footprint larger than a LAN but smaller than a WAN—typically spanning an entire town, municipality, or multi-facility university campus (ranging from <strong>5 km to 50 km</strong>). MANs interconnect multiple local LAN branches so they can communicate at high LAN-like speeds without traversing the public Internet.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/60 text-xs">
+                            <span class="text-cyan-400 font-bold block mb-1">High-Speed Optical Backbone</span>
+                            <p class="text-slate-400">Constructed with high-capacity dark fiber rings (CWDM/DWDM) or Carrier/Metro Ethernet (MetroE) delivering 10 Gbps to 100 Gbps speeds with sub-millisecond city-wide latency.</p>
+                        </div>
+                        <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/60 text-xs">
+                            <span class="text-cyan-400 font-bold block mb-1">Ownership &amp; Governance</span>
+                            <p class="text-slate-400">Often owned by a municipal government (smart traffic systems, public safety cameras), a university consortium, or leased from telecom carriers as private Layer 2 E-LAN circuits.</p>
+                        </div>
+                        <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/60 text-xs">
+                            <span class="text-cyan-400 font-bold block mb-1">LAN-to-WAN Bridge</span>
+                            <p class="text-slate-400">Serves as a regional aggregation ring where dozens of local corporate or campus facilities consolidate traffic before handing off to WAN edge routers for long-haul transit.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WAN Deep Dive -->
+                <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-6">
+                    <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-indigo-500/10 rounded-lg border border-indigo-500/20">
+                                <i data-lucide="globe" class="w-5 h-5 text-indigo-400"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-white">Wide Area Network (WAN)</h4>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono font-medium">Global Reach • Telecom Media • Layer 3 Routing</span>
+                    </div>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                        A <strong>Wide Area Network (WAN)</strong> spans large geographical areas crossing multiple cities, states, countries, or entire continents (hundreds to thousands of kilometers). WANs interconnect disparate LANs and MANs across global cloud regions using long-haul transmission backbones provided by telecommunications carriers (undersea fiber, DWDM, satellite links, cellular networks).
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs mb-3">
+                        <div class="bg-slate-800/60 p-3.5 rounded-lg border border-slate-700/60">
+                            <span class="text-indigo-400 font-bold block mb-1">Public WAN vs Private WAN</span>
+                            <p class="text-slate-400">The <strong>Internet</strong> is the largest public WAN in existence, open to anyone. Conversely, multinational corporations operate <strong>Private WANs</strong> (via leased fiber, MPLS, or encrypted SD-WAN) to securely connect branch offices and datacenters.</p>
+                        </div>
+                        <div class="bg-slate-800/60 p-3.5 rounded-lg border border-slate-700/60">
+                            <span class="text-indigo-400 font-bold block mb-1">Subnets, Segments &amp; Routing</span>
+                            <p class="text-slate-400">When multiple networks unite into a WAN, they form subnetworks (subnets). Routers interconnect these subnets and determine optimal paths, which is why traffic across networks is described as being <em>routed</em>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Geographic Scale Comparison Matrix -->
+                <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 overflow-hidden">
+                    <h4 class="text-base font-bold text-white mb-3 flex items-center gap-2">
+                        <i data-lucide="map" class="w-5 h-5 text-blue-400"></i>
+                        Geographic Hierarchy: LAN vs. MAN vs. WAN at a Glance
+                    </h4>
+                    <p class="text-xs text-slate-400 mb-4">A direct comparison of scale, infrastructure, speed, and ownership across the three foundational network scopes:</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-950 text-slate-300 border-b border-slate-800">
+                                    <th class="p-3 font-semibold text-blue-400">Type</th>
+                                    <th class="p-3 font-semibold text-white">Geographic Footprint</th>
+                                    <th class="p-3 font-semibold text-purple-400">Primary Transmission Media</th>
+                                    <th class="p-3 font-semibold text-emerald-400">Typical Bandwidth</th>
+                                    <th class="p-3 font-semibold text-amber-400">Administrative Ownership</th>
+                                    <th class="p-3 font-semibold text-slate-300">Typical Example</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/80 text-slate-300">
+                                <tr>
+                                    <td class="p-3 font-bold text-emerald-400">LAN</td>
+                                    <td class="p-3">Single room, floor, or building (&lt; 1–2 km)</td>
+                                    <td class="p-3">Cat6/Cat6a Copper, Wi-Fi 6/7, Multimode Fiber</td>
+                                    <td class="p-3 font-mono text-emerald-400">1 Gbps – 10 Gbps</td>
+                                    <td class="p-3">Single private organization or homeowner</td>
+                                    <td class="p-3 text-slate-400">Corporate office floor, home Wi-Fi, datacenter rack</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-cyan-400">MAN</td>
+                                    <td class="p-3">Town, city, or multi-campus university (5–50 km)</td>
+                                    <td class="p-3">Metro Ethernet, Dark Fiber Rings, CWDM/DWDM</td>
+                                    <td class="p-3 font-mono text-cyan-400">10 Gbps – 100 Gbps</td>
+                                    <td class="p-3">Municipal authority, university consortium, or telco lease</td>
+                                    <td class="p-3 text-slate-400">City hospital network, municipal smart grid, university ring</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-indigo-400">WAN</td>
+                                    <td class="p-3">Multi-city, national, or worldwide (100s–10,000s km)</td>
+                                    <td class="p-3">Undersea fiber cables, leased telco circuits, satellite, public Internet</td>
+                                    <td class="p-3 font-mono text-indigo-400">Variable (100 Mbps – 400 Gbps backbone)</td>
+                                    <td class="p-3">Multiple telecom carriers, Tier-1 ISPs, cloud providers</td>
+                                    <td class="p-3 text-slate-400">The public Internet, AWS Global Accelerator, enterprise SD-WAN</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Intranet, Extranet, Enterprise, SOHO Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/90 rounded-xl border border-slate-800 p-5">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="lock" class="w-4 h-4 text-amber-400"></i>
+                            <h4 class="font-bold text-white text-base">Intranet</h4>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            A <strong>private corporate network</strong> that uses standard Internet protocols (HTTP/HTTPS, DNS) to share company documentation, payroll, internal APIs, and tools strictly among employees. Segregated from the public Internet via enterprise perimeter firewalls.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-900/90 rounded-xl border border-slate-800 p-5">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
+                            <h4 class="font-bold text-white text-base">Extranet</h4>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-2">
+                            A controlled private extension of an intranet that grants authenticated access to external trusted partners, vendors, suppliers, or clients.
+                        </p>
+                        <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-[11px] text-slate-400">
+                            <strong class="text-cyan-400">Real-World Case Study:</strong> Suppose Akamai contracts Acme Computer Corp to supply workstations. Acme operates a private intranet hosting an order &amp; ticket web app. Acme grants Akamai staff controlled extranet access to track their orders and open support tickets.
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/90 rounded-xl border border-slate-800 p-5">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="building" class="w-4 h-4 text-purple-400"></i>
+                            <h4 class="font-bold text-white text-base">Enterprise Networks</h4>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Owned and operated by a single large enterprise to interconnect all its datacenters, cloud VPCs, and global branch offices. Combines elements of both LAN and WAN, utilizing high-end redundant routing equipment, advanced cybersecurity, and mission-critical 99.999% uptime architectures.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-900/90 rounded-xl border border-slate-800 p-5">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="cpu" class="w-4 h-4 text-rose-400"></i>
+                            <h4 class="font-bold text-white text-base">Small Office / Home Office (SOHO)</h4>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-2">
+                            A compact network typically comprising up to 10 nodes at a single physical site (wired or wireless).
+                        </p>
+                        <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-[11px] text-slate-400">
+                            <strong class="text-rose-400">The "Home Router" Reality:</strong> While an enterprise uses discrete switches, firewalls, and routers, a SOHO network relies on a <strong>multifunction appliance</strong> combining a Router, 4-Port Switch, Wi-Fi AP, DHCP server, NAT engine, and web GUI in one box.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ── SECTION 4: Datacenter & Network Topologies ────── -->
+        <section id="topologies" class="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xl space-y-6">
+            <div class="flex items-center gap-3">
+                <i data-lucide="git-merge" class="w-6 h-6 text-cyan-400"></i>
+                <h3 class="text-xl sm:text-2xl font-bold text-white">Datacenter &amp; Network Topologies</h3>
+            </div>
+            <p class="text-slate-400 text-xs sm:text-sm">How physical and virtual devices are arranged and interconnected to route data across modern datacenters, enterprise offices, and WAN backbones:</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Spine-and-Leaf -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-blue-500/40 bg-blue-950/20 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-bold text-white text-lg">Spine-and-Leaf (Clos Architecture)</h4>
+                            <span class="text-[10px] font-mono text-blue-300 bg-blue-950/80 px-2.5 py-1 rounded-full border border-blue-800">Datacenter &amp; Cloud Standard</span>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            Every leaf switch (ToR - Top of Rack) connects to every spine switch in a non-blocking mesh. Designed for modern East-West traffic between Kubernetes pods, microservices, and storage clusters.
+                        </p>
+                        <div class="space-y-2 text-xs">
+                            <div class="text-slate-400"><strong class="text-emerald-400">Pros:</strong> Predictable 1-hop latency between any two leaf nodes; no Spanning Tree Protocol (STP) link blocking; ECMP multi-path load balancing.</div>
+                            <div class="text-slate-400"><strong class="text-rose-400">Cons:</strong> Requires significant fiber cabling density and high switch port counts.</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs text-slate-400">
+                        <strong class="text-blue-400 uppercase font-mono tracking-wider text-[10px] block mb-1">DevOps / Cloud Use:</strong> Standard architecture inside AWS, GCP, Azure, and modern private Kubernetes datacenters.
+                    </div>
+                </div>
+
+                <!-- Star Topology -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-emerald-500/40 bg-emerald-950/20 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-bold text-white text-lg">Star Topology</h4>
+                            <span class="text-[10px] font-mono text-emerald-300 bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-800">Local LAN Standard</span>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            All endpoints (workstations, servers, printers) connect individually to a central switch or hub.
+                        </p>
+                        <div class="space-y-2 text-xs">
+                            <div class="text-slate-400"><strong class="text-emerald-400">Pros:</strong> Easy to deploy and troubleshoot; failure of one cable or node does not impact others.</div>
+                            <div class="text-slate-400"><strong class="text-rose-400">Cons:</strong> Central switch is a single point of failure (SPOF) without link aggregation.</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs text-slate-400">
+                        <strong class="text-emerald-400 uppercase font-mono tracking-wider text-[10px] block mb-1">DevOps / Cloud Use:</strong> Campus office LANs, server rack internal access connections.
+                    </div>
+                </div>
+
+                <!-- Mesh Topology -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-purple-500/40 bg-purple-950/20 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-bold text-white text-lg">Full &amp; Partial Mesh Topology</h4>
+                            <span class="text-[10px] font-mono text-purple-300 bg-purple-950/80 px-2.5 py-1 rounded-full border border-purple-800">High Redundancy</span>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            Every node has redundant direct connections to multiple or all other nodes in the network.
+                        </p>
+                        <div class="space-y-2 text-xs">
+                            <div class="text-slate-400"><strong class="text-emerald-400">Pros:</strong> Maximum fault tolerance; traffic dynamically reroutes around failed links.</div>
+                            <div class="text-slate-400"><strong class="text-rose-400">Cons:</strong> Expensive cabling complexity (N(N-1)/2 links in a full mesh).</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs text-slate-400">
+                        <strong class="text-purple-400 uppercase font-mono tracking-wider text-[10px] block mb-1">DevOps / Cloud Use:</strong> WAN internet core backbones, VPN mesh (Tailscale, WireGuard), and Kubernetes Service Mesh overlays.
+                    </div>
+                </div>
+
+                <!-- Bus & Ring -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-slate-700 bg-slate-900/40 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-bold text-white text-lg">Bus &amp; Ring Topologies (Legacy)</h4>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700">Historical Context</span>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            Bus connects all devices to a single shared coaxial cable with terminators. Ring circulates a token sequentially around a closed circle (Token Ring).
+                        </p>
+                        <div class="space-y-2 text-xs">
+                            <div class="text-slate-400"><strong class="text-emerald-400">Pros:</strong> Low initial cable requirement in early 1980s networking.</div>
+                            <div class="text-slate-400"><strong class="text-rose-400">Cons:</strong> Single break disables the entire network; high packet collision rates.</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs text-slate-400">
+                        <strong class="text-slate-400 uppercase font-mono tracking-wider text-[10px] block mb-1">DevOps / Cloud Use:</strong> Replaced entirely by switched Ethernet and Spine-Leaf fabrics in modern IT.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── SECTION 5: TCP vs UDP Transport Layer ────────── -->
+        <section id="tcp-udp" class="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xl space-y-5">
+            <div class="flex items-center gap-3">
+                <i data-lucide="arrow-right-left" class="w-6 h-6 text-rose-400"></i>
+                <h3 class="text-xl sm:text-2xl font-bold text-white">Transport Layer Comparison: TCP vs. UDP</h3>
+            </div>
+            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                The core trade-off at Layer 4: Guaranteed, ordered delivery with error correction (TCP) versus lightweight, blazing-fast, low-overhead transmission (UDP).
+            </p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-950 text-slate-300 border-b border-slate-800">
+                            <th class="p-3.5 font-semibold text-white">Comparison Metric</th>
+                            <th class="p-3.5 font-semibold text-emerald-400">TCP (Transmission Control Protocol)</th>
+                            <th class="p-3.5 font-semibold text-cyan-400">UDP (User Datagram Protocol)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/80 text-slate-300">
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="p-3.5 font-bold text-white">Protocol Model</td>
+                            <td class="p-3.5">Connection-oriented (handshake required)</td>
+                            <td class="p-3.5">Connectionless (fire-and-forget)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="p-3.5 font-bold text-white">Reliability</td>
+                            <td class="p-3.5">Guaranteed delivery with retransmission (ARQ)</td>
+                            <td class="p-3.5">Best-effort; dropped packets are lost</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="p-3.5 font-bold text-white">Data Ordering</td>
+                            <td class="p-3.5">Strictly guaranteed via 32-bit sequence numbers</td>
+                            <td class="p-3.5">No ordering; packets arrive out of order</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="p-3.5 font-bold text-white">Header Overhead</td>
+                            <td class="p-3.5 font-mono text-emerald-400">20 to 60 bytes (flags, window, options)</td>
+                            <td class="p-3.5 font-mono text-cyan-400">8 bytes (source, dest, length, checksum)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="p-3.5 font-bold text-white">Flow &amp; Congestion Control</td>
+                            <td class="p-3.5">Sliding window, slow-start, AIMD congestion</td>
+                            <td class="p-3.5">None; sends at application transmission rate</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="p-3.5 font-bold text-white">Transmission Speed</td>
+                            <td class="p-3.5">Slower due to ACK overhead &amp; state tracking</td>
+                            <td class="p-3.5">Blazing fast with minimal latency</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="p-3.5 font-bold text-white">DevOps / Production Uses</td>
+                            <td class="p-3.5 text-slate-300">HTTP/1.1, HTTP/2, SSH, TLS, gRPC, PostgreSQL, MySQL</td>
+                            <td class="p-3.5 text-slate-300">DNS queries, DHCP, NTP, Syslog, SNMP, QUIC (HTTP/3), WebRTC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ── SECTION 6: Hardware Hierarchy Table ──────────── -->
+        <section id="hierarchy" class="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xl">
+            <div class="flex items-center gap-3 mb-3">
+                <i data-lucide="layers" class="w-6 h-6 text-blue-400"></i>
+                <h3 class="text-xl sm:text-2xl font-bold text-white">Network Hardware Hierarchy Comparison</h3>
+            </div>
+            <p class="text-slate-400 text-xs sm:text-sm mb-5 leading-relaxed">
+                How fundamental networking devices operate across OSI layers, addressing types, and their modern cloud counterparts:
+            </p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-950 text-slate-300 border-b border-slate-800">
+                            <th class="p-3.5 font-semibold text-blue-400">Device</th>
+                            <th class="p-3.5 font-semibold text-white">OSI Layer</th>
+                            <th class="p-3.5 font-semibold text-purple-400">Addressing Type</th>
+                            <th class="p-3.5 font-semibold text-slate-300">Cloud / DevOps Equivalent</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/80 text-slate-300">
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="p-3.5 font-bold text-white flex items-center gap-2"><i data-lucide="circle-dot" class="w-3.5 h-3.5 text-slate-500"></i>Hub (Legacy)</td>
+                            <td class="p-3.5 font-mono text-slate-400">Layer 1 (Physical)</td>
+                            <td class="p-3.5 font-mono text-slate-500">None (Raw Electrical Bits)</td>
+                            <td class="p-3.5 text-slate-400">Obsolete; replaced entirely by switches</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="p-3.5 font-bold text-white flex items-center gap-2"><i data-lucide="shuffle" class="w-3.5 h-3.5 text-emerald-400"></i>Switch</td>
+                            <td class="p-3.5 font-mono text-emerald-400">Layer 2 (Data Link)</td>
+                            <td class="p-3.5 font-mono text-emerald-400">Hardware MAC Address</td>
+                            <td class="p-3.5 text-slate-300">Linux Bridge (<code>docker0</code>), OVS, VMware vSwitch</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="p-3.5 font-bold text-white flex items-center gap-2"><i data-lucide="git-branch" class="w-3.5 h-3.5 text-blue-400"></i>Router</td>
+                            <td class="p-3.5 font-mono text-blue-400">Layer 3 (Network)</td>
+                            <td class="p-3.5 font-mono text-blue-400">Logical IP Address</td>
+                            <td class="p-3.5 text-slate-300">Cloud VPC Route Tables, AWS Transit Gateway, kube-proxy</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="p-3.5 font-bold text-white flex items-center gap-2"><i data-lucide="shield" class="w-3.5 h-3.5 text-purple-400"></i>Gateway / Firewall</td>
+                            <td class="p-3.5 font-mono text-purple-400">Layer 4 - Layer 7</td>
+                            <td class="p-3.5 font-mono text-purple-400">IP, Port, Protocol, URL / Headers</td>
+                            <td class="p-3.5 text-slate-300">AWS NAT Gateway, Security Groups, Envoy, Nginx WAF</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ── SECTION 7: 10 Core Hardware & Software Components Grid ── -->
+        <section id="components-grid" class="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xl space-y-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+                <div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="cpu" class="w-6 h-6 text-blue-400"></i>
+                        The 10 Core Hardware &amp; Software Components
+                    </h3>
+                    <p class="text-slate-400 text-xs sm:text-sm mt-1">Detailed breakdown of network nodes, controllers, media, infrastructure servers, load balancers, and security gateways.</p>
+                </div>
+                <!-- Search Component Input -->
+                <div class="relative w-full sm:w-64">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                    <input type="text" id="component-search" placeholder="Search components..."
+                        class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all">
+                </div>
+            </div>
+
+            <!-- Components Grid Container -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="components-card-wrapper">
+
+                <!-- 1. Node (Host / Device) -->
+                <div class="component-card bg-slate-950 rounded-2xl border border-slate-800 p-6 shadow-lg flex flex-col justify-between" data-search="node host server client peer dumb terminal compute vm container pod">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-400">
+                                <i data-lucide="laptop" class="w-5 h-5"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-white">Node (Host / Device)</h4>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            Any physical device or virtual instance connected to a network capable of originating, routing, or receiving data.
+                        </p>
+                        <div class="mb-3.5">
+                            <h5 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">Subtypes &amp; Variations:</h5>
+                            <ul class="space-y-1.5 text-xs text-slate-400">
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Servers:</strong> High-reliability systems providing centralized services (databases, web apps, API endpoints).</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Clients:</strong> Workstations, laptops, and smartphones consuming network resources while running local workloads.</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Peers:</strong> Decentralized nodes capable of functioning simultaneously as both client and server (e.g. BitTorrent, P2P meshes).</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Host Computers:</strong> Traditionally large mainframes processing workloads for connected terminals; today, any node with an assigned IP.</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Dumb Terminals:</strong> Keyboard/display interfaces with zero local storage/memory, relying 100% on central hosts for compute.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs">
+                        <span class="text-blue-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Cloud / DevOps Context:</span>
+                        <p class="text-slate-400">Virtual Machines (AWS EC2, GCP Compute), Containers (Docker, Podman), and Kubernetes Pods.</p>
+                    </div>
+                </div>
+
+                <!-- 2. Network Interface Card (NIC) -->
+                <div class="component-card bg-slate-950 rounded-2xl border border-slate-800 p-6 shadow-lg flex flex-col justify-between" data-search="nic network interface card mac address vnic veth sr-iov serial serialization duplex half full auto-sensing oui promiscuous mode">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-400">
+                                <i data-lucide="cpu" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white">Network Interface Card (NIC)</h4>
+                                <span class="text-[10px] font-mono text-slate-400">Also known as Network Adapter or Network Card</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            The hardware controller connecting a device to a wired or wireless network medium, handling physical signal serialization and 48-bit MAC addressing. NICs can be integrated into the motherboard or added via expansion ports (PCIe, USB).
+                        </p>
+                        
+                        <!-- MAC Address & Duplex Details Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 text-xs">
+                            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                                <strong class="text-emerald-400 font-mono block mb-1">48-Bit MAC Addressing</strong>
+                                <p class="text-slate-400 leading-relaxed">Assigned by manufacturer. 6 sets of 2 hex digits (e.g. <code>00:1A:2B:3C:4D:5E</code>). First 3 sets = <strong>OUI Manufacturer ID</strong>; last 3 sets = <strong>NIC Serial ID</strong>.</p>
+                            </div>
+                            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                                <strong class="text-amber-400 font-mono block mb-1">Duplex &amp; Auto-Sensing</strong>
+                                <p class="text-slate-400 leading-relaxed"><strong>Half-Duplex:</strong> Send or receive, not both (Walkie-Talkie mode). <strong>Full-Duplex:</strong> Simultaneous send &amp; receive. Modern NICs use <strong>auto-sensing</strong> to auto-negotiate.</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-3.5 bg-rose-950/20 p-3 rounded-xl border border-rose-500/20 text-xs">
+                            <strong class="text-rose-400 block mb-1">Duplex Mismatch Bug:</strong>
+                            <p class="text-slate-300 leading-relaxed">If Device A is set to Half-Duplex and Device B is set to Full-Duplex, Device B transmits continuously. Device A expects silent intervals to transmit, so Device A is starved and can never transmit at all!</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs">
+                        <span class="text-blue-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Cloud / DevOps Context:</span>
+                        <p class="text-slate-400">Virtual NICs (vNICs), Linux Virtual Ethernet pairs (<code>veth</code>), SR-IOV, and <strong>Promiscuous Mode</strong> (instructs NIC to pass all frames to packet sniffers like Wireshark/tcpdump regardless of destination MAC).</p>
+                    </div>
+                </div>
+
+                <!-- 3. Transmission Medium -->
+                <div class="component-card bg-slate-950 rounded-2xl border border-slate-800 p-6 shadow-lg flex flex-col justify-between" data-search="medium transmission cable copper cat6 fiber optics wireless rf radio frequency">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-400">
+                                <i data-lucide="wifi" class="w-5 h-5"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-white">Transmission Medium</h4>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            The physical conduit or electromagnetic spectrum carrying modulated communication signals between nodes.
+                        </p>
+                        <div class="mb-3.5">
+                            <h5 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">Medium Types:</h5>
+                            <ul class="space-y-1.5 text-xs text-slate-400">
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Twisted-Pair Copper:</strong> Category 5e, 6, 6a Ethernet cables carrying electrical pulses over RJ-45 connectors (up to 100m).</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Fiber Optics:</strong> Glass or plastic strands carrying laser light pulses. Single-mode (long WAN spans) vs Multi-mode (datacenter racks).</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Wireless RF:</strong> Electromagnetic radio frequency waves (Wi-Fi 6/6E/7, 5G cellular, Microwave point-to-point).</span></li>
+                            </ul>
+                        </div>
+                        <div class="mb-3.5 bg-slate-900/80 p-3 rounded-xl border border-slate-800 text-xs">
+                            <strong class="text-emerald-400 block mb-1">Human Analogy:</strong>
+                            <p class="text-slate-400">Air transmits acoustic sound waves; network media transmits encoded binary electrical, optical, or radio signals.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Network Switch & Hubs -->
+                <div class="component-card bg-slate-950 rounded-2xl border border-slate-800 p-6 shadow-lg flex flex-col justify-between" data-search="switch hub layer 2 layer 1 mac address cam table bridge collision domain arp flooding port mirroring managed switch">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-400">
+                                <i data-lucide="shuffle" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white">Network Switch (vs. Legacy Hub)</h4>
+                                <span class="text-[10px] font-mono text-emerald-400">Layer 2 Star Topology Redistribution Point</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            Interconnects multiple nodes in a star topology. While legacy <strong>Hubs (Layer 1 repeaters)</strong> broadcast data out all ports creating <em>1 big collision domain</em>, switches route frames directly to the intended recipient port.
+                        </p>
+
+                        <!-- Hub vs Switch vs Managed Breakdown -->
+                        <div class="space-y-3 mb-4 text-xs">
+                            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                                <strong class="text-cyan-400 font-bold block mb-1">CAM Table &amp; Micro-Segmentation</strong>
+                                <p class="text-slate-400 leading-relaxed">On boot, switches flood traffic like hubs. As hosts respond to <strong>ARP broadcasts</strong>, the switch learns MAC addresses and populates its <strong>CAM (Content Addressable Memory) table</strong>. <em>Each switch port becomes an isolated collision domain!</em></p>
+                            </div>
+                            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                                <strong class="text-purple-400 font-bold block mb-1">Managed Switches &amp; Port Mirroring</strong>
+                                <p class="text-slate-400 leading-relaxed">Managed switches run firmware operating systems allowing admins to configure VLANs (802.1Q), Security ACLs, and <strong>Port Mirroring</strong> (copies all switch traffic to 1 port for packet sniffers).</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs">
+                        <span class="text-blue-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Cloud / DevOps Context:</span>
+                        <p class="text-slate-400">Linux bridge (<code>docker0</code>), Open vSwitch (OVS), VMware vSwitch, and cloud VPC virtual switches.</p>
+                    </div>
+                </div>
+
+                <!-- 5. Router -->
+                <div class="component-card bg-slate-950 rounded-2xl border border-slate-800 p-6 shadow-lg flex flex-col justify-between" data-search="router layer 3 ip routing nat transit gateway bgp ospf kube-proxy vpc">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-400">
+                                <i data-lucide="git-branch" class="w-5 h-5"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-white">Router</h4>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            A Layer 3 device that interconnects distinct IP networks, determining the optimal next-hop path for packets across subnets and autonomous systems.
+                        </p>
+                        <div class="mb-3.5">
+                            <h5 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">Core Capabilities:</h5>
+                            <ul class="space-y-1.5 text-xs text-slate-400">
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Packet Routing:</strong> Evaluates IP destination headers against routing tables (BGP, OSPF, static routes).</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Network Address Translation (NAT):</strong> Translates internal private RFC 1918 IPs to public internet routable IPs.</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Boundary Filtering:</strong> Enforces access control lists (ACLs) and segments broadcast domains.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs">
+                        <span class="text-blue-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Cloud / DevOps Context:</span>
+                        <p class="text-slate-400">Cloud VPC Route Tables, AWS Transit Gateway, virtual routers in software-defined networks, and Kubernetes <code>kube-proxy</code>.</p>
+                    </div>
+                </div>
+
+                <!-- 6. SOHO Multifunction Appliance -->
+                <div class="component-card bg-slate-950 rounded-2xl border border-slate-800 p-6 shadow-lg flex flex-col justify-between" data-search="soho home router switch access point dhcp nat firewall multifunction appliance">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-400">
+                                <i data-lucide="home" class="w-5 h-5"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-white">SOHO Multifunction Appliance</h4>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            A hybrid consumer appliance that integrates multiple discrete enterprise networking devices into a single compact chassis.
+                        </p>
+                        <div class="mb-3.5">
+                            <h5 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">Integrated Hardware Anatomy:</h5>
+                            <ul class="space-y-1.5 text-xs text-slate-400">
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Layer 3 Router:</strong> Routes between WAN (Internet) and private LAN.</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>4-Port Layer 2 Switch:</strong> Interconnects local wired Ethernet devices.</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Wi-Fi Access Point:</strong> Bridges 802.11 wireless devices onto the LAN.</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>DHCP Server:</strong> Dynamically leases private IPs, subnet masks, and DNS servers.</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>NAT Engine:</strong> Translates all home devices to a single ISP public IP.</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Stateful SPI Firewall:</strong> Drops unsolicited inbound packets from the web.</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Web Administration GUI:</strong> Local configuration console accessible via browser (e.g. <code>192.168.1.1</code>).</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs">
+                        <span class="text-blue-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Cloud / DevOps Context:</span>
+                        <p class="text-slate-400">Home lab gateway, edge IoT gateways, and remote worker endpoint routers.</p>
+                    </div>
+                </div>
+
+                <!-- 7. DNS Server (Name Resolution) -->
+                <div class="component-card bg-slate-950 rounded-2xl border border-slate-800 p-6 shadow-lg flex flex-col justify-between" data-search="dns domain name resolution coredns route53 cname a aaaa mx txt record">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-400">
+                                <i data-lucide="globe" class="w-5 h-5"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-white">DNS Server (Name Resolution)</h4>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            The internet's distributed directory service, translating human-friendly domain names (google.com) into numerical IP addresses.
+                        </p>
+                        <div class="mb-3.5">
+                            <h5 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">Key Resource Records:</h5>
+                            <ul class="space-y-1.5 text-xs text-slate-400">
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>A Record:</strong> Maps domain to 32-bit IPv4 address (e.g., <code>142.250.190.46</code>).</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>AAAA Record:</strong> Maps domain to 128-bit IPv6 address.</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>CNAME:</strong> Canonical alias pointing one domain name to another.</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>MX:</strong> Mail exchange server routing inbound emails.</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>TXT:</strong> Arbitrary text records used for SPF, DKIM, and domain ownership verification.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs">
+                        <span class="text-blue-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Cloud / DevOps Context:</span>
+                        <p class="text-slate-400">CoreDNS in Kubernetes clusters, AWS Route 53, Cloudflare, and split-horizon private DNS zones in VPCs.</p>
+                    </div>
+                </div>
+
+                <!-- 8. DHCP Server -->
+                <div class="component-card bg-slate-950 rounded-2xl border border-slate-800 p-6 shadow-lg flex flex-col justify-between" data-search="dhcp dora discover offer request acknowledge ip address lease ipam">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-400">
+                                <i data-lucide="zap" class="w-5 h-5"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-white">DHCP Server</h4>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            Dynamically and automatically provides IP configuration (IP address, subnet mask, default gateway, and DNS servers) to network devices upon connection.
+                        </p>
+                        <div class="mb-3.5 bg-slate-900/80 p-3 rounded-xl border border-slate-800 text-xs">
+                            <strong class="text-amber-400 block mb-1">DORA Exchange Process:</strong>
+                            <p class="text-slate-300 leading-relaxed font-mono"><strong>Discover</strong> (Client broadcasts) → <strong>Offer</strong> (Server proposes IP) → <strong>Request</strong> (Client accepts lease) → <strong>Acknowledge</strong> (Server commits lease).</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs">
+                        <span class="text-blue-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Cloud / DevOps Context:</span>
+                        <p class="text-slate-400">Cloud VPC internal DHCP assigning private IPs to newly launched EC2/Compute instances, and IPAM in container orchestrators.</p>
+                    </div>
+                </div>
+
+                <!-- 9. Load Balancer -->
+                <div class="component-card bg-slate-950 rounded-2xl border border-slate-800 p-6 shadow-lg flex flex-col justify-between" data-search="load balancer lb layer 4 layer 7 alb nlb ingress nginx envoy proxy">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-400">
+                                <i data-lucide="scale" class="w-5 h-5"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-white">Load Balancer</h4>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            Distributes incoming traffic across a pool of backend servers to prevent overload, maximize throughput, and achieve zero-downtime failover.
+                        </p>
+                        <div class="mb-3.5">
+                            <h5 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">Load Balancing Layers:</h5>
+                            <ul class="space-y-1.5 text-xs text-slate-400">
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Layer 4 Load Balancer:</strong> Ultra-fast routing based strictly on IP and TCP/UDP ports (AWS NLB, IPVS, HAProxy).</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Layer 7 Load Balancer:</strong> Application-aware routing inspecting HTTP headers, cookies, URL paths, and handling TLS termination (AWS ALB, Nginx, Envoy).</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs">
+                        <span class="text-blue-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Cloud / DevOps Context:</span>
+                        <p class="text-slate-400">Kubernetes Ingress Controllers, AWS Application Load Balancers, Traefik, and Envoy service proxying.</p>
+                    </div>
+                </div>
+
+                <!-- 10. Firewall & Security Gateway -->
+                <div class="component-card bg-slate-950 rounded-2xl border border-slate-800 p-6 shadow-lg flex flex-col justify-between" data-search="firewall security gateway spi stateful stateless waf iptables nftables security group networkpolicy">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-400">
+                                <i data-lucide="shield" class="w-5 h-5"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-white">Firewall &amp; Security Gateway</h4>
+                        </div>
+                        <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
+                            Enforces security boundaries by monitoring and filtering incoming and outgoing network traffic based on configured rules.
+                        </p>
+                        <div class="mb-3.5">
+                            <h5 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">Firewall Technologies:</h5>
+                            <ul class="space-y-1.5 text-xs text-slate-400">
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Stateless Packet Filter:</strong> Inspects packets independently by source/destination IP, port, and protocol (ACLs).</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Stateful Inspection (SPI):</strong> Tracks active bidirectional connection state in a connection tracking table (Linux <code>conntrack</code>).</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Web Application Firewall (WAF):</strong> Layer 7 deep-packet inspection protecting against SQL injection, XSS, and DDoS.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs">
+                        <span class="text-blue-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Cloud / DevOps Context:</span>
+                        <p class="text-slate-400">AWS Security Groups, Linux <code>iptables</code>/<code>nftables</code>, Cloudflare WAF, and Kubernetes NetworkPolicies.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ── SECTION 8: Common DevOps Ports Reference ───────── -->
+        <section id="ports" class="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xl space-y-5">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+                <div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="hash" class="w-6 h-6 text-emerald-400"></i>
+                        Common DevOps &amp; Production Port Numbers Reference
+                    </h3>
+                    <p class="text-slate-400 text-xs sm:text-sm mt-1">Frequently tested and utilized port numbers across web servers, databases, monitoring, and infrastructure.</p>
+                </div>
+                <div class="relative w-full sm:w-64">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                    <input type="text" id="port-search" placeholder="Search ports or services..."
+                        class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all">
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse" id="ports-table">
+                    <thead>
+                        <tr class="bg-slate-950 text-slate-300 border-b border-slate-800">
+                            <th class="p-3.5 font-semibold text-emerald-400 font-mono">Port</th>
+                            <th class="p-3.5 font-semibold text-blue-400">Protocol</th>
+                            <th class="p-3.5 font-semibold text-white">Service Name</th>
+                            <th class="p-3.5 font-semibold text-slate-300">DevOps &amp; Security Production Context</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/80 text-slate-300">
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">22</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">SSH / SFTP</td><td class="p-3.5 text-slate-400">Secure remote server administration, git over SSH, Ansible automation.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">25</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">SMTP</td><td class="p-3.5 text-slate-400">Simple Mail Transfer Protocol. MTA-to-MTA server relay &amp; email routing.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">53</td><td class="p-3.5 font-mono text-blue-400">UDP/TCP</td><td class="p-3.5 font-bold text-white">DNS</td><td class="p-3.5 text-slate-400">Domain name resolution. UDP for standard queries; TCP for zone transfers and &gt;512B replies.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">67 / 68</td><td class="p-3.5 font-mono text-cyan-400">UDP</td><td class="p-3.5 font-bold text-white">DHCP</td><td class="p-3.5 text-slate-400">Port 67 (DHCP Server), Port 68 (DHCP Client) for dynamic IP address provisioning.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">80</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">HTTP</td><td class="p-3.5 text-slate-400">Unencrypted web traffic, standard frontend web server port (Nginx, Apache).</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">110</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">POP3</td><td class="p-3.5 text-slate-400">Post Office Protocol v3. Legacy mail retrieval (download &amp; delete from server).</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">123</td><td class="p-3.5 font-mono text-cyan-400">UDP</td><td class="p-3.5 font-bold text-white">NTP</td><td class="p-3.5 text-slate-400">Network Time Protocol, critical for distributed systems clock synchronization and TLS cert validity.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">143</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">IMAP</td><td class="p-3.5 text-slate-400">Internet Message Access Protocol. Real-time multi-device email folder synchronization.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">161 / 162</td><td class="p-3.5 font-mono text-cyan-400">UDP</td><td class="p-3.5 font-bold text-white">SNMP</td><td class="p-3.5 text-slate-400">Simple Network Management Protocol. Port 161 (polling), Port 162 (trap alerts).</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">179</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">BGP</td><td class="p-3.5 text-slate-400">Border Gateway Protocol, internet routing and Kubernetes CNI Calico/Cilium pod route peering.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">389 / 636</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">LDAP / LDAPS</td><td class="p-3.5 text-slate-400">Lightweight Directory Access Protocol. Active Directory &amp; corporate IAM authentication.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">443</td><td class="p-3.5 font-mono text-blue-400">TCP / UDP</td><td class="p-3.5 font-bold text-white">HTTPS / TLS</td><td class="p-3.5 text-slate-400">Encrypted web traffic. TCP for TLS/1.2/1.3; UDP for modern HTTP/3 (QUIC).</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">465</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">SMTPS</td><td class="p-3.5 text-slate-400">Implicit TLS encrypted mail submission for email clients.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">587</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">SMTP Submission</td><td class="p-3.5 text-slate-400">Client-to-server mail submission with mandatory STARTTLS encryption.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">993</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">IMAPS</td><td class="p-3.5 text-slate-400">Implicit TLS encrypted IMAP mail synchronization.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">995</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">POP3S</td><td class="p-3.5 text-slate-400">Implicit TLS encrypted POP3 mail retrieval.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">3306</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">MySQL / MariaDB</td><td class="p-3.5 text-slate-400">Standard relational database port.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">5432</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">PostgreSQL</td><td class="p-3.5 text-slate-400">Default relational database listener for PostgreSQL instances.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">6379</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">Redis</td><td class="p-3.5 text-slate-400">In-memory cache and message broker listener.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">6443</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">Kubernetes API</td><td class="p-3.5 text-slate-400">Default secure Kubernetes control plane API server port accessed by kubectl.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">8080</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">HTTP-Alt / Apps</td><td class="p-3.5 text-slate-400">Common development port for web servers, Tomcat, Jenkins, and containerized microservices.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">9090</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">Prometheus</td><td class="p-3.5 text-slate-400">Prometheus monitoring server web UI and metrics scraping API.</td></tr>
+                        <tr class="port-row hover:bg-slate-800/40 transition-colors"><td class="p-3.5 font-mono font-bold text-emerald-400">9200</td><td class="p-3.5 font-mono text-blue-400">TCP</td><td class="p-3.5 font-bold text-white">Elasticsearch</td><td class="p-3.5 text-slate-400">RESTful HTTP search and log indexing API port (ELK stack).</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ── SECTION 9: Deep-Dive Protocol Breakdown Cards ── -->
+        <section id="protocols-deep-dive" class="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xl space-y-6">
+            <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+                <i data-lucide="book-open" class="w-6 h-6 text-blue-400"></i>
+                <div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-white">Deep-Dive Protocol Breakdown</h3>
+                    <p class="text-slate-400 text-xs sm:text-sm mt-1">In-depth technical architecture of foundational application, email, and infrastructure protocols.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6">
+
+                <!-- HTTP & HTTPS -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-emerald-500/40 shadow-lg">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
+                                <i data-lucide="globe" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white">HTTP &amp; HTTPS (Hypertext Transfer Protocol Secure)</h4>
+                                <span class="text-xs text-slate-400 font-mono">Ports: 80 (HTTP) • 443 (HTTPS) | Transport: TCP / UDP (HTTP/3)</span>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono font-medium">Web &amp; API Standard</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                        The foundation of data communication on the World Wide Web. HTTP is a stateless, client-server application-layer protocol. HTTPS wraps HTTP in a Transport Layer Security (TLS) tunnel to guarantee confidentiality, data integrity, and server authentication.
+                    </p>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li class="flex items-start gap-2"><span class="text-emerald-400">•</span><span><strong>HTTP Verbs:</strong> <code>GET</code> (retrieve), <code>POST</code> (create/submit), <code>PUT</code> (replace), <code>PATCH</code> (partial update), <code>DELETE</code> (remove), <code>OPTIONS</code> (CORS preflight).</span></li>
+                        <li class="flex items-start gap-2"><span class="text-emerald-400">•</span><span><strong>Status Code Groups:</strong> <code>1xx</code> Informational, <code>2xx</code> Success (200 OK, 201 Created), <code>3xx</code> Redirection (301 Permanent, 302 Found), <code>4xx</code> Client Error (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found), <code>5xx</code> Server Error (500 Internal Error, 502 Bad Gateway, 503 Service Unavailable, 504 Gateway Timeout).</span></li>
+                        <li class="flex items-start gap-2"><span class="text-emerald-400">•</span><span><strong>Protocol Generations:</strong> <strong>HTTP/1.1</strong> (Text-based, persistent connections) &rarr; <strong>HTTP/2</strong> (Binary frames, multiplexing over single TCP socket) &rarr; <strong>HTTP/3</strong> (UDP-based QUIC protocol, 0-RTT handshake).</span></li>
+                        <li class="flex items-start gap-2"><span class="text-emerald-400">•</span><span><strong>DevOps Context:</strong> Nginx, Apache, HAProxy, Envoy, Ingress Controllers, RESTful APIs, gRPC over HTTP/2, WebSockets.</span></li>
+                    </ul>
+                </div>
+
+                <!-- SMTP -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-indigo-500/40 shadow-lg">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-indigo-500/10 rounded-xl text-indigo-400 border border-indigo-500/20">
+                                <i data-lucide="mail" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white">SMTP (Simple Mail Transfer Protocol)</h4>
+                                <span class="text-xs text-slate-400 font-mono">Ports: 25 (Relay) • 587 (Submission) • 465 (SMTPS) | Transport: TCP</span>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono font-medium">Mail Transport &amp; Relay</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                        The universal push protocol used to send and relay email messages between email clients (MUAs) and mail transfer agents (MTAs), as well as between MTA servers across the Internet.
+                    </p>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">•</span><span><strong>Direction:</strong> Push-only protocol. Used for outbound email submission and server-to-server relaying.</span></li>
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">•</span><span><strong>Core Command Flow:</strong> <code>EHLO client.example.com</code> &rarr; <code>MAIL FROM:&lt;sender@example.com&gt;</code> &rarr; <code>RCPT TO:&lt;recipient@domain.com&gt;</code> &rarr; <code>DATA</code> (headers &amp; body) &rarr; <code>QUIT</code>.</span></li>
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">•</span><span><strong>Port Breakdown:</strong> <strong>Port 25</strong> (MTA-to-MTA server relay); <strong>Port 587</strong> (Client submission w/ <code>STARTTLS</code>); <strong>Port 465</strong> (Implicit SMTPS encryption).</span></li>
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">•</span><span><strong>DevOps Context:</strong> Transactional emails (AWS SES, SendGrid, Mailgun), Prometheus Alertmanager notification channels, Grafana alerting.</span></li>
+                    </ul>
+                </div>
+
+                <!-- IMAP -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-indigo-500/40 shadow-lg">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-indigo-500/10 rounded-xl text-indigo-400 border border-indigo-500/20">
+                                <i data-lucide="inbox" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white">IMAP (Internet Message Access Protocol)</h4>
+                                <span class="text-xs text-slate-400 font-mono">Ports: 143 (Plain/STARTTLS) • 993 (IMAPS) | Transport: TCP</span>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono font-medium">Multi-Device Mail Sync</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                        A modern pull protocol designed for interactive email management. Messages remain stored on the mail server while clients synchronize folder states (Inbox, Sent, Drafts, Trash) bidirectionally across multiple devices.
+                    </p>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">•</span><span><strong>Server-Centric Sync:</strong> Unlike POP3, IMAP leaves emails on the server. Actions taken on a phone (reading, archiving, deleting) instantly mirror on a laptop or webmail.</span></li>
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">•</span><span><strong>Folder &amp; State Flags:</strong> Supports hierarchical mail folders, search indexing on the server, and message flags (<code>\Seen</code>, <code>\Answered</code>, <code>\Flagged</code>, <code>\Deleted</code>).</span></li>
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">•</span><span><strong>Security:</strong> <strong>Port 143</strong> (Explicit <code>STARTTLS</code> upgrade); <strong>Port 993</strong> (Implicit TLS/SSL wrapper).</span></li>
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">•</span><span><strong>DevOps Context:</strong> Automated support desk ticketing systems (Zendesk, Request Tracker), automated email parser microservices.</span></li>
+                    </ul>
+                </div>
+
+                <!-- POP3 -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-slate-700 shadow-lg">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-slate-800 rounded-xl text-slate-400 border border-slate-700">
+                                <i data-lucide="download" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white">POP3 (Post Office Protocol v3)</h4>
+                                <span class="text-xs text-slate-400 font-mono">Ports: 110 (Plain/STARTTLS) • 995 (POP3S) | Transport: TCP</span>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700 font-mono font-medium">Legacy Download &amp; Delete</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                        A legacy pull protocol designed in the early dial-up era. POP3 downloads messages from the mail server onto the client's local disk drive and typically deletes them from the server.
+                    </p>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li class="flex items-start gap-2"><span class="text-slate-400">•</span><span><strong>Single-Device Model:</strong> Best suited for single-computer offline access. Lacks multi-device folder synchronization.</span></li>
+                        <li class="flex items-start gap-2"><span class="text-slate-400">•</span><span><strong>Operation Cycle:</strong> Connect &rarr; Authenticate (<code>USER</code>/<code>PASS</code>) &rarr; Retrieve (<code>RETR</code>) &rarr; Mark for deletion (<code>DELE</code>) &rarr; Commit &amp; Quit (<code>QUIT</code>).</span></li>
+                        <li class="flex items-start gap-2"><span class="text-slate-400">•</span><span><strong>Security:</strong> <strong>Port 110</strong> (Plaintext/STARTTLS); <strong>Port 995</strong> (POP3S encrypted wrapper).</span></li>
+                    </ul>
+                </div>
+
+                <!-- DNS -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-cyan-500/40 shadow-lg">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-cyan-500/10 rounded-xl text-cyan-400 border border-cyan-500/20">
+                                <i data-lucide="search" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white">DNS (Domain Name System)</h4>
+                                <span class="text-xs text-slate-400 font-mono">Port: 53 | Transport: UDP (Queries) / TCP (Zone Transfers &amp; &gt;512B)</span>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-mono font-medium">Internet Directory Service</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                        The hierarchical, distributed database that translates human-friendly domain names (e.g., <code>api.example.com</code>) into numerical IP addresses (e.g., <code>93.184.216.34</code>) required for routing.
+                    </p>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li class="flex items-start gap-2"><span class="text-cyan-400">•</span><span><strong>Resolution Hierarchy:</strong> Root Servers (<code>.</code>) &rarr; TLD Nameservers (<code>.com</code>) &rarr; Authoritative Nameservers (<code>example.com</code>). Recursive resolvers cache results based on TTL (Time to Live).</span></li>
+                        <li class="flex items-start gap-2"><span class="text-cyan-400">•</span><span><strong>Key Record Types:</strong> <code>A</code> (IPv4 address), <code>AAAA</code> (IPv6 address), <code>CNAME</code> (Domain Alias), <code>MX</code> (Mail Exchange server), <code>TXT</code> (SPF/DKIM/Domain verification), <code>PTR</code> (Reverse DNS lookup), <code>NS</code> (Nameserver delegation).</span></li>
+                        <li class="flex items-start gap-2"><span class="text-cyan-400">•</span><span><strong>DevOps &amp; K8s Context:</strong> CoreDNS in Kubernetes handles in-cluster service discovery (<code>service.namespace.svc.cluster.local</code>). AWS Route53, Cloudflare, ExternalDNS.</span></li>
+                    </ul>
+                </div>
+
+                <!-- DHCP -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-amber-500/40 shadow-lg">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-amber-500/10 rounded-xl text-amber-400 border border-amber-500/20">
+                                <i data-lucide="zap" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white">DHCP (Dynamic Host Configuration Protocol)</h4>
+                                <span class="text-xs text-slate-400 font-mono">Ports: 67 (Server) • 68 (Client) | Transport: UDP</span>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono font-medium">Auto IP Provisioning</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                        An automated network management protocol that dynamically assigns IP addresses, subnet masks, default gateways, and DNS servers to client devices joining a network.
+                    </p>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li class="flex items-start gap-2"><span class="text-amber-400">•</span><span><strong>The DORA Process:</strong><br>1. <strong>Discover:</strong> Client broadcasts <code>DHCPDISCOVER</code> to 255.255.255.255 asking for an IP.<br>2. <strong>Offer:</strong> DHCP server responds with <code>DHCPOFFER</code> suggesting an IP and lease time.<br>3. <strong>Request:</strong> Client broadcasts <code>DHCPREQUEST</code> accepting the offered IP.<br>4. <strong>Acknowledge:</strong> Server sends <code>DHCPACK</code> confirming the lease agreement.</span></li>
+                        <li class="flex items-start gap-2"><span class="text-amber-400">•</span><span><strong>APIPA Fallback:</strong> If DHCP fails, clients self-assign a link-local address in the <code>169.254.0.0/16</code> block.</span></li>
+                        <li class="flex items-start gap-2"><span class="text-amber-400">•</span><span><strong>DevOps Context:</strong> PXE automated bare-metal server installation, cloud VM instance metadata network setup, cloud-init.</span></li>
+                    </ul>
+                </div>
+
+                <!-- SNMP -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-purple-500/40 shadow-lg">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-purple-500/10 rounded-xl text-purple-400 border border-purple-500/20">
+                                <i data-lucide="activity" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white">SNMP (Simple Network Management Protocol)</h4>
+                                <span class="text-xs text-slate-400 font-mono">Ports: 161 (Poll) • 162 (Traps) | Transport: UDP</span>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono font-medium">Hardware &amp; Infrastructure Monitoring</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                        An application-layer protocol used by network management systems to monitor and configure network devices like switches, routers, firewalls, load balancers, and UPS units.
+                    </p>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li class="flex items-start gap-2"><span class="text-purple-400">•</span><span><strong>Manager-Agent Architecture:</strong> The SNMP Manager polls SNMP Agents running on network devices. Agents can also send unsolicited emergency notifications called <strong>Traps</strong> (Port 162).</span></li>
+                        <li class="flex items-start gap-2"><span class="text-purple-400">•</span><span><strong>MIB &amp; OID Hierarchy:</strong> Data metrics are organized in a <strong>Management Information Base (MIB)</strong> tree and queried using numeric <strong>Object Identifiers (OIDs)</strong> (e.g., <code>.1.3.6.1.2.1.1.1.0</code> for system description).</span></li>
+                        <li class="flex items-start gap-2"><span class="text-purple-400">•</span><span><strong>Protocol Versions:</strong> <strong>SNMPv1/v2c</strong> (Insecure plaintext community strings like <code>public</code>/<code>private</code>) &rarr; <strong>SNMPv3</strong> (User-based Security Model (USM) providing SHA/MD5 authentication and AES encryption).</span></li>
+                        <li class="flex items-start gap-2"><span class="text-purple-400">•</span><span><strong>DevOps Context:</strong> Datadog SNMP Exporter, Prometheus SNMP Exporter, Nagios, Zabbix switch/router interface bandwidth monitoring.</span></li>
+                    </ul>
+                </div>
+
+                <!-- NTP -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-blue-500/40 shadow-lg">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-blue-500/10 rounded-xl text-blue-400 border border-blue-500/20">
+                                <i data-lucide="clock" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white">NTP (Network Time Protocol)</h4>
+                                <span class="text-xs text-slate-400 font-mono">Port: 123 | Transport: UDP</span>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono font-medium">Clock Synchronization</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                        Synchronizes computer system clocks over packet-switched, variable-latency networks to within a few milliseconds of Coordinated Universal Time (UTC).
+                    </p>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li class="flex items-start gap-2"><span class="text-blue-400">•</span><span><strong>Stratum Hierarchy:</strong> Stratum 0 (Atomic/GPS clocks) &rarr; Stratum 1 (Attached servers) &rarr; Stratum 2 (Servers querying Stratum 1).</span></li>
+                        <li class="flex items-start gap-2"><span class="text-blue-400">•</span><span><strong>System Criticality:</strong> Precise clock sync is mandatory for distributed databases (etcd, CockroachDB, Cassandra), TLS certificate validation, Kerberos authentication, and distributed audit log correlation.</span></li>
+                        <li class="flex items-start gap-2"><span class="text-blue-400">•</span><span><strong>DevOps Tools:</strong> <code>chrony</code>, <code>systemd-timesyncd</code>, <code>ntpd</code>.</span></li>
+                    </ul>
+                </div>
+
+                <!-- SSH & BGP & LDAP -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-rose-500/40 shadow-lg">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-rose-500/10 rounded-xl text-rose-400 border border-rose-500/20">
+                                <i data-lucide="shield" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white">SSH &amp; BGP &amp; LDAP Protocol Suite</h4>
+                                <span class="text-xs text-slate-400 font-mono">Ports: 22 (SSH) • 179 (BGP) • 389/636 (LDAP) | Transport: TCP</span>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-mono font-medium">Admin &amp; Infrastructure Core</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                        Essential administrative, routing, and directory services governing server management, carrier-grade internet routing, and enterprise authentication.
+                    </p>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li class="flex items-start gap-2"><span class="text-rose-400">•</span><span><strong>SSH (Port 22):</strong> Cryptographically secured remote command execution, SFTP file transfer, and TCP port forwarding/tunneling.</span></li>
+                        <li class="flex items-start gap-2"><span class="text-rose-400">•</span><span><strong>BGP (Port 179):</strong> Path-vector protocol connecting global Autonomous Systems (AS). Used in Kubernetes by <strong>Calico/Cilium</strong> CNI plugins for unencapsulated BGP route peering with physical network switches.</span></li>
+                        <li class="flex items-start gap-2"><span class="text-rose-400">•</span><span><strong>LDAP/LDAPS (Ports 389/636):</strong> Centralized directory service for user authentication and authorization (Active Directory, OpenLDAP, FreeIPA).</span></li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ── Footer ─────────────────────────────────────────── -->
+    <footer class="bg-slate-950 border-t border-slate-900 text-slate-500 py-6 text-center text-xs mt-auto">
+        <p>Network Components, Hardware &amp; Architecture Guide · Networking Hub · DevOps Learning Hub · <a href="Network_index.html" class="text-blue-400 hover:underline">← Back to Networking Hub</a></p>
+    </footer>
+
+    
+
+    <!-- ── Script for Search Filter & Icons ───────────────── -->
+    <script>
+        lucide.createIcons();
+
+        // Search Filter for Component Cards
+        const searchInput = document.getElementById('component-search');
+        const cards = document.querySelectorAll('.component-card');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                cards.forEach(card => {
+                    const searchData = card.getAttribute('data-search') || '';
+                    const cardText = card.innerText.toLowerCase();
+                    if (searchData.includes(query) || cardText.includes(query)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Search Filter for Ports Table
+        const portSearchInput = document.getElementById('port-search');
+        const portRows = document.querySelectorAll('.port-row');
+
+        if (portSearchInput) {
+            portSearchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                portRows.forEach(row => {
+                    const rowText = row.innerText.toLowerCase();
+                    if (rowText.includes(query)) {
+                        row.style.display = 'table-row';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+    </script>
+
+
+    <script>
+        // Active Section Tracker for Ultra-Slim Micro-Header
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const sectionLabel = document.getElementById('micro-section-label');
+            const microItems = document.querySelectorAll('.micro-item');
+
+            const sectionNames = {
+                'transmission': '📡 Transmission Methods',
+                'mac-ethernet': '⚡ MAC & Ethernet (CSMA)',
+                'network-types': '🌐 LAN / MAN / WAN Scopes',
+                'topologies': '🔀 Datacenter Topologies',
+                'tcp-udp': '↔️ TCP vs UDP Transport',
+                'hierarchy': '🥞 Hardware Hierarchy',
+                'components-grid': '💻 10 Core Components',
+                'ports': '🔢 Ports Reference Matrix',
+                'protocols-deep-dive': '📖 Protocols Deep Dive'
+            };
+
+            function onScroll() {
+                let current = '';
+                const scrollPosition = window.scrollY + 150;
+
+                sections.forEach(section => {
+                    if (scrollPosition >= section.offsetTop) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                if (current && sectionNames[current] && sectionLabel) {
+                    sectionLabel.textContent = sectionNames[current];
+                }
+
+                microItems.forEach(item => {
+                    if (item.getAttribute('href') === `#${current}`) {
+                        item.classList.add('bg-blue-600/20', 'text-white', 'border-blue-500/40');
+                        item.classList.remove('border-transparent');
+                    } else {
+                        item.classList.remove('bg-blue-600/20', 'text-white', 'border-blue-500/40');
+                        item.classList.add('border-transparent');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', onScroll);
+            onScroll();
+        });
+    </script>
+
+    <!-- ── Bottom-Right Floating Quick-Jump Action Widget ─────────────────── -->
+    <div class="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+        <!-- Floating Jump Button -->
+        <button id="quick-jump-fab" onclick="toggleFabMenu()" class="glass-card bg-slate-900/90 hover:bg-blue-600 text-slate-200 hover:text-white px-4 py-3 rounded-full border border-slate-700/80 shadow-2xl backdrop-blur-md transition-all flex items-center gap-2 text-xs font-semibold group cursor-pointer">
+            <i data-lucide="compass" class="w-4 h-4 text-blue-400 group-hover:text-white transition-colors"></i>
+            <span>Jump to Section</span>
+            <i data-lucide="chevron-up" id="fab-arrow" class="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-transform duration-300"></i>
+        </button>
+    </div>
+
+    <!-- Quick Jump Floating Popover Drawer -->
+    <div id="quick-jump-popover" class="fixed bottom-20 right-6 z-50 w-80 glass-card bg-slate-900/95 p-4 rounded-2xl border border-slate-800 shadow-2xl backdrop-blur-xl hidden transition-all duration-200">
+        <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-800">
+            <span class="text-xs font-mono font-bold text-white flex items-center gap-2">
+                <i data-lucide="navigation" class="w-4 h-4 text-blue-400"></i> Quick Navigation
+            </span>
+            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full">9 Sections</span>
+        </div>
+        <div class="space-y-1 text-xs font-medium max-h-80 overflow-y-auto pr-1 no-scrollbar">
+            <a href="#transmission" onclick="closeFabMenu()" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+                <i data-lucide="radio-receiver" class="w-4 h-4 text-emerald-400 shrink-0"></i> Transmission Methods
+            </a>
+            <a href="#mac-ethernet" onclick="closeFabMenu()" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+                <i data-lucide="zap" class="w-4 h-4 text-amber-400 shrink-0"></i> MAC &amp; Ethernet (CSMA)
+            </a>
+            <a href="#network-types" onclick="closeFabMenu()" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+                <i data-lucide="globe" class="w-4 h-4 text-indigo-400 shrink-0"></i> LAN / MAN / WAN Scopes
+            </a>
+            <a href="#topologies" onclick="closeFabMenu()" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+                <i data-lucide="git-merge" class="w-4 h-4 text-cyan-400 shrink-0"></i> Datacenter Topologies
+            </a>
+            <a href="#tcp-udp" onclick="closeFabMenu()" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+                <i data-lucide="arrow-right-left" class="w-4 h-4 text-rose-400 shrink-0"></i> TCP vs UDP Transport
+            </a>
+            <a href="#hierarchy" onclick="closeFabMenu()" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+                <i data-lucide="layers" class="w-4 h-4 text-purple-400 shrink-0"></i> Hardware Hierarchy
+            </a>
+            <a href="#components-grid" onclick="closeFabMenu()" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+                <i data-lucide="cpu" class="w-4 h-4 text-blue-400 shrink-0"></i> 10 Core Components
+            </a>
+            <a href="#ports" onclick="closeFabMenu()" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+                <i data-lucide="hash" class="w-4 h-4 text-emerald-400 shrink-0"></i> Ports Reference Matrix
+            </a>
+            <a href="#protocols-deep-dive" onclick="closeFabMenu()" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+                <i data-lucide="book-open" class="w-4 h-4 text-blue-400 shrink-0"></i> Protocols Deep Dive
+            </a>
+        </div>
+    </div>
+
+    <!-- ── Smart Navigation & FAB Script ───────────────────────────────────── -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navContainer = document.getElementById('smart-nav-container');
+            let lastScrollY = window.scrollY;
+
+            // 1. Smart Auto-Hide on Scroll Down / Reveal on Scroll Up
+            window.addEventListener('scroll', () => {
+                const currentScrollY = window.scrollY;
+                if (currentScrollY > 100 && currentScrollY > lastScrollY) {
+                    // Scrolling DOWN: Slide header out of view to maximize reading area
+                    navContainer.style.transform = 'translateY(-100%)';
+                } else {
+                    // Scrolling UP or at top: Slide header down into view
+                    navContainer.style.transform = 'translateY(0)';
+                }
+                lastScrollY = currentScrollY;
+            });
+
+            // 2. Active Section Highlighting
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('#quick-jump-nav-links .nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                const scrollPos = window.scrollY + 160;
+                sections.forEach(sec => {
+                    if (scrollPos >= sec.offsetTop) {
+                        current = sec.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('bg-blue-600', 'text-white');
+                        link.classList.remove('bg-slate-800/80', 'text-slate-400');
+                    } else {
+                        link.classList.remove('bg-blue-600', 'text-white');
+                        link.classList.add('bg-slate-800/80', 'text-slate-400');
+                    }
+                });
+            });
+        });
+
+        // 3. FAB Popover Toggle Logic
+        function toggleFabMenu() {
+            const popover = document.getElementById('quick-jump-popover');
+            const arrow = document.getElementById('fab-arrow');
+            if (popover.classList.contains('hidden')) {
+                popover.classList.remove('hidden');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                popover.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function closeFabMenu() {
+            const popover = document.getElementById('quick-jump-popover');
+            const arrow = document.getElementById('fab-arrow');
+            popover.classList.add('hidden');
+            arrow.style.transform = 'rotate(0deg)';
+        }
+
+        // Close popover when clicking outside
+        document.addEventListener('click', (e) => {
+            const fab = document.getElementById('quick-jump-fab');
+            const popover = document.getElementById('quick-jump-popover');
+            if (popover && !popover.classList.contains('hidden')) {
+                if (!popover.contains(e.target) && !fab.contains(e.target)) {
+                    closeFabMenu();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

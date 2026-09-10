@@ -1335,7 +1335,7 @@ ipconfig /renew</code></pre>
                                     </div>
                                 </div>
 
-                                <div>
+                                <div id="cidr-section">
                                     <h3>CIDR (Classless Inter-Domain Routing)</h3>
                                     <p><strong>Definition:</strong> A method of allocating IP addresses and routing that replaces classful addressing.</p>
                                     <p><strong>CIDR Notation:</strong> <code>192.168.1.0/24</code></p>
@@ -1343,6 +1343,61 @@ ipconfig /renew</code></pre>
                                         <li><code>192.168.1.0</code>: Network address</li>
                                         <li><code>/24</code>: Subnet mask (first 24 bits are network, last 8 bits are hosts)</li>
                                     </ul>
+
+                                    <div class="bg-slate-900/90 p-6 rounded-2xl border border-slate-700/80 my-5 shadow-xl" id="cidr-calculator">
+                                        <div class="flex items-center gap-2 mb-4">
+                                            <i data-lucide="calculator" class="w-5 h-5 text-emerald-400"></i>
+                                            <h4 class="text-base font-bold text-white">Interactive CIDR &amp; Subnet Calculator</h4>
+                                        </div>
+                                        <div class="flex flex-wrap items-center gap-4 mb-6">
+                                            <label for="cidr-select" class="text-xs font-bold text-slate-300 uppercase tracking-wider">Select CIDR Prefix:</label>
+                                            <select id="cidr-select" class="bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:border-emerald-500">
+                                                <option value="8">/8 (Class A)</option>
+                                                <option value="12">/12 (Class B Supernet)</option>
+                                                <option value="16">/16 (Class B)</option>
+                                                <option value="20">/20 (Cloud VPC Subnet)</option>
+                                                <option value="22">/22 (Datacenter Subnet)</option>
+                                                <option value="24" selected>/24 (Standard Class C)</option>
+                                                <option value="26">/26 (Small Office / Subnet)</option>
+                                                <option value="27">/27 (Microservice Subnet)</option>
+                                                <option value="28">/28 (Cluster Subnet)</option>
+                                                <option value="29">/29 (Small Block / Gateway)</option>
+                                                <option value="30">/30 (Point-to-Point Link)</option>
+                                                <option value="32">/32 (Single Host)</option>
+                                            </select>
+
+                                            <div class="flex flex-wrap gap-1.5 ml-auto">
+                                                <button type="button" onclick="setCIDR(16)" class="px-2.5 py-1 text-xs font-mono bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700">/16</button>
+                                                <button type="button" onclick="setCIDR(20)" class="px-2.5 py-1 text-xs font-mono bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700">/20</button>
+                                                <button type="button" onclick="setCIDR(24)" class="px-2.5 py-1 text-xs font-mono bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30">/24</button>
+                                                <button type="button" onclick="setCIDR(28)" class="px-2.5 py-1 text-xs font-mono bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700">/28</button>
+                                                <button type="button" onclick="setCIDR(30)" class="px-2.5 py-1 text-xs font-mono bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700">/30</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                            <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800">
+                                                <span class="text-[11px] text-slate-400 uppercase font-mono block mb-1">Subnet Mask</span>
+                                                <span id="res-mask" class="text-base sm:text-lg font-bold font-mono text-emerald-400">255.255.255.0</span>
+                                            </div>
+                                            <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800">
+                                                <span class="text-[11px] text-slate-400 uppercase font-mono block mb-1">Total Addresses</span>
+                                                <span id="res-total" class="text-base sm:text-lg font-bold font-mono text-white">256</span>
+                                            </div>
+                                            <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800">
+                                                <span class="text-[11px] text-slate-400 uppercase font-mono block mb-1">Usable Hosts (2^H - 2)</span>
+                                                <span id="res-usable" class="text-base sm:text-lg font-bold font-mono text-cyan-400">254</span>
+                                            </div>
+                                            <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800">
+                                                <span class="text-[11px] text-slate-400 uppercase font-mono block mb-1">Wildcard Mask</span>
+                                                <span id="res-wildcard" class="text-base sm:text-lg font-bold font-mono text-amber-400">0.0.0.255</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-4 p-3 bg-slate-950/60 rounded-lg border border-slate-800/80 text-xs text-slate-400">
+                                            <div><strong class="text-slate-200">Deployment Context:</strong> <span id="res-context">Standard local LAN / Class C network. Suitable for office branch or container cluster.</span></div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div>
@@ -1355,7 +1410,7 @@ ipconfig /renew</code></pre>
                                         Binary IP  : 11000000.10101000.00000001.01100100
                                         Binary Mask: 11111111.11111111.11111111.00000000
 
-                                                    <-------- Network --------> <-Host->
+                                                    &lt;-------- Network --------&gt; &lt;-Host-&gt;
 
                                         Result:
                                         - First 24 bits (3 octets) = Network portion
@@ -1510,7 +1565,9 @@ spec:
 
         const navTabs = document.getElementById('nav-tabs');
         const contentContainer = document.getElementById('content-container');
-        let activeTab = 'what_is_ip';
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlTab = urlParams.get('tab') || window.location.hash.replace('#', '');
+        let activeTab = (urlTab && contentData[urlTab]) ? urlTab : 'what_is_ip';
 
         function renderTabs() {
             navTabs.innerHTML = Object.entries(contentData).map(([id, data]) => `
@@ -1805,6 +1862,34 @@ spec:
                         <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight">ARP & BGP Simulator</h1>
                         <p class="text-lg text-slate-400 leading-relaxed">Interactive simulation for Layer 2 MAC switching, ARP resolution, and Layer 3 BGP routing logic.</p>
                     </div>
+
+                    <!-- Network Transmission Methods Card -->
+                    <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6 shadow-xl mb-8">
+                        <h3 class="text-xl font-bold text-white mb-3 flex items-center gap-2">
+                            <i data-lucide="radio-receiver" class="w-5 h-5 text-amber-400"></i>
+                            Transmission Methods in ARP Resolution: Unicast vs. Broadcast
+                        </h3>
+                        <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+                            Networking protocols rely on distinct transmission modes depending on target recipient addressing:
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                                <span class="text-emerald-400 font-bold block mb-1">1. Unicast Transmission (One-to-One)</span>
+                                <p class="text-slate-400 leading-relaxed mb-2">Transmits data directly to a single target MAC/IP address. Ignored by all non-target nodes.</p>
+                                <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">ARP Reply &amp; Data Frames</span>
+                            </div>
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                                <span class="text-amber-400 font-bold block mb-1">2. Broadcast Transmission (One-to-All)</span>
+                                <p class="text-slate-400 leading-relaxed mb-2">Transmits data to all nodes on the Layer 2 segment using <code>FF:FF:FF:FF:FF:FF</code>.</p>
+                                <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800">ARP Request &amp; DHCP Discover</span>
+                            </div>
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                                <span class="text-purple-400 font-bold block mb-1">3. Multicast Transmission (One-to-Many)</span>
+                                <p class="text-slate-400 leading-relaxed mb-2">Delivers stream packets exclusively to subscribed multicast group members (Class D <code>224.0.0.0/4</code>).</p>
+                                <span class="text-[11px] font-mono text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800">OSPF Hello &amp; Video Streams</span>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="glass-card rounded-2xl overflow-hidden flex flex-col" style="height: 850px;">
                         <!-- Toolbar -->
@@ -2054,6 +2139,72 @@ spec:
                 </div>
             `;
             lucide.createIcons();
+
+            if (activeTab === 'subnetting') {
+                initSubnetCalculator();
+                if (window.location.hash) {
+                    setTimeout(() => {
+                        const target = document.querySelector(window.location.hash);
+                        if (target) target.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                }
+            }
+        }
+
+        function initSubnetCalculator() {
+            const select = document.getElementById('cidr-select');
+            if (select) {
+                select.onchange = () => updateCIDRData(parseInt(select.value, 10));
+                updateCIDRData(parseInt(select.value, 10));
+            }
+        }
+
+        window.setCIDR = function(cidr) {
+            const select = document.getElementById('cidr-select');
+            if (select) {
+                select.value = cidr;
+                updateCIDRData(cidr);
+            }
+        };
+
+        function updateCIDRData(cidr) {
+            const total = Math.pow(2, 32 - cidr);
+            const usable = cidr >= 31 ? (cidr === 31 ? 2 : 1) : total - 2;
+
+            let mask = [];
+            for (let i = 0; i < 4; i++) {
+                const n = Math.min(Math.max(cidr - i * 8, 0), 8);
+                mask.push(256 - Math.pow(2, 8 - n));
+            }
+            const maskStr = mask.join('.');
+            const wildcardStr = mask.map(b => 255 - b).join('.');
+
+            const contexts = {
+                8: "Massive enterprise backbone or cloud supernet (Class A).",
+                12: "Large cloud VPC or supernet aggregation.",
+                16: "Standard Cloud VPC size or Docker default bridge network (65,534 usable hosts).",
+                20: "Common cloud availability-zone subnet size (4,094 usable hosts).",
+                22: "Datacenter server pool or large office floor (1,022 usable hosts).",
+                24: "Standard Local Area Network (LAN) and Class C block (254 usable hosts).",
+                26: "Small office branch or isolated microservice cluster (62 usable hosts).",
+                27: "Database cluster or DMZ subnet (30 usable hosts).",
+                28: "Small cluster or bastion host pool (14 usable hosts).",
+                29: "High-availability router transit block (6 usable hosts).",
+                30: "Point-to-point router-to-router interconnect link (2 usable hosts).",
+                32: "Single host loopback address or explicit security firewall rule."
+            };
+
+            const maskEl = document.getElementById('res-mask');
+            const totalEl = document.getElementById('res-total');
+            const usableEl = document.getElementById('res-usable');
+            const wildcardEl = document.getElementById('res-wildcard');
+            const contextEl = document.getElementById('res-context');
+
+            if (maskEl) maskEl.textContent = maskStr;
+            if (totalEl) totalEl.textContent = total.toLocaleString();
+            if (usableEl) usableEl.textContent = usable.toLocaleString();
+            if (wildcardEl) wildcardEl.textContent = wildcardStr;
+            if (contextEl) contextEl.textContent = contexts[cidr] || "Configured subnet block.";
         }
 
         // Initialize Lucide icons
