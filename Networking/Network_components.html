@@ -895,7 +895,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 text-xs">
                             <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
                                 <strong class="text-emerald-400 font-mono block mb-1">48-Bit MAC Addressing</strong>
-                                <p class="text-slate-400 leading-relaxed">Assigned by manufacturer. 6 sets of 2 hex digits (e.g. <code>00:1A:2B:3C:4D:5E</code>). First 3 sets = <strong>OUI Manufacturer ID</strong>; last 3 sets = <strong>NIC Serial ID</strong>.</p>
+                                <p class="text-slate-400 leading-relaxed">Like a physical mail address, each NIC must have a unique Media Access Control (MAC) address to receive data. Assigned by manufacturer. 6 sets of 2 hex digits (e.g. <code>00:1A:2B:3C:4D:5E</code>). First 3 sets = <strong>OUI Manufacturer ID</strong>; last 3 sets = <strong>NIC Serial ID</strong>.</p>
                             </div>
                             <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
                                 <strong class="text-amber-400 font-mono block mb-1">Duplex &amp; Auto-Sensing</strong>
@@ -954,7 +954,7 @@
                             </div>
                         </div>
                         <p class="text-slate-300 text-xs sm:text-sm mb-4 leading-relaxed">
-                            Interconnects multiple nodes in a star topology. While legacy <strong>Hubs (Layer 1 repeaters)</strong> broadcast data out all ports creating <em>1 big collision domain</em>, switches route frames directly to the intended recipient port.
+                            Interconnects multiple nodes in a star topology. While legacy <strong>Hubs (Layer 1 repeaters)</strong> broadcast data out all ports creating <em>1 big collision domain</em> (where simultaneous transmissions cause collisions and force nodes to wait a random time delay), switches route frames directly to the intended recipient port.
                         </p>
 
                         <!-- Hub vs Switch vs Managed Breakdown -->
@@ -990,9 +990,9 @@
                         <div class="mb-3.5">
                             <h5 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">Core Capabilities:</h5>
                             <ul class="space-y-1.5 text-xs text-slate-400">
-                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Packet Routing:</strong> Evaluates IP destination headers against routing tables (BGP, OSPF, static routes).</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Packet Routing:</strong> Evaluates IP destination headers against routing tables (which list the local network and default gateway). If destined for a different network, data is sent to the default gateway.</span></li>
                                 <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Network Address Translation (NAT):</strong> Translates internal private RFC 1918 IPs to public internet routable IPs.</span></li>
-                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Boundary Filtering:</strong> Enforces access control lists (ACLs) and segments broadcast domains.</span></li>
+                                <li class="flex items-start gap-1.5"><span class="text-blue-500">•</span><span><strong>Boundary Filtering & Broadcasts:</strong> Broadcasts are only intended for local nodes. Routers do not forward broadcasts, effectively separating networks into distinct broadcast domains.</span></li>
                             </ul>
                         </div>
                     </div>

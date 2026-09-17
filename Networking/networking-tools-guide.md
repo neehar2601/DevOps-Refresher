@@ -85,6 +85,17 @@ cat /sys/class/net/eth0/address      # Shows MAC address
 cat /sys/class/net/eth0/speed        # Shows link speed (Mbps)
 ```
 
+> [!NOTE]
+> **Windows OS Equivalents (ipconfig)**
+> If you are working on a Windows machine, the Linux `ip` and `ifconfig` commands won't work. Use these instead:
+> ```cmd
+> ipconfig              # Show basic IP/subnet/gateway info
+> ipconfig /all         # Detailed info (MAC address, DNS, DHCP)
+> ipconfig /release     # Release DHCP lease
+> ipconfig /renew       # Renew DHCP lease
+> ipconfig /flushdns    # Clear DNS resolver cache
+> ```
+
 ---
 
 ## 2. IP ROUTING COMMANDS
@@ -173,6 +184,12 @@ traceroute -m 15 google.com # Max 15 hops
 ```
 
 **Note**: `* * *` means system down, firewall blocking, or hidden router
+
+> [!NOTE]
+> **Windows Path Tools (tracert & pathping)**
+> On Windows, `traceroute` is replaced by two different command-line utilities:
+> - `tracert`: The direct equivalent to traceroute on Windows. Uses ICMP Echo Requests by default (e.g., `tracert google.com` or `tracert -d 8.8.8.8` to skip DNS resolution).
+> - `pathping`: A powerful Windows-only tool that combines `ping` and `tracert`. It traces the route, then continuously pings each hop to compute exact packet loss per router (e.g., `pathping google.com` or `pathping -n 8.8.8.8`).
 
 ---
 

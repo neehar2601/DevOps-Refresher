@@ -813,6 +813,9 @@ Example: 192.168.1.0 (Private Class C - most common home network)
                     {
                         title: "Public & Private Differences",
                         content: `
+                            <div class="info-box mb-6 border-l-4 border-blue-500">
+                                <strong>The IPv4 Depletion Problem:</strong> With the internet running out of IPv4 addresses, the permanent solution is <strong>IPv6</strong> (using 128-bit addresses, offering a practically limitless address space). However, in 1993, the world wasn't ready to instantly replace all hardware. As an urgent interim solution, the IETF directed IANA to set aside specific <strong>Private IP addresses</strong> and developed <strong>Network Address Translation (NAT)</strong>. This prevented private networks from illegally using public addresses (which would break TCP/IP routing and send local traffic to the default gateway).
+                            </div>
                             <div class="comparison-grid">
                                 <div class="comparison-card">
                                     <h4>Public IP Addresses</h4>
@@ -884,26 +887,47 @@ Example: 192.168.1.0 (Private Class C - most common home network)
                                         <td>192.168.0.0/16</td>
                                         <td>65,536</td>
                                     </tr>
+                                    <tr>
+                                        <td>APIPA</td>
+                                        <td>169.254.0.0 - 169.254.255.255</td>
+                                        <td>169.254.0.0/16</td>
+                                        <td>Automatic Private IP</td>
+                                    </tr>
+                                    <tr>
+                                        <td>CGNAT</td>
+                                        <td>100.64.0.0 - 100.127.255.255</td>
+                                        <td>100.64.0.0/10</td>
+                                        <td>Carrier-grade NAT</td>
+                                    </tr>
                                 </tbody>
                             </table>
 
                             <h3>NAT (Network Address Translation)</h3>
-                            <div class="info-box">
-                                <strong>Purpose:</strong> Allows multiple devices on a private network to share a single public IP address.
+                            <div class="info-box mb-4">
+                                <strong>Purpose:</strong> Allows multiple devices on a private network to share a single public IP address, delaying IPv4 exhaustion.
                                 <br><br>
-                                <strong>How It Works:</strong>
+                                <strong>How It Works (Port Tracking):</strong>
                                 <ol>
-                                    <li>Your device (private IP: <code>192.168.1.10</code>) sends a request to <code>google.com</code></li>
-                                    <li>Your router (public IP: <code>203.0.113.25</code>) replaces your private IP with its public IP</li>
-                                    <li>Google's server responds to <code>203.0.113.25</code></li>
-                                    <li>Router forwards the response back to <code>192.168.1.10</code></li>
+                                    <li>Your device (private IP: <code>192.168.1.10</code>) sends a request to the Internet.</li>
+                                    <li>The NAT router repackages the data with its public IP address, and tags it with a <strong>Port Number</strong> to track which private IP should get the reply.</li>
+                                    <li>Since the router's public IP is unique, internet replies return directly to it.</li>
+                                    <li>The NAT router uses the tagged port number on the reply to route the data back to your local <code>192.168.1.10</code> host.</li>
                                 </ol>
-                                <strong>Benefits:</strong>
-                                <ul>
-                                    <li>Conserves public IP addresses</li>
-                                    <li>Adds a layer of security (internal IPs are hidden)</li>
-                                    <li>Allows multiple devices to share one public IP</li>
+                                
+                                <strong class="mt-4 block">NAT in Action (Try It!):</strong>
+                                <ul class="list-disc ml-4 mb-2">
+                                    <li>If you open a command prompt and run <code>ipconfig</code> (or <code>ip a</code>), you will see your Private IP (e.g., <code>192.168.1.50</code>).</li>
+                                    <li>If you search "What's my IP" in a browser, you will see your NAT Router's Public IP (e.g., <code>70.181.x.x</code>).</li>
                                 </ul>
+
+                                <strong class="mt-4 block">Port Forwarding (Hosting Services):</strong>
+                                <p class="mt-1">NAT naturally drops unsolicited inbound traffic because it isn't a reply to an outgoing request (it lacks a tracked port tag). If you want to host a web server from your home, you must configure <strong>Port Forwarding</strong>. For example, you instruct the NAT router: <em>"Send all incoming traffic on Port 80 directly to my internal web server at 192.168.1.20."</em> Without this, the NAT router wouldn't know which internal IP should receive the new connection.</p>
+                            </div>
+
+                            <h3>Carrier-grade NAT (CGNAT)</h3>
+
+                            <div class="info-box mt-4 border-l-4 border-indigo-500">
+                                <strong class="text-indigo-400">Carrier-grade NAT (CGNAT) & Multiple Layers:</strong> A special type of NAT (<code>100.64.0.0/10</code>) used primarily by ISPs. To conserve IPs, ISPs often place clients behind multiple layers of NAT. If you run <code>tracert google.com</code> (or <code>traceroute</code>), your first hop is your home router's private IP, but subsequent hops might show <code>100.64.x.x</code> CGNAT addresses, indicating your ISP is performing NAT again before your traffic hits the public internet!
                             </div>
                         `
                     }
@@ -1251,6 +1275,62 @@ sudo netplan apply</code></pre>
                                     Client configures IP and is online
                                     </pre>
                                 </div>
+                                
+                                <div>
+                                    <h3>Important DORA Constraints & Security</h3>
+                                    <div class="info-box mb-6 border-l-4 border-rose-500">
+                                        <ul class="space-y-2">
+                                            <li><strong>Broadcast Limitation:</strong> The DORA process relies heavily on broadcasts (since the client initially has no IP). By default, routers do not pass broadcast traffic. This means clients can only get IPs from a DHCP server on their <em>same local network</em> (unless a DHCP Relay Agent is configured).</li>
+                                            <li><strong>Rogue DHCP Servers:</strong> The client accepts the <em>first</em> DHCP Offer it receives. If an unauthorized (rogue) DHCP server is plugged into the network and responds faster than the legitimate server, the client will accept the rogue server's IP, which can cause network outages or security risks.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3>Troubleshooting DHCP via Statistics</h3>
+                                    <p class="text-sm text-slate-300 mb-3">By analyzing the DHCP server packet statistics (Discovers, Offers, Requests, ACKs), you can easily pinpoint network issues:</p>
+                                    <ul class="space-y-3 mb-6">
+                                        <li class="bg-slate-900/80 p-3 rounded border border-slate-700">
+                                            <strong class="text-rose-400 block mb-1">Discovers are NOT increasing:</strong> 
+                                            Indicates a physical hardware or connection problem. The client's broadcast isn't reaching the server.
+                                        </li>
+                                        <li class="bg-slate-900/80 p-3 rounded border border-slate-700">
+                                            <strong class="text-amber-400 block mb-1">Discovers are increasing, but Offers are NOT:</strong>
+                                            The server sees the request but cannot fulfill it. The DHCP pool is likely exhausted (out of IPs), or the scope is misconfigured/deactivated.
+                                        </li>
+                                        <li class="bg-slate-900/80 p-3 rounded border border-slate-700">
+                                            <strong class="text-cyan-400 block mb-1">Discovers and Offers are increasing, but Requests are NOT:</strong>
+                                            Indicates a <strong>Rogue DHCP Server</strong> in the environment! The legitimate server is making offers, but the client is ignoring them and sending its request to a different (faster) rogue server instead.
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h3>Automatic Private IP Addressing (APIPA)</h3>
+                                    <div class="info-box mb-6 border-l-4 border-purple-500">
+                                        <p class="mb-3">A built-in networking fallback feature used by operating systems to self-assign an IP address when a device is configured to use DHCP, but cannot find or reach a functioning DHCP server.</p>
+                                        
+                                        <strong class="mt-3 block">Key Characteristics:</strong>
+                                        <ul class="list-disc ml-4 mb-3">
+                                            <li><strong>Address Range:</strong> <code>169.254.0.0/16</code> (Usable host addresses range from <code>169.254.0.1</code> to <code>169.254.255.254</code>).</li>
+                                            <li><strong>Subnet Mask:</strong> <code>255.255.0.0</code></li>
+                                            <li><strong>Local Scope Only:</strong> Devices with an APIPA address can communicate <em>only</em> with other devices on the exact same local physical or logical segment that are also using APIPA.</li>
+                                            <li><strong>No Internet Access:</strong> APIPA addresses are non-routable. A device stuck on an APIPA address cannot access the internet or pass through a router to another network.</li>
+                                        </ul>
+
+                                        <strong class="mt-3 block">How It Works:</strong>
+                                        <ol class="list-decimal ml-4 mb-3">
+                                            <li><strong>DHCP Request:</strong> When a computer boots up, it broadcasts a request looking for a DHCP server.</li>
+                                            <li><strong>The Fallback:</strong> If no DHCP server responds after a set period, the OS assumes DHCP is unavailable.</li>
+                                            <li><strong>Self-Assignment:</strong> The device randomly picks an IP address from the <code>169.254.x.x</code> range.</li>
+                                            <li><strong>Conflict Check (ARP):</strong> Before locking in, the device sends an Address Resolution Protocol (ARP) probe to ensure no other device on the local network is using that specific IP. If another responds, it picks a different one.</li>
+                                            <li><strong>Background Monitoring:</strong> The device continuously checks for a real DHCP server in the background. The moment a DHCP server comes online, APIPA drops the 169.254 address and takes a valid network lease.</li>
+                                        </ol>
+
+                                        <strong class="mt-3 block text-rose-400">Troubleshooting Context:</strong>
+                                        <p>If you notice a computer on your network with an IP address starting with <code>169.254...</code>, it is a classic indicator of a <strong>DHCP failure</strong>. It typically means the device has lost physical connectivity to the network switch or router, the DHCP service is down, or there is a major VLAN or scope mismatch blocking traffic to the DHCP server.</p>
+                                    </div>
+                                </div>
 
                                 <div>
                                     <h3>DHCP Lease Management</h3>
@@ -1276,18 +1356,37 @@ ipconfig /renew</code></pre>
                                 </div>
 
                                 <div>
-                                    <h3>DHCP Reservation</h3>
-                                    <div class="info-box">
-                                        <strong>Definition:</strong> A DHCP server assigns the same IP address to a device every time, based on its MAC address.
-                                        <br><br>
-                                        <strong>Benefits:</strong>
-                                        <ul>
-                                            <li>Device gets "static" IP automatically</li>
-                                            <li>No manual configuration on the device</li>
-                                            <li>Centralized management</li>
-                                            <li>Easy to change IP from DHCP server</li>
-                                        </ul>
-                                        <strong>Use Case:</strong> Printers, servers, network devices (IP cameras, IoT hubs)
+                                    <h3>Advanced DHCP Server Concepts</h3>
+                                    
+                                    <div class="space-y-4">
+                                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+                                            <strong class="text-blue-400 block mb-1">Centralized DHCP (DHCP Relay)</strong>
+                                            <p class="text-sm text-slate-300">Using one central DHCP server for multiple subnets requires special configuration because routers naturally drop broadcast traffic (DHCP Discovers). To solve this, you need either a <strong>DHCP Relay Agent</strong> (a server configured to listen for broadcasts and forward them directly to the DHCP server) or an <strong>RFC 1542 compliant router</strong> (a physical router programmed to pass DHCP packets to a specific IP on another network).</p>
+                                        </div>
+
+                                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+                                            <strong class="text-emerald-400 block mb-1">DHCP Scope</strong>
+                                            <p class="text-sm text-slate-300">The contiguous pool or range of IP addresses that a DHCP server is configured to lease out (e.g., <code>192.168.1.40</code> through <code>192.168.1.100</code>), along with the subnet mask.</p>
+                                        </div>
+
+                                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+                                            <strong class="text-amber-400 block mb-1">Exclusions (Exceptions)</strong>
+                                            <p class="text-sm text-slate-300">Specific IP addresses within the scope range that the DHCP server is instructed <em>never</em> to hand out. These are typically used to carve out space for statically assigned devices like routers or servers (e.g., excluding <code>192.168.1.1</code> through <code>192.168.1.50</code>).</p>
+                                        </div>
+
+                                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+                                            <strong class="text-purple-400 block mb-1">DHCP Options</strong>
+                                            <p class="text-sm text-slate-300">Extra configuration parameters delivered to the client alongside their IP address. Critical options include the Default Gateway (Option 003) and DNS Servers (Option 006), without which a client couldn't access the internet.</p>
+                                        </div>
+
+                                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+                                            <strong class="text-rose-400 block mb-1">DHCP Reservations</strong>
+                                            <p class="text-sm text-slate-300 mb-2">A configuration tying a specific, valid IP address from the pool directly to a client's MAC address. The server guarantees that specific IP will <em>only</em> be given to that specific device. <strong>Note:</strong> You cannot reserve an excluded address.</p>
+                                            <ul class="text-sm text-slate-300 list-disc ml-4">
+                                                <li><strong>Benefits:</strong> Device gets a "static" IP automatically without manual configuration on the endpoint. Centralized management makes it easy to update.</li>
+                                                <li><strong>Use Cases:</strong> Printers, IP cameras, IoT hubs, and non-critical infrastructure where you want the IP to remain consistent.</li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1433,6 +1532,7 @@ ipconfig /renew</code></pre>
                                             <div class="mt-3 p-3 bg-slate-950/90 rounded text-xs text-slate-400 border border-slate-800">
                                                 <strong class="text-white">Router / Gateway Assignment in Standard LAN:</strong><br>
                                                 Conventionally assigned to the <strong>first usable IP</strong> (e.g. <code>.1</code>) or the <strong>last usable IP</strong> (e.g. <code>.254</code>).
+                                                <div class="mt-2 text-cyan-400 font-mono">Formula: Usable IPs = 2^(32 - CIDR) - 2</div>
                                             </div>
                                         </div>
 
@@ -1460,6 +1560,9 @@ ipconfig /renew</code></pre>
                                                     <strong class="text-amber-400">5. 10.0.0.255 — Broadcast Address:</strong> Subnet broadcast address (reserved).
                                                 </li>
                                             </ul>
+                                            <div class="mt-3 p-3 bg-slate-950/90 rounded text-xs text-slate-400 border border-slate-800">
+                                                <div class="text-amber-400 font-mono">Formula: Usable IPs = 2^(32 - CIDR) - 5</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
