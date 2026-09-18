@@ -14,7 +14,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ENTRY = '/index.html';
-const ORIGIN = process.env.BASE_URL || 'http://devops-learner.s3-website.us-east-2.amazonaws.com/';
+const ORIGIN = (process.env.BASE_URL || 'https://devops-learner.s3.us-east-2.amazonaws.com').replace(/\/$/, '');
 // URLs to skip (external CDN, fonts, etc.)
 const SKIP_PATTERNS = [
   /^https?:\/\/(?!devops-learner\.s3)/,
