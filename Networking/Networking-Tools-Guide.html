@@ -439,6 +439,20 @@ arp -d 192.168.1.10</code></pre>
                                 </div>
                             </div>
                         `
+                    },
+                    {
+                        title: "Windows OS Equivalents",
+                        content: `
+                            <div class="info-box border-sky-500 bg-sky-500/5">
+                                <strong class="text-sky-400">Windows Command Prompt</strong>
+                                <p class="text-sm mb-2 text-slate-300">If you are working on a Windows machine, use these commands for network interface management instead of <code>ip</code> or <code>ifconfig</code>:</p>
+                                <pre class="bg-transparent border-0 p-0 text-slate-300 text-sm"><code>ipconfig              # Show basic IP/subnet/gateway info
+ipconfig /all         # Detailed info (MAC address, DNS, DHCP)
+ipconfig /release     # Release current DHCP lease
+ipconfig /renew       # Renew DHCP lease
+ipconfig /flushdns    # Clear DNS resolver cache</code></pre>
+                            </div>
+                        `
                     }
                 ]
             },
@@ -483,6 +497,27 @@ traceroute -m 15 google.com # Max 15 hops</code></pre>
 2    10.0.0.1          5ms    # Hop 2 (ISP gateway)
 3    * * *                    # Hop 3 (firewall/timeout/hidden)</code></pre>
                                 <p class="text-sm mt-3"><strong>Note</strong>: <code>* * *</code> means system down, firewall blocking, or hidden router.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "Windows Path Tools",
+                        content: `
+                            <p>On Windows, <code>traceroute</code> is replaced by two different command-line utilities:</p>
+                            
+                            <div class="comparison-grid">
+                                <div class="comparison-card border-slate-700">
+                                    <h4 class="text-sky-400">tracert</h4>
+                                    <p class="text-sm text-slate-400">The direct equivalent to traceroute on Windows. Uses ICMP Echo Requests by default to map the path.</p>
+                                    <pre class="bg-transparent border-0 p-0 text-sm"><code>tracert google.com
+tracert -d 8.8.8.8      # No DNS resolution (faster)</code></pre>
+                                </div>
+                                <div class="comparison-card border-slate-700">
+                                    <h4 class="text-sky-400">pathping</h4>
+                                    <p class="text-sm text-slate-400">A powerful Windows-only tool that combines <code>ping</code> and <code>tracert</code>. It traces the route, then continuously pings each hop to compute exact packet loss per router.</p>
+                                    <pre class="bg-transparent border-0 p-0 text-sm"><code>pathping google.com
+pathping -n 8.8.8.8     # No DNS resolution (faster)</code></pre>
+                                </div>
                             </div>
                         `
                     },

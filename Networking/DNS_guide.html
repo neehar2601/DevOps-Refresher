@@ -338,7 +338,102 @@ Auth     → Resolver          [Answer: "93.184.216.34 (TTL 3600)"]
 Resolver → Client            [Final: "The IP is 93.184.216.34"]
 Resolver caches result for TTL seconds.</code></pre>
                             </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "Fully Qualified Domain Names (FQDNs)",
+                        content: `
+                            <p>An FQDN uses standard dot-delimited notation to specify the exact location of a node in the DNS hierarchy.</p>
                             
+                            <div class="my-8 bg-slate-950/50 p-6 rounded-xl border border-slate-800">
+                                <h4 class="text-sm font-bold text-slate-400 mb-4 uppercase tracking-wider text-center">FQDN Anatomy</h4>
+                                <div class="flex items-center justify-center gap-1 font-mono text-center overflow-x-auto pb-2">
+                                    <div class="flex flex-col items-center">
+                                        <div class="text-emerald-400 text-xl md:text-3xl font-bold bg-slate-900/80 px-3 py-2 rounded border border-emerald-500/30">client1</div>
+                                        <div class="text-xs uppercase tracking-wider text-emerald-400/80 mt-2 font-sans font-bold">Host Name</div>
+                                    </div>
+                                    <div class="text-slate-500 text-xl md:text-3xl font-bold px-1 self-start mt-2">.</div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="text-blue-400 text-xl md:text-3xl font-bold bg-slate-900/80 px-3 py-2 rounded border border-blue-500/30">tech.sales</div>
+                                        <div class="text-xs uppercase tracking-wider text-blue-400/80 mt-2 font-sans font-bold">Sub-domains</div>
+                                    </div>
+                                    <div class="text-slate-500 text-xl md:text-3xl font-bold px-1 self-start mt-2">.</div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="text-amber-400 text-xl md:text-3xl font-bold bg-slate-900/80 px-3 py-2 rounded border border-amber-500/30">example</div>
+                                        <div class="text-xs uppercase tracking-wider text-amber-400/80 mt-2 font-sans font-bold">2nd Level</div>
+                                    </div>
+                                    <div class="text-slate-500 text-xl md:text-3xl font-bold px-1 self-start mt-2">.</div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="text-rose-400 text-xl md:text-3xl font-bold bg-slate-900/80 px-3 py-2 rounded border border-rose-500/30">com</div>
+                                        <div class="text-xs uppercase tracking-wider text-rose-400/80 mt-2 font-sans font-bold">TLD</div>
+                                    </div>
+                                    <div class="flex flex-col items-center ml-1">
+                                        <div class="text-slate-400 text-xl md:text-3xl font-bold bg-slate-900/80 px-2 py-2 rounded border border-slate-500/30">.</div>
+                                        <div class="text-xs uppercase tracking-wider text-slate-400/80 mt-2 font-sans font-bold">Root</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-box">
+                                <strong>Structure Rules</strong>
+                                <ul class="mt-2 space-y-2">
+                                    <li><strong>Length Limits:</strong> The entire FQDN can be a maximum of 255 characters. Each dot-delimited section can be up to 63 characters long.</li>
+                                    <li><strong>Direction:</strong> The hostname is always on the far left. The dot on the far right represents the root structure (often omitted in typing).</li>
+                                    <li><strong>Levels:</strong> 
+                                        <ul class="list-disc ml-4 mt-1 mb-2">
+                                            <li><em>Top/First Level:</em> e.g., <code>.com</code>, <code>.org</code></li>
+                                            <li><em>Second Level:</em> e.g., <code>example.com</code> (Typically what companies purchase/register)</li>
+                                            <li><em>Sub-domains:</em> Anything between the second level and the hostname. The owner of the second-level domain can create whatever sub-domains they want.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Aliases:</strong> A network node's primary name is its hostname, but it can have additional canonical names (CNAMEs) acting as aliases, which is especially useful when hosting multiple websites on a single server.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "DNS Zones & Servers",
+                        content: `
+                            <p>DNS records are organized into <strong>Zones</strong>, managed by authoritative servers.</p>
+                            
+                            <div class="comparison-grid">
+                                <div class="comparison-card">
+                                    <h4>Forward Lookup Zones</h4>
+                                    <p class="text-sm text-slate-400">Takes a name and matches it to an IP address (e.g., <code>A</code>, <code>AAAA</code> records).</p>
+                                </div>
+                                <div class="comparison-card">
+                                    <h4>Reverse Lookup Zones</h4>
+                                    <p class="text-sm text-slate-400">Takes an IP and matches it to a name (<code>PTR</code> records). The IP is written backwards and ends with <code>.in-addr.arpa</code>. Example: <code>192.168.1.10</code> becomes <code>10.1.168.192.in-addr.arpa</code>.</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 info-box border-l-4 border-blue-500">
+                                <strong class="text-blue-400">Primary vs Secondary Servers</strong>
+                                <ul class="mt-2 space-y-2">
+                                    <li><strong>Primary DNS Server:</strong> Holds the <em>only</em> read-write copy of the zone for a domain. It accepts changes.</li>
+                                    <li><strong>Secondary DNS Server:</strong> Holds a read-only copy of the zone. Provides fault tolerance and balances processing load for name resolution.</li>
+                                    <li><strong>Zone Transfers:</strong> The process where the Primary sends updates to the Secondary. <span class="text-rose-400 font-bold">Security Warning:</span> Zone transfers should be strictly limited to authorized secondary servers to prevent hackers from querying and downloading your entire internal infrastructure layout.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "Split DNS",
+                        content: `
+                            <p>DNS is a public database, making it a potential security risk if internal infrastructure is exposed. <strong>Split DNS</strong> solves this by using two separate primary authoritative servers for the same domain.</p>
+                            
+                            <div class="comparison-grid">
+                                <div class="comparison-card border-slate-700">
+                                    <h4 class="text-emerald-400">Internal DNS Server</h4>
+                                    <p class="text-sm text-slate-400">Contains records for <em>all</em> devices (clients, internal servers). Returns private internal IPs (e.g., pointing directly to an internal server or internal firewall interface).</p>
+                                </div>
+                                <div class="comparison-card border-slate-700">
+                                    <h4 class="text-blue-400">External DNS Server (Internet)</h4>
+                                    <p class="text-sm text-slate-400">Contains records <em>only</em> for public resources (like a public website). Returns public IPs (e.g., pointing to the external firewall interface).</p>
+                                </div>
+                            </div>
+                            <p class="mt-3 text-sm text-slate-400 italic text-center">This prevents external entities from querying internal infrastructure layouts while still allowing public access to permitted resources.</p>
                         `
                     }
                 ]
@@ -438,6 +533,14 @@ Resolver caches result for TTL seconds.</code></pre>
                                     </tr>
                                 </tbody>
                             </table>
+                            
+                            <div class="mt-4 info-box border-l-4 border-indigo-500">
+                                <strong class="text-indigo-400">Record Nuances:</strong>
+                                <ul class="text-sm mt-2 space-y-2 text-slate-300">
+                                    <li><strong>MX Priority:</strong> MX records include a priority number (e.g., 10). The <em>lower</em> the number, the <em>higher</em> the priority. Mail routing will always choose the lowest number first. Servers with the same priority split the load, while higher numbers act as backups.</li>
+                                    <li><strong>SOA Serial Numbers:</strong> The Start of Authority record contains a serial number that increments with every change. Secondary servers check this number to determine if they need to request a <em>Zone Transfer</em>. The admin email format uses a dot instead of an @ (e.g., <code>hostmaster.company.com</code>).</li>
+                                </ul>
+                            </div>
                         `
                     },
                     {

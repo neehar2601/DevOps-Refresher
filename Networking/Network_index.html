@@ -4,14 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Networking Fundamentals</title>
+    <title>Networking Fundamentals | DevOps Learning Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } } } }
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
     </script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="../assets/styles.css">
     <style>
@@ -24,27 +34,19 @@
         }
 
         .fade-in {
-            animation: fadeIn 0.4s ease-in-out;
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(8px);
             }
 
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        .tech-card {
-            border-left: 4px solid #3b82f6;
-        }
-
-        .analogy-card {
-            border-left: 4px solid #10b981;
         }
 
         .no-scrollbar::-webkit-scrollbar {
@@ -57,106 +59,12 @@
         }
 
         .component-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
 
         .component-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-        }
-
-        .journey-step {
-            position: relative;
-            padding-left: 3rem;
-        }
-
-        .journey-step::before {
-            content: '';
-            position: absolute;
-            left: 0.75rem;
-            top: 2.5rem;
-            bottom: -1rem;
-            width: 2px;
-            background: linear-gradient(to bottom, #3b82f6, transparent);
-        }
-
-        .journey-step:last-child::before {
-            display: none;
-        }
-
-        .step-number {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 2.5rem;
-            height: 2.5rem;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: white;
-            font-size: 1.125rem;
-            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
-        }
-
-        /* Interactive Packet Journey Styles */
-        .steps-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .steps-list::-webkit-scrollbar-track {
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 4px;
-        }
-
-        .steps-list::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 4px;
-        }
-
-        .step-item {
-            opacity: 0.5;
-            transition: all 0.3s ease;
-        }
-
-        .step-item.active {
-            opacity: 1;
-            transform: translateX(4px);
-            background: rgba(30, 41, 59, 0.8);
-            border-color: #3b82f6;
-        }
-
-        .step-item.completed {
-            opacity: 0.8;
-        }
-
-        .type-outbound {
-            border-left: 4px solid #fbbc04;
-        }
-
-        .type-server {
-            border-left: 4px solid #ea4335;
-        }
-
-        .type-inbound {
-            border-left: 4px solid #34a853;
-        }
-
-        .active.type-outbound {
-            border-left-width: 6px;
-            border-left-color: #f9ab00;
-        }
-
-        .active.type-server {
-            border-left-width: 6px;
-            border-left-color: #d93025;
-        }
-
-        .active.type-inbound {
-            border-left-width: 6px;
-            border-left-color: #1e8e3e;
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px -6px rgba(0, 0, 0, 0.35);
         }
 
         /* ── Encapsulation Panel ── */
@@ -253,189 +161,190 @@
         }
 
         .glass {
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Handshake Flow */
+        .handshake-step {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .handshake-step::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 1.5rem;
+            bottom: -0.5rem;
+            width: 2px;
+            background: #334155;
+        }
+
+        .handshake-step:last-child::before {
+            display: none;
         }
     </style>
 </head>
 
-<body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+<body
+    class="min-h-screen bg-slate-950 text-slate-100 flex flex-col antialiased selection:bg-blue-500 selection:text-white">
 
-    <header class="bg-slate-950 border-b border-slate-800 text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <i data-lucide="network" class="w-8 h-8 text-blue-400"></i>
-                <h1 class="text-2xl font-bold tracking-tight">Networking <span
-                        class="text-slate-400 font-light">Fundamentals</span></h1>
+    <!-- ── Header ─────────────────────────────────────────── -->
+    <header class="bg-slate-900/95 border-b border-slate-800 text-white shadow-lg sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+            <div class="flex items-center space-x-3.5">
+                <div class="p-2 bg-blue-500/20 rounded-xl border border-blue-500/30">
+                    <i data-lucide="network" class="w-6 h-6 text-blue-400"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        Networking <span class="text-blue-400 font-light">Hub</span>
+                    </h1>
+                    <p class="text-xs text-slate-400 hidden sm:block">Fundamentals, Architecture, Interactive Tools
+                        &amp; Commands</p>
+                </div>
             </div>
-            <nav class="flex items-center gap-6">
+            <nav class="flex items-center gap-4">
                 <a href="../index.html"
-                    class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
-                    <i data-lucide="home" class="w-4 h-4"></i> DevOps Hub
+                    class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-all flex items-center gap-2 text-xs font-semibold shadow-sm">
+                    <i data-lucide="home" class="w-3.5 h-3.5 text-blue-400"></i> DevOps Hub
                 </a>
             </nav>
         </div>
     </header>
 
-    <div class="bg-slate-900 border-b border-slate-800 sticky top-[68px] z-40 shadow-sm">
+    <!-- ── Sticky Navigation Bar ──────────────────────────── -->
+    <div class="bg-slate-900/90 border-b border-slate-800 sticky top-[61px] z-40 backdrop-blur-sm shadow-md">
         <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
-            <nav class="flex space-x-2 md:space-x-6 overflow-x-auto py-3 no-scrollbar" id="nav-tabs">
-                <!-- Tabs generated by JS -->
+            <nav class="flex space-x-2 md:space-x-3 overflow-x-auto py-2.5 no-scrollbar" id="nav-tabs">
+                <!-- Tabs generated dynamically by JS -->
             </nav>
         </div>
     </div>
 
+    <!-- ── Main Content Container ─────────────────────────── -->
     <main class="flex-grow max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         <div id="content-container" class="fade-in">
-            <!-- Content injected by JS -->
+            <!-- Content injected dynamically by JS -->
         </div>
     </main>
 
-    <footer class="bg-slate-950 border-t border-slate-800 text-slate-500 py-6 text-center text-sm">
+    <!-- ── Footer ─────────────────────────────────────────── -->
+    <footer class="bg-slate-950 border-t border-slate-900 text-slate-500 py-6 text-center text-xs">
         <p>Networking Hub · DevOps Learning Hub · <a href="../index.html" class="text-blue-400 hover:underline">← Back
-                to Hub</a></p>
+                to Main Hub</a></p>
     </footer>
+
+    <!-- ── Global Toast for Copy ──────────────────────────── -->
+    <div id="copy-toast"
+        class="fixed bottom-6 right-6 z-50 transform translate-y-12 opacity-0 pointer-events-none transition-all duration-300 bg-slate-900 border border-emerald-500/40 text-emerald-400 text-xs font-semibold px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2">
+        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+        <span id="copy-toast-msg">Copied to clipboard!</span>
+    </div>
 
     <script>
         const contentData = {
             intro: {
-                title: "What is Networking?",
+                title: "What is Networking & Network Types",
                 icon: "network",
-                intro: "A network is a collection of interconnected devices that share resources and communicate using standardized protocols.",
+                intro: "A network is a collection of interconnected devices communicating via standardized protocols. From small SOHO LANs to global carrier WANs, explore how data travels across local and remote segments.",
                 sections: [
                     {
                         title: "What is a Network?",
                         content: `
                             <p class="text-slate-300 leading-relaxed mb-4">
-                                A <strong class="text-white">network</strong> is a collection of interconnected devices that share resources 
-                                and communicate with each other using standardized protocols. Networks range from small home setups 
-                                (a laptop, phone, and router) to massive global infrastructures like the internet.
+                                A <strong class="text-white">network</strong> is a collection of interconnected devices (computers, servers, routers, switches, smartphones, and IoT sensors) that share resources and communicate with each other using standardized protocols. Networks span from a simple two-device peer-to-peer setup to massive multi-cloud infrastructures like the Internet.
                             </p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-                                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                                    <h4 class="font-bold text-blue-400 mb-2 flex items-center">
-                                        <i data-lucide="link" class="w-4 h-4 mr-2"></i>Interconnection
-                                    </h4>
-                                    <p class="text-sm text-slate-400">Devices are physically or wirelessly linked</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 my-6">
+                                <div class="bg-slate-900/90 p-5 rounded-xl border border-slate-800 hover:border-blue-500/40 transition-colors">
+                                    <div class="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 mb-3 border border-blue-500/20">
+                                        <i data-lucide="link" class="w-4 h-4"></i>
+                                    </div>
+                                    <h4 class="font-bold text-white mb-1.5 text-base">Interconnection</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">Devices are linked through physical copper (Ethernet), optical fiber, or wireless RF waves.</p>
                                 </div>
-                                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                                    <h4 class="font-bold text-blue-400 mb-2 flex items-center">
-                                        <i data-lucide="message-square" class="w-4 h-4 mr-2"></i>Communication
-                                    </h4>
-                                    <p class="text-sm text-slate-400">Data flows between nodes using protocols (TCP/IP, HTTP)</p>
+                                <div class="bg-slate-900/90 p-5 rounded-xl border border-slate-800 hover:border-blue-500/40 transition-colors">
+                                    <div class="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-3 border border-emerald-500/20">
+                                        <i data-lucide="message-square" class="w-4 h-4"></i>
+                                    </div>
+                                    <h4 class="font-bold text-white mb-1.5 text-base">Communication</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">Structured data exchanges governed by standard protocol suites (TCP/IP, UDP, HTTP, DNS).</p>
                                 </div>
-                                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                                    <h4 class="font-bold text-blue-400 mb-2 flex items-center">
-                                        <i data-lucide="share-2" class="w-4 h-4 mr-2"></i>Resource Sharing
-                                    </h4>
-                                    <p class="text-sm text-slate-400">Files, printers, internet, and apps accessed by multiple users</p>
+                                <div class="bg-slate-900/90 p-5 rounded-xl border border-slate-800 hover:border-blue-500/40 transition-colors">
+                                    <div class="w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 mb-3 border border-purple-500/20">
+                                        <i data-lucide="share-2" class="w-4 h-4"></i>
+                                    </div>
+                                    <h4 class="font-bold text-white mb-1.5 text-base">Resource Sharing</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">Centralized compute clusters, shared storage volumes, databases, and internet egress.</p>
                                 </div>
-                                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                                    <h4 class="font-bold text-blue-400 mb-2 flex items-center">
-                                        <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>Addressing
-                                    </h4>
-                                    <p class="text-sm text-slate-400">Every device has a unique identifier (IP, MAC address)</p>
+                                <div class="bg-slate-900/90 p-5 rounded-xl border border-slate-800 hover:border-blue-500/40 transition-colors">
+                                    <div class="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 mb-3 border border-amber-500/20">
+                                        <i data-lucide="map-pin" class="w-4 h-4"></i>
+                                    </div>
+                                    <h4 class="font-bold text-white mb-1.5 text-base">Addressing</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">Unique identifiers across layers: L2 MAC addresses, L3 IP addresses, and L4 Port numbers.</p>
                                 </div>
                             </div>
                         `
                     },
                     {
-                        title: "How Networks Work",
+                        title: "How Networks Work: Layered Flow",
                         content: `
-                            <p class="text-slate-300 leading-relaxed mb-4">
-                                Networks operate through a combination of hardware, software, and protocols:
+                            <p class="text-slate-300 leading-relaxed mb-5">
+                                When applications exchange data, transmission relies on a cooperative stack of hardware, system drivers, and network protocols:
                             </p>
-                            <div class="space-y-3">
-                                <div class="flex items-start space-x-3 bg-slate-800/50 p-4 rounded-lg">
-                                    <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">1</span>
-                                    <div>
-                                        <h4 class="font-semibold text-white">Physical/Data Link Layer</h4>
-                                        <p class="text-sm text-slate-400">Cables (Ethernet) or wireless signals (Wi-Fi) carry raw data</p>
-                                    </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div class="bg-slate-900/80 p-4 rounded-xl border-l-4 border-l-emerald-500 border border-slate-800">
+                                    <span class="text-[11px] font-mono text-emerald-400 font-semibold uppercase tracking-wider">Layer 1 &amp; 2</span>
+                                    <h4 class="font-bold text-white mt-1 mb-2 text-sm">Physical &amp; Data Link</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">NICs convert frames into electrical, optical, or radio bitstreams. Switches forward frames locally using physical MAC addresses.</p>
                                 </div>
-                                <div class="flex items-start space-x-3 bg-slate-800/50 p-4 rounded-lg">
-                                    <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">2</span>
-                                    <div>
-                                        <h4 class="font-semibold text-white">Network Layer</h4>
-                                        <p class="text-sm text-slate-400">Routers use IP addresses to forward data packets to the correct destination</p>
-                                    </div>
+                                <div class="bg-slate-900/80 p-4 rounded-xl border-l-4 border-l-blue-500 border border-slate-800">
+                                    <span class="text-[11px] font-mono text-blue-400 font-semibold uppercase tracking-wider">Layer 3</span>
+                                    <h4 class="font-bold text-white mt-1 mb-2 text-sm">Network Layer</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">Routers evaluate logical IP addresses and routing tables to forward packets across different subnets and network boundaries.</p>
                                 </div>
-                                <div class="flex items-start space-x-3 bg-slate-800/50 p-4 rounded-lg">
-                                    <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">3</span>
-                                    <div>
-                                        <h4 class="font-semibold text-white">Transport Layer</h4>
-                                        <p class="text-sm text-slate-400">TCP ensures reliable delivery; UDP offers faster, connectionless transmission</p>
-                                    </div>
+                                <div class="bg-slate-900/80 p-4 rounded-xl border-l-4 border-l-cyan-500 border border-slate-800">
+                                    <span class="text-[11px] font-mono text-cyan-400 font-semibold uppercase tracking-wider">Layer 4</span>
+                                    <h4 class="font-bold text-white mt-1 mb-2 text-sm">Transport Layer</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">TCP guarantees reliable in-order delivery via handshakes and acknowledgments, while UDP provides lightweight low-latency streaming.</p>
                                 </div>
-                                <div class="flex items-start space-x-3 bg-slate-800/50 p-4 rounded-lg">
-                                    <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">4</span>
-                                    <div>
-                                        <h4 class="font-semibold text-white">Application Layer</h4>
-                                        <p class="text-sm text-slate-400">Protocols like HTTP, DNS, and SSH enable specific services</p>
-                                    </div>
+                                <div class="bg-slate-900/80 p-4 rounded-xl border-l-4 border-l-purple-500 border border-slate-800">
+                                    <span class="text-[11px] font-mono text-purple-400 font-semibold uppercase tracking-wider">Layer 7</span>
+                                    <h4 class="font-bold text-white mt-1 mb-2 text-sm">Application Layer</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">High-level protocols (HTTP/HTTPS, DNS, SSH, gRPC) handle end-user and service-to-service data formatting.</p>
                                 </div>
                             </div>
                         `
                     },
                     {
-                        title: "Networking Models (OSI vs TCP/IP)",
+                        title: "Networking Models: OSI 7-Layer vs TCP/IP 4-Layer",
                         content: `
                             <p class="text-slate-300 leading-relaxed mb-4">
-                                To manage network complexity, we use models that organize different protocols and functions into functional layers:
+                                To organize network operations, engineers utilize two standard models:
                             </p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-                                <div class="bg-blue-950/40 border border-blue-500/25 border-l-4 border-l-blue-400 rounded-xl rounded-l-none p-5">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-4">
+                                <div class="bg-blue-950/30 border border-blue-500/20 border-l-4 border-l-blue-500 rounded-xl p-5">
                                     <div class="flex items-center gap-3 mb-2">
                                         <i data-lucide="layers" class="w-5 h-5 text-blue-400"></i>
                                         <h3 class="font-bold text-white">OSI 7-Layer Model</h3>
                                     </div>
-                                    <p class="text-slate-300 text-sm leading-relaxed">
-                                        The <strong class="text-blue-400">Theoretical Roadmap</strong>. It breaks networking into 7 logical steps. It is perfect for learning and troubleshooting but isn't strictly how modern protocols are written.
+                                    <p class="text-slate-300 text-sm leading-relaxed mb-3">
+                                        The <strong class="text-blue-400">Theoretical Reference Framework</strong>. It divides networking into 7 modular steps (Physical, Data Link, Network, Transport, Session, Presentation, Application).
                                     </p>
+                                    <span class="text-xs text-slate-400 font-mono">Best for: Troubleshooting, architectural teaching, RFC standardization.</span>
                                 </div>
-                                <div class="bg-purple-950/40 border border-purple-500/25 border-l-4 border-l-purple-400 rounded-xl rounded-l-none p-5">
+                                <div class="bg-purple-950/30 border border-purple-500/20 border-l-4 border-l-purple-500 rounded-xl p-5">
                                     <div class="flex items-center gap-3 mb-2">
                                         <i data-lucide="activity" class="w-5 h-5 text-purple-400"></i>
-                                        <h3 class="font-bold text-white">TCP/IP Model</h3>
+                                        <h3 class="font-bold text-white">TCP/IP 4-Layer Model</h3>
                                     </div>
-                                    <p class="text-slate-300 text-sm leading-relaxed">
-                                        The <strong class="text-purple-400">Practical Implementation</strong>. This 4-layer model is what the modern internet actually uses. It simplifies the OSI model into functional groups for actual data movement.
+                                    <p class="text-slate-300 text-sm leading-relaxed mb-3">
+                                        The <strong class="text-purple-400">Real-World Protocol Suite</strong>. It combines Session, Presentation, and Application into a unified Application layer, directly mapping to the operating system's networking stack.
                                     </p>
-                                </div>
-                            </div>
-                        `
-                    },
-                    {
-                        title: "Types of Networks",
-                        content: `
-                            <p class="text-slate-300 leading-relaxed mb-4">
-                                Networks are often classified by their size, scope, and who manages them:
-                            </p>
-                            <div class="space-y-4">
-                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                                    <h4 class="font-bold text-white mb-1">Local Area Network (LAN)</h4>
-                                    <p class="text-sm text-slate-400">A self-contained network in a small area (like a single building or room). All nodes connect directly without an ISP. Known for high speeds and typically uses Ethernet.</p>
-                                </div>
-                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                                    <h4 class="font-bold text-white mb-1">Wide Area Network (WAN)</h4>
-                                    <p class="text-sm text-slate-400">Spans large areas (countries, continents) by connecting multiple LANs using long-range media provided by telecom companies. Can be private (corporate) or public (the Internet).</p>
-                                </div>
-                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                                    <h4 class="font-bold text-white mb-1">Metropolitan Area Network (MAN)</h4>
-                                    <p class="text-sm text-slate-400">Larger than a LAN but smaller than a WAN, typically covering a city or a large campus.</p>
-                                </div>
-                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                                    <h4 class="font-bold text-white mb-1">Intranet, Extranet & Enterprise Networks</h4>
-                                    <ul class="text-sm text-slate-400 space-y-1 mt-2 pl-4 list-disc">
-                                        <li><strong>Intranet:</strong> A private network sharing company info strictly with employees.</li>
-                                        <li><strong>Extranet:</strong> An extension of an intranet allowing controlled access to outside partners or vendors.</li>
-                                        <li><strong>Enterprise Network:</strong> Combines LANs and WANs to interlink all resources of a single organization, built for scale and security.</li>
-                                    </ul>
-                                </div>
-                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                                    <h4 class="font-bold text-white mb-1">Small Office / Home Office (SOHO)</h4>
-                                    <p class="text-sm text-slate-400">A small network (usually up to 10 nodes) at a single physical location. Often connected using a multifunction "home router" that acts as a switch, router, and DHCP server.</p>
+                                    <span class="text-xs text-slate-400 font-mono">Best for: Production kernel stacks, socket programming, cloud routing.</span>
                                 </div>
                             </div>
                         `
@@ -444,15 +353,34 @@
                         title: "Why Networks Matter for DevOps",
                         content: `
                             <p class="text-slate-300 leading-relaxed mb-4">
-                                Modern DevOps workflows depend on networking:
+                                In modern cloud and microservice ecosystems, infrastructure is entirely software-defined networking (SDN):
                             </p>
-                            <ul class="space-y-2 text-slate-300">
-                                <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"></i><span><strong class="text-white">Container Networking:</strong> Docker containers communicate via virtual networks</span></li>
-                                <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"></i><span><strong class="text-white">Kubernetes Networking:</strong> Pods, services, and ingress controllers manage traffic</span></li>
-                                <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"></i><span><strong class="text-white">Cloud Infrastructure:</strong> VPCs, subnets, load balancers, and security groups control access</span></li>
-                                <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"></i><span><strong class="text-white">Service Meshes:</strong> Istio and Linkerd manage microservice communication</span></li>
-                                <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-green-400 mr-3 flex-shrink-0 mt-0.5"></i><span><strong class="text-white">CI/CD Pipelines:</strong> Jenkins, GitHub Actions need network access to repos and deployment targets</span></li>
-                            </ul>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                                    <h4 class="font-bold text-emerald-400 mb-1 flex items-center text-sm"><i data-lucide="box" class="w-4 h-4 mr-2"></i>Container Networking</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">Docker bridge networks, veth pairs, overlay networks, and port forwarding (<code>-p 8080:80</code>) connect isolated containers.</p>
+                                </div>
+                                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                                    <h4 class="font-bold text-blue-400 mb-1 flex items-center text-sm"><i data-lucide="server" class="w-4 h-4 mr-2"></i>Kubernetes CNI</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">Pod-to-Pod flat networking without NAT, Service ClusterIP load balancing via kube-proxy/IPVS, and Ingress controllers.</p>
+                                </div>
+                                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                                    <h4 class="font-bold text-indigo-400 mb-1 flex items-center text-sm"><i data-lucide="cloud" class="w-4 h-4 mr-2"></i>Cloud Infrastructure (VPC)</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">Subnets, Route Tables, Internet Gateways, NAT Gateways, Security Groups, and Transit Gateways in AWS, Azure, and GCP.</p>
+                                </div>
+                                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                                    <h4 class="font-bold text-purple-400 mb-1 flex items-center text-sm"><i data-lucide="git-merge" class="w-4 h-4 mr-2"></i>Service Meshes</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">Istio, Linkerd, and Envoy sidecar proxies providing dynamic traffic routing, mTLS mutual encryption, and circuit breaking.</p>
+                                </div>
+                                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                                    <h4 class="font-bold text-amber-400 mb-1 flex items-center text-sm"><i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>CI/CD Pipelines</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">Runner egress, webhook listeners, artifact registry caching, and secure deploy tunnels to private VPC bastions.</p>
+                                </div>
+                                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                                    <h4 class="font-bold text-rose-400 mb-1 flex items-center text-sm"><i data-lucide="shield-alert" class="w-4 h-4 mr-2"></i>Zero Trust Security</h4>
+                                    <p class="text-xs text-slate-400 leading-relaxed">Network policies, micro-segmentation, iptables, and eBPF filters (Cilium) preventing lateral attacker movement.</p>
+                                </div>
+                            </div>
                         `
                     }
                 ],
@@ -463,11 +391,11 @@
                         url: "IP Addressing Guide.html",
                         subtext: "Subnets • CIDR • Calculation",
                         borderColor: "border-emerald-500/30",
-                        bgClass: "bg-emerald-900/20",
+                        bgClass: "bg-emerald-950/20",
                         iconBgClass: "bg-emerald-500/20",
                         iconColor: "text-emerald-400",
                         icon: "map-pin",
-                        btnClass: "bg-emerald-700 hover:bg-emerald-600"
+                        btnClass: "bg-emerald-600 hover:bg-emerald-500"
                     },
                     {
                         title: "Networking Tools Guide",
@@ -475,7 +403,7 @@
                         url: "Networking-Tools-Guide.html",
                         subtext: "Connectivity • DNS • Perf",
                         borderColor: "border-blue-500/30",
-                        bgClass: "bg-blue-900/20",
+                        bgClass: "bg-blue-950/20",
                         iconBgClass: "bg-blue-500/20",
                         iconColor: "text-blue-400",
                         icon: "wrench",
@@ -487,7 +415,7 @@
                         url: "DNS_guide.html",
                         subtext: "Records • Caching • DevOps",
                         borderColor: "border-indigo-500/30",
-                        bgClass: "bg-indigo-900/20",
+                        bgClass: "bg-indigo-950/20",
                         iconBgClass: "bg-indigo-500/20",
                         iconColor: "text-indigo-400",
                         icon: "globe",
@@ -498,257 +426,208 @@
                         desc: "Watch live packet animations of Recursive and Iterative DNS resolution — step-by-step or auto-play.",
                         url: "DNS_sim.html",
                         subtext: "Interactive • Recursive • Iterative",
-                        borderColor: "border-blue-500/30",
-                        bgClass: "bg-blue-950/30",
-                        iconBgClass: "bg-blue-500/20",
-                        iconColor: "text-blue-400",
+                        borderColor: "border-cyan-500/30",
+                        bgClass: "bg-cyan-950/20",
+                        iconBgClass: "bg-cyan-500/20",
+                        iconColor: "text-cyan-400",
                         icon: "activity",
-                        btnClass: "bg-blue-600 hover:bg-blue-500"
+                        btnClass: "bg-cyan-600 hover:bg-cyan-500"
                     },
                     {
                         title: "Packet Encapsulation Simulator",
                         desc: "See how data transforms into segments, packets, and frames — and how switches, routers, and servers interpret each layer.",
                         url: "Packet_sim.html",
                         subtext: "Interactive • OSI Layers • X-Ray View",
-                        borderColor: "border-cyan-500/30",
-                        bgClass: "bg-cyan-900/20",
-                        iconBgClass: "bg-cyan-500/20",
-                        iconColor: "text-cyan-400",
+                        borderColor: "border-purple-500/30",
+                        bgClass: "bg-purple-950/20",
+                        iconBgClass: "bg-purple-500/20",
+                        iconColor: "text-purple-400",
                         icon: "layers",
-                        btnClass: "bg-cyan-600 hover:bg-cyan-500"
+                        btnClass: "bg-purple-600 hover:bg-purple-500"
+                    },
+                    {
+                        title: "Network Components, Hardware & Architecture Guide",
+                        desc: "In-depth guide covering Components, Hardware, Scopes (LAN/MAN/WAN), Topologies, TCP vs UDP, Ports & Protocol Deep Dives.",
+                        url: "Network_components.html",
+                        subtext: "Components • Architecture • Protocols",
+                        borderColor: "border-emerald-500/30",
+                        bgClass: "bg-emerald-950/20",
+                        iconBgClass: "bg-emerald-500/20",
+                        iconColor: "text-emerald-400",
+                        icon: "box",
+                        btnClass: "bg-emerald-600 hover:bg-emerald-500"
+                    },
+                    {
+                        title: "Network Security & VPN Guide",
+                        desc: "Comprehensive guide on VPNs, Site-to-Site vs Remote Access, Tunneling protocols, and security best practices.",
+                        url: "Network_Security_Guide.html",
+                        subtext: "VPNs • Protocols • Security",
+                        borderColor: "border-rose-500/30",
+                        bgClass: "bg-rose-950/20",
+                        iconBgClass: "bg-rose-500/20",
+                        iconColor: "text-rose-400",
+                        icon: "shield-check",
+                        btnClass: "bg-rose-600 hover:bg-rose-500"
                     }
                 ]
             },
-            components: {
-                title: "Network Components",
-                icon: "box",
-                intro: "Understanding the building blocks that make modern networks function.",
-                components: [
-                    {
-                        name: "Node (Host / Device)",
-                        icon: "laptop",
-                        definition: "A node or host is anything connected to the network that can send, receive, or process data.",
-                        types: [
-                            "<strong>Servers:</strong> Computers designed to provide central services and resources (files, apps) to other devices, typically with redundant hardware and specialized OS (e.g., Linux, Windows Server).",
-                            "<strong>Clients:</strong> End-user computers (desktops, workstations) that use the resources of servers, while also performing their own local processing.",
-                            "<strong>Peers:</strong> Computers that act as both client and server to others, typically in smaller networks without a centralized security server.",
-                            "<strong>Host Computers:</strong> Traditionally central mainframes doing all processing for terminals. Today, the term is generalized for any node on a TCP/IP network.",
-                            "<strong>Terminals:</strong> 'Dumb' devices (just keyboard/monitor) that rely entirely on a central host for processing and memory."
-                        ],
-                        devops: "Virtual Machines (EC2, Azure VMs, GCP Compute Engine), Containers (Docker), Kubernetes Pods"
-                    },
-                    {
-                        name: "Network Interface Card (NIC)",
-                        icon: "cpu",
-                        definition: "Hardware component that connects a device to the network medium, allowing it to put data onto and take data off the network.",
-                        example: "In human communication, mouths put data (sound) onto the medium (air), and ears take it off. A NIC does both for a computer.",
-                        devops: "Virtual NICs (vNICs) connect virtual machines and containers to virtual networks."
-                    },
-                    {
-                        name: "Transmission Medium",
-                        icon: "wifi",
-                        definition: "The physical or wireless path that carries data between devices on a network.",
-                        types: ["<strong>Copper Wires:</strong> Ethernet cables carrying electrical signals", "<strong>Wireless:</strong> Wi-Fi or cellular networks using radio waves", "<strong>Fiber Optics:</strong> Cables carrying light signals"],
-                        example: "Just as air carries sound waves when people talk, the network medium carries data signals."
-                    },
-                    {
-                        name: "Protocols",
-                        icon: "book-open",
-                        definition: "A set of rules that determine how devices communicate and interpret data.",
-                        types: ["<strong>Protocol Suite:</strong> A collection of protocols that work together, like TCP/IP (the main protocol suite used on the Internet)."],
-                        example: "Protocols are like languages in human communication; both sides must use the exact same rules to accurately receive and interpret the message.",
-                        devops: "HTTP/HTTPS for web traffic, SSH for secure server access, BGP for cloud routing."
-                    },
-                    {
-                        name: "Switch",
-                        icon: "shuffle",
-                        definition: "A Layer 2 device that connects multiple devices within the same local network (LAN) and forwards data frames based on MAC addresses.",
-                        how: "Maintains a <strong>MAC address table</strong> mapping ports to connected devices. When a frame arrives, the switch reads the destination MAC and forwards it only to the correct port.",
-                        example: "In an office with 50 computers, a switch ensures that when Computer A sends data to Computer B, only Computer B receives it—traffic is isolated and efficient.",
-                        devops: "Virtual switches in VMware or Hyper-V connect VMs. Docker bridge networks use Linux virtual switches (docker0)."
-                    },
-                    {
-                        name: "Router",
-                        icon: "git-branch",
-                        definition: "A Layer 3 device that forwards data packets between different networks using IP addresses.",
-                        functions: ["<strong>Routing:</strong> Determines the best path for packets to reach their destination", "<strong>NAT:</strong> Allows multiple devices on a private network to share a single public IP", "<strong>Firewall:</strong> Filters traffic based on security rules"],
-                        devops: "Cloud VPCs use virtual routers (AWS Route Tables, Azure Route Tables). Kubernetes uses kube-proxy to route traffic between pods."
-                    },
-                    {
-                        name: "DNS Server",
-                        icon: "globe",
-                        definition: "Translates human-readable domain names (like google.com) into IP addresses (like 142.250.184.46).",
-                        records: ["<strong>A Record:</strong> Maps domain to IPv4 address", "<strong>AAAA Record:</strong> Maps domain to IPv6 address", "<strong>CNAME:</strong> Alias for another domain", "<strong>MX:</strong> Mail server for the domain"],
-                        devops: "AWS Route 53, Azure DNS manage DNS for cloud apps. Kubernetes CoreDNS resolves service names to IPs."
-                    },
-                    {
-                        name: "DHCP Server",
-                        icon: "zap",
-                        definition: "Automatically assigns IP addresses and network configuration to devices when they connect to a network.",
-                        process: "DORA Process: <strong>Discover</strong> (Client broadcasts), <strong>Offer</strong> (Server responds with IP), <strong>Request</strong> (Client accepts), <strong>Acknowledge</strong> (Server confirms)",
-                        devops: "Cloud platforms automatically assign private IPs to VMs via DHCP. Kubernetes assigns IPs to pods from a CIDR range."
-                    },
-                    {
-                        name: "Load Balancer",
-                        icon: "scale",
-                        definition: "Distributes incoming network traffic across multiple servers to ensure no single server is overwhelmed.",
-                        types: ["<strong>Layer 4:</strong> Routes based on IP and port (TCP/UDP)", "<strong>Layer 7:</strong> Routes based on HTTP headers, URLs, cookies"],
-                        devops: "AWS ELB (Elastic Load Balancer), Nginx/HAProxy for reverse proxying, Kubernetes Ingress Controllers"
-                    },
-                    {
-                        name: "Firewall",
-                        icon: "shield",
-                        definition: "A security device that monitors and controls incoming and outgoing network traffic based on predefined rules.",
-                        types: ["<strong>Packet Filtering:</strong> Inspects packets by IP, port, protocol", "<strong>Stateful Inspection:</strong> Tracks active connections", "<strong>Application Layer:</strong> Inspects HTTP/HTTPS traffic for threats"],
-                        devops: "AWS Security Groups control EC2 traffic, Azure Network Security Groups (NSGs), iptables on Linux servers"
-                    }
-                ]
-            },
+
             journey: {
-                title: "Packet Journey",
+                title: "Packet Journey & OSI Model",
                 icon: "route",
-                intro: "Follow a complete interactive packet journey from typing google.com to seeing the webpage.",
+                intro: "Follow an interactive packet journey from pressing Enter on google.com to painting pixels in the browser, featuring live encapsulation x-ray analysis.",
                 steps: [
                     {
                         type: "outbound", title: "1. URL Parsing & Caches",
                         brief: "Checking local memory.",
-                        detail: "<p>The browser parses the URL. It identifies the protocol (HTTPS) and the domain (google.com).</p><p>It checks its internal <strong>HSTS list</strong> to ensure the connection must be secure. Then, it checks the <strong>Browser DNS Cache</strong> and the <strong>OS DNS Cache</strong> (including the <code>/etc/hosts</code> file) to see if it already knows Google's IP address.</p><p><strong>DNS Cache Hierarchy:</strong></p><ul><li>Browser DNS cache (in-memory)</li><li>OS DNS cache</li><li>Local hosts file (<code>/etc/hosts</code> on Linux/Mac, <code>C:\\\\Windows\\\\System32\\\\drivers\\\\etc\\\\hosts</code> on Windows)</li></ul><p><em>Assuming a cache miss, we proceed to DNS resolution.</em></p>"
+                        detail: "<p>The browser parses the URL, separating the protocol (HTTPS) and domain (google.com).</p><p class='mt-2'>It checks its internal <strong>HSTS preload list</strong> to ensure strictly encrypted transport. Next, it inspects the hierarchy of local caches:</p><ul class='list-disc pl-5 mt-2 space-y-1 text-xs'><li><strong>Browser DNS Cache:</strong> High-speed in-memory table.</li><li><strong>OS DNS Cache:</strong> System resolver memory.</li><li><strong>Hosts File:</strong> Local static overrides (<code>/etc/hosts</code> or <code>C:\\Windows\\System32\\drivers\\etc\\hosts</code>).</li></ul><p class='mt-2 text-slate-400 italic'>Assuming a cache miss, the system initiates network resolution.</p>"
                     },
                     {
                         type: "outbound", title: "2. DNS Resolution",
                         brief: "Querying the hierarchy.",
-                        detail: "<p>The OS sends a UDP request on <strong>Port 53</strong> to the configured <strong>Recursive DNS Resolver</strong> (typically provided by your ISP or configured as 8.8.8.8 for Google DNS).</p><p>The Resolver traverses the DNS hierarchy:</p><ul><li>Queries the <strong>Root Server</strong> (.), which points to the .com TLD servers.</li><li>Queries the <strong>TLD Server</strong> (.com), which points to Google's Name Servers.</li><li>Queries Google's <strong>Authoritative Name Server</strong>, which responds with the <strong>A Record</strong> (IPv4) or <strong>AAAA Record</strong> (IPv6).</li></ul><p>Result: <span class=\"code-block px-3 py-1 bg-black rounded text-green-400 font-mono\">142.250.190.46</span></p><p class=\"mt-4\"><strong>DNS Caching with TTL:</strong> The DNS record comes with a <strong>TTL (Time To Live)</strong> value. It tells resolvers and caches how long they can store this IP before needing to query again.</p>"
+                        detail: "<p>The OS creates a UDP datagram on <strong>Port 53</strong> directed to the configured <strong>Recursive DNS Resolver</strong> (e.g. your ISP or public DNS like 8.8.8.8).</p><p class='mt-2'>The resolver traverses the DNS tree if un-cached:</p><ol class='list-decimal pl-5 mt-2 space-y-1 text-xs'><li>Root Server (<code>.</code>) returns the <code>.com</code> TLD nameservers.</li><li>TLD Server (<code>.com</code>) returns Google's authoritative nameservers.</li><li>Google's Authoritative Server returns the <strong>A Record</strong> (IPv4) or <strong>AAAA Record</strong> (IPv6).</li></ol><div class='mt-3 p-2 bg-black rounded text-green-400 font-mono text-xs'>Resolved IP: 142.250.190.46 (TTL: 300s)</div>"
                     },
                     {
-                        type: "outbound", title: "3. ARP & Routing",
-                        brief: "Finding the local exit point.",
-                        detail: "<p>Before the packet can leave your machine, the OS needs the physical <strong>MAC address</strong> of your local router (the <strong>Default Gateway</strong>) to build the Ethernet frame.</p><p>It checks its <strong>ARP cache</strong>. If empty, it broadcasts an <strong>ARP Request</strong> to the local network: <em>'Who has the IP of the default gateway?'</em></p><p>The router replies with its MAC address, and this mapping is cached in the ARP table for future use.</p>"
+                        type: "outbound", title: "3. ARP & Default Gateway Routing",
+                        brief: "Finding the local Layer 2 exit.",
+                        detail: "<p>The destination IP is public, meaning it is outside your local subnet. The OS must route the packet through its <strong>Default Gateway</strong> (your local router).</p><p class='mt-2'>To build the Ethernet frame, the machine checks its <strong>ARP Cache</strong> for the gateway's Layer 2 <strong>MAC address</strong>:</p><ul class='list-disc pl-5 mt-2 space-y-1 text-xs'><li>If unknown, the OS broadcasts an <strong>ARP Request</strong>: <em>'Who has 192.168.1.1? Tell 192.168.1.50'</em>.</li><li>The router responds with an <strong>ARP Reply</strong> containing its hardware MAC address.</li></ul>"
                     },
                     {
-                        type: "outbound", title: "4. TCP & TLS Handshake",
+                        type: "outbound", title: "4. TCP Handshake & TLS 1.3 Negotiation",
                         brief: "Establishing the secure connection.",
-                        detail: "<p>A reliable, encrypted connection is established with Google's IP on <strong>Port 443</strong> before any HTTP data is sent.</p><p><strong>TCP 3-Way Handshake (Layer 4):</strong></p><ol class=\"list-decimal pl-5 space-y-1 mb-4\"><li>Client sends <strong>SYN</strong> - \"Let's connect\"</li><li>Server replies <strong>SYN-ACK</strong> - \"I'm ready\"</li><li>Client replies <strong>ACK</strong> - \"Connection established\"</li></ol><p><strong>TLS Handshake:</strong> Browser validates the certificate chain against its trusted <strong>CA root store</strong> and generates symmetric session keys.</p>"
+                        detail: "<p>Before any HTTP data can transfer, a reliable connection must be established to port 443:</p><div class='p-2.5 bg-slate-950 rounded-lg border border-slate-800 my-2 text-xs font-mono text-cyan-300'>1. Client → SYN [Seq=100]<br>2. Server → SYN-ACK [Seq=300, Ack=101]<br>3. Client → ACK [Seq=101, Ack=301]</div><p class='mt-2'>Immediately following TCP, the <strong>TLS 1.3 Handshake</strong> negotiates cipher suites, validates Google's digital certificate against the OS root certificate authorities, and derives symmetric session keys using Diffie-Hellman key exchange.</p>"
                     },
                     {
                         type: "outbound", title: "5. Outbound Encapsulation",
-                        brief: "Sending the HTTP GET Request.",
-                        detail: "<p>Now, data flows <strong>down</strong> the OSI stack (encapsulation):</p><ul class=\"list-disc pl-5 space-y-1\"><li><strong>L7 (Application):</strong> Formulates the HTTP request (GET / HTTP/2).</li><li><strong>L6/L5:</strong> Payload is encrypted using <strong>TLS 1.3</strong> keys.</li><li><strong>L4 (Transport):</strong> Wrapped in a <strong>TCP Segment</strong> (Dst Port: 443).</li><li><strong>L3 (Network):</strong> Wrapped in an <strong>IP Packet</strong> (Dst IP: Google's IP).</li><li><strong>L2 (Data Link):</strong> Wrapped in an <strong>Ethernet Frame</strong> (Dst MAC: Router's MAC).</li><li><strong>L1 (Physical):</strong> Transmitted as electrical signals or radio waves.</li></ul>"
+                        brief: "Wrapping the HTTP GET request.",
+                        detail: "<p>Application data now cascades <strong>down</strong> the OSI stack, wrapping the payload in headers:</p><ul class='list-disc pl-5 mt-2 space-y-1 text-xs'><li><strong>L7 (Application):</strong> Formulates HTTP/2 request: <code>GET / HTTP/2</code>.</li><li><strong>L6/L5:</strong> Encrypts payload with symmetric TLS session keys.</li><li><strong>L4 (Transport):</strong> Prepends TCP header (Src Port: 54321, Dst Port: 443).</li><li><strong>L3 (Network):</strong> Prepends IP header (Src IP: 192.168.1.50, Dst IP: 142.250.190.46).</li><li><strong>L2 (Data Link):</strong> Prepends Ethernet header with router's destination MAC address.</li><li><strong>L1 (Physical):</strong> NIC serializes the frame into physical electrical or radio signals.</li></ul>"
                     },
                     {
-                        type: "server", title: "6. Google's Processing",
-                        brief: "Handling the request.",
-                        detail: "<p>The data arrives at Google's edge network. The packet travels <strong>up</strong> Google's OSI stack (de-encapsulation):</p><ul class=\"list-disc pl-5 space-y-1\"><li><strong>L1-L2:</strong> Frame is received and validated.</li><li><strong>L3:</strong> IP packet is routed to the correct server.</li><li><strong>L4:</strong> TCP segment is processed, acknowledged.</li><li><strong>L5-L6:</strong> TLS payload is decrypted.</li><li><strong>L7:</strong> HTTP request is parsed by a backend application server.</li></ul>"
+                        type: "server", title: "6. Transit & Server Processing",
+                        brief: "Packet reaches Google edge.",
+                        detail: "<p>The packet traverses the WAN across autonomous systems using <strong>BGP (Border Gateway Protocol)</strong> and arrives at Google's edge Point of Presence (PoP).</p><p class='mt-2'>Google's edge load balancer reverses the stack (<strong>de-encapsulation</strong>):</p><ul class='list-disc pl-5 mt-2 space-y-1 text-xs'><li>Validates Layer 2 frame and strips Ethernet header.</li><li>Evaluates Layer 3 IP header and routes to an internal server cluster.</li><li>Acknowledges Layer 4 TCP segment.</li><li>Decrypts Layer 6 TLS payload and dispatches the HTTP request to the search engine microservices.</li></ul>"
                     },
                     {
                         type: "inbound", title: "7. Response Encapsulation",
-                        brief: "Google sends the response.",
-                        detail: "<p>Google's server formulates an <strong>HTTP 200 OK</strong> response containing the HTML body.</p><p>This data travels <strong>down</strong> Google's OSI stack: encrypted via TLS, wrapped in TCP segments, further wrapped in IP packets, and finally Ethernet frames before being transmitted back through the internet backbone.</p>"
+                        brief: "Google sends HTTP 200 OK.",
+                        detail: "<p>The web server generates an <strong>HTTP 200 OK</strong> response accompanied by HTML headers, compression metadata (brotli/gzip), and the payload markup.</p><p class='mt-2'>Google encapsulates the response back <strong>down</strong> its stack, sending encrypted TCP segments across the global fiber backbone to your public IP.</p>"
                     },
                     {
-                        type: "inbound", title: "8. De-encapsulation (At Home)",
-                        brief: "Receiving the data.",
-                        detail: "<p>The packets arrive at your local router. Data flows <strong>up</strong> your OSI stack:</p><ul class=\"list-disc pl-5 space-y-1\"><li><strong>L1:</strong> Signals received by network interface.</li><li><strong>L2:</strong> Ethernet header is stripped after verification.</li><li><strong>L3:</strong> IP header is stripped, passed to transport layer.</li><li><strong>L4:</strong> TCP processes segments, verifies order, strips header.</li><li><strong>L5/L6:</strong> Browser decrypts payload using session keys.</li><li><strong>L7:</strong> Browser reads raw HTML data from HTTP response.</li></ul>"
+                        type: "inbound", title: "8. Inbound De-encapsulation",
+                        brief: "Your machine strips headers.",
+                        detail: "<p>Your local router receives the packet from the ISP, performs reverse NAT (DNAT) to translate the public destination IP back to your private LAN IP (<code>192.168.1.50</code>), and forwards the frame across the local switch.</p><p class='mt-2'>Your host OS de-encapsulates upward: strips Ethernet header → strips IP header → verifies TCP checksum &amp; port 443 → browser decrypts TLS session → extracts raw HTML payload.</p>"
                     },
                     {
-                        type: "inbound", title: "9. Browser Rendering",
-                        brief: "Painting the screen.",
-                        detail: "<p>The browser's rendering engine takes over:</p><ol class=\"list-decimal pl-5 space-y-1\"><li><strong>DOM Construction:</strong> Parses HTML to build the DOM tree.</li><li><strong>CSSOM Construction:</strong> Parses CSS for styling rules.</li><li><strong>Sub-resource Fetching:</strong> Requests images, JS, and fonts.</li><li><strong>JavaScript Execution:</strong> Runs code to modify the page dynamically.</li><li><strong>Layout & Paint:</strong> Calculates element positions and draws pixels.</li></ol><p class=\"mt-4\">The Google search bar is now visible and interactive!</p>"
+                        type: "inbound", title: "9. Browser DOM Parsing & Painting",
+                        brief: "Displaying the Google home page.",
+                        detail: "<p>The browser's rendering engine executes the final rendering pipeline:</p><ol class='list-decimal pl-5 mt-2 space-y-1 text-xs'><li><strong>DOM Tree:</strong> Parses HTML tokens into DOM nodes.</li><li><strong>CSSOM:</strong> Parses stylesheets to calculate cascading style rules.</li><li><strong>Render Tree:</strong> Merges DOM + CSSOM to compute visual geometry (Layout / Reflow).</li><li><strong>Paint &amp; Composite:</strong> Paints rasterized pixels to the display raster buffers.</li></ol><div class='mt-3 p-2 bg-emerald-950/40 border border-emerald-500/30 rounded text-emerald-300 text-xs font-semibold'>Complete Round Trip Finished. Page is fully interactive!</div>"
                     }
                 ],
                 osiModel: [
-                    { layer: 7, name: "Application", protocol: "HTTP, DNS, SSH", action: "User interacts with browser" },
-                    { layer: 6, name: "Presentation", protocol: "SSL/TLS, encryption", action: "Data encryption (HTTPS)" },
-                    { layer: 5, name: "Session", protocol: "Session management", action: "Maintains connection state" },
-                    { layer: 4, name: "Transport", protocol: "TCP, UDP", action: "Reliable delivery, ports (80, 443)" },
-                    { layer: 3, name: "Network", protocol: "IP, BGP, Routers", action: "Routing between networks" },
-                    { layer: 2, name: "Data Link", protocol: "Ethernet, MAC, Switches", action: "Local network delivery" },
-                    { layer: 1, name: "Physical", protocol: "Cables, Wi-Fi, signals", action: "Electrical/radio signals" }
+                    { layer: 7, name: "Application", protocol: "HTTP/HTTPS, DNS, SSH, gRPC", action: "End-user and service interaction", pdu: "Data" },
+                    { layer: 6, name: "Presentation", protocol: "TLS/SSL, JSON, Brotli, JPEG", action: "Data encryption, compression, syntax formatting", pdu: "Data" },
+                    { layer: 5, name: "Session", protocol: "Sockets, RPC, NetBIOS", action: "Initiates, manages, and terminates connections", pdu: "Data" },
+                    { layer: 4, name: "Transport", protocol: "TCP, UDP, SCTP, QUIC", action: "End-to-end delivery, port multiplexing, reliability", pdu: "Segment / Datagram" },
+                    { layer: 3, name: "Network", protocol: "IPv4, IPv6, ICMP, BGP, Routers", action: "Logical addressing and path determination across subnets", pdu: "Packet" },
+                    { layer: 2, name: "Data Link", protocol: "Ethernet (802.3), Wi-Fi (802.11), Switches", action: "Physical node-to-node frame delivery via MAC addresses", pdu: "Frame" },
+                    { layer: 1, name: "Physical", protocol: "Cat6 Copper, Fiber Optic, Radio RF, Hubs", action: "Transmission of raw unstructured bitstreams over media", pdu: "Bits" }
                 ]
             },
+
             cheatsheet: {
                 title: "Command Cheat Sheet",
                 icon: "terminal",
-                intro: "Essential Linux networking commands for DevOps troubleshooting and diagnostics.",
+                intro: "Essential Linux networking utilities for DevOps troubleshooting, socket inspection, routing, container diagnostics, and packet captures.",
                 categories: [
                     {
-                        name: "Network Interface Management",
+                        name: "Network Interface & Address Management (iproute2)",
+                        tag: "Modern",
                         commands: [
-                            { cmd: "ip addr show", desc: "Display all network interfaces" },
-                            { cmd: "ip link show up", desc: "Show only active interfaces" },
-                            { cmd: "sudo ip link set eth0 up", desc: "Bring an interface up" },
-                            { cmd: "sudo ip addr add 192.168.1.100/24 dev eth0", desc: "Assign a static IP address" }
+                            { cmd: "ip addr show", desc: "Display all network interfaces, IPv4/IPv6 addresses, and subnet masks." },
+                            { cmd: "ip -br addr show", desc: "Display a clean one-line brief summary of all interfaces and IP addresses." },
+                            { cmd: "ip link show up", desc: "Show only currently active (UP) network interfaces." },
+                            { cmd: "sudo ip link set eth0 up", desc: "Bring interface eth0 online (activate link)." },
+                            { cmd: "sudo ip addr add 192.168.1.100/24 dev eth0", desc: "Assign a static IP address with a /24 subnet to eth0." }
                         ]
                     },
                     {
-                        name: "Connectivity Testing",
+                        name: "Connectivity & Path Diagnostics",
+                        tag: "Standard",
                         commands: [
-                            { cmd: "ping google.com", desc: "Test connectivity to a host" },
-                            { cmd: "ping -c 4 8.8.8.8", desc: "Send 4 packets and stop" },
-                            { cmd: "traceroute google.com", desc: "Trace the route to a host" },
-                            { cmd: "nc -zv example.com 22", desc: "Check if a port is open (Netcat)" }
+                            { cmd: "ping -c 4 8.8.8.8", desc: "Send 4 ICMP echo request packets and display round-trip latency statistics." },
+                            { cmd: "traceroute -n google.com", desc: "Trace Layer 3 hop-by-hop route without resolving slow reverse DNS." },
+                            { cmd: "mtr -rw google.com", desc: "My Traceroute: continuous real-time ping + traceroute diagnostic report." },
+                            { cmd: "nc -zv example.com 443", desc: "Netcat: test if remote TCP port 443 is open without sending payload." }
                         ]
                     },
                     {
-                        name: "DNS and Name Resolution",
+                        name: "DNS Resolution Diagnostics",
+                        tag: "DNS",
                         commands: [
-                            { cmd: "nslookup google.com", desc: "Query DNS for a domain" },
-                            { cmd: "dig google.com", desc: "Advanced DNS lookup" },
-                            { cmd: "dig google.com +short", desc: "Get just the IP address" },
-                            { cmd: "dig -x 8.8.8.8", desc: "Reverse DNS lookup" }
+                            { cmd: "dig google.com", desc: "Perform full DNS resolution query showing query time, flags, and records." },
+                            { cmd: "dig google.com +short", desc: "Return solely the resolved IP address output." },
+                            { cmd: "dig @1.1.1.1 google.com", desc: "Query a specific DNS server directly (Cloudflare DNS at 1.1.1.1)." },
+                            { cmd: "dig -x 8.8.8.8 +short", desc: "Perform a reverse DNS (rDNS) PTR lookup on an IP address." },
+                            { cmd: "nslookup google.com", desc: "Query name resolution using the OS default resolver." }
                         ]
                     },
                     {
-                        name: "Routing",
+                        name: "Routing Table Management",
+                        tag: "Routing",
                         commands: [
-                            { cmd: "ip route show", desc: "Display routing table" },
-                            { cmd: "ip route show default", desc: "Show default gateway" },
-                            { cmd: "sudo ip route add 10.0.0.0/24 via 192.168.1.1", desc: "Add a static route" },
-                            { cmd: "sudo ip route del 10.0.0.0/24", desc: "Delete a route" }
+                            { cmd: "ip route show", desc: "Display the current kernel IP routing table." },
+                            { cmd: "ip route get 8.8.8.8", desc: "Determine which interface and gateway will route traffic to destination." },
+                            { cmd: "sudo ip route add 10.0.0.0/16 via 192.168.1.1", desc: "Add a static route for subnet 10.0.0.0/16 through gateway 192.168.1.1." },
+                            { cmd: "sudo ip route del 10.0.0.0/16", desc: "Delete a configured static subnet route." }
                         ]
                     },
                     {
-                        name: "Port and Socket Information",
+                        name: "Sockets & Port Listening (ss / lsof)",
+                        tag: "Sockets",
                         commands: [
-                            { cmd: "ss -tuln", desc: "Show all open ports (TCP/UDP, listening)" },
-                            { cmd: "sudo ss -tulpn | grep :80", desc: "Show which process is using port 80" },
-                            { cmd: "sudo lsof -i :80", desc: "List processes using port 80" },
-                            { cmd: "ss -tan", desc: "Display all active connections" }
+                            { cmd: "ss -tuln", desc: "Display all open listening sockets (TCP & UDP) with numeric port numbers." },
+                            { cmd: "sudo ss -tulpn | grep :80", desc: "Show which process name and PID is bound to listening port 80." },
+                            { cmd: "sudo lsof -i :443", desc: "List open file handles and processes actively listening on port 443." },
+                            { cmd: "ss -tan state established", desc: "List all currently established active TCP connections." }
                         ]
                     },
                     {
-                        name: "Firewall (iptables)",
+                        name: "Packet Capture & Inspection (tcpdump)",
+                        tag: "Capture",
                         commands: [
-                            { cmd: "sudo iptables -L -v -n", desc: "List all firewall rules" },
-                            { cmd: "sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT", desc: "Allow incoming SSH" },
-                            { cmd: "sudo iptables -A INPUT -s 192.168.1.50 -j DROP", desc: "Block an IP address" },
-                            { cmd: "sudo iptables -F", desc: "Flush all rules (use carefully!)" }
+                            { cmd: "sudo tcpdump -i eth0 -n", desc: "Capture live traffic on eth0 without reverse DNS resolution." },
+                            { cmd: "sudo tcpdump -i any port 80 -nn -X", desc: "Capture HTTP port 80 traffic across all interfaces in hex and ASCII." },
+                            { cmd: "sudo tcpdump -i eth0 host 10.0.0.5 -w capture.pcap", desc: "Capture traffic for a specific host and write to a Wireshark PCAP file." }
                         ]
                     },
                     {
-                        name: "Network Performance",
+                        name: "Firewall & Packet Filtering (iptables / nftables)",
+                        tag: "Security",
                         commands: [
-                            { cmd: "iftop", desc: "Real-time bandwidth by connection" },
-                            { cmd: "iperf3 -s", desc: "Start iperf server" },
-                            { cmd: "sudo tcpdump -i eth0", desc: "Capture network traffic on eth0" },
-                            { cmd: "sudo tcpdump -i eth0 port 80", desc: "Capture HTTP traffic only" }
+                            { cmd: "sudo iptables -L -v -n --line-numbers", desc: "List all active firewall filter rules with packet counters and line numbers." },
+                            { cmd: "sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT", desc: "Append rule allowing incoming SSH traffic on port 22." },
+                            { cmd: "sudo iptables -A INPUT -s 192.168.1.200 -j DROP", desc: "Block all incoming packets originating from specific IP 192.168.1.200." },
+                            { cmd: "sudo iptables -t nat -L -v -n", desc: "Inspect the NAT table (masquerading and port forwarding rules)." }
                         ]
                     },
                     {
-                        name: "Docker Networking",
+                        name: "Docker & Container Networking",
+                        tag: "Containers",
                         commands: [
-                            { cmd: "docker network ls", desc: "List Docker networks" },
-                            { cmd: "docker network inspect bridge", desc: "Inspect a network" },
-                            { cmd: "docker network create my-network", desc: "Create a custom network" },
-                            { cmd: "docker network connect my-network container", desc: "Connect container to network" }
+                            { cmd: "docker network ls", desc: "List all local Docker networks (bridge, host, none, custom)." },
+                            { cmd: "docker network inspect bridge", desc: "Inspect bridge network configuration, subnet CIDR, and connected containers." },
+                            { cmd: "docker network create --driver bridge my-net", desc: "Create a custom user-defined Docker bridge network with internal DNS." },
+                            { cmd: "docker port my-container", desc: "List NAT port mappings between host and container." }
                         ]
                     },
                     {
-                        name: "Kubernetes Networking",
+                        name: "Kubernetes Cluster Networking",
+                        tag: "Kubernetes",
                         commands: [
-                            { cmd: "kubectl get svc", desc: "List services" },
-                            { cmd: "kubectl describe svc my-service", desc: "Describe a service" },
-                            { cmd: "kubectl port-forward pod/my-pod 8080:80", desc: "Port-forward to a pod" },
-                            { cmd: "kubectl get pods -o wide", desc: "Get pod IPs" }
+                            { cmd: "kubectl get svc -o wide", desc: "List Kubernetes Services, ClusterIPs, ExternalIPs, and Port mappings." },
+                            { cmd: "kubectl get pods -o wide", desc: "List pods alongside their dynamically assigned Pod IPs and hosting nodes." },
+                            { cmd: "kubectl port-forward svc/my-service 8080:80", desc: "Forward local port 8080 directly to a cluster Service port 80." },
+                            { cmd: "kubectl run test-dns --rm -it --image=busybox -- nslookup kubernetes.default", desc: "Test in-cluster CoreDNS resolution from a temporary pod." }
                         ]
                     }
                 ]
@@ -765,22 +644,22 @@
             if (!terminal) return;
             const colors = { info: 'text-slate-400', success: 'text-emerald-400', error: 'text-rose-400', warn: 'text-amber-400' };
             const p = document.createElement('p');
-            p.className = colors[type];
+            p.className = colors[type] || 'text-slate-400';
             p.innerHTML = `<span class="text-slate-600 mr-2">${new Date().toLocaleTimeString([], { hour12: false, minute: '2-digit', second: '2-digit' })}</span> > ${msg}`;
             terminal.prepend(p);
         }
 
         function setNodeActive(nodeKey) {
             if (!nodes) return;
-            Object.values(nodes).forEach(n => n.classList.remove('active'));
+            Object.values(nodes).forEach(n => n && n.classList.remove('active'));
             if (nodes[nodeKey]) nodes[nodeKey].classList.add('active');
         }
 
         function startProcess() {
             const startBtn = document.getElementById('journey-start-btn');
             const nextBtn = document.getElementById('journey-next-btn');
-            startBtn.disabled = true;
-            nextBtn.disabled = false;
+            if (startBtn) startBtn.disabled = true;
+            if (nextBtn) nextBtn.disabled = false;
             currentStepIndex = 0;
             updateJourneyUI();
         }
@@ -802,14 +681,6 @@
             }
         }
 
-        function jumpToStep(index) {
-            const startBtn = document.getElementById('journey-start-btn');
-            if (startBtn && startBtn.disabled) {
-                currentStepIndex = index;
-                updateJourneyUI();
-            }
-        }
-
         function finishProcess() {
             const detailTitleEl = document.getElementById('journey-detail-title');
             const detailContentEl = document.getElementById('journey-detail-content');
@@ -818,13 +689,23 @@
             const startBtn = document.getElementById('journey-start-btn');
             const counter = document.getElementById('journey-step-counter');
 
-            detailTitleEl.innerText = "Connection Closed";
-            detailContentEl.innerHTML = "<p class='mb-4'>The page is fully rendered. The <strong>TCP connection</strong> is kept alive (persistent connection) for a short time in case you initiate another search, allowing for faster subsequent requests without repeating the handshake.</p><p class='mb-4'>When idle timeout is reached (or explicitly closed), the connection is cleanly terminated via a <strong>TCP FIN exchange</strong>.</p><p class='mt-6 p-4 bg-blue-950/30 border border-blue-500/20 rounded-xl text-blue-300 italic'><strong>Round trip complete.</strong> The browser maintains its caches and rendered DOM for optimal performance.</p>";
+            if (detailTitleEl) detailTitleEl.innerText = "Connection Complete";
+            if (detailContentEl) {
+                detailContentEl.innerHTML = `
+                    <p class="mb-3">The webpage is fully rendered. The <strong>TCP connection</strong> remains in a persistent keep-alive state for subsequent requests, eliminating repetitive handshakes.</p>
+                    <p class="mb-3">When idle timeout is reached, the connection cleanly terminates via a standard <strong>4-way TCP FIN exchange</strong>.</p>
+                    <div class="mt-4 p-3 bg-blue-950/40 border border-blue-500/30 rounded-xl text-blue-300 text-xs">
+                        <strong>Complete Round Trip.</strong> Browser maintains parsed DOM, CSSOM, and local caches for maximum speed.
+                    </div>
+                `;
+            }
 
-            nextBtn.disabled = true;
-            prevBtn.disabled = false;
-            startBtn.disabled = false;
-            startBtn.innerHTML = '<i data-lucide="refresh-cw" class="w-4 h-4"></i> Restart Request';
+            if (nextBtn) nextBtn.disabled = true;
+            if (prevBtn) prevBtn.disabled = false;
+            if (startBtn) {
+                startBtn.disabled = false;
+                startBtn.innerHTML = '<i data-lucide="refresh-cw" class="w-4 h-4"></i> Restart Request';
+            }
             currentStepIndex = contentData.journey.steps.length;
             if (counter) counter.innerText = `Finished`;
 
@@ -840,7 +721,6 @@
             const counter = document.getElementById('journey-step-counter');
             const steps = contentData.journey.steps;
 
-            // Initialize SVG elements if present
             packet = document.getElementById('packet');
             terminal = document.getElementById('terminal');
             stepToastEl = document.getElementById('stepToast');
@@ -858,131 +738,130 @@
                 };
             }
 
-            prevBtn.disabled = currentStepIndex === 0;
-            nextBtn.disabled = false;
-            nextBtn.innerHTML = currentStepIndex === steps.length - 1 ? 'Finish Process <i data-lucide="check" class="w-4 h-4"></i>' : 'Next Step <i data-lucide="chevron-right" class="w-4 h-4"></i>';
-
-            if (counter) {
-                counter.innerText = `${currentStepIndex + 1} / ${steps.length}`;
+            if (prevBtn) prevBtn.disabled = currentStepIndex === 0;
+            if (nextBtn) {
+                nextBtn.disabled = false;
+                nextBtn.innerHTML = currentStepIndex === steps.length - 1 ? 'Finish Process <i data-lucide="check" class="w-4 h-4"></i>' : 'Next Step <i data-lucide="chevron-right" class="w-4 h-4"></i>';
             }
+
+            if (counter) counter.innerText = `${currentStepIndex + 1} / ${steps.length}`;
 
             const currentData = steps[currentStepIndex];
             if (currentData) {
-                detailTitleEl.innerText = currentData.title;
-                detailContentEl.innerHTML = currentData.detail;
-                detailContentEl.scrollTop = 0;
+                if (detailTitleEl) detailTitleEl.innerText = currentData.title;
+                if (detailContentEl) {
+                    detailContentEl.innerHTML = currentData.detail;
+                    detailContentEl.scrollTop = 0;
+                }
             }
 
-            // Update encapsulation panel
             updateEncapsulation(currentStepIndex);
 
-            // Execute Visual Animation Step
-            if (packet) {
-                // Reset paths
-                Object.values(paths).forEach(p => p.classList.remove('active'));
+            if (packet && paths) {
+                Object.values(paths).forEach(p => p && p.classList.remove('active'));
                 packet.style.display = 'block';
                 packet.style.fill = "#38bdf8";
 
                 switch (currentStepIndex) {
-                    case 0: // URL PARSING
-                        if (currentStepIndex === 0 && terminal) terminal.innerHTML = '<p class="text-slate-500">> System Ready.</p>';
-                        stepToastEl.innerText = "STATUS: URL PARSING & CACHES";
+                    case 0:
+                        if (terminal) terminal.innerHTML = '<p class="text-slate-500">> System Ready.</p>';
+                        if (stepToastEl) stepToastEl.innerText = "STATUS: URL PARSING & CACHES";
                         updateTerminal("Checking HSTS and Local DNS cache...");
                         setNodeActive('pc');
                         packet.setAttribute('cx', 150);
                         packet.setAttribute('cy', 200);
                         break;
-                    case 1: // DNS
-                        stepToastEl.innerText = "STATUS: DNS RESOLUTION";
-                        updateTerminal("Cache Miss. Querying DNS Resolver...", 'warn');
-                        paths.pcDns.classList.add('active');
+                    case 1:
+                        if (stepToastEl) stepToastEl.innerText = "STATUS: DNS RESOLUTION";
+                        updateTerminal("Cache Miss. Querying Recursive DNS Resolver...", 'warn');
+                        if (paths.pcDns) paths.pcDns.classList.add('active');
                         setNodeActive('dns');
                         packet.setAttribute('cx', 400);
                         packet.setAttribute('cy', 100);
                         setTimeout(() => {
                             if (currentStepIndex !== 1) return;
-                            updateTerminal("DNS Found: 142.250.190.46", 'success');
+                            updateTerminal("DNS Found: 142.250.190.46 (A Record)", 'success');
                             packet.setAttribute('cx', 150);
                             packet.setAttribute('cy', 200);
                             setNodeActive('pc');
                         }, 800);
                         break;
-                    case 2: // ARP
-                        stepToastEl.innerText = "STATUS: ARP & ROUTING";
-                        updateTerminal("Querying MAC address for Default Gateway...");
-                        paths.pcRouter.classList.add('active');
+                    case 2:
+                        if (stepToastEl) stepToastEl.innerText = "STATUS: ARP & DEFAULT GATEWAY ROUTING";
+                        updateTerminal("Resolving default gateway MAC address via ARP...");
+                        if (paths.pcRouter) paths.pcRouter.classList.add('active');
                         setNodeActive('router');
                         packet.setAttribute('cx', 350);
                         packet.setAttribute('cy', 250);
                         setTimeout(() => {
                             if (currentStepIndex !== 2) return;
-                            updateTerminal("ARP Reply: MAC 00:1A:2B:3C:4D:5E", 'success');
+                            updateTerminal("ARP Reply received: Gateway MAC 00:1A:2B:3C:4D:5E", 'success');
                             packet.setAttribute('cx', 150);
                             packet.setAttribute('cy', 200);
                             setNodeActive('pc');
                         }, 800);
                         break;
-                    case 3: // TCP/TLS
-                        stepToastEl.innerText = "STATUS: TCP/TLS HANDSHAKE";
-                        updateTerminal("Initiating TCP 3-Way Handshake and TLS setup...");
-                        paths.routerServer.classList.add('active');
+                    case 3:
+                        if (stepToastEl) stepToastEl.innerText = "STATUS: TCP & TLS HANDSHAKE";
+                        updateTerminal("Initiating TCP 3-Way Handshake (SYN → SYN-ACK → ACK)...");
+                        if (paths.routerServer) paths.routerServer.classList.add('active');
                         packet.setAttribute('cx', 650);
                         packet.setAttribute('cy', 200);
                         setNodeActive('server');
                         setTimeout(() => {
                             if (currentStepIndex !== 3) return;
-                            updateTerminal("Connection established & secured.", 'success');
+                            updateTerminal("TCP Connection established. TLS 1.3 keys derived.", 'success');
                             packet.setAttribute('cx', 150);
                             packet.setAttribute('cy', 200);
                             setNodeActive('pc');
                         }, 800);
                         break;
-                    case 4: // ENCAP
-                        stepToastEl.innerText = "STATUS: OUTBOUND ENCAPSULATION";
+                    case 4:
+                        if (stepToastEl) stepToastEl.innerText = "STATUS: OUTBOUND ENCAPSULATION";
                         updateTerminal("Building HTTP Request, adding TCP, IP, and Ethernet headers...");
                         setNodeActive('pc');
                         packet.setAttribute('cx', 150);
                         packet.setAttribute('cy', 200);
                         break;
-                    case 5: // SERVER PROCESSING
-                        stepToastEl.innerText = "STATUS: SERVER PROCESSING";
-                        updateTerminal("Packet traversing network via BGP...");
+                    case 5:
+                        if (stepToastEl) stepToastEl.innerText = "STATUS: SERVER PROCESSING";
+                        updateTerminal("Frame traversing autonomous systems via BGP...");
                         setNodeActive('router');
                         packet.setAttribute('cx', 350);
                         packet.setAttribute('cy', 250);
                         setTimeout(() => {
                             if (currentStepIndex !== 5) return;
-                            updateTerminal("Packet arrived at Google's edge network.");
+                            updateTerminal("Packet arrived at Google edge. Stripping headers and parsing HTTP.");
                             packet.setAttribute('cx', 650);
                             packet.setAttribute('cy', 200);
                             setNodeActive('server');
                         }, 800);
                         break;
-                    case 6: // RESPONSE ENCAP
-                        stepToastEl.innerText = "STATUS: RESPONSE ENCAPSULATION";
-                        updateTerminal("Server generating HTTP 200 OK Response...");
+                    case 6:
+                        if (stepToastEl) stepToastEl.innerText = "STATUS: RESPONSE ENCAPSULATION";
+                        updateTerminal("Server generating HTTP 200 OK HTML response...");
                         setNodeActive('server');
                         packet.setAttribute('cx', 650);
                         packet.setAttribute('cy', 200);
                         break;
-                    case 7: // DE-ENCAP
-                        stepToastEl.innerText = "STATUS: DE-ENCAPSULATION";
-                        updateTerminal("Response arriving at local network...");
+                    case 7:
+                        if (stepToastEl) stepToastEl.innerText = "STATUS: INBOUND DE-ENCAPSULATION";
+                        updateTerminal("Response arriving at local network NAT gateway...");
                         packet.style.fill = "#10b981";
                         setNodeActive('router');
                         packet.setAttribute('cx', 350);
                         packet.setAttribute('cy', 250);
                         setTimeout(() => {
                             if (currentStepIndex !== 7) return;
-                            updateTerminal("Stripping headers and decrypting payload...");
+                            updateTerminal("Stripping Ethernet + IP + TCP headers. Decrypting TLS...");
                             packet.setAttribute('cx', 150);
                             packet.setAttribute('cy', 200);
                             setNodeActive('pc');
                         }, 800);
                         break;
-                    case 8: // BROWSER
-                        stepToastEl.innerText = "STATUS: BROWSER RENDERING";
-                        updateTerminal("Parsing HTML/CSS and rendering page.", 'success');
+                    case 8:
+                        if (stepToastEl) stepToastEl.innerText = "STATUS: BROWSER RENDERING";
+                        updateTerminal("Parsing DOM, compiling CSSOM, painting pixels.", 'success');
                         packet.style.fill = "#10b981";
                         packet.setAttribute('cx', 150);
                         packet.setAttribute('cy', 200);
@@ -994,177 +873,6 @@
             lucide.createIcons();
         }
 
-        function renderTabs() {
-            const navContainer = document.getElementById('nav-tabs');
-            navContainer.innerHTML = '';
-
-            Object.keys(contentData).forEach(key => {
-                const data = contentData[key];
-                const isActive = currentTab === key;
-
-                const btn = document.createElement('button');
-                btn.className = `flex items-center space-x-2 px-4 py-3 text-sm font-semibold rounded-t-lg transition-colors whitespace-nowrap border-b-2 ${isActive
-                    ? 'text-blue-400 bg-slate-800/50 border-blue-400'
-                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 border-transparent'
-                    }`;
-                btn.onclick = () => {
-                    currentTab = key;
-                    renderTabs();
-                    renderContent();
-                };
-
-                btn.innerHTML = `
-                    <i data-lucide="${data.icon}" class="w-4 h-4"></i>
-                    <span>${data.title}</span>
-                `;
-                navContainer.appendChild(btn);
-            });
-            lucide.createIcons();
-        }
-
-        function renderContent() {
-            const container = document.getElementById('content-container');
-            const data = contentData[currentTab];
-
-            container.classList.remove('fade-in');
-            void container.offsetWidth;
-            container.classList.add('fade-in');
-
-            let html = `
-                <div class="mb-10 text-center max-w-3xl mx-auto">
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">${data.title}</h2>
-                    <p class="text-lg text-slate-400">${data.intro}</p>
-                </div>
-            `;
-
-            if (currentTab === 'intro') {
-                html += renderIntro(data);
-            } else if (currentTab === 'components') {
-                html += renderComponents(data);
-            } else if (currentTab === 'journey') {
-                html += renderJourney(data);
-            } else if (currentTab === 'cheatsheet') {
-                html += renderCheatsheet(data);
-            }
-
-            container.innerHTML = html;
-            lucide.createIcons();
-        }
-
-        function renderIntro(data) {
-            let html = '<div class="space-y-12">';
-
-            data.sections.forEach(section => {
-                html += `
-                    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-8">
-                        <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
-                            <i data-lucide="arrow-right" class="w-6 h-6 text-blue-400 mr-3"></i>
-                            ${section.title}
-                        </h3>
-                        ${section.content}
-                    </div>
-                `;
-            });
-
-            if (data.guidesList) {
-                html += `
-                    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-8">
-                        <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
-                            <i data-lucide="book-open" class="w-6 h-6 text-blue-400 mr-3"></i>
-                            In-Depth Guides
-                        </h3>
-                        <p class="text-slate-400 mb-6 font-medium">Explore specialized, practical deep-dives into fundamental networking topics.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                `;
-                data.guidesList.forEach(guide => {
-                    html += `
-                        <div class="bg-slate-900 border ${guide.borderColor} rounded-2xl overflow-hidden hover:-translate-y-1 transition-transform duration-200 shadow-lg">
-                            <div class="${guide.bgClass} px-6 pt-6 pb-4">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <div class="p-2 ${guide.iconBgClass} rounded-lg">
-                                        <i data-lucide="${guide.icon}" class="w-5 h-5 ${guide.iconColor}"></i>
-                                    </div>
-                                    <h3 class="font-bold text-white text-lg">${guide.title}</h3>
-                                </div>
-                                <p class="text-slate-400 text-sm leading-relaxed">${guide.desc}</p>
-                            </div>
-                            <div class="px-6 pb-5 pt-4">
-                                <a href="${guide.url}" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl ${guide.btnClass} text-white font-semibold text-sm transition-colors">
-                                    <i data-lucide="external-link" class="w-4 h-4"></i> Open Guide
-                                </a>
-                                <p class="text-slate-500 text-xs mt-3 text-center">${guide.subtext}</p>
-                            </div>
-                        </div>
-                    `;
-                });
-                html += `
-                        </div>
-                    </div>
-                `;
-            }
-
-            html += '</div>';
-            return html;
-        }
-
-        function renderComponents(data) {
-            let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
-
-            data.components.forEach(comp => {
-                html += `
-                    <div class="component-card bg-slate-800 rounded-xl border border-slate-700 p-6">
-                        <div class="flex items-center space-x-3 mb-4">
-                            <div class="p-3 bg-blue-900/50 rounded-lg">
-                                <i data-lucide="${comp.icon}" class="w-6 h-6 text-blue-400"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-white">${comp.name}</h3>
-                        </div>
-                        <p class="text-slate-300 mb-4 leading-relaxed">${comp.definition}</p>
-                `;
-
-                if (comp.types) {
-                    html += '<div class="mb-3"><h4 class="text-sm font-bold text-blue-400 mb-2">Types:</h4><ul class="space-y-1 text-sm text-slate-400">';
-                    comp.types.forEach(t => html += `<li>• ${t}</li>`);
-                    html += '</ul></div>';
-                }
-
-                if (comp.functions) {
-                    html += '<div class="mb-3"><h4 class="text-sm font-bold text-blue-400 mb-2">Key Functions:</h4><ul class="space-y-1 text-sm text-slate-400">';
-                    comp.functions.forEach(f => html += `<li>• ${f}</li>`);
-                    html += '</ul></div>';
-                }
-
-                if (comp.records) {
-                    html += '<div class="mb-3"><h4 class="text-sm font-bold text-blue-400 mb-2">DNS Record Types:</h4><ul class="space-y-1 text-sm text-slate-400">';
-                    comp.records.forEach(r => html += `<li>• ${r}</li>`);
-                    html += '</ul></div>';
-                }
-
-                if (comp.how) {
-                    html += `<p class="text-sm text-slate-400 mb-3"><strong class="text-blue-400">How It Works:</strong> ${comp.how}</p>`;
-                }
-
-                if (comp.example) {
-                    html += `<p class="text-sm text-slate-400 mb-3 italic"><strong class="text-green-400">Example:</strong> ${comp.example}</p>`;
-                }
-
-                if (comp.process) {
-                    html += `<p class="text-sm text-slate-400 mb-3">${comp.process}</p>`;
-                }
-
-                html += `
-                        <div class="mt-4 pt-4 border-t border-slate-700">
-                            <p class="text-xs text-slate-500"><strong class="text-emerald-400">DevOps:</strong> ${comp.devops}</p>
-                        </div>
-                    </div>
-                `;
-            });
-
-            html += '</div>';
-            return html;
-        }
-
-        // ── Encapsulation layer definitions (ordered L7→L1 top to bottom) ──────
         const ENCAP_LAYERS = [
             { id: 'l7', label: 'L7 Application', pdu: 'DATA', color: 'bg-purple-900/60', border: 'border-purple-500', badge: 'bg-purple-500/30 text-purple-300', header: 'HTTP GET /' },
             { id: 'l6', label: 'L6 Presentation', pdu: 'DATA', color: 'bg-indigo-900/60', border: 'border-indigo-500', badge: 'bg-indigo-500/30 text-indigo-300', header: 'TLS Encrypt' },
@@ -1175,21 +883,18 @@
             { id: 'l1', label: 'L1 Physical', pdu: 'BITS', color: 'bg-green-900/60', border: 'border-green-400', badge: 'bg-green-500/30 text-green-300', header: 'Signals' },
         ];
 
-        // Which layers are active per step (0-indexed, step index → array of layer ids)
-        // Steps: 0=DNS, 1=DNS Res, 2=ARP, 3=TCP/TLS, 4=Encap, 5=Server, 6=Server Resp, 7=De-encap, 8=Render
         const ENCAP_STATE = [
-            [],                                           // 0: URL parsing / caches — no encap yet
-            [],                                           // 1: DNS resolution — no encap yet
-            [],                                           // 2: ARP & Routing — no encap yet
-            ['l7', 'l6', 'l5'],                             // 3: TCP/TLS — app+presentation+session
-            ['l7', 'l6', 'l5', 'l4', 'l3', 'l2', 'l1'],         // 4: Full outbound encapsulation
-            ['l7', 'l6', 'l5', 'l4', 'l3', 'l2', 'l1'],         // 5: Google processing (full frame)
-            ['l7', 'l6', 'l5', 'l4', 'l3', 'l2', 'l1'],         // 6: Response encapsulation (Google)
-            ['l7', 'l6', 'l5', 'l4', 'l3'],                   // 7: De-encap at home (L1+L2 stripped)
-            ['l7'],                                       // 8: Browser rendering (only app data)
+            [],
+            [],
+            [],
+            ['l7', 'l6', 'l5'],
+            ['l7', 'l6', 'l5', 'l4', 'l3', 'l2', 'l1'],
+            ['l7', 'l6', 'l5', 'l4', 'l3', 'l2', 'l1'],
+            ['l7', 'l6', 'l5', 'l4', 'l3', 'l2', 'l1'],
+            ['l7', 'l6', 'l5', 'l4', 'l3'],
+            ['l7'],
         ];
 
-        // Direction per step: 'out' = going to server, 'in' = coming back, '' = neutral
         const ENCAP_DIR = ['out', 'out', 'out', 'out', 'out', 'server', 'in', 'in', 'in'];
 
         function updateEncapsulation(stepIdx) {
@@ -1198,7 +903,7 @@
             const dirLabel = document.getElementById('encap-direction-label');
             const dirArrow = document.getElementById('encap-direction-arrow');
 
-            if (dirLabel) {
+            if (dirLabel && dirArrow) {
                 if (dir === 'out') {
                     dirLabel.textContent = '↓ Encapsulation';
                     dirLabel.style.background = 'rgba(251,191,36,0.12)';
@@ -1241,7 +946,6 @@
                     <div id="encap-direction-label" class="text-center text-xs font-bold uppercase tracking-widest mb-2 rounded px-2 py-1" style="background:rgba(100,116,139,0.1);color:#64748b">Waiting…</div>
                     <div class="flex flex-col-reverse gap-0.5 flex-1">
             `;
-            // Render layers bottom (L1) to top (L7) so L1 is at the bottom visually
             [...ENCAP_LAYERS].reverse().forEach(layer => {
                 html += `
                     <div class="encap-layer ${layer.color} border-l-2 ${layer.border}" id="encap-${layer.id}">
@@ -1261,23 +965,156 @@
             return html;
         }
 
+        function copySnippet(text, label = 'Command') {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('copy-toast');
+                const toastMsg = document.getElementById('copy-toast-msg');
+                if (toast && toastMsg) {
+                    toastMsg.textContent = `Copied ${label}!`;
+                    toast.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
+                    setTimeout(() => {
+                        toast.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none');
+                    }, 2200);
+                }
+            });
+        }
+
+        function renderTabs() {
+            const navContainer = document.getElementById('nav-tabs');
+            navContainer.innerHTML = '';
+
+            Object.keys(contentData).forEach(key => {
+                const data = contentData[key];
+                const isActive = currentTab === key;
+
+                const btn = document.createElement('button');
+                btn.className = `flex items-center space-x-2 px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all whitespace-nowrap border ${isActive
+                    ? 'text-blue-400 bg-slate-800 border-blue-500/40 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent'
+                    }`;
+                btn.onclick = () => {
+                    currentTab = key;
+                    renderTabs();
+                    renderContent();
+                };
+
+                btn.innerHTML = `
+                    <i data-lucide="${data.icon}" class="w-4 h-4"></i>
+                    <span>${data.title}</span>
+                `;
+                navContainer.appendChild(btn);
+            });
+            lucide.createIcons();
+        }
+
+        function renderContent() {
+            const container = document.getElementById('content-container');
+            const data = contentData[currentTab];
+
+            container.classList.remove('fade-in');
+            void container.offsetWidth;
+            container.classList.add('fade-in');
+
+            let html = `
+                <div class="mb-8 text-center max-w-3xl mx-auto">
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">${data.title}</h2>
+                    <p class="text-sm sm:text-base text-slate-400 leading-relaxed">${data.intro}</p>
+                </div>
+            `;
+
+            if (currentTab === 'intro') {
+                html += renderIntro(data);
+
+            } else if (currentTab === 'journey') {
+                html += renderJourney(data);
+            } else if (currentTab === 'cheatsheet') {
+                html += renderCheatsheet(data);
+            }
+
+            container.innerHTML = html;
+            lucide.createIcons();
+
+            if (currentTab === 'cheatsheet') {
+                initCheatsheetSearch();
+            }
+        }
+
+        function renderIntro(data) {
+            let html = '<div class="space-y-10">';
+
+            data.sections.forEach(section => {
+                html += `
+                    <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xl">
+                        <h3 class="text-xl sm:text-2xl font-bold text-white mb-5 flex items-center">
+                            <i data-lucide="chevron-right" class="w-5 h-5 text-blue-400 mr-2 shrink-0"></i>
+                            ${section.title}
+                        </h3>
+                        ${section.content}
+                    </div>
+                `;
+            });
+
+            if (data.guidesList) {
+                html += `
+                    <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xl">
+                        <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+                            <h3 class="text-xl sm:text-2xl font-bold text-white flex items-center">
+                                <i data-lucide="book-open" class="w-5 h-5 text-blue-400 mr-2.5"></i>
+                                Specialized Deep-Dive Guides &amp; Simulators
+                            </h3>
+                            <span class="text-xs font-mono text-slate-400 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">Interactive Learning Modules</span>
+                        </div>
+                        <p class="text-slate-400 text-sm mb-6">Explore dedicated hands-on simulators, visual IP calculation workbooks, and tools guides:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                `;
+                data.guidesList.forEach(guide => {
+                    html += `
+                        <div class="bg-slate-950/80 border ${guide.borderColor} rounded-2xl overflow-hidden hover:-translate-y-1.5 transition-all duration-200 shadow-lg flex flex-col justify-between">
+                            <div class="${guide.bgClass} p-5">
+                                <div class="flex items-center gap-3 mb-2.5">
+                                    <div class="p-2 ${guide.iconBgClass} rounded-xl">
+                                        <i data-lucide="${guide.icon}" class="w-5 h-5 ${guide.iconColor}"></i>
+                                    </div>
+                                    <h4 class="font-bold text-white text-base">${guide.title}</h4>
+                                </div>
+                                <p class="text-slate-400 text-xs leading-relaxed">${guide.desc}</p>
+                            </div>
+                            <div class="p-5 bg-slate-950 pt-2 flex flex-col justify-end">
+                                <a href="${guide.url}" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl ${guide.btnClass} text-white font-semibold text-xs transition-colors shadow-md">
+                                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Open Module
+                                </a>
+                                <p class="text-slate-500 text-[11px] mt-2.5 text-center font-mono">${guide.subtext}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            return html;
+        }
+
         function renderJourney(data) {
             let html = `
                 <div class="space-y-8">
-                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 md:p-8 shadow-xl">
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-xl">
                         <!-- Browser Bar Emulator -->
-                        <div class="bg-slate-900 border border-slate-700 rounded-xl p-3 flex gap-3 items-center mb-8">
+                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex gap-3 items-center mb-8">
                             <div class="flex gap-1.5 px-2">
                                 <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
                                 <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
                                 <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
                             </div>
-                            <div class="flex-grow flex items-center bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-400 text-sm">
+                            <div class="flex-grow flex items-center bg-slate-900 border border-slate-800 rounded-lg px-4 py-2 text-slate-400 text-sm">
                                 <i data-lucide="lock" class="w-3.5 h-3.5 mr-2 text-emerald-500"></i>
                                 <span>https://</span>
-                                <input type="text" value="google.com" readonly class="bg-transparent border-none focus:ring-0 text-slate-200 ml-0.5 w-full outline-none">
+                                <input type="text" value="google.com" readonly class="bg-transparent border-none focus:ring-0 text-slate-200 ml-0.5 w-full outline-none font-mono text-xs">
                             </div>
-                            <button id="journey-start-btn" onclick="startProcess()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-all shadow-lg flex items-center gap-2">
+                            <button id="journey-start-btn" onclick="startProcess()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg font-bold text-xs transition-all shadow-lg flex items-center gap-2">
                                 <i data-lucide="zap" class="w-4 h-4"></i>
                                 Initiate Request
                             </button>
@@ -1287,10 +1124,10 @@
                         <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 min-h-[520px]">
                             
                             <!-- Col 1: Simulation Viewport and Terminal (xl:col-span-5) -->
-                            <div class="xl:col-span-5 flex flex-col gap-6">
+                            <div class="xl:col-span-5 flex flex-col gap-5">
                                 <!-- The SVG Viewport -->
-                                <div class="glass rounded-3xl p-6 aspect-video relative overflow-hidden border border-slate-700 flex items-center justify-center">
-                                    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#334155 1px, transparent 1px); background-size: 30px 30px;"></div>
+                                <div class="glass rounded-3xl p-6 aspect-video relative overflow-hidden border border-slate-800 flex items-center justify-center shadow-inner">
+                                    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#334155 1px, transparent 1px); background-size: 28px 28px;"></div>
                                     <svg class="w-full h-full absolute inset-0 z-0" viewBox="0 0 800 400">
                                         <path id="path-pc-dns" class="connection-line" d="M 150 200 L 400 100" fill="none" />
                                         <path id="path-pc-router" class="connection-line" d="M 150 200 L 350 250" fill="none" />
@@ -1300,51 +1137,53 @@
                                     </svg>
                                     <div class="relative z-10 w-full h-full">
                                         <div id="node-pc" class="node active absolute left-[10%] top-[40%] flex flex-col items-center">
-                                            <div class="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center border border-slate-700 mb-2 shadow-lg"><i data-lucide="monitor" class="text-sky-400"></i></div><span class="text-xs font-medium text-slate-400">Local Client</span>
+                                            <div class="w-14 h-14 bg-slate-900 rounded-2xl flex items-center justify-center border border-slate-700 mb-1.5 shadow-lg"><i data-lucide="monitor" class="text-sky-400 w-6 h-6"></i></div><span class="text-[11px] font-medium text-slate-400">Local Client</span>
                                         </div>
                                         <div id="node-dns" class="node absolute left-[45%] top-[15%] flex flex-col items-center">
-                                            <div class="w-14 h-14 bg-slate-800 rounded-2xl flex items-center justify-center border border-slate-700 mb-2 shadow-lg"><i data-lucide="book-open" class="text-purple-400"></i></div><span class="text-xs font-medium text-slate-400">DNS Resolver</span>
+                                            <div class="w-13 h-13 bg-slate-900 rounded-2xl flex items-center justify-center border border-slate-700 mb-1.5 shadow-lg p-3"><i data-lucide="book-open" class="text-purple-400 w-5 h-5"></i></div><span class="text-[11px] font-medium text-slate-400">DNS Resolver</span>
                                         </div>
                                         <div id="node-router" class="node absolute left-[40%] top-[55%] flex flex-col items-center">
-                                            <div class="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center border border-slate-700 mb-2 shadow-lg"><i data-lucide="router" class="text-amber-400"></i></div><span class="text-xs font-medium text-slate-400">ISP Router</span>
+                                            <div class="w-13 h-13 bg-slate-900 rounded-2xl flex items-center justify-center border border-slate-700 mb-1.5 shadow-lg p-3"><i data-lucide="router" class="text-amber-400 w-5 h-5"></i></div><span class="text-[11px] font-medium text-slate-400">Default Gateway</span>
                                         </div>
                                         <div id="node-server" class="node absolute left-[75%] top-[40%] flex flex-col items-center">
-                                            <div class="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center border border-slate-700 mb-2 shadow-lg"><i data-lucide="server" class="text-emerald-400"></i></div><span class="text-xs font-medium text-slate-400">Web Server</span>
+                                            <div class="w-14 h-14 bg-slate-900 rounded-2xl flex items-center justify-center border border-slate-700 mb-1.5 shadow-lg"><i data-lucide="server" class="text-emerald-400 w-6 h-6"></i></div><span class="text-[11px] font-medium text-slate-400">Google Edge</span>
                                         </div>
                                     </div>
-                                    <div id="stepToast" class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-slate-900/80 border border-slate-700 text-[10px] font-mono text-sky-400 z-20 whitespace-nowrap">
+                                    <div id="stepToast" class="absolute bottom-3 left-1/2 -translate-x-1/2 px-3.5 py-1.5 rounded-full bg-slate-950/90 border border-slate-800 text-[10px] font-mono text-sky-400 z-20 whitespace-nowrap shadow-lg">
                                         STATUS: AWAITING INPUT
                                     </div>
                                 </div>
                                 <!-- Terminal -->
-                                <div class="glass rounded-2xl p-4 border border-slate-700 bg-black/40 min-h-[120px] flex-1">
-                                    <div class="flex items-center gap-2 mb-3 border-b border-slate-800 pb-2">
-                                        <div class="w-3 h-3 rounded-full bg-rose-500"></div><div class="w-3 h-3 rounded-full bg-amber-500"></div><div class="w-3 h-3 rounded-full bg-emerald-500"></div>
-                                        <span class="text-[10px] font-mono text-slate-500 ml-2 uppercase tracking-widest">Network Debugger</span>
+                                <div class="glass rounded-2xl p-4 border border-slate-800 bg-black/50 min-h-[130px] flex-1">
+                                    <div class="flex items-center gap-2 mb-2.5 border-b border-slate-800 pb-2">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div><div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div><div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                                        <span class="text-[10px] font-mono text-slate-500 ml-2 uppercase tracking-widest">Network Inspector Log</span>
                                     </div>
-                                    <div id="terminal" class="font-mono text-xs space-y-1.5 text-slate-300">
+                                    <div id="terminal" class="font-mono text-xs space-y-1.5 text-slate-300 max-h-[140px] overflow-y-auto">
                                         <p class="text-slate-500">> System Ready.</p>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Col 2: Details Panel (xl:col-span-4) -->
-                            <div class="xl:col-span-4 bg-slate-900 border border-slate-700 rounded-2xl p-6 flex flex-col shadow-inner relative">
-                                <div class="flex items-center justify-between gap-3 mb-5 pb-5 border-b border-slate-800">
-                                    <div class="flex items-center gap-3">
-                                        <i data-lucide="info" class="w-5 h-5 text-blue-400 shrink-0"></i>
-                                        <h3 id="journey-detail-title" class="text-xl font-bold text-white leading-tight">Awaiting Execution...</h3>
+                            <div class="xl:col-span-4 bg-slate-950 border border-slate-800 rounded-2xl p-5 sm:p-6 flex flex-col shadow-inner relative justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between gap-3 mb-4 pb-4 border-b border-slate-800">
+                                        <div class="flex items-center gap-2.5">
+                                            <i data-lucide="info" class="w-5 h-5 text-blue-400 shrink-0"></i>
+                                            <h3 id="journey-detail-title" class="text-base sm:text-lg font-bold text-white leading-tight">Awaiting Execution...</h3>
+                                        </div>
+                                        <span id="journey-step-counter" class="text-xs font-mono text-slate-400 bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800 shrink-0">0 / 9</span>
                                     </div>
-                                    <span id="journey-step-counter" class="text-xs font-mono text-slate-500 bg-slate-800 px-3 py-1 rounded-md border border-slate-700">0 / 9</span>
+                                    <div class="overflow-y-auto detail-content pr-1 text-slate-300 leading-relaxed text-xs sm:text-sm max-h-[320px]" id="journey-detail-content">
+                                        <p class="text-slate-400 italic">Click "Initiate Request" above to execute the step-by-step packet breakdown from DNS to DOM painting.</p>
+                                    </div>
                                 </div>
-                                <div class="flex-grow overflow-y-auto detail-content pr-2 text-slate-300 leading-relaxed text-sm" id="journey-detail-content">
-                                    <p class="text-slate-400 italic">Click "Initiate Request" to begin the step-by-step breakdown.</p>
-                                </div>
-                                <div class="mt-6 pt-5 border-t border-slate-800 flex justify-between items-center mt-auto">
-                                    <button id="journey-prev-btn" onclick="prevStep()" disabled class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-semibold text-sm">
+                                <div class="mt-6 pt-4 border-t border-slate-800 flex justify-between items-center">
+                                    <button id="journey-prev-btn" onclick="prevStep()" disabled class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-semibold text-xs border border-slate-800">
                                         <i data-lucide="chevron-left" class="w-4 h-4"></i> Previous
                                     </button>
-                                    <button id="journey-next-btn" onclick="nextStep()" disabled class="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-semibold text-sm shadow-lg shadow-blue-900/20">
+                                    <button id="journey-next-btn" onclick="nextStep()" disabled class="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-semibold text-xs shadow-lg shadow-blue-900/20">
                                         Next Step <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                     </button>
                                 </div>
@@ -1356,34 +1195,42 @@
                             </div>
                         </div>
                     </div>
-            `;
 
-            // Note: I removed the data.steps.forEach logic because we no longer have a vertical steps list.
+                    <!-- OSI Model Reference Table -->
+                    <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xl">
+                        <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+                            <h3 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2.5">
+                                <i data-lucide="layers" class="w-6 h-6 text-purple-400"></i>
+                                OSI 7-Layer Theoretical Model Reference
+                            </h3>
+                            <span class="text-xs font-mono text-slate-400 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">ISO/IEC 7498-1 Architecture</span>
+                        </div>
+                        <p class="text-slate-400 text-xs sm:text-sm mb-6 leading-relaxed">
+                            Complete breakdown of layers, typical protocols, functional actions, and their respective Protocol Data Units (PDUs):
+                        </p>
 
-            html += `
-                    <!-- OSI Model Reference -->
-                    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-8">
-                        <h3 class="text-2xl font-bold text-white mb-6">OSI Model Reference</h3>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead class="bg-slate-900">
-                                    <tr>
-                                        <th class="px-4 py-3 text-blue-400 font-semibold">Layer</th>
-                                        <th class="px-4 py-3 text-blue-400 font-semibold">Name</th>
-                                        <th class="px-4 py-3 text-blue-400 font-semibold">Protocol/Device</th>
-                                        <th class="px-4 py-3 text-blue-400 font-semibold">What Happens</th>
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-950 text-slate-300 border-b border-slate-800">
+                                        <th class="p-3 font-semibold text-blue-400">Layer</th>
+                                        <th class="p-3 font-semibold text-white">Name</th>
+                                        <th class="p-3 font-semibold text-slate-300">Common Protocols / Devices</th>
+                                        <th class="p-3 font-semibold text-slate-400">Core Network Action</th>
+                                        <th class="p-3 font-semibold text-purple-400">PDU (Protocol Data Unit)</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-700">
+                                <tbody class="divide-y divide-slate-800/80">
             `;
 
             data.osiModel.forEach(layer => {
                 html += `
-                    <tr class="hover:bg-slate-700/50">
-                        <td class="px-4 py-3 font-mono text-green-400">${layer.layer}</td>
-                        <td class="px-4 py-3 text-white font-semibold">${layer.name}</td>
-                        <td class="px-4 py-3 text-slate-300">${layer.protocol}</td>
-                        <td class="px-4 py-3 text-slate-400">${layer.action}</td>
+                    <tr class="hover:bg-slate-800/40 transition-colors">
+                        <td class="p-3 font-mono text-blue-400 font-bold">L${layer.layer}</td>
+                        <td class="p-3 text-white font-semibold">${layer.name}</td>
+                        <td class="p-3 text-slate-300 font-mono">${layer.protocol}</td>
+                        <td class="p-3 text-slate-400">${layer.action}</td>
+                        <td class="p-3 font-mono text-purple-400 font-bold">${layer.pdu}</td>
                     </tr>
                 `;
             });
@@ -1392,44 +1239,155 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Encapsulation & Decapsulation Cards -->
+                        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <!-- Encapsulation -->
+                            <div class="bg-slate-950 rounded-xl border border-slate-800 p-6">
+                                <h4 class="text-base font-bold text-white mb-3 flex items-center gap-2">
+                                    <span class="text-emerald-400 text-xl font-bold">↓</span> Encapsulation (Outbound Transmission)
+                                </h4>
+                                <p class="text-slate-400 text-xs mb-4">Data moves <strong>down</strong> the stack. Each layer prefixes its control header (and L2 appends an FCS trailer):</p>
+                                <ol class="space-y-2 text-xs">
+                                    <li class="flex gap-2.5"><span class="font-mono text-emerald-400 font-bold shrink-0">L7</span><span class="text-slate-300">Application formats raw payload (HTTP request, API body).</span></li>
+                                    <li class="flex gap-2.5"><span class="font-mono text-emerald-400 font-bold shrink-0">L6</span><span class="text-slate-300">Presentation encrypts (TLS 1.3) and compresses data.</span></li>
+                                    <li class="flex gap-2.5"><span class="font-mono text-emerald-400 font-bold shrink-0">L5</span><span class="text-slate-300">Session maintains persistent socket connection state.</span></li>
+                                    <li class="flex gap-2.5"><span class="font-mono text-emerald-400 font-bold shrink-0">L4</span><span class="text-slate-300">TCP/UDP header prepended with ports → <span class="text-cyan-400 font-mono">Segment / Datagram</span></span></li>
+                                    <li class="flex gap-2.5"><span class="font-mono text-emerald-400 font-bold shrink-0">L3</span><span class="text-slate-300">IP header prepended with src/dst IP → <span class="text-teal-400 font-mono">Packet</span></span></li>
+                                    <li class="flex gap-2.5"><span class="font-mono text-emerald-400 font-bold shrink-0">L2</span><span class="text-slate-300">Ethernet header + FCS trailer appended → <span class="text-emerald-400 font-mono">Frame</span></span></li>
+                                    <li class="flex gap-2.5"><span class="font-mono text-emerald-400 font-bold shrink-0">L1</span><span class="text-slate-300">NIC serializes into electrical or optical signals → <span class="text-green-400 font-mono">Bits</span></span></li>
+                                </ol>
+                            </div>
+
+                            <!-- Decapsulation -->
+                            <div class="bg-slate-950 rounded-xl border border-slate-800 p-6">
+                                <h4 class="text-base font-bold text-white mb-3 flex items-center gap-2">
+                                    <span class="text-blue-400 text-xl font-bold">↑</span> Decapsulation (Inbound Reception)
+                                </h4>
+                                <p class="text-slate-400 text-xs mb-4">Data moves <strong>up</strong> the stack. Each layer validates its header, strips it, and forwards the payload upward:</p>
+                                <ol class="space-y-2 text-xs">
+                                    <li class="flex gap-2.5"><span class="font-mono text-blue-400 font-bold shrink-0">L1</span><span class="text-slate-300">Physical signals collected by NIC and assembled into frames.</span></li>
+                                    <li class="flex gap-2.5"><span class="font-mono text-blue-400 font-bold shrink-0">L2</span><span class="text-slate-300">Destination MAC verified, FCS checksum checked; frame header stripped.</span></li>
+                                    <li class="flex gap-2.5"><span class="font-mono text-blue-400 font-bold shrink-0">L3</span><span class="text-slate-300">Destination IP confirmed; IP header stripped and packet routed to L4.</span></li>
+                                    <li class="flex gap-2.5"><span class="font-mono text-blue-400 font-bold shrink-0">L4</span><span class="text-slate-300">TCP sequence verified, destination port checked, transport header stripped.</span></li>
+                                    <li class="flex gap-2.5"><span class="font-mono text-blue-400 font-bold shrink-0">L5</span><span class="text-slate-300">Socket connection state validated.</span></li>
+                                    <li class="flex gap-2.5"><span class="font-mono text-blue-400 font-bold shrink-0">L6</span><span class="text-slate-300">TLS payload decrypted and decompressed into plaintext.</span></li>
+                                    <li class="flex gap-2.5"><span class="font-mono text-blue-400 font-bold shrink-0">L7</span><span class="text-slate-300">Raw application payload delivered to application process.</span></li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- Common Misconceptions Callout -->
+                        <div class="mt-6 bg-slate-950 rounded-xl border border-amber-500/30 p-5">
+                            <h4 class="text-sm font-bold text-amber-400 mb-3 flex items-center gap-2">
+                                <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> Common Architectural Misconceptions
+                            </h4>
+                            <ul class="space-y-2 text-xs">
+                                <li class="flex gap-2.5 items-start">
+                                    <span class="text-rose-400 font-bold shrink-0">✗</span>
+                                    <span class="text-slate-300"><strong class="text-white">Port Reading at L7:</strong> The Application layer does <em>not</em> route by ports. Port multiplexing is exclusively handled at the <strong class="text-cyan-400">Transport layer (L4)</strong>.</span>
+                                </li>
+                                <li class="flex gap-2.5 items-start">
+                                    <span class="text-rose-400 font-bold shrink-0">✗</span>
+                                    <span class="text-slate-300"><strong class="text-white">Segmentation at L2:</strong> Layer 2 does <em>not</em> chop data. Segmentation occurs at <strong class="text-cyan-400">L4 (TCP MSS)</strong>; fragmentation happens at <strong class="text-blue-400">L3 (IP MTU)</strong>.</span>
+                                </li>
+                                <li class="flex gap-2.5 items-start">
+                                    <span class="text-rose-400 font-bold shrink-0">✗</span>
+                                    <span class="text-slate-300"><strong class="text-white">Cookies as Session Layer:</strong> HTTP cookies travel as <strong class="text-purple-400">Application layer (L7)</strong> headers. The OSI Session layer (L5) manages OS-level socket lifecycle, not website login sessions.</span>
+                                </li>
+                            </ul>
+                        </div>
+
                     </div>
                 </div>
             `;
 
-            // Reset state when rendering
             currentStepIndex = -1;
-
             return html;
         }
 
         function renderCheatsheet(data) {
-            let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
+            let html = `
+                <div class="space-y-6">
+                    <!-- Cheatsheet Header & Search Filter -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i data-lucide="terminal" class="w-5 h-5 text-blue-400"></i>
+                                Linux &amp; DevOps Network Commands
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Filter commands by keyword, protocol, or tool name:</p>
+                        </div>
+                        <div class="relative w-full sm:w-72">
+                            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                            <input type="text" id="cheatsheet-search" placeholder="Search ip, ping, dig, ss, iptables..." class="w-full bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-xl pl-9 pr-4 py-2 focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="cheatsheet-container">
+            `;
 
             data.categories.forEach(cat => {
                 html += `
-                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                        <h3 class="text-lg font-bold text-white border-b border-slate-700 pb-2 mb-4 flex items-center">
-                            <i data-lucide="chevron-right" class="w-5 h-5 text-blue-400 mr-2"></i> ${cat.name}
-                        </h3>
-                        <div class="space-y-4">
+                    <div class="cheatsheet-category-card bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 border-b border-slate-800 pb-3 mb-4">
+                                <h4 class="text-sm font-bold text-white flex items-center">
+                                    <i data-lucide="chevron-right" class="w-4 h-4 text-blue-400 mr-1.5"></i> ${cat.name}
+                                </h4>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">${cat.tag}</span>
+                            </div>
+                            <div class="space-y-4">
                 `;
 
                 cat.commands.forEach(item => {
+                    const cleanCmd = item.cmd.replace(/'/g, "\\'");
                     html += `
-                        <div>
-                            <div class="bg-slate-900 text-green-400 font-mono text-sm p-2 rounded-md mb-1 border border-slate-700">
-                                <span class="text-slate-500 select-none">$ </span>${item.cmd}
+                        <div class="cheatsheet-item group">
+                            <div class="bg-slate-950 text-emerald-400 font-mono text-xs p-2.5 rounded-xl border border-slate-800 flex items-center justify-between group-hover:border-slate-700 transition-colors">
+                                <div class="overflow-x-auto no-scrollbar whitespace-nowrap mr-2">
+                                    <span class="text-slate-600 select-none">$ </span><span>${item.cmd}</span>
+                                </div>
+                                <button onclick="copySnippet('${cleanCmd}')" title="Copy command" class="text-slate-500 hover:text-slate-200 p-1 rounded hover:bg-slate-800 transition-colors shrink-0">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                </button>
                             </div>
-                            <p class="text-sm text-slate-400 pl-1">${item.desc}</p>
+                            <p class="text-xs text-slate-400 pl-1 mt-1.5 leading-relaxed">${item.desc}</p>
                         </div>
                     `;
                 });
 
-                html += '</div></div>';
+                html += '</div></div></div>';
             });
 
-            html += '</div>';
+            html += '</div></div>';
             return html;
+        }
+
+        function initCheatsheetSearch() {
+            const input = document.getElementById('cheatsheet-search');
+            if (input) {
+                input.oninput = () => {
+                    const q = input.value.toLowerCase().trim();
+                    const cards = document.querySelectorAll('.cheatsheet-category-card');
+
+                    cards.forEach(card => {
+                        let hasMatch = false;
+                        const items = card.querySelectorAll('.cheatsheet-item');
+                        items.forEach(item => {
+                            const text = item.textContent.toLowerCase();
+                            if (text.includes(q)) {
+                                item.style.display = '';
+                                hasMatch = true;
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        });
+                        card.style.display = hasMatch ? '' : 'none';
+                    });
+                };
+            }
         }
 
         renderTabs();
