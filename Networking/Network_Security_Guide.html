@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Security Guide - Networking Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Content Styling - Premium Overhaul */
+        section {
+            background: rgba(30, 41, 59, 0.3);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            margin-bottom: 3rem;
+            scroll-margin-top: 6rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            padding-bottom: 1rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-top: 2.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: #94a3b8;
+        }
+
+        ul,
+        ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #94a3b8;
+            list-style-type: disc;
+        }
+
+        li {
+            margin-bottom: 0.625rem;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.05);
+            border-left: 4px solid #3b82f6;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0.75rem;
+        }
+
+        .info-box strong {
+            color: #60a5fa;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-card {
+            background: rgba(15, 23, 42, 0.4);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(59, 130, 246, 0.3);
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 2rem 0;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.9);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            color: #60a5fa;
+        }
+
+        pre {
+            background: #020617;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            color: #cbd5e1;
+        }
+
+        .step-box {
+            background: rgba(16, 185, 129, 0.05);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #10b981;
+            border-radius: 0.75rem;
+        }
+
+        .step-box h4 {
+            color: #34d399;
+            margin-top: 0;
+        }
+
+        .diagram {
+            background: #020617;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: auto;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            color: #94a3b8;
+            line-height: 1.5;
+            font-size: 0.875rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #3b82f6;
+            color: white;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 40;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            background: #2563eb;
+            box-shadow: 0 15px 20px -3px rgba(59, 130, 246, 0.4);
+        }
+
+        .sidebar-link-active {
+            color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+            font-weight: 600;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-[#0b0f1a] text-slate-300 selection:bg-blue-500/30">
+    <!-- Classic Header -->
+    <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="wrench" class="w-8 h-8 text-blue-500"></i>
+                    <h1 class="text-white font-bold text-xl tracking-tight">Networking <span
+                            class="text-slate-500 font-light">Hub</span></h1>
+                </div>
+                <nav class="flex items-center gap-6">
+                    <a href="Network_index.html"
+                        class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Networking
+                    </a>
+                    <a href="../index.html"
+                        class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
+                        <i data-lucide="home" class="w-4 h-4"></i> DevOps Hub
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sub-navigation Tab Bar -->
+    <div class="bg-[#0f172a] border-b border-slate-800 sticky top-[64px] z-40 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex space-x-2 md:space-x-4 overflow-x-auto py-3 no-scrollbar" id="nav-tabs">
+                <!-- Tabs generated by JS -->
+            </nav>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-[70vh]">
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 text-sm text-slate-500 mb-8 overflow-x-auto whitespace-nowrap pb-2">
+            <a href="../index.html" class="hover:text-blue-400 transition-colors">DevOps Hub</a>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            <a href="Network_index.html" class="hover:text-blue-400 transition-colors">Networking</a>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            <span class="text-slate-300">Network Security Guide</span>
+        </nav>
+
+        <div id="content-container">
+            <!-- Content injected by JS -->
+        </div>
+    </main>
+
+    <a href="#" class="back-to-top">
+        <i data-lucide="arrow-up" class="w-5 h-5"></i>
+    </a>
+
+    <footer class="mt-20 border-t border-slate-800 py-12 bg-slate-900/50 backdrop-blur-sm px-4">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-slate-500 text-sm italic tracking-wide font-medium">Networking Hub — Linux Networking Tools
+                Complete Guide</p>
+            <p class="text-slate-600 text-xs mt-2">For DevOps Engineers, SysAdmins, and Interview Preparation</p>
+        </div>
+    </footer>
+
+    <script>
+const contentData = {
+    vpn_basics: {
+        title: "Virtual Private Networks (VPN)",
+        icon: "shield-check",
+        intro: "A Virtual Private Network (VPN) creates a secure, encrypted connection (tunnel) over a less secure network, such as the public internet.",
+        sections: [
+            {
+                title: "What is a VPN?",
+                content: `
+                    <p>A VPN extends a private network across a public network, allowing users to send and receive data across shared or public networks as if their computing devices were directly connected to the private network. This provides enhanced security, privacy, and access to internal resources.</p>
+                    
+                    <div class="my-8 bg-slate-950/50 p-6 rounded-xl border border-slate-800">
+                        <h4 class="text-sm font-bold text-slate-400 mb-4 uppercase tracking-wider text-center">How a VPN Tunnel Works</h4>
+                        <div class="flex items-center justify-center gap-2 font-mono text-center overflow-x-auto pb-2">
+                            <div class="flex flex-col items-center">
+                                <div class="text-emerald-400 text-xl md:text-2xl font-bold bg-slate-900/80 px-4 py-3 rounded border border-emerald-500/30 flex items-center gap-2">
+                                    <i data-lucide="laptop" class="w-5 h-5"></i> Remote Client
+                                </div>
+                                <div class="text-xs uppercase tracking-wider text-emerald-400/80 mt-2 font-sans font-bold">Unsecured Network (Home/Cafe)</div>
+                            </div>
+                            
+                            <div class="flex flex-col items-center flex-1 px-4 min-w-[150px]">
+                                <div class="w-full relative h-8 flex items-center">
+                                    <!-- Outer tube (The Internet) -->
+                                    <div class="absolute inset-0 border-y-2 border-slate-700 w-full rounded-sm"></div>
+                                    <!-- Inner tube (The Encrypted VPN Tunnel) -->
+                                    <div class="absolute left-0 right-0 h-4 top-2 bg-blue-500/20 border-y border-blue-400 border-dashed rounded-full overflow-hidden">
+                                        <div class="w-full h-full bg-gradient-to-r from-transparent via-blue-400/50 to-transparent animate-[simBarShift_2s_linear_infinite]"></div>
+                                    </div>
+                                    <i data-lucide="lock" class="absolute left-1/2 -translate-x-1/2 w-4 h-4 text-blue-400 bg-slate-900 rounded-full"></i>
+                                </div>
+                                <div class="text-xs uppercase tracking-wider text-blue-400/80 mt-3 font-sans font-bold">Encrypted VPN Tunnel over Internet</div>
+                            </div>
+                            
+                            <div class="flex flex-col items-center">
+                                <div class="text-amber-400 text-xl md:text-2xl font-bold bg-slate-900/80 px-4 py-3 rounded border border-amber-500/30 flex items-center gap-2">
+                                    <i data-lucide="server" class="w-5 h-5"></i> VPN Gateway
+                                </div>
+                                <div class="text-xs uppercase tracking-wider text-amber-400/80 mt-2 font-sans font-bold">Corporate Network (Secure)</div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "Primary Types of VPNs",
+                content: `
+                    <div class="comparison-grid">
+                        <div class="comparison-card border-blue-500/30">
+                            <h4 class="text-blue-400 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5"></i> Remote Access VPN</h4>
+                            <p class="text-sm text-slate-400">Connects individual users (e.g., remote workers) securely to a private corporate network over the internet. The user typically needs a VPN client software installed on their device.</p>
+                            <ul class="text-sm mt-3 space-y-1">
+                                <li><strong>Client:</strong> Requires VPN software (e.g., Cisco AnyConnect, OpenVPN client).</li>
+                                <li><strong>Use Case:</strong> Employee working from home accessing internal company tools.</li>
+                                <li><strong>Common Protocols:</strong> SSL/TLS, IPsec.</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card border-emerald-500/30">
+                            <h4 class="text-emerald-400 flex items-center gap-2"><i data-lucide="network" class="w-5 h-5"></i> Site-to-Site VPN</h4>
+                            <p class="text-sm text-slate-400">Connects entire networks to each other. For example, connecting a branch office network to the main headquarters network. The connection is handled seamlessly by routers.</p>
+                            <ul class="text-sm mt-3 space-y-1">
+                                <li><strong>Client:</strong> No client software needed on user devices; handled by the VPN Gateway/Router.</li>
+                                <li><strong>Use Case:</strong> A retail branch connecting to the central corporate datacenter.</li>
+                                <li><strong>Common Protocols:</strong> IPsec, GRE.</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "Common VPN Protocols",
+                content: `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Protocol</th>
+                                <th>Layer</th>
+                                <th>Description & Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code class="text-blue-400">IPsec</code><br><span class="text-xs text-slate-500">(Internet Protocol Security)</span></td>
+                                <td>Layer 3 (Network)</td>
+                                <td>Highly secure suite of protocols widely used for Site-to-Site VPNs. Operates at the network layer, meaning it encrypts the entire IP packet. Complex to configure but very robust.</td>
+                            </tr>
+                            <tr>
+                                <td><code class="text-amber-400">SSL/TLS</code><br><span class="text-xs text-slate-500">(Secure Sockets Layer)</span></td>
+                                <td>Layer 4+ (Transport/App)</td>
+                                <td>Used predominantly for Remote Access VPNs (like OpenVPN). Much easier to deploy because it can operate through standard web browsers (HTTPS) and passes easily through NAT/firewalls.</td>
+                            </tr>
+                            <tr>
+                                <td><code class="text-emerald-400">WireGuard</code></td>
+                                <td>Layer 3 (Network)</td>
+                                <td>A modern, extremely fast, and lean VPN protocol. It uses state-of-the-art cryptography and has a tiny codebase compared to IPsec/OpenVPN, making it easier to audit and highly performant.</td>
+                            </tr>
+                            <tr>
+                                <td><code class="text-slate-400">L2TP/IPsec</code><br><span class="text-xs text-slate-500">(Layer 2 Tunneling Protocol)</span></td>
+                                <td>Layer 2 + Layer 3</td>
+                                <td>L2TP does not provide encryption itself, so it is almost always paired with IPsec. It's an older protocol that is widely supported natively on mobile devices and legacy operating systems.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `
+            }
+        ]
+    },
+    vpn_architectures: {
+        title: "VPN Architectures & Routing",
+        icon: "git-branch",
+        intro: "Understanding how VPNs are physically deployed and how they route client traffic.",
+        sections: [
+            {
+                title: "1. VPN Topologies",
+                content: `
+<div class="space-y-8">
+    <!-- Remote Access Diagram -->
+    <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-800">
+        <h4 class="text-blue-400 font-bold mb-4 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5"></i> Remote Access VPN</h4>
+        <p class="text-sm text-slate-400 mb-6">A single endpoint (laptop, phone) creates a secure tunnel directly to the corporate gateway. Ideal for roaming users.</p>
+        
+        <div class="flex items-center justify-between text-center overflow-x-auto pb-4 gap-4 font-mono">
+            <div class="flex flex-col items-center">
+                <div class="w-16 h-16 bg-slate-800 rounded-lg border-2 border-blue-500/50 flex items-center justify-center mb-2 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                    <i data-lucide="laptop" class="w-8 h-8 text-blue-400"></i>
+                </div>
+                <div class="text-xs text-slate-300">Remote Worker</div>
+                <div class="text-[10px] text-blue-400/80 mt-1">VPN Client Installed</div>
+            </div>
+
+            <div class="flex-1 min-w-[150px] relative flex flex-col items-center justify-center">
+                <div class="w-full h-4 bg-blue-500/20 border-y border-blue-500 border-dashed rounded-full overflow-hidden relative">
+                    <div class="w-full h-full bg-gradient-to-r from-transparent via-blue-400/50 to-transparent animate-[simBarShift_2s_linear_infinite]"></div>
+                </div>
+                <div class="text-[10px] uppercase tracking-widest text-slate-400 mt-2">Encrypted Internet Transit</div>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <div class="w-16 h-16 bg-slate-800 rounded-lg border-2 border-slate-600 flex items-center justify-center mb-2">
+                    <i data-lucide="shield" class="w-8 h-8 text-emerald-400"></i>
+                </div>
+                <div class="text-xs text-slate-300">VPN Gateway</div>
+                <div class="text-[10px] text-emerald-400/80 mt-1">HQ Perimeter</div>
+            </div>
+
+            <div class="w-8 border-t-2 border-slate-600 hidden sm:block"></div>
+
+            <div class="flex flex-col items-center hidden sm:flex">
+                <div class="w-16 h-16 bg-slate-800 rounded-lg border-2 border-slate-600 flex items-center justify-center mb-2">
+                    <i data-lucide="database" class="w-8 h-8 text-slate-400"></i>
+                </div>
+                <div class="text-xs text-slate-300">Internal Servers</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Site-to-Site Diagram -->
+    <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-800">
+        <h4 class="text-emerald-400 font-bold mb-4 flex items-center gap-2"><i data-lucide="network" class="w-5 h-5"></i> Site-to-Site VPN</h4>
+        <p class="text-sm text-slate-400 mb-6">Two hardware routers create a permanent, invisible tunnel. The computers inside the networks don't know the VPN exists.</p>
+
+        <div class="flex items-center justify-between text-center overflow-x-auto pb-4 gap-4 font-mono">
+            <div class="flex flex-col items-center hidden sm:flex">
+                <div class="grid grid-cols-2 gap-1 mb-2">
+                    <i data-lucide="monitor" class="w-5 h-5 text-slate-400"></i>
+                    <i data-lucide="monitor" class="w-5 h-5 text-slate-400"></i>
+                </div>
+                <div class="text-xs text-slate-300">Branch PCs</div>
+                <div class="text-[10px] text-slate-500 mt-1">No VPN Client</div>
+            </div>
+
+            <div class="w-8 border-t-2 border-slate-600 hidden sm:block"></div>
+
+            <div class="flex flex-col items-center">
+                <div class="w-16 h-16 bg-slate-800 rounded-full border-2 border-emerald-500/50 flex items-center justify-center mb-2 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                    <i data-lucide="router" class="w-8 h-8 text-emerald-400"></i>
+                </div>
+                <div class="text-xs text-slate-300">Branch Router</div>
+            </div>
+
+            <div class="flex-1 min-w-[150px] relative flex flex-col items-center justify-center">
+                <div class="w-full h-6 bg-emerald-500/20 border-y-2 border-emerald-500 border-dashed rounded-none overflow-hidden relative">
+                    <div class="w-full h-full bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent animate-[simBarShift_3s_linear_infinite]"></div>
+                </div>
+                <div class="text-[10px] uppercase tracking-widest text-slate-400 mt-2">IPsec Tunnel (Internet)</div>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <div class="w-16 h-16 bg-slate-800 rounded-full border-2 border-emerald-500/50 flex items-center justify-center mb-2 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                    <i data-lucide="router" class="w-8 h-8 text-emerald-400"></i>
+                </div>
+                <div class="text-xs text-slate-300">HQ Router</div>
+            </div>
+
+            <div class="w-8 border-t-2 border-slate-600 hidden sm:block"></div>
+
+            <div class="flex flex-col items-center hidden sm:flex">
+                <div class="w-16 h-16 bg-slate-800 rounded-lg border-2 border-slate-600 flex items-center justify-center mb-2">
+                    <i data-lucide="server" class="w-8 h-8 text-slate-400"></i>
+                </div>
+                <div class="text-xs text-slate-300">HQ Servers</div>
+            </div>
+        </div>
+    </div>
+</div>
+                `
+            },
+            {
+                title: "2. Full Tunnel vs Split Tunnel",
+                content: `
+<p class="text-slate-300 mb-6">When a user connects to a Remote Access VPN, the VPN software modifies the user's local routing table. Organizations must choose between routing <strong>all</strong> traffic through the VPN, or only <strong>corporate</strong> traffic.</p>
+
+<div class="grid md:grid-cols-2 gap-6 mb-8">
+    <!-- Full Tunnel -->
+    <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-colors">
+        <h4 class="text-blue-400 text-lg font-bold mb-3 flex items-center gap-2"><i data-lucide="lock" class="w-5 h-5"></i> Full Tunnel</h4>
+        <p class="text-sm text-slate-400 mb-4"><strong>All network traffic</strong> (both corporate and personal internet browsing) is forced through the encrypted VPN tunnel to the headquarters, which then routes the internet traffic out to the web.</p>
+        <ul class="text-sm text-slate-400 space-y-2 mb-6">
+            <li><span class="text-emerald-400 font-bold">✓</span> Ultimate security & logging capability</li>
+            <li><span class="text-emerald-400 font-bold">✓</span> Corporate firewall protects all browsing</li>
+            <li><span class="text-rose-400 font-bold">✗</span> High bandwidth cost for HQ</li>
+            <li><span class="text-rose-400 font-bold">✗</span> Slower internet speeds for the user</li>
+        </ul>
+
+        <!-- Full Tunnel Visual -->
+        <div class="relative h-48 bg-slate-950 rounded-lg border border-slate-800 p-4 font-mono text-[10px] overflow-hidden">
+            <div class="absolute top-1/2 left-4 -translate-y-1/2 flex flex-col items-center z-10">
+                <i data-lucide="laptop" class="w-6 h-6 text-slate-300 mb-1"></i> User
+            </div>
+            
+            <div class="absolute top-1/2 left-16 right-20 -translate-y-1/2 h-4 bg-blue-500/30 border-y border-blue-500 border-dashed z-0 flex items-center justify-center">
+                <div class="text-blue-400">All Traffic (VPN)</div>
+            </div>
+
+            <div class="absolute top-1/2 right-4 -translate-y-1/2 flex flex-col items-center z-10">
+                <i data-lucide="building" class="w-6 h-6 text-slate-300 mb-1"></i> HQ
+            </div>
+
+            <!-- Path to Internet out of HQ -->
+            <div class="absolute top-4 right-8 h-8 w-1 bg-slate-600/50 border-x border-slate-500 border-dotted"></div>
+            <div class="absolute top-2 right-4 transform -translate-y-1/2 bg-slate-800 px-2 py-1 rounded border border-slate-600 flex items-center gap-1 z-10">
+                <i data-lucide="globe" class="w-3 h-3 text-slate-400"></i> Internet
+            </div>
+        </div>
+    </div>
+
+    <!-- Split Tunnel -->
+    <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700 hover:border-emerald-500/50 transition-colors">
+        <h4 class="text-emerald-400 text-lg font-bold mb-3 flex items-center gap-2"><i data-lucide="split" class="w-5 h-5"></i> Split Tunnel</h4>
+        <p class="text-sm text-slate-400 mb-4">Traffic is <strong>split</strong> based on destination. Traffic destined for internal corporate IP addresses goes through the VPN. General internet traffic goes directly out the user's local internet connection.</p>
+        <ul class="text-sm text-slate-400 space-y-2 mb-6">
+            <li><span class="text-emerald-400 font-bold">✓</span> Saves massive bandwidth at HQ</li>
+            <li><span class="text-emerald-400 font-bold">✓</span> Fast direct internet access for users</li>
+            <li><span class="text-rose-400 font-bold">✗</span> User's web browsing bypasses corporate filters</li>
+            <li><span class="text-rose-400 font-bold">✗</span> Greater risk of malware infection from web</li>
+        </ul>
+
+        <!-- Split Tunnel Visual -->
+        <div class="relative h-48 bg-slate-950 rounded-lg border border-slate-800 p-4 font-mono text-[10px] overflow-hidden">
+            <div class="absolute top-1/2 left-4 -translate-y-1/2 flex flex-col items-center z-10">
+                <i data-lucide="laptop" class="w-6 h-6 text-slate-300 mb-1"></i> User
+            </div>
+            
+            <!-- VPN Traffic Path (Bottom) -->
+            <div class="absolute top-2/3 left-16 right-20 h-4 bg-emerald-500/30 border-y border-emerald-500 border-dashed z-0 flex items-center justify-center">
+                <div class="text-emerald-400">Corporate Data</div>
+            </div>
+
+            <!-- Direct Internet Path (Top) -->
+            <div class="absolute top-1/3 left-16 right-20 h-2 bg-slate-600/50 border-y border-slate-500 border-dotted flex items-center justify-center">
+                <div class="text-slate-400 relative -top-3">Direct Internet</div>
+            </div>
+            
+            <div class="absolute top-1/3 right-4 -translate-y-1/2 flex items-center gap-1 bg-slate-800 px-2 py-1 rounded border border-slate-600 z-10">
+                <i data-lucide="globe" class="w-3 h-3 text-slate-400"></i> Internet
+            </div>
+
+            <div class="absolute top-2/3 right-4 -translate-y-1/2 flex flex-col items-center z-10">
+                <i data-lucide="building" class="w-6 h-6 text-slate-300 mb-1"></i> HQ
+            </div>
+        </div>
+    </div>
+</div>
+                `
+            }
+        ]
+
+    },
+    firewalls_dmz_nat: {
+        title: "Firewalls, DMZ & Gateways",
+        icon: "shield",
+        intro: "Securing the network perimeter using Firewalls, Demilitarized Zones (DMZ), and Network Address Translation.",
+        sections: [
+            {
+                title: "1. Network Firewalls",
+                content: `
+                    <p class="text-slate-300 mb-6">Firewalls monitor and control incoming and outgoing network traffic based on predetermined security rules. They establish a barrier between a trusted network and an untrusted network.</p>
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                            <h4 class="text-amber-400 font-bold mb-2">Stateful vs Stateless</h4>
+                            <ul class="text-sm text-slate-400 space-y-2">
+                                <li><strong>Stateless:</strong> Examines each packet individually based purely on source/destination IPs and ports (e.g., standard Router ACLs). Fast but less secure.</li>
+                                <li><strong>Stateful:</strong> Tracks the operating state and characteristics of network connections. It remembers if a packet is part of an established connection.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                            <h4 class="text-emerald-400 font-bold mb-2">Advanced Firewalls</h4>
+                            <ul class="text-sm text-slate-400 space-y-2">
+                                <li><strong>NGFW (Next-Gen):</strong> Adds Application-layer (Layer 7) awareness, Deep Packet Inspection (DPI), and Intrusion Prevention Systems (IPS).</li>
+                                <li><strong>WAF (Web App Firewall):</strong> Specifically protects web applications by filtering HTTP/HTTPS traffic from exploits like SQL injection and XSS.</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "2. The Demilitarized Zone (DMZ)",
+                content: `
+                    <p class="text-slate-300 mb-6">A <strong>DMZ</strong> (Demilitarized Zone) is a physical or logical subnetwork that contains and exposes an organization's external-facing services to an untrusted network (the Internet). The purpose of a DMZ is to add an additional layer of security to an organization's Local Area Network (LAN): an external attacker only has direct access to equipment in the DMZ, rather than the entire internal network.</p>
+                    
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 font-mono text-[10px] sm:text-xs overflow-hidden relative min-h-[300px]">
+                        
+                        <!-- Internet -->
+                        <div class="absolute left-4 top-1/2 -translate-y-1/2 flex flex-col items-center z-10">
+                            <i data-lucide="globe" class="w-8 h-8 text-slate-400 mb-2"></i>
+                            <div class="text-slate-400 font-bold">Internet</div>
+                        </div>
+
+                        <!-- Traffic Line In -->
+                        <div class="absolute left-16 top-1/2 -translate-y-1/2 w-16 h-1 bg-red-500/50"></div>
+
+                        <!-- External Firewall -->
+                        <div class="absolute left-32 top-1/2 -translate-y-1/2 flex flex-col items-center z-10">
+                            <div class="w-8 h-24 bg-red-900/80 border-2 border-red-500 rounded flex items-center justify-center mb-2 shadow-[0_0_15px_rgba(239,68,68,0.4)]">
+                                <i data-lucide="flame" class="w-5 h-5 text-red-400"></i>
+                            </div>
+                            <div class="text-red-400 font-bold text-center">External<br>Firewall</div>
+                        </div>
+
+                        <!-- Traffic Line DMZ -->
+                        <div class="absolute left-40 top-1/2 -translate-y-1/2 w-24 h-1 bg-amber-500/50"></div>
+
+                        <!-- DMZ Subnet -->
+                        <div class="absolute left-64 top-1/4 bottom-1/4 w-32 bg-amber-900/20 border-2 border-amber-500/50 border-dashed rounded-xl flex flex-col items-center justify-center z-0">
+                            <div class="absolute -top-6 text-amber-400 font-bold tracking-widest uppercase">DMZ</div>
+                            
+                            <div class="flex flex-col gap-4 z-10">
+                                <div class="bg-slate-800 px-3 py-2 rounded border border-slate-600 flex items-center gap-2">
+                                    <i data-lucide="server" class="w-4 h-4 text-amber-300"></i> Web Srv
+                                </div>
+                                <div class="bg-slate-800 px-3 py-2 rounded border border-slate-600 flex items-center gap-2">
+                                    <i data-lucide="mail" class="w-4 h-4 text-amber-300"></i> Mail Srv
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Traffic Line Internal -->
+                        <div class="absolute left-[24rem] top-1/2 -translate-y-1/2 w-24 h-1 bg-emerald-500/50"></div>
+
+                        <!-- Internal Firewall -->
+                        <div class="absolute left-[30rem] top-1/2 -translate-y-1/2 flex flex-col items-center z-10">
+                            <div class="w-8 h-24 bg-emerald-900/80 border-2 border-emerald-500 rounded flex items-center justify-center mb-2 shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+                                <i data-lucide="shield" class="w-5 h-5 text-emerald-400"></i>
+                            </div>
+                            <div class="text-emerald-400 font-bold text-center">Internal<br>Firewall</div>
+                        </div>
+
+                        <!-- Traffic Line LAN -->
+                        <div class="absolute left-[32rem] right-16 top-1/2 -translate-y-1/2 h-1 bg-emerald-500/50"></div>
+
+                        <!-- Internal LAN -->
+                        <div class="absolute right-4 top-1/4 bottom-1/4 w-32 bg-emerald-900/20 border-2 border-emerald-500/50 border-dashed rounded-xl flex flex-col items-center justify-center z-0">
+                            <div class="absolute -top-6 text-emerald-400 font-bold tracking-widest uppercase">Internal LAN</div>
+                            
+                            <div class="flex flex-col gap-4 z-10">
+                                <div class="bg-slate-800 px-3 py-2 rounded border border-slate-600 flex items-center gap-2">
+                                    <i data-lucide="database" class="w-4 h-4 text-emerald-300"></i> DB Srv
+                                </div>
+                                <div class="bg-slate-800 px-3 py-2 rounded border border-slate-600 flex items-center gap-2">
+                                    <i data-lucide="users" class="w-4 h-4 text-emerald-300"></i> Staff PCs
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 info-box border-amber-500 bg-amber-500/5">
+                        <strong class="text-amber-400">Security Benefit</strong>
+                        <p class="text-sm">If an attacker breaches the Web Server in the DMZ, they still face the Internal Firewall before they can access sensitive databases or staff computers. The Web Server is isolated.</p>
+                    </div>
+                `
+            },
+            {
+                title: "3. NAT & Proxies",
+                content: `
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-blue-400 font-bold mb-2">Network Address Translation</h4>
+                            <p class="text-sm text-slate-400 mb-4">NAT was designed to save IP space, but acts as a de facto security layer.</p>
+                            <ul class="text-sm text-slate-400 space-y-2 mb-6">
+                                <li><strong>SNAT (Source NAT / Masquerading):</strong> Rewrites the source IP of outgoing packets to the router's public IP. Internal topology is hidden from the internet.</li>
+                                <li><strong>DNAT (Destination NAT / Port Forwarding):</strong> Allows external users to hit a specific port on the router's public IP and be forwarded to a specific internal machine.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-purple-400 font-bold mb-2">Proxies</h4>
+                            <p class="text-sm text-slate-400 mb-4">Proxies terminate connections on behalf of another machine.</p>
+                            <ul class="text-sm text-slate-400 space-y-2 mb-6">
+                                <li><strong>Forward Proxy:</strong> Sits in front of <em>clients</em>. It fetches internet resources for internal users, acting as a filter and cache.</li>
+                                <li><strong>Reverse Proxy:</strong> Sits in front of <em>servers</em>. It receives internet requests and distributes them to internal servers (Load Balancing, SSL Termination, WAF). E.g. Nginx, HAProxy.</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            }
+        ]
+    }
+    ,
+    core_principles: {
+        title: "Core Security Principles",
+        icon: "key",
+        intro: "The fundamental concepts that dictate all security engineering and infrastructure design.",
+        sections: [
+            {
+                title: "1. The CIA Triad",
+                content: `
+                    <p class="text-slate-300 mb-6">At the heart of all security strategies is the CIA Triad. Every security control you implement is designed to protect one or more of these three pillars.</p>
+                    <div class="grid md:grid-cols-3 gap-4 mb-8">
+                        <div class="bg-slate-900/40 p-5 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-colors">
+                            <h4 class="text-blue-400 font-bold mb-2 flex items-center gap-2"><i data-lucide="eye-off" class="w-4 h-4"></i> Confidentiality</h4>
+                            <p class="text-xs text-slate-400">Ensuring data is accessible <strong>only</strong> by authorized users or systems.</p>
+                            <p class="text-[10px] text-slate-500 mt-2"><strong>Controls:</strong> Encryption (AES, TLS), Access Controls, Passwords.</p>
+                        </div>
+                        <div class="bg-slate-900/40 p-5 rounded-xl border border-slate-700 hover:border-emerald-500/50 transition-colors">
+                            <h4 class="text-emerald-400 font-bold mb-2 flex items-center gap-2"><i data-lucide="shield-check" class="w-4 h-4"></i> Integrity</h4>
+                            <p class="text-xs text-slate-400">Maintaining the accuracy and consistency of data by preventing unauthorized modification.</p>
+                            <p class="text-[10px] text-slate-500 mt-2"><strong>Controls:</strong> Hashing (SHA-256), Digital Signatures, File Integrity Monitoring (FIM).</p>
+                        </div>
+                        <div class="bg-slate-900/40 p-5 rounded-xl border border-slate-700 hover:border-amber-500/50 transition-colors">
+                            <h4 class="text-amber-400 font-bold mb-2 flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4"></i> Availability</h4>
+                            <p class="text-xs text-slate-400">Ensuring systems and data are accessible to authorized users when needed.</p>
+                            <p class="text-[10px] text-slate-500 mt-2"><strong>Controls:</strong> Load Balancing, High Availability (HA) Clusters, DDoS Protection, Backups.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "2. Identity & Access Management (IAM)",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-800">
+                            <h4 class="text-slate-200 font-bold mb-3">Authentication vs Authorization</h4>
+                            <ul class="text-sm text-slate-400 space-y-3">
+                                <li class="flex items-start gap-3">
+                                    <div class="mt-1"><i data-lucide="user-check" class="w-4 h-4 text-emerald-400"></i></div>
+                                    <div>
+                                        <strong class="text-emerald-400">Authentication (AuthN):</strong> Verifying <em>who you are</em>. (e.g., Logging in with a username, password, and MFA code).
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <div class="mt-1"><i data-lucide="unlock" class="w-4 h-4 text-blue-400"></i></div>
+                                    <div>
+                                        <strong class="text-blue-400">Authorization (AuthZ):</strong> Verifying <em>what you are allowed to do</em> once logged in. (e.g., User is logged in, but are they allowed to DELETE a database table?).
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                                <h4 class="text-purple-400 font-bold mb-2">Role-Based Access Control (RBAC)</h4>
+                                <p class="text-sm text-slate-400">Instead of assigning permissions to individuals (which scales poorly), permissions are assigned to <strong>Roles</strong> (e.g., "Developer", "Admin", "Read-Only"). Users are then assigned to those roles.</p>
+                            </div>
+                            <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                                <h4 class="text-rose-400 font-bold mb-2">Principle of Least Privilege</h4>
+                                <p class="text-sm text-slate-400">A security principle stating that a user, program, or process should have only the bare minimum privileges necessary to perform its intended function. No more.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ]
+    },
+    cloud_security: {
+        title: "Cloud & Network Controls",
+        icon: "cloud-lightning",
+        intro: "How network boundaries and traffic control are enforced in modern Cloud (AWS/Azure/GCP) environments.",
+        sections: [
+            {
+                title: "1. Security Groups vs NACLs: Deep Dive",
+                content: `
+                    <p class="text-slate-300 mb-6">In AWS and similar cloud environments, network security is divided into two distinct layers. Understanding how they interact is crucial for DevOps engineers.</p>
+                    
+                    <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700 mb-6">
+                        <h4 class="text-blue-400 font-bold mb-4">Packet Evaluation Flow</h4>
+                        <ol class="list-decimal pl-5 text-sm text-slate-400 space-y-4">
+                            <li><strong>Internet Gateway (IGW):</strong> A packet enters the VPC from the internet.</li>
+                            <li><strong>Route Table:</strong> The router determines the target Subnet for the packet.</li>
+                            <li><strong>Network ACL (NACL):</strong> The packet hits the NACL bounding the Subnet. The NACL evaluates its rules in numerical order (e.g., Rule 100, then 200). It is <strong>stateless</strong>, meaning if it allows the packet in, it <em>does not</em> automatically allow the response packet out. An explicit outbound rule is required.</li>
+                            <li><strong>Security Group (SG):</strong> If the NACL allows the packet, it proceeds to the EC2 instance's Security Group. SGs are <strong>stateful</strong>. If the SG allows inbound traffic on port 443, the connection is tracked in a state table. When the server replies, the outbound traffic is automatically allowed, regardless of outbound SG rules.</li>
+                            <li><strong>EC2 Instance:</strong> The packet finally reaches the operating system.</li>
+                        </ol>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-400">
+                            <thead class="bg-slate-800 text-slate-200">
+                                <tr>
+                                    <th class="p-3 rounded-tl-lg">Feature</th>
+                                    <th class="p-3 text-emerald-400">Security Groups (SGs)</th>
+                                    <th class="p-3 text-blue-400 rounded-tr-lg">Network ACLs (NACLs)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/50 bg-slate-900/50">
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-300">Level of Operation</td>
+                                    <td class="p-3">Operates at the <strong>Instance/VM</strong> level. (Virtual Firewall)</td>
+                                    <td class="p-3">Operates at the <strong>Subnet</strong> level. (Subnet Boundary)</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-300">Statefulness</td>
+                                    <td class="p-3"><strong class="text-emerald-400">Stateful:</strong> Return traffic is automatically allowed.</td>
+                                    <td class="p-3"><strong class="text-blue-400">Stateless:</strong> Return traffic must be explicitly permitted.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-300">Rule Logic</td>
+                                    <td class="p-3"><strong>Allow rules only.</strong> Implicit Deny all else. Rules evaluated as a whole.</td>
+                                    <td class="p-3">Supports both <strong>Allow and Deny</strong> rules. Processed in numbered order.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `
+            },
+            {
+                title: "2. Dynamic Secrets Management",
+                content: `
+                    <p class="text-slate-300 mb-4">Hardcoding database credentials in application code is a catastrophic risk. Modern DevOps replaces hardcoded secrets with <strong>Secrets Managers</strong> (like HashiCorp Vault).</p>
+                    
+                    <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-800">
+                        <h4 class="text-emerald-400 font-bold mb-4">How HashiCorp Vault Works (Architecture)</h4>
+                        <ol class="list-decimal pl-5 text-sm text-slate-400 space-y-3">
+                            <li><strong>Identity Authentication:</strong> When an application boots up, it authenticates with Vault using a machine identity (e.g., an AWS IAM Role, or Kubernetes Service Account) rather than a password.</li>
+                            <li><strong>Requesting a Secret:</strong> The application asks Vault for the database password.</li>
+                            <li><strong>Dynamic Secret Generation:</strong> Instead of returning a static password, Vault connects to the database itself and generates a <em>brand new</em> database user and password on the fly, specific to this exact application instance.</li>
+                            <li><strong>Time-to-Live (TTL):</strong> Vault attaches a TTL (e.g., 1 hour) to the password and hands it to the application.</li>
+                            <li><strong>Revocation:</strong> When the 1 hour expires, Vault automatically deletes that user from the database. If an attacker stole the password from memory, it becomes useless almost immediately.</li>
+                        </ol>
+                    </div>
+                `
+            }
+        ]
+    },
+    firewalls_dmz_nat: {
+        title: "Firewalls, Proxies & NAT",
+        icon: "shield",
+        intro: "A deep dive into perimeter defense mechanisms and packet filtering.",
+        sections: [
+            {
+                title: "1. The Mechanics of a Stateful Firewall",
+                content: `
+                    <p class="text-slate-300 mb-4">Unlike basic routers which filter blindly based on IPs and Ports (stateless), a <strong>Stateful Firewall</strong> tracks the lifecycle of every network connection passing through it.</p>
+                    
+                    <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700 mb-6">
+                        <h4 class="text-amber-400 font-bold mb-3">The Connection Tracking Table (Conntrack)</h4>
+                        <p class="text-sm text-slate-400 mb-4">When a user initiates an HTTP request to a web server through a stateful firewall, the firewall creates an entry in its state table. It monitors the TCP handshake (SYN, SYN-ACK, ACK).</p>
+                        
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="text-slate-500 border-b border-slate-700">
+                                    <tr>
+                                        <th class="pb-2">Protocol</th>
+                                        <th class="pb-2">Source IP:Port</th>
+                                        <th class="pb-2">Dest IP:Port</th>
+                                        <th class="pb-2">State</th>
+                                        <th class="pb-2">Timeout</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-emerald-400">
+                                    <tr>
+                                        <td class="pt-2">TCP</td>
+                                        <td class="pt-2">192.168.1.50:54321</td>
+                                        <td class="pt-2">93.184.216.34:443</td>
+                                        <td class="pt-2">ESTABLISHED</td>
+                                        <td class="pt-2">432000s</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pt-2 text-blue-400">UDP</td>
+                                        <td class="pt-2 text-blue-400">192.168.1.50:53</td>
+                                        <td class="pt-2 text-blue-400">8.8.8.8:53</td>
+                                        <td class="pt-2 text-blue-400">UNREPLIED</td>
+                                        <td class="pt-2 text-blue-400">30s</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-sm text-slate-400 mt-4">Because the firewall <em>knows</em> the connection is "ESTABLISHED", it automatically allows the inbound HTTP response from the server back to the user without needing an explicit inbound rule. It also tracks Sequence numbers to prevent TCP hijacking.</p>
+                    </div>
+                `
+            },
+            {
+                title: "2. Forward vs Reverse Proxies",
+                content: `
+                    <p class="text-slate-300 mb-4">A proxy is a server that acts as an intermediary for requests from clients seeking resources from other servers.</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                            <h4 class="text-purple-400 font-bold mb-3 flex items-center gap-2"><i data-lucide="arrow-right-circle" class="w-5 h-5"></i> Forward Proxy</h4>
+                            <p class="text-sm text-slate-400 mb-4">Protects the <strong>Client</strong>. It sits inside a corporate network and fetches internet resources on behalf of internal users.</p>
+                            <ul class="text-sm text-slate-400 space-y-2">
+                                <li><strong>Anonymity:</strong> The internet only sees the IP of the proxy, not the internal user.</li>
+                                <li><strong>Content Filtering:</strong> The proxy can block access to malicious or non-work-related websites.</li>
+                                <li><strong>Caching:</strong> If 100 users request the same file, the proxy downloads it once and serves it locally 99 times.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                            <h4 class="text-rose-400 font-bold mb-3 flex items-center gap-2"><i data-lucide="arrow-left-circle" class="w-5 h-5"></i> Reverse Proxy (e.g., Nginx)</h4>
+                            <p class="text-sm text-slate-400 mb-4">Protects the <strong>Server</strong>. It sits in front of backend web servers and handles all incoming internet traffic.</p>
+                            <ul class="text-sm text-slate-400 space-y-2">
+                                <li><strong>SSL Termination:</strong> The proxy handles the heavy math of decrypting HTTPS traffic, then forwards unencrypted HTTP traffic to backend servers, saving their CPU.</li>
+                                <li><strong>Load Balancing:</strong> Distributes incoming traffic across dozens of backend servers.</li>
+                                <li><strong>WAF:</strong> Can inspect the decrypted HTTP payload for SQL injection before passing it to the backend.</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "3. Network Address Translation (NAT)",
+                content: `
+                    <p class="text-slate-300 mb-6">Network Address Translation is the process where a network device, usually a firewall or router, assigns a public address to a computer (or group of computers) inside a private network. Its primary purpose historically was to slow the depletion of IPv4 addresses, but it inherently adds a layer of security by hiding internal network structures.</p>
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                            <h4 class="text-amber-400 font-bold mb-2">SNAT (Source NAT)</h4>
+                            <p class="text-sm text-slate-400 mb-2">Changes the <strong>Source IP</strong> of outbound packets.</p>
+                            <p class="text-xs text-slate-500 mb-2"><strong>Use Case:</strong> When 100 employees in an office browse the internet, their internal IPs (10.x.x.x) are stripped by the router and replaced with a single Public IP assigned by the ISP. The internet only sees the router.</p>
+                            <div class="mt-4 bg-slate-950 p-2 rounded border border-slate-800 text-[10px] font-mono text-emerald-400">
+                                10.0.1.50:4592 -> [Router SNAT] -> 203.0.113.1:14592
+                            </div>
+                        </div>
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                            <h4 class="text-emerald-400 font-bold mb-2">DNAT (Destination NAT)</h4>
+                            <p class="text-sm text-slate-400 mb-2">Changes the <strong>Destination IP</strong> of inbound packets. Often called "Port Forwarding".</p>
+                            <p class="text-xs text-slate-500 mb-2"><strong>Use Case:</strong> When a user on the internet wants to hit your internal Web Server. They hit your public IP on port 443, and the router translates that destination to the internal 10.x.x.x IP.</p>
+                            <div class="mt-4 bg-slate-950 p-2 rounded border border-slate-800 text-[10px] font-mono text-blue-400">
+                                User -> 203.0.113.1:443 -> [Router DNAT] -> 10.0.1.80:443
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ]
+    },
+    security_protocols: {
+        title: "Cryptographic Protocols",
+        icon: "lock",
+        intro: "A technical deep dive into encryption math and how TLS secures the web.",
+        sections: [
+            {
+                title: "1. The Mechanics of Encryption",
+                content: `
+                    <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-800 mb-6">
+                        <h4 class="text-blue-400 font-bold mb-3">Symmetric Encryption (e.g., AES-256)</h4>
+                        <p class="text-sm text-slate-400 mb-3">Uses a single shared key. Data is chopped into "blocks" (e.g., 128 bits) and mathematically scrambled (substituted and permuted) over multiple "rounds" using the key.</p>
+                        <ul class="text-sm text-slate-400 list-disc pl-5 mb-4">
+                            <li><strong>Performance:</strong> Exceptionally fast. Can be processed in hardware by modern CPUs (AES-NI). Used for encrypting hard drives and bulk data streams.</li>
+                            <li><strong>The Flaw:</strong> If Alice and Bob have never met, how does Alice securely send Bob the key over the internet without an attacker intercepting it?</li>
+                        </ul>
+
+                        <h4 class="text-emerald-400 font-bold mb-3 mt-6">Asymmetric Encryption (e.g., RSA, ECC)</h4>
+                        <p class="text-sm text-slate-400 mb-3">Solves the key exchange problem using mathematically linked key pairs (Public and Private keys).</p>
+                        <ul class="text-sm text-slate-400 list-disc pl-5">
+                            <li><strong>The Math:</strong> Based on one-way mathematical trapdoors (like multiplying two massive prime numbers is easy, but factoring the resulting massive number back into primes is impossibly hard).</li>
+                            <li><strong>Mechanism:</strong> Bob generates a key pair. He shares his Public Key with the world. Alice encrypts her message using Bob's Public Key. Once encrypted, <strong>only Bob's Private Key</strong> can decrypt it—not even Alice can decrypt her own message once locked.</li>
+                            <li><strong>Performance:</strong> Very slow. Thousands of times slower than Symmetric encryption.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                title: "2. The TLS 1.3 Handshake",
+                content: `
+                    <p class="text-slate-300 mb-4">Transport Layer Security uses <em>both</em> forms of encryption to get the best of both worlds. Here is the exact flow when you visit an HTTPS website:</p>
+                    
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 font-mono text-xs text-slate-300">
+                        <ol class="space-y-4">
+                            <li>
+                                <div class="text-emerald-400 font-bold">1. Client Hello</div>
+                                <div class="text-slate-400">The browser sends a message to the server proposing cryptographic suites (e.g., TLS 1.3, AES-256-GCM, Elliptic Curve Diffie-Hellman) and a random string of bytes.</div>
+                            </li>
+                            <li>
+                                <div class="text-blue-400 font-bold">2. Server Hello & Certificate</div>
+                                <div class="text-slate-400">The server agrees on a cipher suite and sends its <strong>Digital Certificate</strong> (which contains the server's Public Key, cryptographically signed by a trusted Certificate Authority like Let's Encrypt).</div>
+                            </li>
+                            <li>
+                                <div class="text-purple-400 font-bold">3. Authentication (Browser-side)</div>
+                                <div class="text-slate-400">The browser verifies the Certificate Authority's signature against its internal list of trusted CAs. If valid, the browser trusts that the Public Key actually belongs to the server (preventing Man-in-the-Middle).</div>
+                            </li>
+                            <li>
+                                <div class="text-amber-400 font-bold">4. Key Exchange (Diffie-Hellman)</div>
+                                <div class="text-slate-400">Both sides use complex asymmetric math to independently calculate a shared <strong>"Pre-Master Secret"</strong> without ever actually transmitting it over the wire. From this secret, they derive the <strong>Symmetric Session Key</strong>.</div>
+                            </li>
+                            <li>
+                                <div class="text-rose-400 font-bold">5. Secure Channel Established</div>
+                                <div class="text-slate-400">The asymmetric heavy lifting is done. Both sides now switch to fast, symmetric AES encryption using the Session Key. HTTP traffic begins flowing securely.</div>
+                            </li>
+                        </ol>
+                    </div>
+                `
+            }
+        ]
+    },
+    ids_monitoring: {
+        title: "Intrusion & Monitoring",
+        icon: "radar",
+        intro: "Visibility is the key to defense. Understanding how to detect, prevent, and log anomalous network activity.",
+        sections: [
+            {
+                title: "1. IDS vs IPS Methodology",
+                content: `
+                    <p class="text-slate-300 mb-6">Firewalls evaluate headers (IPs/Ports). Intrusion systems (IDS/IPS) perform <strong>Deep Packet Inspection (DPI)</strong>, analyzing the actual payload of the traffic.</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                            <h4 class="text-blue-400 font-bold mb-2">Signature-Based Detection</h4>
+                            <p class="text-sm text-slate-400 mb-2">Operates like antivirus software. It maintains a massive database of known attack signatures (specific byte sequences of malware, exploit payloads, or SQL injection strings).</p>
+                            <p class="text-sm text-slate-500 mt-2"><strong>Pros:</strong> Fast, highly accurate, low false positives.<br><strong>Cons:</strong> Completely blind to "Zero-Day" attacks that have no known signature yet.</p>
+                        </div>
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                            <h4 class="text-purple-400 font-bold mb-2">Anomaly-Based Detection</h4>
+                            <p class="text-sm text-slate-400 mb-2">Uses Machine Learning to establish a baseline of "normal" network behavior over weeks (e.g., bandwidth usage, protocol ratios). It alerts on statistical deviations.</p>
+                            <p class="text-sm text-slate-500 mt-2"><strong>Pros:</strong> Can catch brand new Zero-Day exploits and insider threats.<br><strong>Cons:</strong> Computationally heavy, high rate of false positives if network behavior changes legitimately.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "2. SIEM & Log Correlation",
+                content: `
+                    <h4 class="text-emerald-400 font-bold mb-2">Security Information and Event Management (SIEM)</h4>
+                    <p class="text-sm text-slate-400 mb-4">A SIEM (e.g., Splunk, Elastic Security) is a massive data pipeline that centralizes logs from across the entire infrastructure to detect complex attacks that a single firewall would miss.</p>
+                    
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800">
+                        <h5 class="text-slate-300 font-bold mb-3">The SIEM Pipeline:</h5>
+                        <ul class="text-sm text-slate-400 space-y-3 list-decimal pl-5">
+                            <li><strong>Ingestion:</strong> Agents (like Filebeat/Fluentd) installed on servers and firewalls stream logs to the central SIEM.</li>
+                            <li><strong>Parsing & Normalization:</strong> The SIEM parses raw logs (using Grok/Regex) into standardized JSON. A Windows logon event and a Linux SSH event are mapped to the same generic "authentication_success" field.</li>
+                            <li><strong>Correlation Rules:</strong> The security team writes rules. For example: <em>"If a user fails login 5 times on the VPN, and then successfully logs in, and then immediately accesses a high-value database within 2 minutes -> Generate Critical Alert."</em></li>
+                            <li><strong>SOAR (Orchestration):</strong> Modern SIEMs can automatically trigger a script to block the attacker's IP on the firewall without human intervention.</li>
+                        </ul>
+                    </div>
+                `
+            }
+        ]
+    },
+    devsecops: {
+        title: "DevSecOps Pipeline",
+        icon: "refresh-cw",
+        intro: "Integrating security testing into the CI/CD deployment lifecycle (Shift-Left).",
+        sections: [
+            {
+                title: "1. The Shift-Left Philosophy",
+                content: `
+                    <p class="text-slate-300 mb-6">In legacy environments, security was tested at the end of development. If a major flaw was found, release was delayed by weeks. <strong>Shift-Left</strong> integrates automated security testing directly into the developer's Git workflows.</p>
+                `
+            },
+            {
+                title: "2. Anatomy of a Secure CI/CD Pipeline",
+                content: `
+                    <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-800 font-mono text-sm">
+                        <p class="text-slate-400 mb-4">When a developer pushes code to GitHub, the following automated pipeline triggers. If any step fails, the deployment is blocked.</p>
+                        
+                        <div class="space-y-4">
+                            <div class="border-l-2 border-slate-600 pl-4 relative">
+                                <div class="absolute w-3 h-3 bg-slate-500 rounded-full -left-[7px] top-1"></div>
+                                <div class="text-blue-400 font-bold">1. Secrets Scanning (e.g., TruffleHog)</div>
+                                <div class="text-xs text-slate-400">Scans the commit history for AWS keys, API tokens, or hardcoded passwords using entropy analysis and regex.</div>
+                            </div>
+                            
+                            <div class="border-l-2 border-slate-600 pl-4 relative">
+                                <div class="absolute w-3 h-3 bg-slate-500 rounded-full -left-[7px] top-1"></div>
+                                <div class="text-emerald-400 font-bold">2. SAST - Static Analysis (e.g., SonarQube)</div>
+                                <div class="text-xs text-slate-400">Analyzes the raw source code without running it (White-box). Detects buffer overflows, missing input validation (SQLi), and bad crypto libraries.</div>
+                            </div>
+
+                            <div class="border-l-2 border-slate-600 pl-4 relative">
+                                <div class="absolute w-3 h-3 bg-slate-500 rounded-full -left-[7px] top-1"></div>
+                                <div class="text-amber-400 font-bold">3. SCA - Software Composition Analysis</div>
+                                <div class="text-xs text-slate-400">Scans the package.json / requirements.txt. Compares third-party open-source dependencies against the CVE database to ensure no vulnerable libraries (like Log4j) are imported.</div>
+                            </div>
+
+                            <div class="border-l-2 border-slate-600 pl-4 relative">
+                                <div class="absolute w-3 h-3 bg-slate-500 rounded-full -left-[7px] top-1"></div>
+                                <div class="text-purple-400 font-bold">4. IaC Scanning (e.g., Checkov, tfsec)</div>
+                                <div class="text-xs text-slate-400">Scans the Terraform/CloudFormation code. Blocks deployment if it detects a public S3 bucket or a Security Group open to 0.0.0.0/0.</div>
+                            </div>
+
+                            <div class="border-l-2 border-transparent pl-4 relative">
+                                <div class="absolute w-3 h-3 bg-slate-500 rounded-full -left-[7px] top-1"></div>
+                                <div class="text-rose-400 font-bold">5. DAST - Dynamic Analysis (e.g., OWASP ZAP)</div>
+                                <div class="text-xs text-slate-400">The application is compiled and deployed to a staging environment. The DAST tool actively attacks it (Black-box), throwing malformed HTTP requests and XSS payloads to observe how the running app responds.</div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ]
+    }
+    
+};
+
+        const navTabs = document.getElementById('nav-tabs');
+        const contentContainer = document.getElementById('content-container');
+        let activeTab = 'vpn_basics';
+
+        function renderTabs() {
+            navTabs.innerHTML = Object.entries(contentData).map(([id, data]) => `
+                <button onclick="switchTab('${id}')" 
+                    id="tab-${id}"
+                    class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex items-center gap-2
+                    ${activeTab === id ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30 shadow-lg shadow-blue-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-800 border border-transparent'}">
+                    <i data-lucide="${data.icon}" class="w-4 h-4"></i>
+                    ${data.title}
+                </button>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function switchTab(tabId) {
+            if (activeTab === tabId) return;
+            activeTab = tabId;
+            renderTabs();
+            renderContent();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderContent() {
+            const data = contentData[activeTab];
+            let contentHtml = `
+                <div class="fade-in">
+                    <div class="mb-8">
+                        <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight">${data.title}</h1>
+                        <p class="text-lg text-slate-400 leading-relaxed">${data.intro}</p>
+                    </div>
+            `;
+
+            data.sections.forEach(section => {
+                contentHtml += `
+                    <section class="space-y-6">
+                        ${section.title ? `<h2 class="text-2xl font-bold text-white mb-4">${section.title}</h2>` : ''}
+                        <div class="prose prose-invert max-w-none">
+                            ${section.content}
+                        </div>
+                    </section>
+                `;
+            });
+
+            contentHtml += `</div>`;
+            contentContainer.innerHTML = contentHtml;
+            lucide.createIcons();
+        }
+
+        // Setup back to top button visibility based on scroll
+        window.addEventListener('scroll', () => {
+            const backToTopBtn = document.querySelector('.back-to-top');
+            if (window.scrollY > 500) {
+                backToTopBtn.style.opacity = '1';
+                backToTopBtn.style.pointerEvents = 'auto';
+            } else {
+                backToTopBtn.style.opacity = '0';
+                backToTopBtn.style.pointerEvents = 'none';
+            }
+        });
+
+        document.querySelector('.back-to-top').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Initialize 
+        let backToTopBtn = document.querySelector('.back-to-top');
+        backToTopBtn.style.opacity = '0';
+        backToTopBtn.style.pointerEvents = 'none';
+
+        lucide.createIcons();
+        renderTabs();
+        renderContent();
+    </script>
+</body>
+
+</html>

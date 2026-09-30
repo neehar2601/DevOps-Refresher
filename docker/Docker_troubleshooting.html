@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Troubleshooting Guide — Production Reference</title>
+    <meta name="description" content="Problem-specific Docker troubleshooting guide. Find your exact error and fix it fast.">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .problem-block { margin-bottom: 32px; }
+        .problem-header {
+            display: flex; align-items: center; gap: 12px;
+            background: var(--bg-3); border: 1px solid var(--border);
+            border-left: 4px solid var(--error); border-radius: 14px 14px 0 0;
+            padding: 16px 22px; margin-bottom: 0;
+        }
+        .problem-header h3 { color: var(--text-1); font-size: 1.1rem; font-weight: 700; margin: 0; }
+        .problem-header .prob-icon { color: var(--error); font-size: 1.3rem; }
+        .problem-body {
+            background: var(--bg-2); border: 1px solid var(--border);
+            border-top: none; border-radius: 0 0 14px 14px; padding: 22px;
+        }
+        .step-label {
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; color: var(--accent); margin: 18px 0 6px;
+        }
+        .step-label:first-child { margin-top: 0; }
+    </style>
+</head>
+<body>
+
+<div class="site-header">
+    <a href="docker_index.html" class="brand">
+        <div class="brand-icon"><i data-lucide="wrench" style="width:18px;height:18px;"></i></div>
+        <span>Docker Hub</span>
+    </a>
+    <div class="breadcrumb">
+        <a href="../index.html">DevOps Hub</a><span class="sep">/</span>
+        <a href="docker_index.html">Docker</a><span class="sep">/</span>
+        <span>Troubleshooting</span>
+    </div>
+</div>
+
+<div class="container">
+    <header>
+        <h1>🔧 Docker Troubleshooting</h1>
+        <p class="subtitle">Find your exact problem and fix it — each section follows <strong style="color:var(--accent)">Problem → Symptoms → Diagnose → Fix</strong>.</p>
+    </header>
+
+    <div class="nav-tabs" id="nav-tabs">
+        <button class="tab active" onclick="showTab('quick-triage')">Quick Triage</button>
+        <button class="tab" onclick="showTab('wont-start')">Container Won't Start</button>
+        <button class="tab" onclick="showTab('crashes-oom')">Crashes &amp; OOM</button>
+        <button class="tab" onclick="showTab('network-dns')">Network &amp; DNS</button>
+        <button class="tab" onclick="showTab('build-errors')">Build Errors</button>
+        <button class="tab" onclick="showTab('volumes-data')">Data Not Persisting</button>
+        <button class="tab" onclick="showTab('daemon-logs')">Daemon Won't Start</button>
+    </div>
+
+    <!-- ══ TAB 1 — Quick Triage ══════════════════════════════════════════════ -->
+    <div id="quick-triage" class="tab-content active">
+        <div class="section">
+            <h2>🩺 Run These First — Every Time</h2>
+            <p>These 5 commands give you the full picture within 60 seconds and resolve most issues without deeper investigation.</p>
+            <div class="lifecycle-diagram">
+                <div class="lifecycle-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <strong style="color:var(--accent);">What state is the container in?</strong>
+                        <div class="code-block" style="margin-top:10px;"><pre>docker ps -a</pre></div>
+                        <p>Check <span class="highlight">STATUS</span> — <code>Exited (1)</code> = crash · <code>Exited (0)</code> = ran and finished · <code>Restarting</code> = crash-loop.</p>
+                    </div>
+                </div>
+                <div class="lifecycle-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <strong style="color:var(--accent);">What did it say before dying?</strong>
+                        <div class="code-block" style="margin-top:10px;"><pre>docker logs &lt;container&gt; --tail 100</pre></div>
+                        <p>The error is almost always in the last 10 lines. Pipe to <code>grep -i error</code> if output is large.</p>
+                    </div>
+                </div>
+                <div class="lifecycle-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <strong style="color:var(--accent);">Was it killed by the kernel (OOM)?</strong>
+                        <div class="code-block" style="margin-top:10px;"><pre>docker inspect --format '{{.State.OOMKilled}}' &lt;container&gt;</pre></div>
+                        <p>If <code>true</code> → increase memory limit. OOM kills leave no app-level log.</p>
+                    </div>
+                </div>
+                <div class="lifecycle-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <strong style="color:var(--accent);">What resources is it consuming?</strong>
+                        <div class="code-block" style="margin-top:10px;"><pre>docker stats --no-stream</pre></div>
+                        <p>CPU pegged at 100 % = throttled. MEM near limit = impending OOM. BLOCK I/O high = disk bottleneck.</p>
+                    </div>
+                </div>
+                <div class="lifecycle-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <strong style="color:var(--accent);">What events happened on the host?</strong>
+                        <div class="code-block" style="margin-top:10px;"><pre>docker events --since 30m</pre></div>
+                        <p>Shows OOM kills, restarts, and daemon signals invisible in container logs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <h2>📊 Exit Code — What Happened?</h2>
+            <table>
+                <thead><tr><th>Exit Code</th><th>Meaning</th><th>Go To</th></tr></thead>
+                <tbody>
+                    <tr><td><span class="highlight">0</span></td><td>Clean finish — process ran and exited normally</td><td>Container Won't Stay Up tab</td></tr>
+                    <tr><td><span class="highlight">1</span></td><td>App crash / unhandled exception</td><td><code>docker logs</code> for stack trace</td></tr>
+                    <tr><td><span class="highlight">127</span></td><td>Binary not found in image</td><td>Build Errors tab</td></tr>
+                    <tr><td><span class="highlight">137</span></td><td>OOM kill (SIGKILL)</td><td>Crashes &amp; OOM tab</td></tr>
+                    <tr><td><span class="highlight">139</span></td><td>Segfault (SIGSEGV)</td><td>App bug — check binary</td></tr>
+                    <tr><td><span class="highlight">143</span></td><td>Graceful shutdown (SIGTERM)</td><td>Check restart policy</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ══ TAB 2 — Container Won't Start ════════════════════════════════════ -->
+    <div id="wont-start" class="tab-content">
+
+        <!-- Problem 1 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">🚫</span>
+                <h3>Problem: Container status is <code>Exited (127)</code> — command not found</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> <code>exec: "mybin": executable file not found in $PATH</code> or exit code 127.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker logs &lt;container&gt; --tail 20
+# Verify binary exists in image
+docker run --rm --entrypoint sh myimage -c "which mybin && mybin --version"</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Binary not installed</h4><p>Add the package to your Dockerfile.</p><div class="code-block"><pre>RUN apt-get update && apt-get install -y mypackage</pre></div></div>
+                    <div class="card accent"><h4>Wrong CMD path</h4><p>Use the absolute path or verify the binary name.</p><div class="code-block"><pre>CMD ["/usr/local/bin/mybin", "--flag"]</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 2 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">🔑</span>
+                <h3>Problem: Container exits with error — missing environment variable</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> <code>KeyError: 'DB_URL'</code> / <code>undefined environment variable</code> / <code>connection refused</code> on startup.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker inspect &lt;container&gt; | grep -A30 '"Env"'
+docker logs &lt;container&gt; --tail 30</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Pass the missing variable</h4><div class="code-block"><pre>docker run -e DB_URL=postgres://host:5432/db myimage
+# or via env file
+docker run --env-file .env myimage</pre></div></div>
+                    <div class="card"><h4>Use a default in-app</h4><p>Make the app fall back to a sane default so startup isn't fatal.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 3 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">🔌</span>
+                <h3>Problem: Container fails — host port already bound</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> <code>Bind for 0.0.0.0:8080 failed: port is already allocated</code></div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>ss -tlnp | grep :8080
+docker ps --filter publish=8080</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Use a different host port</h4><div class="code-block"><pre>docker run -p 8081:8080 myimage</pre></div></div>
+                    <div class="card accent"><h4>Stop the conflicting container</h4><div class="code-block"><pre>docker stop $(docker ps -q --filter publish=8080)</pre></div></div>
+                    <div class="card"><h4>Kill host process owning the port</h4><div class="code-block"><pre>lsof -ti:8080 | xargs kill -9</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 4 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">📦</span>
+                <h3>Problem: Container exits because image / tag doesn't exist</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> <code>Unable to find image 'myimage:tag' locally</code> or <code>manifest unknown</code></div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker images | grep myimage
+docker pull myimage:tag          # try pulling explicitly</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Build the image first</h4><div class="code-block"><pre>docker build -t myimage:tag .</pre></div></div>
+                    <div class="card accent"><h4>Check the correct tag</h4><div class="code-block"><pre>docker search myimage
+docker pull myimage:latest</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══ TAB 3 — Crashes & OOM ════════════════════════════════════════════ -->
+    <div id="crashes-oom" class="tab-content">
+
+        <!-- Problem 1 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">💀</span>
+                <h3>Problem: Container exits immediately with code 0 — "it just stops"</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box"><strong>Confusing behaviour:</strong> Container starts, nothing seems wrong, but it's gone after a second. Exit code 0 = clean exit. Docker containers stop when their PID 1 exits.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker logs &lt;container&gt;           # any output at all?
+docker inspect --format '{{.Config.Cmd}}' &lt;container&gt;</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Service must run in foreground</h4><div class="code-block"><pre># BAD — daemon exits after forking
+CMD ["nginx"]
+# GOOD — blocks the process
+CMD ["nginx", "-g", "daemon off;"]</pre></div></div>
+                    <div class="card accent"><h4>One-shot script? That's fine</h4><p>If CMD runs a script that exits, the container stops. Use <code>--restart=on-failure</code> for retry, or run interactively for debugging.</p><div class="code-block"><pre>docker run -it --entrypoint /bin/sh myimage</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 2 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">🔄</span>
+                <h3>Problem: Container keeps restarting in a loop</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box warning"><strong>You see:</strong> <code>docker ps</code> shows <code>Restarting (1) X seconds ago</code>. Restart count keeps climbing.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker logs --tail 40 &lt;container&gt;
+docker inspect --format '{{.RestartCount}}' &lt;container&gt;
+docker inspect --format '{{.State.ExitCode}}' &lt;container&gt;</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Disable restart to read logs</h4><div class="code-block"><pre>docker update --restart=no &lt;container&gt;
+docker stop &lt;container&gt;
+docker logs &lt;container&gt;</pre></div></div>
+                    <div class="card accent"><h4>Limit retries in production</h4><div class="code-block"><pre>docker run --restart=on-failure:3 myimage
+# stops retrying after 3 crashes</pre></div></div>
+                    <div class="card"><h4>Run interactively to reproduce</h4><div class="code-block"><pre>docker run --restart=no -it myimage</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 3 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">💥</span>
+                <h3>Problem: Container killed with exit 137 — Out of Memory</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> Exit code 137. No error in app logs. Container suddenly disappears.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker inspect --format '{{.State.OOMKilled}}' &lt;container&gt;
+# → true confirms OOM
+
+dmesg | grep -i "oom\|killed"     # host kernel log
+docker stats --no-stream &lt;container&gt;</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Increase memory limit</h4><div class="code-block"><pre>docker run -m 2g --memory-swap 2g myimage
+# compose.yml:
+mem_limit: 2g</pre></div></div>
+                    <div class="card accent"><h4>Profile memory first</h4><div class="code-block"><pre>docker exec -it &lt;container&gt; sh -c "free -m"
+docker stats &lt;container&gt;    # watch MEM USAGE live</pre></div></div>
+                    <div class="card"><h4>Fix memory leak in app</h4><p>If usage grows unbounded, the app is leaking. Profile in staging before increasing limits blindly.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 4 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">🐌</span>
+                <h3>Problem: Container is extremely slow / high CPU</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box warning"><strong>You see:</strong> Requests time out. <code>docker stats</code> shows CPU near 100 %. App responds but sluggishly.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker stats --no-stream &lt;container&gt;
+docker exec -it &lt;container&gt; sh -c "top -bn1 | head -20"
+docker exec -it &lt;container&gt; sh -c "ps aux --sort=-%cpu | head"</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>CPU quota too tight — increase it</h4><div class="code-block"><pre>docker run --cpus="2.0" myimage   # was 0.5?
+docker update --cpus="2.0" &lt;running-container&gt;</pre></div></div>
+                    <div class="card accent"><h4>Disk I/O bottleneck</h4><p>Heavy writes to the overlay2 layer are slow. Move I/O-heavy paths to a volume.</p><div class="code-block"><pre>docker run -v mydata:/app/data myimage</pre></div></div>
+                    <div class="card"><h4>Clean up disk — system full causes stalls</h4><div class="code-block"><pre>docker system df
+docker system prune -af</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══ TAB 4 — Network & DNS ════════════════════════════════════════════ -->
+    <div id="network-dns" class="tab-content">
+
+        <!-- Problem 1 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">🌐</span>
+                <h3>Problem: Container can't reach the internet</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> <code>curl: (6) Could not resolve host</code> or <code>connect: network is unreachable</code> inside container.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker exec -it &lt;container&gt; ping -c3 8.8.8.8   # IP reachable?
+docker exec -it &lt;container&gt; nslookup google.com # DNS working?
+docker exec -it &lt;container&gt; curl -v https://example.com</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>iptables MASQUERADE missing</h4><div class="code-block"><pre># Missing nat rule — restart Docker to restore
+sudo systemctl restart docker
+# Verify rule exists
+sudo iptables -t nat -L POSTROUTING -n | grep MASQUERADE</pre></div></div>
+                    <div class="card accent"><h4>Custom DNS servers</h4><div class="code-block"><pre># One-off
+docker run --dns 8.8.8.8 myimage
+# Permanent — /etc/docker/daemon.json
+{"dns": ["8.8.8.8", "1.1.1.1"]}
+sudo systemctl reload docker</pre></div></div>
+                    <div class="card"><h4>Behind a corporate proxy</h4><div class="code-block"><pre>docker run \
+  -e HTTP_PROXY=http://proxy:3128 \
+  -e HTTPS_PROXY=http://proxy:3128 \
+  -e NO_PROXY=localhost,127.0.0.1 \
+  myimage</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 2 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">🔗</span>
+                <h3>Problem: Container A can't connect to Container B by name</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> <code>Could not resolve host: db</code> or connection refused when using container name as hostname.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker inspect &lt;container-a&gt; | grep -A10 '"Networks"'
+# Are both containers on the same user-defined network?
+docker network ls
+docker network inspect &lt;network&gt;   # who's attached?</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Use a user-defined network (required for DNS)</h4><div class="code-block"><pre>docker network create mynet
+docker run -d --name db --network mynet postgres:15
+docker run -d --name app --network mynet myapp
+# Now: app → ping db  ✓</pre></div></div>
+                    <div class="card accent"><h4>Connect a running container</h4><div class="code-block"><pre">docker network connect mynet &lt;container&gt;</pre></div></div>
+                </div>
+                <div class="warning-box" style="margin-top:16px;"><strong>⚠️ Common mistake:</strong> Using <code>localhost</code> to reach another container. Each container has its own network namespace — use the container name instead.</div>
+            </div>
+        </div>
+
+        <!-- Problem 3 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">🚪</span>
+                <h3>Problem: Port is mapped but not reachable from the host</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> <code>curl localhost:8080</code> hangs or returns <code>Connection refused</code> even though the container is running.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker port &lt;container&gt;               # what's actually mapped?
+docker exec -it &lt;container&gt; ss -tlnp  # what is the app binding to?</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>App binds to 127.0.0.1 — not 0.0.0.0</h4><p>Port mapping only works if the app listens on all interfaces inside the container.</p><div class="code-block"><pre># BAD in your app config:
+listen("127.0.0.1", 3000)
+# GOOD:
+listen("0.0.0.0", 3000)</pre></div></div>
+                    <div class="card accent"><h4>Missing -p flag — port not published</h4><div class="code-block"><pre>docker run -p 8080:80 myimage    # host:container
+# Check mapping:
+docker port &lt;container&gt;</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══ TAB 5 — Build Errors ══════════════════════════════════════════════ -->
+    <div id="build-errors" class="tab-content">
+
+        <!-- Problem 1 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">🏗️</span>
+                <h3>Problem: <code>apt-get install</code> fails — package not found</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> <code>E: Unable to locate package xyz</code> during <code>docker build</code>.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker build --progress=plain .    # show full output
+docker build --no-cache .          # stale cache?</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Always update before install — in the same RUN</h4><div class="code-block"><pre>RUN apt-get update && apt-get install -y \
+    curl git vim \
+  && rm -rf /var/lib/apt/lists/*</pre></div></div>
+                    <div class="card accent"><h4>Stale layer cache — rebuild without cache</h4><div class="code-block"><pre">docker build --no-cache -t myimage .</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 2 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">📂</span>
+                <h3>Problem: <code>COPY</code> fails — file not found in build context</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> <code>COPY failed: file not found in build context: "src/app.py"</code></div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>ls -la src/app.py                   # does it exist?
+cat .dockerignore                    # could it be excluded?
+docker build --progress=plain . 2>&1 | head -20</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Paths are relative to build context, not Dockerfile</h4><div class="code-block"><pre"># Run from the project root, not a subdirectory
+docker build -t myimage .
+# or specify context explicitly
+docker build -f docker/Dockerfile -t myimage .</pre></div></div>
+                    <div class="card accent"><h4>.dockerignore is excluding the file</h4><p>Open <code>.dockerignore</code> and remove or narrow the pattern that's blocking the file.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 3 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">🐘</span>
+                <h3>Problem: Image is huge — build takes forever or push fails</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box warning"><strong>You see:</strong> <code>docker images</code> shows image size &gt; 1 GB. <code>docker push</code> is extremely slow.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker history myimage             # which layer is bloated?
+docker system df                   # overall disk usage</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Switch to a slim base image</h4><div class="code-block"><pre>FROM python:3.11-slim    # not python:3.11
+FROM node:20-alpine      # not node:20</pre></div></div>
+                    <div class="card accent"><h4>Use multi-stage build</h4><div class="code-block"><pre>FROM golang:1.22 AS builder
+COPY . . && RUN go build -o app
+
+FROM scratch
+COPY --from=builder /app/app /app
+ENTRYPOINT ["/app"]</pre></div></div>
+                    <div class="card"><h4>Clean up inside the same RUN</h4><div class="code-block"><pre>RUN apt-get install -y build-essential \
+  && make install \
+  && apt-get purge -y build-essential \
+  && rm -rf /var/lib/apt/lists/*</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 4 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">⚡</span>
+                <h3>Problem: Cache busted every build — rebuilds are slow</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box warning"><strong>You see:</strong> Every code change triggers a full <code>npm install</code> / <code>pip install</code> even though dependencies didn't change.</div>
+                <div class="step-label">Fix</div>
+                <div class="two-column">
+                    <div>
+                        <h4 style="color:var(--error);margin-bottom:8px;">❌ Anti-pattern</h4>
+                        <div class="code-block"><pre>COPY . .           # all files first
+RUN npm install    # cache busted on any code change</pre></div>
+                    </div>
+                    <div>
+                        <h4 style="color:var(--success);margin-bottom:8px;">✅ Cache-friendly</h4>
+                        <div class="code-block"><pre>COPY package*.json ./   # deps manifest first
+RUN npm ci              # cached until deps change
+COPY . .                # code copied last</pre></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══ TAB 6 — Data Not Persisting ══════════════════════════════════════ -->
+    <div id="volumes-data" class="tab-content">
+
+        <!-- Problem 1 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">💾</span>
+                <h3>Problem: Data disappears when the container is removed</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> Database is empty after <code>docker rm</code> and <code>docker run</code>. Files written inside the container are gone.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker inspect &lt;container&gt; | grep -A20 '"Mounts"'
+# Empty Mounts = no volume — data is in the ephemeral layer</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Attach a named volume</h4><div class="code-block"><pre>docker run -v pg_data:/var/lib/postgresql/data postgres:15
+# Data survives docker rm; lost only on docker volume rm</pre></div></div>
+                    <div class="card accent"><h4>Use a bind mount (dev)</h4><div class="code-block"><pre>docker run -v /host/uploads:/app/uploads myimage
+# Data lives in /host/uploads on the host</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 2 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">🔒</span>
+                <h3>Problem: Permission denied writing to a mounted volume</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> <code>Permission denied</code> when app tries to write to <code>/data</code> or any bind-mounted directory.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker exec -it &lt;container&gt; ls -lan /data     # note UID:GID
+docker inspect --format '{{.Config.User}}' &lt;container&gt;</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Match UID on the host directory</h4><div class="code-block"><pre># Container runs as UID 1000:
+sudo chown -R 1000:1000 /host/data
+docker run -v /host/data:/data myimage</pre></div></div>
+                    <div class="card accent"><h4>Set ownership in Dockerfile</h4><div class="code-block"><pre>RUN mkdir -p /data && \
+    chown -R appuser:appuser /data
+USER appuser</pre></div></div>
+                    <div class="card"><h4>SELinux (RHEL / Fedora) — add :z flag</h4><div class="code-block"><pre">docker run -v /host/data:/data:z myimage</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 3 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">📂</span>
+                <h3>Problem: Bind mount shows an empty directory inside container</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box warning"><strong>You see:</strong> Files exist on the host but the container sees an empty directory at the mount path.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker inspect &lt;container&gt; | grep -A5 '"Source"'
+# Verify the host path is correct and populated
+ls -la /host/path</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Always use absolute paths in -v</h4><div class="code-block"><pre># BAD — relative path silently creates wrong dir
+docker run -v data:/app/data myimage         # ← named volume, not ./data!
+# GOOD
+docker run -v /absolute/host/path:/app/data myimage</pre></div></div>
+                    <div class="card accent"><h4>Host dir was auto-created empty</h4><p>Docker creates the host directory if it doesn't exist — but empty. Pre-create and populate it before running.</p></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══ TAB 7 — Daemon Won't Start ═══════════════════════════════════════ -->
+    <div id="daemon-logs" class="tab-content">
+
+        <!-- Problem 1 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">🛑</span>
+                <h3>Problem: Docker daemon fails to start — <code>systemctl start docker</code> fails</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> <code>Job for docker.service failed</code> or all <code>docker</code> commands return <code>Cannot connect to the Docker daemon</code>.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>sudo systemctl status docker
+sudo journalctl -u docker -n 80 --no-pager   # last 80 lines of daemon log</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Invalid daemon.json (most common)</h4><div class="code-block"><pre>python3 -m json.tool /etc/docker/daemon.json
+# Fix syntax errors, then:
+sudo systemctl restart docker</pre></div></div>
+                    <div class="card accent"><h4>Stale PID / socket file</h4><div class="code-block"><pre>sudo rm -f /var/run/docker.pid
+sudo rm -f /var/run/docker.sock
+sudo systemctl start docker</pre></div></div>
+                    <div class="card"><h4>Storage driver conflict</h4><div class="code-block"><pre>sudo journalctl -u docker | grep "storage-driver"
+# daemon.json — explicitly set overlay2
+{"storage-driver": "overlay2"}</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 2 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">🔑</span>
+                <h3>Problem: <code>permission denied</code> connecting to Docker socket</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> <code>permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock</code></div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>ls -la /var/run/docker.sock     # check ownership
+id                               # are you in the docker group?
+groups $USER</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Add user to docker group (permanent)</h4><div class="code-block"><pre>sudo usermod -aG docker $USER
+newgrp docker                    # apply now, without logout</pre></div></div>
+                    <div class="card accent"><h4>Temporary — only until reboot</h4><div class="code-block"><pre">sudo chmod 666 /var/run/docker.sock</pre></div></div>
+                </div>
+                <div class="info-box warning" style="margin-top:16px;"><strong>⚠️ Security:</strong> The <code>docker</code> group grants root-equivalent access. Only add trusted users in production.</div>
+            </div>
+        </div>
+
+        <!-- Problem 3 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">📋</span>
+                <h3>Problem: Container logs are missing / <code>docker logs</code> returns nothing</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box warning"><strong>You see:</strong> <code>docker logs &lt;container&gt;</code> returns empty output even though the container is running and the app is logging.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre>docker inspect --format='{{.HostConfig.LogConfig.Type}}' &lt;container&gt;
+# If not "json-file" → docker logs won't work</pre></div>
+                <div class="step-label">Fix</div>
+                <div class="grid">
+                    <div class="card danger"><h4>Non-default log driver active</h4><p>If using <code>journald</code>, <code>awslogs</code>, etc., use the driver's native tool.</p><div class="code-block"><pre">journalctl CONTAINER_NAME=&lt;name&gt; -n 100</pre></div></div>
+                    <div class="card accent"><h4>App writes to file, not stdout</h4><p>Docker only captures stdout/stderr. Configure your app to log to stdout, or tail the log file inside the container.</p><div class="code-block"><pre>docker exec -it &lt;container&gt; tail -f /var/log/app.log</pre></div></div>
+                    <div class="card"><h4>Log size limits — oldest lines rotated</h4><div class="code-block"><pre"># daemon.json — set retention
+{
+  "log-driver": "json-file",
+  "log-opts": {"max-size": "100m", "max-file": "3"}
+}</pre></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 4 -->
+        <div class="problem-block">
+            <div class="problem-header">
+                <span class="prob-icon">💿</span>
+                <h3>Problem: <code>no space left on device</code> — Docker disk is full</h3>
+            </div>
+            <div class="problem-body">
+                <div class="step-label">Symptoms</div>
+                <div class="info-box danger"><strong>You see:</strong> <code>no space left on device</code> on build, pull, or container write operations.</div>
+                <div class="step-label">Diagnose</div>
+                <div class="code-block"><pre">docker system df                   # breakdown by type
+docker system df -v                 # per-image / per-volume detail
+df -h /var/lib/docker               # host disk usage</pre></div>
+                <div class="step-label">Fix — start safe, go aggressive only if needed</div>
+                <div class="code-block"><span class="code-label">BASH</span><pre>docker container prune              # step 1 — stopped containers
+docker image prune                  # step 2 — dangling images
+docker image prune -a               # step 3 — ALL unused images
+docker volume prune                 # step 4 — unused volumes
+docker builder prune                # step 5 — build cache
+docker system prune -af --volumes   # ☢️  nuclear — everything unused</pre></div>
+                <div class="info-box danger" style="margin-top:12px;"><strong>⚠️</strong> <code>docker system prune -af --volumes</code> permanently deletes all unused images and volumes. Run <code>docker system df</code> first to understand impact.</div>
+            </div>
+        </div>
+
+    </div>
+    <!-- end tabs -->
+
+</div>
+
+<footer>
+    Docker Troubleshooting Guide ·
+    <a href="docker_index.html">← Docker Hub</a> ·
+    <a href="../index.html">DevOps Hub</a>
+</footer>
+
+<div id="toast" class="toast"></div>
+<script src="../assets/script.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof lucide !== "undefined") lucide.createIcons();
+    });
+</script>
+</body>
+</html>

@@ -1,3 +1,0 @@
-Hello DevOps
-Learning devops
-This line is only in the feature branch

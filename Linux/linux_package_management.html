@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linux Package Management (APT) Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } } } }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+  <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <i data-lucide="package" class="w-7 h-7 text-rose-500"></i>
+        <h1 class="text-xl font-bold tracking-tight">Linux <span class="text-slate-400 font-light">Package Management (APT)</span></h1>
+      </div>
+      <a id="back-link" href="linux_index.html" class="flex items-center gap-2 text-sm text-slate-400 hover:text-rose-500 transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span class="hidden sm:inline">Back to Linux Hub</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-10">
+
+    <!-- The Concept of Package Management -->
+    <section>
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="p-2 bg-indigo-500/10 rounded-lg"><i data-lucide="info" class="w-6 h-6 text-indigo-400"></i></div>
+        <h2 class="text-2xl font-bold text-white">The Concept of Package Management</h2>
+      </div>
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+        <p class="text-slate-300 leading-relaxed mb-4">
+          In the DevOps and Linux world, you rarely install software by downloading installer files directly from a website. Instead, Linux relies on <strong>package managers</strong>, which function much like a command-line app store.
+        </p>
+        <p class="text-slate-300 leading-relaxed mb-4">The primary roles of a package manager are:</p>
+        <ul class="list-disc list-inside space-y-2 text-slate-400 mb-6 ml-4">
+          <li>Securely downloading software from official repositories.</li>
+          <li>Automatically resolving and installing dependencies (the background software required to make your desired application run).</li>
+        </ul>
+        <div class="bg-indigo-950/40 border-l-4 border-l-indigo-500 p-4 rounded-r-xl">
+          <p class="text-slate-300 text-sm">For Ubuntu and Debian-based systems, the default package manager is <strong class="text-indigo-400">APT (Advanced Package Tool)</strong>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. Updating and Upgrading -->
+    <section>
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="p-2 bg-emerald-500/10 rounded-lg"><i data-lucide="refresh-cw" class="w-6 h-6 text-emerald-400"></i></div>
+        <h2 class="text-2xl font-bold text-white">1. Updating and Upgrading</h2>
+      </div>
+      <p class="text-slate-400 mb-4">Before installing new software, you must ensure your system's catalog is up-to-date.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+          <code class="font-mono text-lg text-emerald-400 mb-4 block bg-slate-950 p-3 rounded-lg border border-slate-800">sudo apt update</code>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            <strong class="text-white">What it does:</strong> Syncs your local system with the remote repository to ensure your system knows about the latest software versions. It refreshes the catalog of what is available; it does not upgrade or change your existing software.
+          </p>
+        </div>
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+          <code class="font-mono text-lg text-emerald-400 mb-4 block bg-slate-950 p-3 rounded-lg border border-slate-800">sudo apt upgrade</code>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            <strong class="text-white">What it does:</strong> Actually downloads and installs the newest versions of all packages currently installed on the system based on the updated catalog.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Searching and Installing -->
+    <section>
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="p-2 bg-blue-500/10 rounded-lg"><i data-lucide="search" class="w-6 h-6 text-blue-400"></i></div>
+        <h2 class="text-2xl font-bold text-white">2. Searching and Installing</h2>
+      </div>
+      <p class="text-slate-400 mb-4">Once your index is updated, you can search for and install your desired tools.</p>
+      
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg mb-6">
+        <code class="font-mono text-lg text-blue-400 mb-4 block bg-slate-950 p-3 rounded-lg border border-slate-800">apt search &lt;keyword&gt;</code>
+        <p class="text-slate-300 text-sm leading-relaxed">
+          <strong class="text-white">What it does:</strong> Searches the repository for packages matching your keyword. Useful when you don't know the exact package name.
+        </p>
+      </div>
+
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+        <code class="font-mono text-lg text-blue-400 mb-4 block bg-slate-950 p-3 rounded-lg border border-slate-800">sudo apt install &lt;package_name&gt;</code>
+        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+          <strong class="text-white">What it does:</strong> Securely downloads the package from the official repository and unpacks the software on your system.
+        </p>
+        <div class="bg-blue-950/40 border-l-4 border-l-blue-500 p-4 rounded-r-xl">
+          <p class="text-slate-300 text-sm"><strong class="text-blue-400">Smart Operations:</strong> If you attempt to install a package that is already up-to-date, APT will recognize this and safely do nothing, preventing accidental overwrites.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Removing and Purging Software -->
+    <section>
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="p-2 bg-rose-500/10 rounded-lg"><i data-lucide="trash-2" class="w-6 h-6 text-rose-400"></i></div>
+        <h2 class="text-2xl font-bold text-white">3. Removing and Purging Software</h2>
+      </div>
+      <p class="text-slate-400 mb-4">In DevOps, knowing how to clean up is just as important as knowing how to deploy.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+          <code class="font-mono text-lg text-rose-400 mb-4 block bg-slate-950 p-3 rounded-lg border border-slate-800">sudo apt remove &lt;package_name&gt;</code>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            <strong class="text-white">What it does:</strong> Uninstalls the software binary but leaves its configuration files intact. This is useful if you plan to reinstall the software later and want to keep your custom settings.
+          </p>
+        </div>
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+          <code class="font-mono text-lg text-rose-400 mb-4 block bg-slate-950 p-3 rounded-lg border border-slate-800">sudo apt purge &lt;package_name&gt;</code>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            <strong class="text-white">What it does:</strong> Completely removes the software and all of its configuration files. This provides a clean slate and is highly recommended when a service is malfunctioning due to bad configurations.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. System Housekeeping (autoremove) -->
+    <section>
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="p-2 bg-amber-500/10 rounded-lg"><i data-lucide="broom" class="w-6 h-6 text-amber-400"></i></div>
+        <h2 class="text-2xl font-bold text-white">4. System Housekeeping (autoremove)</h2>
+      </div>
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg">
+        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+          In DevOps, particularly in the cloud and container world, keeping your server images small and minimizing your attack surface is a core principle.
+        </p>
+        <p class="text-slate-300 text-sm leading-relaxed mb-6">
+          Over time, as you install and remove software, your system may accumulate "orphaned dependencies". This happens when a piece of software is uninstalled, but the background libraries it relied on are left behind.
+        </p>
+        
+        <code class="font-mono text-lg text-amber-400 mb-4 block bg-slate-950 p-3 rounded-lg border border-slate-800">sudo apt autoremove</code>
+        <p class="text-slate-300 text-sm leading-relaxed">
+          <strong class="text-white">What it does:</strong> Safely identifies and removes these unnecessary packages, freeing up disk space and maintaining an efficient server.
+        </p>
+      </div>
+    </section>
+
+  </main>
+  
+  <script>
+    lucide.createIcons();
+
+    // Dynamic Back Navigation
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    const backLink = document.getElementById('back-link');
+    
+    if (ref === 'fs') {
+      backLink.href = 'linux_filesystem.html';
+      backLink.innerHTML = '<i data-lucide="arrow-left" class="w-4 h-4"></i><span class="hidden sm:inline">Back to Filesystem</span>';
+      lucide.createIcons();
+    } else if (ref === 'cmd') {
+      backLink.href = 'linux_commands.html';
+      backLink.innerHTML = '<i data-lucide="arrow-left" class="w-4 h-4"></i><span class="hidden sm:inline">Back to Commands</span>';
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

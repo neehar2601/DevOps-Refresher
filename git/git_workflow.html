@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Workflow & Branching</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } } } }</script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.35s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tech-card {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .analogy-card {
+            border-left: 4px solid #10b981;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i data-lucide="git-branch" class="w-8 h-8 text-blue-400"></i>
+                <h1 class="text-2xl font-bold tracking-tight">Git Workflow <span
+                        class="text-slate-400 font-light">&</span> Branching</h1>
+            </div>
+            <a href="git_index.html"
+                class="hidden sm:flex items-center gap-2 text-sm text-slate-400 hover:text-blue-400 transition-colors">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Git Overview
+            </a>
+        </div>
+    </header>
+
+    <!-- Sibling Page Nav -->
+    <section class="bg-slate-950 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Git Learning Hub</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                <!-- Git Overview -->
+                <div
+                    class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden hover:-translate-y-0.5 transition-transform duration-200 shadow-lg">
+                    <div class="bg-blue-900/10 px-5 pt-5 pb-3">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-blue-500/20 rounded-lg">
+                                <i data-lucide="book-open" class="w-5 h-5 text-blue-400"></i>
+                            </div>
+                            <h3 class="font-bold text-white">Git Overview</h3>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed">VCS fundamentals, Git basics, setup commands,
+                            and a full quick-reference cheat sheet.</p>
+                    </div>
+                    <div class="px-5 pb-4 pt-3">
+                        <a href="git_index.html"
+                            class="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-blue-700 hover:bg-blue-600 text-white font-semibold text-sm transition-colors">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> Open Overview
+                        </a>
+                        <p class="text-slate-500 text-xs mt-2">VCS intro &middot; git init &middot; Cheat Sheet</p>
+                    </div>
+                </div>
+
+                <!-- Workflow & Branching (active) -->
+                <div
+                    class="bg-slate-800 border border-violet-500/40 rounded-2xl overflow-hidden shadow-lg shadow-violet-900/20 ring-1 ring-violet-500/20">
+                    <div class="bg-violet-900/20 px-5 pt-5 pb-3">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-violet-500/20 rounded-lg">
+                                <i data-lucide="git-branch" class="w-5 h-5 text-violet-400"></i>
+                            </div>
+                            <h3 class="font-bold text-white">Workflow &amp; Branching</h3>
+                            <span
+                                class="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-400 border border-violet-500/30 font-semibold">You
+                                are here</span>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed">The three-state workflow, branching, merging,
+                            push/pull, remotes, stash, and rebase.</p>
+                    </div>
+                    <div class="px-5 pb-4 pt-3">
+                        <a href="git_workflow.html"
+                            class="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-violet-600/50 text-violet-200 font-semibold text-sm cursor-default">
+                            <i data-lucide="check" class="w-4 h-4"></i> Current Page
+                        </a>
+                        <p class="text-slate-500 text-xs mt-2">Branches &middot; Merging &middot; Push/Pull &middot;
+                            Remotes</p>
+                    </div>
+                </div>
+
+                <!-- History & Commits -->
+                <div
+                    class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden hover:-translate-y-0.5 transition-transform duration-200 shadow-lg">
+                    <div class="bg-emerald-900/10 px-5 pt-5 pb-3">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-emerald-500/20 rounded-lg">
+                                <i data-lucide="git-commit" class="w-5 h-5 text-emerald-400"></i>
+                            </div>
+                            <h3 class="font-bold text-white">History &amp; Commits</h3>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed">git log, commit IDs, going back in time,
+                            reset, revert, and recovering with reflog.</p>
+                    </div>
+                    <div class="px-5 pb-4 pt-3">
+                        <a href="git_status.html"
+                            class="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-semibold text-sm transition-colors">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> Open History
+                        </a>
+                        <p class="text-slate-500 text-xs mt-2">git log &middot; reset &middot; revert &middot; reflog
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab Nav -->
+    <div class="bg-slate-900 border-b border-slate-800 sticky top-[108px] z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex space-x-2 md:space-x-6 overflow-x-auto py-3 no-scrollbar" id="nav-tabs"></nav>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <div id="content-container" class="fade-in"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 text-slate-500 py-6 text-center text-sm">
+        <p>
+            <a href="git_index.html" class="hover:text-blue-400 transition-colors">Git Overview</a> ·
+            <a href="git_workflow.html" class="text-blue-400">Workflow & Branching</a> ·
+            <a href="git_status.html" class="hover:text-blue-400 transition-colors">History & Commits</a> ·
+            <a href="../index.html" class="hover:text-blue-400 transition-colors">← DevOps Hub</a>
+        </p>
+    </footer>
+
+    <script>
+        const contentData = {
+            workflow: {
+                title: "The Git Workflow",
+                icon: "git-branch",
+                intro: "Git has three main states: Modified, Staged, and Committed. This workflow is the core loop of day-to-day development.",
+                visualizer: 'workflow',
+                sections: [
+                    {
+                        techTitle: "1. Working Directory (Modified)",
+                        techText: "This is your active local file system. You are writing code. Git sees these files have changed, but they are not yet tracked for the next save.",
+                        analogyTitle: "1. The Farm Field",
+                        analogyText: "You are out in the field pulling carrots out of the dirt and tossing them into a pile. The warehouse manager doesn't care about this messy pile yet.",
+                        techIcon: "laptop",
+                        analogyIcon: "tractor",
+                        commands: ["git status", "git diff"]
+                    },
+                    {
+                        techTitle: "2. Staging Area (Index)",
+                        techText: "You move specific files into the Staging Area. You are building the exact snapshot of what your next commit will look like.",
+                        analogyTitle: "2. The Loading Dock (Boxes)",
+                        analogyText: "You take the carrots, wash them, and pack them neatly into a wooden crate on the loading dock. You are preparing them for official storage.",
+                        techIcon: "box-select",
+                        analogyIcon: "package",
+                        commands: ["git add <file>", "git add ."]
+                    },
+                    {
+                        techTitle: "3. Local Repository (Committed)",
+                        techText: "You permanently store the snapshot from your staging area into your local Git database. It gets a unique ID (hash).",
+                        analogyTitle: "3. The Local Warehouse",
+                        analogyText: "You take the sealed crate, stamp it with a label ('Fresh Carrots'), and put it on a shelf in your personal farm warehouse.",
+                        techIcon: "database",
+                        analogyIcon: "store",
+                        commands: ["git commit -m '<message>'", "git log"]
+                    },
+                    {
+                        techTitle: "4. Remote Repository (Push)",
+                        techText: "You upload your local repository's commits to a remote server (like GitHub) so others can access them.",
+                        analogyTitle: "4. The Global Distribution Center",
+                        analogyText: "You load your local crates onto a truck and drive them to the massive distribution center in the city, making them available to the world.",
+                        techIcon: "cloud-upload",
+                        analogyIcon: "globe",
+                        commands: ["git push origin <branch>", "git pull origin <branch>"]
+                    },
+                    {
+                        techTitle: "5. Checking Your Current Remote",
+                        techText: "A remote is a named reference to a URL where your repo is hosted. <strong>origin</strong> is the conventional default name. Use <code>git remote -v</code> to see all configured remotes and their fetch/push URLs at any time.",
+                        analogyTitle: "5. Checking the Warehouse Address",
+                        analogyText: "Before sending a truck, you check your address book for the warehouse. <em>origin</em> is just a nickname — you look it up to confirm it still points to the right city depot before dispatching a shipment.",
+                        techIcon: "map-pin",
+                        analogyIcon: "map",
+                        commands: [
+                            "# List all remotes (name + URL)",
+                            "git remote -v",
+                            "# Example output:",
+                            "# origin  https://github.com/you/repo.git (fetch)",
+                            "# origin  https://github.com/you/repo.git (push)",
+                            "# Show detailed info for one remote",
+                            "git remote show origin"
+                        ]
+                    },
+                    {
+                        techTitle: "6. Adding a Remote to a Local Repo",
+                        techText: "When you create a repo locally with <code>git init</code> (instead of cloning), it has no remote yet. Use <code>git remote add</code> to connect it to a platform like GitHub. The name <em>origin</em> is just a convention — you can name it anything.",
+                        analogyTitle: "6. Registering the Warehouse Address",
+                        analogyText: "You built a local barn from scratch. Now you need to register your city distribution centre in your address book so you know where to send shipments. You give it a short nickname (origin) to avoid writing out the full address every time.",
+                        techIcon: "link",
+                        analogyIcon: "book-open",
+                        commands: [
+                            "# Step 1 — create local repo",
+                            "git init",
+                            "git add .",
+                            "git commit -m 'Initial commit'",
+                            "# Step 2 — connect to GitHub",
+                            "git remote add origin <url>",
+                            "# Step 3 — push and set upstream",
+                            "git push -u origin main"
+                        ]
+                    },
+                    {
+                        techTitle: "7. Multiple Remotes (origin + upstream)",
+                        techText: "You can add more than one remote — common when working with a <strong>fork</strong>. <em>origin</em> points to your fork; <em>upstream</em> points to the original project. You pull new changes from upstream and push your work to origin.",
+                        analogyTitle: "7. Two Warehouses",
+                        analogyText: "You have your own local distribution depot (origin / fork). The original farm cooperative also has a main depot (upstream). You pick up new stock from the cooperative's depot, process it in yours, then ship finished goods from your depot.",
+                        techIcon: "git-fork",
+                        analogyIcon: "building-2",
+                        commands: [
+                            "# Add a second remote called upstream",
+                            "git remote add upstream <url>",
+                            "# Fetch changes from the original project",
+                            "git fetch upstream",
+                            "# Merge upstream changes into your branch",
+                            "git merge upstream/main",
+                            "# Rename a remote",
+                            "git remote rename origin myrepo",
+                            "# Remove a remote",
+                            "git remote remove upstream"
+                        ]
+                    }
+                ]
+            },
+            branching: {
+                title: "Branching",
+                icon: "git-commit",
+                intro: "Branching means diverging from the main line of development to work on a feature safely without breaking production code.",
+                visualizer: 'branching',
+                sections: [
+                    {
+                        techTitle: "The 'main' Branch",
+                        techText: "This is typically the stable, production-ready version of your code. You do not experiment directly here.",
+                        analogyTitle: "The Main Harvest Line",
+                        analogyText: "These are the apples you sell to the supermarket. You absolutely cannot test dangerous new pesticides on this line, or you go bankrupt.",
+                        techIcon: "shield-check",
+                        analogyIcon: "award",
+                        commands: ["git branch", "git checkout main"]
+                    },
+                    {
+                        techTitle: "Creating a Branch",
+                        techText: "Git creates a lightweight movable pointer to your current commit. It creates an isolated sandbox identical to 'main' at that exact moment.",
+                        analogyTitle: "Renting a Neighboring Plot",
+                        analogyText: "You clone your entire apple orchard onto an empty plot of land next door. You can try experimental pesticides here. If the trees die, the main harvest is safe.",
+                        techIcon: "split",
+                        analogyIcon: "sprout",
+                        commands: ["git branch <branch-name>", "git checkout <branch-name>", "# Or do both at once:", "git checkout -b <branch-name>"]
+                    }
+                ]
+            },
+            merging: {
+                title: "Merging & Conflicts",
+                icon: "git-pull-request",
+                intro: "Once isolated work is complete, you bring those changes back into the main project. Sometimes, this causes collisions.",
+                visualizer: 'merging',
+                sections: [
+                    {
+                        techTitle: "A Clean Merge",
+                        techText: "If you edited a file in your branch, and nobody else touched that file in 'main', Git automatically combines the history. Fast and seamless.",
+                        analogyTitle: "Merging the Harvest",
+                        analogyText: "Your experimental apples grew perfectly. You bring the crates from the neighboring plot and simply stack them on an empty shelf in the main warehouse.",
+                        techIcon: "check-circle-2",
+                        analogyIcon: "check-square",
+                        commands: ["git checkout main", "git merge <branch-name>"]
+                    },
+                    {
+                        techTitle: "A Merge Conflict",
+                        techText: "If Developer A and Developer B change the exact same line of code in the exact same file on different branches, Git halts the merge. It cannot guess which to keep.",
+                        analogyTitle: "The Collision in the Warehouse",
+                        analogyText: "Worker A tries to put apples on Shelf 5. Worker B tries to put oranges on the exact same spot on Shelf 5. The manager yells, 'STOP! You two figure this out!'",
+                        techIcon: "alert-triangle",
+                        analogyIcon: "zap",
+                        commands: ["# Git will output:", "CONFLICT (content): Merge conflict in index.html", "Automatic merge failed; fix conflicts and then commit the result."]
+                    },
+                    {
+                        techTitle: "Resolving the Conflict",
+                        techText: "The developer must open the conflicting file, locate the conflict markers (&lt;&lt;&lt;&lt;&lt;&lt;&lt;), manually edit the code to the desired final state, and make a new commit.",
+                        analogyTitle: "Sorting the Crates",
+                        analogyText: "Worker A and Worker B look at Shelf 5. They agree to put apples on the left and oranges on the right. They repack the boxes, and the manager approves.",
+                        techIcon: "wrench",
+                        analogyIcon: "hammer",
+                        commands: ["# 1. Edit the file manually", "# 2. Add the resolved file:", "git add <file>", "# 3. Finalize the merge:", "git commit -m '<message>'"]
+                    }
+                ]
+            },
+            pushpull: {
+                title: "Push, Pull & Conflicts",
+                icon: "arrow-up-down",
+                intro: "git push sends your local commits to the remote. git pull fetches and merges remote commits into your current branch. When histories diverge, you must resolve conflicts before pushing.",
+                visualizer: 'pushpull',
+                sections: [
+                    {
+                        techTitle: "git push — Send Your Commits",
+                        techText: "git push uploads your local branch commits to the remote repository (e.g. GitHub). Always git status first to ensure a clean working tree, then push to the target branch.",
+                        analogyTitle: "Shipping Packed Crates",
+                        analogyText: "You load your sealed, labelled harvest crates from your personal barn onto a delivery truck and drive them to the central warehouse so everyone else can access the produce.",
+                        techIcon: "upload-cloud",
+                        analogyIcon: "truck",
+                        commands: ["git status", "git push origin <branch>", "# or for a feature branch:", "git push origin feature/<name>"]
+                    },
+                    {
+                        techTitle: "git fetch — Download Without Merging",
+                        techText: "git fetch downloads all new commits and branches from the remote into your local repository <em>without</em> touching your working files or current branch. After fetching, remote refs live under <code>origin/&lt;branch&gt;</code>.",
+                        analogyTitle: "Peeking at the Incoming Shipment",
+                        analogyText: "The delivery truck arrives and parks outside. You walk out and count the crates and read the labels — but you haven't unloaded anything into your barn yet. You decide what to bring in, and when.",
+                        techIcon: "refresh-cw",
+                        analogyIcon: "search",
+                        commands: ["# Download all remote changes (no merge)", "git fetch origin", "# See what changed on the remote main", "git log origin/main --oneline", "# Compare your branch vs remote", "git diff main origin/main"]
+                    },
+                    {
+                        techTitle: "git pull — Fetch + Merge in One Step",
+                        techText: "git pull is shorthand for git fetch + git merge. It downloads new commits from the remote and immediately merges them into your current local branch.",
+                        analogyTitle: "Receiving New Shipments",
+                        analogyText: "A delivery truck arrives at your farm with new crates from the central warehouse. You unload them and add them directly to your barn shelves — no review, straight onto the shelf.",
+                        techIcon: "download-cloud",
+                        analogyIcon: "package-open",
+                        commands: ["git pull origin <branch>", "# Equivalent to:", "git fetch origin", "git merge origin/<branch>"]
+                    },
+                    {
+                        techTitle: "Non-Fast-Forward Push Failure",
+                        techText: "If someone pushed new commits to the remote before you, your push is rejected with a 'non-fast-forward' error. The remote has work your local branch doesn't know about yet.",
+                        analogyTitle: "Shelf Already Occupied",
+                        analogyText: "You arrive at the warehouse to stock Shelf 5, but another farmer already filled it with new produce while you were on the road. The manager blocks you until you reconcile.",
+                        techIcon: "alert-circle",
+                        analogyIcon: "shield-alert",
+                        commands: ["# Error output:", "! [rejected]   main -> main (non-fast-forward)", "# hint: fetch remote work first, then push"]
+                    },
+                    {
+                        isStashCard: true,
+                        techIcon: "layers",
+                        whenTitle: "git stash — What & When",
+                        whenText: "<strong>git stash</strong> temporarily shelves uncommitted changes so your working directory is clean — without making a commit.<br><br><strong>Use it when:</strong><br>• <strong>Switching branches</strong> — mid-edit on feature/login but need to hotfix main<br>• <strong>Pulling latest changes</strong> — remote has new commits and your edits aren't ready to commit<br>• <strong>Clean slate temporarily</strong> — test on a clean tree, then restore your work<br><br><em>Tip: Stash is not a substitute for commits — don't leave work in stash long-term.</em>",
+                        basicCmds: ["# Save work-in-progress", "git stash", "# List all stashes", "git stash list", "# Re-apply the most recent stash", "git stash pop", "# Apply without removing from stash list", "git stash apply"],
+                        fixTitle: "Fix Pattern: Stash → Pull → Pop → Push",
+                        fixCmds: ["git stash", "git pull origin main", "git stash pop", "# Resolve conflicts if any, then:", "git add .", "git commit -m \"Apply stashed changes after pull\"", "git push origin main"],
+                        analogyTitle: "🌾 Farm Model: The Temporary Shed",
+                        analogyText: "Half-picked crops are still in the field (your edits). You can't receive the new delivery truck (pull) with crops scattered everywhere. So you tuck everything into a small storage shed (stash), take the delivery, sort the warehouse, then bring your crops back out and carry on."
+                    },
+                    {
+                        techTitle: "Fix Pattern: Rebase onto Remote (Clean History)",
+                        techText: "Rebasing your feature branch on top of the latest remote main replays your commits after the remote's commits, producing a clean linear history. Use --force-with-lease when pushing rebased branches.",
+                        analogyTitle: "Repacking Crates on Fresh Stock",
+                        analogyText: "Instead of mixing old and new crates randomly, you wait for the warehouse to be restocked, then neatly stack your new crates on top — so the inventory log tells a clean, uninterrupted story.",
+                        techIcon: "git-commit",
+                        analogyIcon: "arrow-up-narrow-wide",
+                        commands: ["git fetch origin", "git rebase origin/main", "# If conflicts:", "git add <file>", "git rebase --continue", "# Push (force-with-lease for safety):", "git push origin feature/login --force-with-lease"]
+                    },
+                    { isRevertRebaseCard: true }
+                ]
+            }
+        };
+
+        let currentTab = 'workflow';
+
+        // ── Helpers ────────────────────────────────────────────────────────
+        function renderCodeBlock(commands) {
+            if (!commands || commands.length === 0) return '';
+            const cmdHtml = commands.map(cmd => {
+                if (cmd.startsWith('#')) return `<div class="text-slate-500">${cmd}</div>`;
+                return `<div><span class="text-emerald-500 select-none">$ </span><span class="text-slate-200">${cmd}</span></div>`;
+            }).join('');
+            return `
+                <div class="mt-5 rounded-lg overflow-hidden border border-slate-700 shadow-sm bg-slate-900">
+                    <div class="bg-slate-800 px-4 py-1.5 flex items-center space-x-2">
+                        <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                        <span class="text-xs text-slate-400 font-mono ml-4">Terminal</span>
+                    </div>
+                    <div class="p-4 font-mono text-sm leading-relaxed overflow-x-auto">${cmdHtml}</div>
+                </div>`;
+        }
+
+        function renderVisualizer(type) {
+            if (type === 'workflow') {
+                return `
+                    <div class="mb-10 p-6 bg-slate-900 text-white rounded-xl shadow-inner overflow-x-auto border border-slate-700">
+                        <div class="flex flex-col md:flex-row items-center justify-between min-w-[600px] space-y-4 md:space-y-0">
+                            <div class="flex flex-col items-center"><div class="w-16 h-16 rounded-full bg-slate-800 border-2 border-slate-600 flex items-center justify-center mb-2"><i data-lucide="laptop" class="text-slate-400"></i></div><span class="font-medium text-sm">Working Dir</span></div>
+                            <div class="flex-1 flex flex-col items-center justify-center px-2"><span class="text-xs text-blue-400 font-mono mb-1">git add</span><div class="w-full h-0.5 bg-slate-700 relative"><div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 border-t border-r border-slate-700 rotate-45"></div></div></div>
+                            <div class="flex flex-col items-center"><div class="w-16 h-16 rounded-full bg-slate-800 border-2 border-blue-500 flex items-center justify-center mb-2"><i data-lucide="box-select" class="text-blue-400"></i></div><span class="font-medium text-sm">Staging Area</span></div>
+                            <div class="flex-1 flex flex-col items-center justify-center px-2"><span class="text-xs text-green-400 font-mono mb-1">git commit</span><div class="w-full h-0.5 bg-slate-700 relative"><div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 border-t border-r border-slate-700 rotate-45"></div></div></div>
+                            <div class="flex flex-col items-center"><div class="w-16 h-16 rounded-full bg-slate-800 border-2 border-green-500 flex items-center justify-center mb-2"><i data-lucide="database" class="text-green-400"></i></div><span class="font-medium text-sm">Local Repo</span></div>
+                            <div class="flex-1 flex flex-col items-center justify-center px-2"><span class="text-xs text-purple-400 font-mono mb-1">git push</span><div class="w-full h-0.5 bg-slate-700 relative"><div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 border-t border-r border-slate-700 rotate-45"></div></div></div>
+                            <div class="flex flex-col items-center"><div class="w-16 h-16 rounded-full bg-slate-800 border-2 border-purple-500 flex items-center justify-center mb-2"><i data-lucide="cloud" class="text-purple-400"></i></div><span class="font-medium text-sm">Remote Repo</span></div>
+                        </div>
+                    </div>`;
+            } else if (type === 'branching') {
+                return `
+                    <div class="mb-10 p-6 bg-slate-900 rounded-xl shadow-inner border border-slate-700">
+                        <h3 class="text-sm font-mono text-slate-400 mb-4 text-center">Visualizing: git branch feature-login</h3>
+                        <svg viewBox="0 0 500 160" class="w-full h-auto max-h-48 drop-shadow-md">
+                            <path d="M 50 110 L 450 110" stroke="#3b82f6" stroke-width="4" fill="none" />
+                            <path d="M 150 110 C 190 110 190 40 230 40 L 400 40" stroke="#10b981" stroke-width="4" fill="none" />
+                            <circle cx="50" cy="110" r="10" fill="#1e293b" stroke="#3b82f6" stroke-width="4"/>
+                            <circle cx="150" cy="110" r="10" fill="#1e293b" stroke="#3b82f6" stroke-width="4"/>
+                            <circle cx="280" cy="110" r="10" fill="#1e293b" stroke="#3b82f6" stroke-width="4"/>
+                            <circle cx="410" cy="110" r="10" fill="#1e293b" stroke="#3b82f6" stroke-width="4"/>
+                            <circle cx="230" cy="40" r="10" fill="#1e293b" stroke="#10b981" stroke-width="4"/>
+                            <circle cx="320" cy="40" r="10" fill="#1e293b" stroke="#10b981" stroke-width="4"/>
+                            <circle cx="400" cy="40" r="10" fill="#1e293b" stroke="#10b981" stroke-width="4"/>
+                            <text x="50" cy="135" fill="#94a3b8" font-size="12" font-family="monospace" text-anchor="middle">v1.0</text>
+                            <text x="450" cy="130" fill="#60a5fa" font-size="14" font-family="monospace" font-weight="bold">main</text>
+                            <text x="400" cy="20" fill="#34d399" font-size="14" font-family="monospace" font-weight="bold">feature-login</text>
+                        </svg>
+                    </div>`;
+            } else if (type === 'pushpull') {
+                return `
+                    <div class="mb-10 p-6 bg-slate-900 rounded-xl shadow-inner border border-slate-700 overflow-x-auto">
+                        <h3 class="text-sm font-mono text-slate-400 mb-6 text-center">Visualizing: Local ↔ Remote Repository sync</h3>
+                        <div class="flex items-center justify-center gap-0 min-w-[480px]">
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="w-20 h-20 rounded-2xl bg-slate-800 border-2 border-blue-500 flex flex-col items-center justify-center shadow-lg shadow-blue-900/40">
+                                    <i data-lucide="database" class="text-blue-400 w-7 h-7"></i>
+                                </div>
+                                <span class="text-xs font-semibold text-blue-400 font-mono">Local Repo</span>
+                                <span class="text-[10px] text-slate-500">your commits & branches</span>
+                            </div>
+                            <div class="flex flex-col items-center justify-center gap-3 mx-6">
+                                <div class="flex items-center gap-2">
+                                    <div class="flex flex-col items-center">
+                                        <span class="text-[10px] font-mono text-emerald-400 mb-1">git push</span>
+                                        <div class="flex items-center">
+                                            <div class="h-0.5 w-28 bg-gradient-to-r from-blue-500 to-emerald-500"></div>
+                                            <div class="w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-l-8 border-l-emerald-500"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex flex-col items-center">
+                                        <div class="flex items-center">
+                                            <div class="w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-r-8 border-r-purple-500"></div>
+                                            <div class="h-0.5 w-28 bg-gradient-to-r from-purple-500 to-blue-500"></div>
+                                        </div>
+                                        <span class="text-[10px] font-mono text-purple-400 mt-1">git pull</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="w-20 h-20 rounded-2xl bg-slate-800 border-2 border-emerald-500 flex flex-col items-center justify-center shadow-lg shadow-emerald-900/40">
+                                    <i data-lucide="cloud" class="text-emerald-400 w-7 h-7"></i>
+                                </div>
+                                <span class="text-xs font-semibold text-emerald-400 font-mono">Remote (origin)</span>
+                                <span class="text-[10px] text-slate-500">GitHub / GitLab / Azure</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 mx-auto max-w-lg flex items-start gap-3 bg-amber-950/40 border border-amber-700/60 rounded-lg p-3">
+                            <i data-lucide="alert-triangle" class="text-amber-400 w-4 h-4 mt-0.5 shrink-0"></i>
+                            <p class="text-xs text-amber-300">
+                                <strong>Non-fast-forward conflict:</strong> If the remote has new commits you don't have, your push is rejected. Pull first (or stash → pull → pop), resolve conflicts, commit, then push.
+                            </p>
+                        </div>
+                    </div>`;
+            } else if (type === 'merging') {
+                return `
+                    <div class="mb-10 p-6 bg-slate-900 rounded-xl shadow-inner border border-slate-700">
+                        <h3 class="text-sm font-mono text-slate-400 mb-4 text-center">Visualizing: git merge feature-login</h3>
+                        <svg viewBox="0 0 500 160" class="w-full h-auto max-h-48 drop-shadow-md">
+                            <path d="M 50 110 L 450 110" stroke="#3b82f6" stroke-width="4" fill="none" />
+                            <path d="M 150 110 C 180 110 180 40 220 40 L 300 40 C 340 40 340 110 380 110" stroke="#10b981" stroke-width="4" fill="none" stroke-dasharray="5,5" />
+                            <path d="M 150 110 C 180 110 180 40 220 40 L 300 40" stroke="#10b981" stroke-width="4" fill="none" />
+                            <circle cx="50" cy="110" r="10" fill="#1e293b" stroke="#3b82f6" stroke-width="4"/>
+                            <circle cx="150" cy="110" r="10" fill="#1e293b" stroke="#3b82f6" stroke-width="4"/>
+                            <circle cx="220" cy="40" r="10" fill="#1e293b" stroke="#10b981" stroke-width="4"/>
+                            <circle cx="300" cy="40" r="10" fill="#1e293b" stroke="#10b981" stroke-width="4"/>
+                            <circle cx="380" cy="110" r="12" fill="#3b82f6" stroke="#f59e0b" stroke-width="4"/>
+                            <text x="450" cy="130" fill="#60a5fa" font-size="14" font-family="monospace" font-weight="bold">main</text>
+                            <text x="300" cy="20" fill="#34d399" font-size="14" font-family="monospace" font-weight="bold">feature-login</text>
+                            <text x="380" cy="140" fill="#f59e0b" font-size="12" font-family="monospace" font-weight="bold" text-anchor="middle">Merge Commit</text>
+                        </svg>
+                    </div>`;
+            }
+            return '';
+        }
+
+        // ── Tabs ───────────────────────────────────────────────────────────
+        function renderTabs() {
+            const nav = document.getElementById('nav-tabs');
+            nav.innerHTML = '';
+            Object.keys(contentData).forEach(key => {
+                const data = contentData[key];
+                const isActive = currentTab === key;
+                const btn = document.createElement('button');
+                btn.className = `flex items-center space-x-2 px-4 py-3 text-sm font-semibold rounded-t-lg transition-colors whitespace-nowrap border-b-2 ${isActive ? 'text-blue-400 bg-slate-800/50 border-blue-400'
+                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 border-transparent'
+                    }`;
+                btn.onclick = () => { currentTab = key; renderTabs(); renderContent(); };
+                btn.innerHTML = `<i data-lucide="${data.icon}" class="w-4 h-4"></i><span>${data.title}</span>`;
+                nav.appendChild(btn);
+                if (isActive) requestAnimationFrame(() => btn.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }));
+            });
+            lucide.createIcons();
+        }
+
+        // ── Content ────────────────────────────────────────────────────────
+        function renderContent() {
+            const container = document.getElementById('content-container');
+            const data = contentData[currentTab];
+            container.classList.remove('fade-in');
+            void container.offsetWidth;
+            container.classList.add('fade-in');
+
+            let html = `
+                <div class="mb-10 text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">${data.title}</h2>
+                    <p class="text-lg text-slate-400">${data.intro}</p>
+                </div>`;
+
+            if (data.visualizer) html += renderVisualizer(data.visualizer);
+
+            html += `<div class="space-y-8">`;
+
+            data.sections.forEach(sec => {
+
+                // ── Stash card (3-panel) ──
+                if (sec.isStashCard) {
+                    html += `
+                        <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+                            <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-700">
+                                <div class="p-6 md:p-8 tech-card bg-slate-900/50 flex flex-col">
+                                    <div class="flex items-center space-x-3 mb-4">
+                                        <div class="p-2 bg-blue-900/50 rounded-lg text-blue-400"><i data-lucide="${sec.techIcon}"></i></div>
+                                        <h3 class="text-xl font-bold text-white">What &amp; When</h3>
+                                    </div>
+                                    <h4 class="text-sm font-bold uppercase tracking-wider text-blue-400 mb-3">${sec.whenTitle}</h4>
+                                    <div class="text-slate-300 leading-relaxed text-sm md:text-base mb-4">${sec.whenText}</div>
+                                    ${renderCodeBlock(sec.basicCmds)}
+                                </div>
+                                <div class="p-6 md:p-8 bg-slate-900/30 flex flex-col" style="border-left:4px solid #8b5cf6">
+                                    <div class="flex items-center space-x-3 mb-4">
+                                        <div class="p-2 bg-violet-900/50 rounded-lg text-violet-400"><i data-lucide="git-pull-request"></i></div>
+                                        <h3 class="text-xl font-bold text-white">Fix Pattern</h3>
+                                    </div>
+                                    <h4 class="text-sm font-bold uppercase tracking-wider text-violet-400 mb-3">${sec.fixTitle}</h4>
+                                    <p class="text-slate-300 text-sm mb-4">When you have uncommitted local edits but the remote has new commits — stash, pull, pop, resolve, push.</p>
+                                    ${renderCodeBlock(sec.fixCmds)}
+                                </div>
+                            </div>
+                            <div class="p-6 md:p-8 analogy-card bg-emerald-950/20 border-t border-slate-700">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <div class="p-2 bg-emerald-900/50 rounded-lg text-emerald-400"><i data-lucide="home"></i></div>
+                                    <h3 class="text-xl font-bold text-white">The Analogy</h3>
+                                </div>
+                                <h4 class="text-sm font-bold uppercase tracking-wider text-emerald-400 mb-2">${sec.analogyTitle}</h4>
+                                <div class="text-slate-300 leading-relaxed text-sm md:text-base italic">"${sec.analogyText}"</div>
+                            </div>
+                        </div>`;
+                    return;
+                }
+
+                // ── Revert vs Rebase table card ──
+                if (sec.isRevertRebaseCard) {
+                    html += `
+                        <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+                            <div class="p-6 md:p-8 border-b border-slate-700">
+                                <div class="flex items-center space-x-3 mb-4">
+                                    <div class="p-2 bg-amber-900/50 rounded-lg text-amber-400"><i data-lucide="scale"></i></div>
+                                    <h3 class="text-xl font-bold text-white">Revert vs Rebase — Which one to use?</h3>
+                                </div>
+                                <p class="text-slate-300 text-sm md:text-base leading-relaxed">
+                                    When a push fails or a bad commit is already on the remote, it's easy to confuse
+                                    <strong class="text-white">revert</strong> and <strong class="text-white">rebase</strong>.
+                                    They solve different problems:<br><br>
+                                    <strong class="text-blue-400">git revert</strong> creates a new commit that undoes an earlier commit, keeping all existing history intact.
+                                    <strong class="text-violet-400">git rebase</strong> rewrites a series of commits on top of a new base, changing their IDs and reshaping history.
+                                </p>
+                            </div>
+                            <div class="p-6 md:p-8 overflow-x-auto">
+                                <table class="w-full text-sm border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-slate-600">
+                                            <th class="text-left py-3 px-4 text-slate-400 font-semibold w-1/4">Aspect</th>
+                                            <th class="text-left py-3 px-4 text-blue-400 font-semibold">git revert</th>
+                                            <th class="text-left py-3 px-4 text-violet-400 font-semibold">git rebase</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-700">
+                                        <tr class="hover:bg-slate-700/30 transition-colors">
+                                            <td class="py-3 px-4 text-slate-400 font-medium">What it does</td>
+                                            <td class="py-3 px-4 text-slate-300">Adds a new commit that reverses changes from an old commit</td>
+                                            <td class="py-3 px-4 text-slate-300">Replays existing commits on top of a new base commit</td>
+                                        </tr>
+                                        <tr class="hover:bg-slate-700/30 transition-colors">
+                                            <td class="py-3 px-4 text-slate-400 font-medium">History</td>
+                                            <td class="py-3 px-4 text-slate-300">Preserved — old commits stay, plus a revert commit</td>
+                                            <td class="py-3 px-4 text-slate-300">Rewritten — commit IDs change, history becomes linear</td>
+                                        </tr>
+                                        <tr class="hover:bg-slate-700/30 transition-colors">
+                                            <td class="py-3 px-4 text-slate-400 font-medium">Best for</td>
+                                            <td class="py-3 px-4 text-slate-300">Undoing bad commits on shared branches after push</td>
+                                            <td class="py-3 px-4 text-slate-300">Cleaning up your own local feature branch before sharing</td>
+                                        </tr>
+                                        <tr class="hover:bg-slate-700/30 transition-colors">
+                                            <td class="py-3 px-4 text-slate-400 font-medium">Safe on shared branches?</td>
+                                            <td class="py-3 px-4"><span class="text-emerald-400 font-semibold">Yes</span></td>
+                                            <td class="py-3 px-4"><span class="text-rose-400 font-semibold">No</span> <span class="text-slate-500 text-xs">(avoid rebasing commits others already pulled)</span></td>
+                                        </tr>
+                                        <tr class="hover:bg-slate-700/30 transition-colors">
+                                            <td class="py-3 px-4 text-slate-400 font-medium">Typical commands</td>
+                                            <td class="py-3 px-4 font-mono text-emerald-400 text-xs leading-loose">git revert HEAD<br>git revert &lt;commit-id&gt;</td>
+                                            <td class="py-3 px-4 font-mono text-violet-400 text-xs leading-loose">git rebase origin/main<br>git rebase -i HEAD~3</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="mt-6 flex items-start gap-3 bg-blue-950/40 border border-blue-700/50 rounded-xl px-5 py-4">
+                                    <i data-lucide="lightbulb" class="text-blue-400 w-5 h-5 mt-0.5 shrink-0"></i>
+                                    <p class="text-sm text-slate-300">
+                                        <strong class="text-white">Rule of thumb:</strong>
+                                        Use <code class="text-blue-400 bg-slate-900/80 px-1.5 py-0.5 rounded">revert</code> to fix mistakes in shared history you already pushed.
+                                        Use <code class="text-violet-400 bg-slate-900/80 px-1.5 py-0.5 rounded">rebase</code> to tidy your own local branch <em>before</em> you push or open a PR.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>`;
+                    return;
+                }
+
+                // ── Default two-column card ──
+                html += `
+                    <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-700">
+                            <div class="p-6 md:p-8 tech-card bg-slate-900/50 flex flex-col h-full">
+                                <div>
+                                    <div class="flex items-center space-x-3 mb-4">
+                                        <div class="p-2 bg-blue-900/50 rounded-lg text-blue-400"><i data-lucide="${sec.techIcon}"></i></div>
+                                        <h3 class="text-xl font-bold text-white">The Technical Reality</h3>
+                                    </div>
+                                    <h4 class="text-sm font-bold uppercase tracking-wider text-blue-400 mb-3">${sec.techTitle}</h4>
+                                    <div class="text-slate-300 leading-relaxed text-sm md:text-base">${sec.techText}</div>
+                                </div>
+                                <div class="mt-auto pt-4">${renderCodeBlock(sec.commands)}</div>
+                            </div>
+                            <div class="p-6 md:p-8 analogy-card bg-emerald-950/20 flex flex-col h-full justify-center">
+                                <div class="flex items-center space-x-3 mb-4">
+                                    <div class="p-2 bg-emerald-900/50 rounded-lg text-emerald-400"><i data-lucide="${sec.analogyIcon}"></i></div>
+                                    <h3 class="text-xl font-bold text-white">The Analogy</h3>
+                                </div>
+                                <h4 class="text-sm font-bold uppercase tracking-wider text-emerald-400 mb-3">${sec.analogyTitle}</h4>
+                                <div class="text-slate-300 leading-relaxed text-sm md:text-base italic">"${sec.analogyText}"</div>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        renderTabs();
+        renderContent();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packet Encapsulation Simulator — Networking Hub</title>
+    <meta name="description" content="Interactive simulator showing how data is encapsulated into frames and how each network device interprets the packet at every OSI layer.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode:'class', theme:{ extend:{ fontFamily:{ sans:['Inter','sans-serif'], mono:['JetBrains Mono','monospace'] } } } }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <style>
+        body { font-family:'Inter',sans-serif; }
+        .font-mono { font-family:'JetBrains Mono',monospace; }
+
+        /* ── Stage/device buttons ── */
+        .stage-btn { transition: all 0.25s ease; }
+        .stage-btn.active { transform: translateY(-2px); }
+
+        /* ── Frame block diagram ── */
+        .frame-block {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 0.75rem 0.5rem; border-radius: 0.5rem; position: relative;
+            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+            overflow: hidden; min-width: 52px;
+        }
+        .frame-block .block-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em; white-space: nowrap; }
+        .frame-block .block-size  { font-size: 0.58rem; opacity: 0.7; margin-top: 2px; font-family:'JetBrains Mono',monospace; }
+        .frame-block .block-layer { font-size: 0.52rem; opacity: 0.55; margin-top: 1px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+
+        /* Locked overlay */
+        .frame-block.locked { opacity: 0.3; }
+        .frame-block.locked::after {
+            content: '🔒'; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%); font-size: 1rem; opacity: 0.7;
+            filter: grayscale(0.5);
+        }
+        .frame-block.locked .block-label,
+        .frame-block.locked .block-size,
+        .frame-block.locked .block-layer { opacity: 0.35; }
+
+        /* Readable glow */
+        .frame-block.readable { box-shadow: 0 0 16px rgba(255,255,255,0.08); }
+
+        /* Entrance animation for encap mode */
+        .frame-block.entering {
+            animation: blockSlide 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+        @keyframes blockSlide {
+            from { opacity: 0; transform: scaleX(0.3); }
+            to   { opacity: 1; transform: scaleX(1); }
+        }
+
+        /* ── Device topology ── */
+        .device-card { transition: all 0.3s ease; cursor: pointer; position: relative; }
+        .device-card:hover { transform: translateY(-2px); }
+        .device-card.active { transform: translateY(-3px); }
+        .topo-line { height: 2px; flex: 1; min-width: 20px; transition: background 0.3s ease; }
+
+        /* Packet dot animation */
+        .packet-dot {
+            width: 10px; height: 10px; border-radius: 50%; position: absolute;
+            top: 50%; transform: translateY(-50%);
+            box-shadow: 0 0 12px currentColor;
+            transition: left 0.6s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        /* ── Field row ── */
+        .field-row { transition: all 0.2s ease; }
+        .field-row:hover { background: rgba(255,255,255,0.03); }
+
+        /* ── Decision box ── */
+        .decision-box { transition: all 0.3s ease; }
+
+        /* Fade in */
+        .fade-in { animation: fadeIn 0.35s ease; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+        /* Detail content scrollbar */
+        .detail-scroll::-webkit-scrollbar { width: 5px; }
+        .detail-scroll::-webkit-scrollbar-track { background: rgba(30,41,59,0.4); border-radius: 4px; }
+        .detail-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+
+<body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+
+    <!-- ── Header ── -->
+    <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i data-lucide="layers" class="w-7 h-7 text-cyan-400"></i>
+                <h1 class="text-xl font-bold tracking-tight">Packet <span class="text-slate-400 font-light">Encapsulation Simulator</span></h1>
+            </div>
+            <nav class="flex items-center gap-5">
+                <a href="Network_index.html" class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Networking Hub
+                </a>
+                <a href="../index.html" class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
+                    <i data-lucide="home" class="w-4 h-4"></i> DevOps Hub
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+
+        <!-- ── Breadcrumbs ── -->
+        <nav class="text-sm text-slate-500 flex items-center gap-2">
+            <a href="../index.html" class="hover:text-slate-300 transition-colors">DevOps Hub</a>
+            <span>›</span>
+            <a href="Network_index.html" class="hover:text-slate-300 transition-colors">Networking</a>
+            <span>›</span>
+            <span class="text-slate-300 font-medium">Packet Simulator</span>
+        </nav>
+
+        <!-- ── Title ── -->
+        <div class="text-center max-w-3xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-3">Packet Encapsulation &amp; Network Journey</h2>
+            <p class="text-slate-400 text-lg leading-relaxed">
+                See exactly how application data gets wrapped in headers at each OSI layer, and watch how
+                switches, routers, and servers each interpret the resulting frame.
+            </p>
+        </div>
+
+        <!-- ── Mode Tabs ── -->
+        <div class="flex justify-center">
+            <div class="inline-flex bg-slate-800 border border-slate-700 rounded-xl p-1 gap-1">
+                <button onclick="setMode('encap')" id="tab-encap"
+                    class="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all">
+                    <i data-lucide="package" class="w-4 h-4"></i> Packet Formation
+                </button>
+                <button onclick="setMode('journey')" id="tab-journey"
+                    class="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all">
+                    <i data-lucide="route" class="w-4 h-4"></i> Network Journey
+                </button>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 1: PACKET ENCAPSULATION
+             ═══════════════════════════════════════════════════════════════ -->
+        <section id="encap-section" class="space-y-6 fade-in">
+
+            <!-- Stage selector -->
+            <div class="flex flex-wrap justify-center gap-2" id="stage-buttons"></div>
+
+            <!-- Main content: diagram + details -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+
+                <!-- Top bar: byte counter -->
+                <div class="bg-slate-900 border-b border-slate-700 px-6 py-3 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="hard-drive" class="w-4 h-4 text-cyan-400"></i>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Frame Structure</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-500">Total Size:</span>
+                        <span id="byte-counter" class="font-mono text-sm font-bold text-cyan-400">0 B</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row">
+                    <!-- Left: Frame Diagram -->
+                    <div class="flex-1 p-6 md:p-8 flex flex-col justify-center min-h-[280px]">
+                        <!-- Visual blocks -->
+                        <div id="frame-diagram" class="flex gap-1 items-stretch min-h-[100px] mb-4"></div>
+                        <!-- Layer labels below blocks -->
+                        <div id="frame-labels" class="flex gap-1"></div>
+                        <!-- Arrow showing direction -->
+                        <div class="mt-4 text-center">
+                            <span id="encap-direction" class="text-xs font-bold text-slate-500 uppercase tracking-widest"></span>
+                        </div>
+                    </div>
+
+                    <!-- Right: Detail Panel -->
+                    <div class="lg:w-[340px] xl:w-[380px] bg-slate-900 border-l border-slate-700 p-6 detail-scroll overflow-y-auto max-h-[480px]">
+                        <div id="encap-detail" class="space-y-4"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info tiles -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i data-lucide="arrow-down" class="w-4 h-4 text-amber-400"></i>
+                        <h4 class="font-bold text-white text-sm">Encapsulation</h4>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">Each layer adds its own header around the data from the layer above, like nesting envelopes inside each other.</p>
+                </div>
+                <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i data-lucide="arrow-up" class="w-4 h-4 text-emerald-400"></i>
+                        <h4 class="font-bold text-white text-sm">De-encapsulation</h4>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">The receiver strips headers layer by layer, moving up the stack until only the original application data remains.</p>
+                </div>
+                <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i data-lucide="info" class="w-4 h-4 text-blue-400"></i>
+                        <h4 class="font-bold text-white text-sm">PDU Names</h4>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">L7: Data · L4: Segment · L3: Packet · L2: Frame. Each layer's unit has a specific name — the Protocol Data Unit (PDU).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECTION 2: NETWORK JOURNEY
+             ═══════════════════════════════════════════════════════════════ -->
+        <section id="journey-section" class="space-y-6 fade-in hidden">
+
+            <!-- Device topology bar -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 overflow-x-auto no-scrollbar">
+                <div class="flex items-center gap-0 min-w-[600px]" id="topology-bar"></div>
+            </div>
+
+            <!-- X-ray view -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+
+                <!-- Top bar -->
+                <div class="bg-slate-900 border-b border-slate-700 px-6 py-3 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="scan" class="w-4 h-4 text-amber-400"></i>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Device X-Ray View</span>
+                    </div>
+                    <div class="flex items-center gap-2" id="device-role-badge"></div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row">
+                    <!-- Left: X-ray frame diagram -->
+                    <div class="flex-1 p-6 md:p-8 space-y-6">
+                        <!-- Device description -->
+                        <p id="device-desc" class="text-sm text-slate-400 leading-relaxed"></p>
+
+                        <!-- X-ray frame blocks -->
+                        <div>
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Frame Inspection</p>
+                            <div id="xray-diagram" class="flex gap-1 items-stretch min-h-[90px]"></div>
+                        </div>
+
+                        <!-- Legend -->
+                        <div class="flex flex-wrap gap-4 text-[11px]">
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-3 h-3 rounded bg-emerald-500/30 border border-emerald-500/50"></span>
+                                <span class="text-slate-400">Readable</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-3 h-3 rounded bg-slate-700/60 border border-slate-600 flex items-center justify-center text-[7px]">🔒</span>
+                                <span class="text-slate-400">Opaque / Locked</span>
+                            </div>
+                        </div>
+
+                        <!-- Decision box -->
+                        <div id="decision-box" class="decision-box bg-slate-900 border border-slate-700 rounded-xl p-4"></div>
+
+                        <!-- Nav buttons -->
+                        <div class="flex justify-between items-center pt-2">
+                            <button onclick="prevDevice()" id="dev-prev-btn"
+                                class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                                <i data-lucide="chevron-left" class="w-4 h-4"></i> Previous
+                            </button>
+                            <span id="dev-counter" class="text-xs text-slate-500 font-mono"></span>
+                            <button onclick="nextDevice()" id="dev-next-btn"
+                                class="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                                Next <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Field details -->
+                    <div class="lg:w-[340px] xl:w-[380px] bg-slate-900 border-l border-slate-700 p-6 detail-scroll overflow-y-auto max-h-[560px]">
+                        <div id="journey-detail" class="space-y-4"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info tiles -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i data-lucide="monitor" class="w-4 h-4 text-cyan-400"></i>
+                        <h4 class="font-bold text-white text-sm">Switch (L2)</h4>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">Only reads MAC addresses. Has zero knowledge of IP addresses, ports, or application data — everything above L2 is completely opaque.</p>
+                </div>
+                <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i data-lucide="git-branch" class="w-4 h-4 text-teal-400"></i>
+                        <h4 class="font-bold text-white text-sm">Router (L3)</h4>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">Reads L2 and L3 headers. Makes routing decisions based on destination IP. Rewrites MAC headers at each hop. Decrements TTL.</p>
+                </div>
+                <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i data-lucide="server" class="w-4 h-4 text-purple-400"></i>
+                        <h4 class="font-bold text-white text-sm">End Host (L7)</h4>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">Strips all headers layer by layer, moving up the OSI stack until the raw application data (HTTP request) is exposed for processing.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer class="bg-slate-950 border-t border-slate-800 text-slate-500 py-6 text-center text-sm">
+        <p>Packet Simulator · <a href="Network_index.html" class="text-blue-400 hover:underline">Networking Hub</a> · <a href="../index.html" class="text-blue-400 hover:underline">DevOps Hub</a></p>
+    </footer>
+
+    <!-- ── Back to top ── -->
+    <a href="#" class="back-to-top"><i data-lucide="arrow-up" class="w-5 h-5"></i></a>
+
+    <script>
+    // ═══════════════════════════════════════════════════════════════════
+    //  COLOUR MAP
+    // ═══════════════════════════════════════════════════════════════════
+    const C = {
+        app:     { bg:'bg-purple-900/60',  border:'border-purple-500/60',  text:'text-purple-300',  hex:'#a855f7', ring:'ring-purple-500/30' },
+        tcp:     { bg:'bg-cyan-900/60',    border:'border-cyan-500/60',    text:'text-cyan-300',    hex:'#06b6d4', ring:'ring-cyan-500/30' },
+        ip:      { bg:'bg-teal-900/60',    border:'border-teal-500/60',    text:'text-teal-300',    hex:'#14b8a6', ring:'ring-teal-500/30' },
+        mac:     { bg:'bg-emerald-900/60', border:'border-emerald-500/60', text:'text-emerald-300', hex:'#10b981', ring:'ring-emerald-500/30' },
+        fcs:     { bg:'bg-emerald-900/60', border:'border-emerald-500/60', text:'text-emerald-300', hex:'#10b981', ring:'ring-emerald-500/30' },
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    //  FRAME BLOCK DEFINITIONS
+    // ═══════════════════════════════════════════════════════════════════
+    const FRAME_BLOCKS = [
+        { id:'mac', label:'MAC Header',   size:'14 B',  layer:'L2', colorKey:'mac',  flex:8  },
+        { id:'ip',  label:'IP Header',    size:'20 B',  layer:'L3', colorKey:'ip',   flex:11 },
+        { id:'tcp', label:'TCP Header',   size:'20 B',  layer:'L4', colorKey:'tcp',  flex:11 },
+        { id:'app', label:'HTTP Data',    size:'~200 B',layer:'L7', colorKey:'app',  flex:62 },
+        { id:'fcs', label:'FCS',          size:'4 B',   layer:'L2', colorKey:'fcs',  flex:8  },
+    ];
+
+    // ═══════════════════════════════════════════════════════════════════
+    //  ENCAPSULATION STAGES
+    // ═══════════════════════════════════════════════════════════════════
+    const STAGES = [
+        {
+            id:'data', title:'Application Data', layer:'L7', pdu:'Data', icon:'file-text',
+            color:'purple', activeBlocks:['app'],
+            totalSize:'~200 B',
+            desc:'The application (browser) creates the HTTP payload. At this stage there are no network headers — just the raw request.',
+            fields:[
+                { layer:'L7', color:'purple', name:'Method',     value:'GET' },
+                { layer:'L7', color:'purple', name:'Path',       value:'/' },
+                { layer:'L7', color:'purple', name:'Host',       value:'google.com' },
+                { layer:'L7', color:'purple', name:'User-Agent', value:'Mozilla/5.0 (X11; Linux…)' },
+                { layer:'L7', color:'purple', name:'Accept',     value:'text/html, application/xhtml+xml' },
+                { layer:'L7', color:'purple', name:'Connection', value:'keep-alive' },
+            ],
+            added:'HTTP request formed by the browser. This is the actual content being sent.',
+        },
+        {
+            id:'segment', title:'TCP Segment', layer:'L4', pdu:'Segment', icon:'git-commit',
+            color:'cyan', activeBlocks:['tcp','app'],
+            totalSize:'~220 B   (+20 B)',
+            desc:'The Transport layer (TCP) wraps the application data with a 20-byte header that handles reliable delivery, port multiplexing, and flow control.',
+            fields:[
+                { layer:'L4', color:'cyan', name:'Src Port',    value:'49152 (ephemeral)' },
+                { layer:'L4', color:'cyan', name:'Dst Port',    value:'443 (HTTPS)' },
+                { layer:'L4', color:'cyan', name:'Seq Number',  value:'0x1A2B3C4D' },
+                { layer:'L4', color:'cyan', name:'Ack Number',  value:'0x5E6F7080' },
+                { layer:'L4', color:'cyan', name:'Flags',       value:'PSH, ACK' },
+                { layer:'L4', color:'cyan', name:'Window Size', value:'65535' },
+                { layer:'L4', color:'cyan', name:'Checksum',    value:'0xA1B2' },
+            ],
+            added:'TCP header (20 bytes) added. Provides port addressing and guaranteed delivery via sequence numbers.',
+        },
+        {
+            id:'packet', title:'IP Packet', layer:'L3', pdu:'Packet', icon:'globe',
+            color:'teal', activeBlocks:['ip','tcp','app'],
+            totalSize:'~240 B   (+20 B)',
+            desc:'The Network layer (IP) adds a 20-byte header containing source and destination IP addresses. This is what routers use to forward the packet across networks.',
+            fields:[
+                { layer:'L3', color:'teal', name:'Version',     value:'IPv4 (4)' },
+                { layer:'L3', color:'teal', name:'Header Len',  value:'20 bytes (5 × 32-bit words)' },
+                { layer:'L3', color:'teal', name:'TTL',         value:'64 (decremented each hop)' },
+                { layer:'L3', color:'teal', name:'Protocol',    value:'TCP (6)' },
+                { layer:'L3', color:'teal', name:'Src IP',      value:'192.168.1.100' },
+                { layer:'L3', color:'teal', name:'Dst IP',      value:'142.250.190.46 (Google)' },
+                { layer:'L3', color:'teal', name:'Checksum',    value:'0xC3D4' },
+            ],
+            added:'IP header (20 bytes) added. Enables routing between different networks using logical addresses.',
+        },
+        {
+            id:'frame', title:'Ethernet Frame', layer:'L2', pdu:'Frame', icon:'link',
+            color:'emerald', activeBlocks:['mac','ip','tcp','app','fcs'],
+            totalSize:'~258 B   (+14 B hdr + 4 B FCS)',
+            desc:'The Data Link layer adds a 14-byte MAC header (source + destination physical addresses + EtherType) and a 4-byte Frame Check Sequence (CRC) for error detection. This is the final unit transmitted on the wire.',
+            fields:[
+                { layer:'L2', color:'emerald', name:'Dst MAC',    value:'FF:EE:DD:44:55:66 (gateway)' },
+                { layer:'L2', color:'emerald', name:'Src MAC',    value:'AA:BB:CC:11:22:33 (client NIC)' },
+                { layer:'L2', color:'emerald', name:'EtherType',  value:'0x0800 (IPv4)' },
+                { layer:'L2', color:'emerald', name:'FCS (CRC-32)', value:'0x3E4F5A6B' },
+            ],
+            added:'MAC header (14 bytes) + FCS trailer (4 bytes). The frame is now ready for physical transmission.',
+        },
+    ];
+
+    // ═══════════════════════════════════════════════════════════════════
+    //  NETWORK DEVICES
+    // ═══════════════════════════════════════════════════════════════════
+    const DEVICES = [
+        {
+            id:'client', name:'Client PC', icon:'laptop', role:'Sender (All Layers)',
+            color:'blue', hexColor:'#3b82f6', badge:'SENDER',
+            desc:'The client creates the entire frame from scratch. It builds the HTTP request, adds TCP, IP, and MAC headers, computes the FCS, and hands the complete frame to the NIC for transmission.',
+            readable:['mac','ip','tcp','app','fcs'],
+            locked:[],
+            fields:[
+                { layer:'L7', color:'purple',  icon:'file-text',name:'HTTP Request',  value:'GET / HTTP/1.1 — Host: google.com' },
+                { layer:'L4', color:'cyan',    icon:'git-commit',name:'TCP',          value:'Src :49152 → Dst :443 | SEQ: 0x1A2B… | PSH,ACK' },
+                { layer:'L3', color:'teal',    icon:'globe',    name:'IP',            value:'192.168.1.100 → 142.250.190.46 | TTL: 64' },
+                { layer:'L2', color:'emerald', icon:'link',     name:'MAC',           value:'AA:BB:CC:11:22:33 → FF:EE:DD:44:55:66 (gateway)' },
+                { layer:'L2', color:'emerald', icon:'check-circle', name:'FCS',       value:'CRC-32 computed: 0x3E4F5A6B' },
+            ],
+            decision:'All headers created. Frame is complete. Handed to NIC → transmitted as electrical/radio signals on the wire (L1).',
+        },
+        {
+            id:'switch1', name:'Switch 1', icon:'network', role:'L2 Forwarder',
+            color:'amber', hexColor:'#f59e0b', badge:'L2 SWITCH',
+            desc:'The switch operates ONLY at Layer 2. It reads the MAC header to determine which port to forward the frame to. It has zero knowledge of IP addresses, TCP ports, or application data — those layers are completely opaque to it.',
+            readable:['mac','fcs'],
+            locked:['ip','tcp','app'],
+            fields:[
+                { layer:'L2', color:'emerald', icon:'link',       name:'Dst MAC',  value:'FF:EE:DD:44:55:66 → CAM table → Port 3 (Router)' },
+                { layer:'L2', color:'emerald', icon:'link',       name:'Src MAC',  value:'AA:BB:CC:11:22:33 → Learned on Port 1' },
+                { layer:'L2', color:'emerald', icon:'check-circle',name:'FCS',     value:'CRC-32 verified ✓ — frame integrity OK' },
+            ],
+            decision:'MAC lookup: Dst FF:EE:DD:44:55:66 found in CAM table → forward frame out Port 3 to the Router. Frame is NOT modified.',
+        },
+        {
+            id:'router', name:'Router', icon:'git-branch', role:'L3 Forwarder',
+            color:'teal', hexColor:'#14b8a6', badge:'L3 ROUTER',
+            desc:'The router operates at Layer 2 AND Layer 3. It strips the incoming MAC header, reads the IP header to make a routing decision, then builds a new MAC header for the next hop. TCP and application data remain untouched and opaque.',
+            readable:['mac','ip','fcs'],
+            locked:['tcp','app'],
+            fields:[
+                { layer:'L2', color:'emerald', icon:'link',       name:'Incoming MAC', value:'Dst: FF:EE:DD:44:55:66 (this router) — accepted' },
+                { layer:'L3', color:'teal',    icon:'globe',      name:'Dst IP',       value:'142.250.190.46 → Routing table → WAN interface' },
+                { layer:'L3', color:'teal',    icon:'globe',      name:'TTL',          value:'64 → decremented to 63' },
+                { layer:'L3', color:'teal',    icon:'check-circle',name:'IP Checksum', value:'Recalculated after TTL change' },
+                { layer:'L2', color:'emerald', icon:'link',       name:'New Src MAC',  value:'11:22:33:DD:EE:FF (router egress port)' },
+                { layer:'L2', color:'emerald', icon:'link',       name:'New Dst MAC',  value:'77:88:99:AA:BB:CC (server or next hop)' },
+                { layer:'L2', color:'emerald', icon:'check-circle',name:'New FCS',     value:'CRC-32 recomputed for the new frame' },
+            ],
+            decision:'Routing lookup: 142.250.190.46 matches route → forward out WAN interface. L2 headers rewritten. TTL decremented 64→63. FCS recomputed.',
+        },
+        {
+            id:'switch2', name:'Switch 2', icon:'network', role:'L2 Forwarder',
+            color:'amber', hexColor:'#f59e0b', badge:'L2 SWITCH',
+            desc:'This switch on the server-side network operates identically to Switch 1 — Layer 2 only. It sees the new MAC addresses written by the router. IP, TCP, and application layers are completely invisible.',
+            readable:['mac','fcs'],
+            locked:['ip','tcp','app'],
+            fields:[
+                { layer:'L2', color:'emerald', icon:'link',       name:'Dst MAC',  value:'77:88:99:AA:BB:CC → CAM table → Port 7 (Server)' },
+                { layer:'L2', color:'emerald', icon:'link',       name:'Src MAC',  value:'11:22:33:DD:EE:FF (router) → Learned on Port 1' },
+                { layer:'L2', color:'emerald', icon:'check-circle',name:'FCS',     value:'CRC-32 verified ✓ — frame integrity OK' },
+            ],
+            decision:'MAC lookup: Dst 77:88:99:AA:BB:CC found → Port 7 (Server). Frame forwarded unmodified.',
+        },
+        {
+            id:'server', name:'Server', icon:'server', role:'Receiver (All Layers)',
+            color:'purple', hexColor:'#a855f7', badge:'RECEIVER',
+            desc:'The server strips headers layer by layer (de-encapsulation), moving UP the OSI stack. L2 is validated and stripped first, then L3, then L4, until only the raw HTTP request remains at L7 for the web application to process.',
+            readable:['mac','ip','tcp','app','fcs'],
+            locked:[],
+            fields:[
+                { layer:'L2', color:'emerald', icon:'check-circle',name:'FCS',        value:'CRC-32 validated ✓ — strip MAC header' },
+                { layer:'L3', color:'teal',    icon:'globe',       name:'Dst IP',      value:'142.250.190.46 matches this server ✓ — strip IP header' },
+                { layer:'L3', color:'teal',    icon:'globe',       name:'TTL',         value:'63 — still valid (> 0)' },
+                { layer:'L4', color:'cyan',    icon:'git-commit',  name:'Dst Port',    value:':443 (HTTPS) → hand to TLS/HTTP handler — strip TCP header' },
+                { layer:'L4', color:'cyan',    icon:'git-commit',  name:'Seq/Ack',     value:'In-order ✓ — send ACK back' },
+                { layer:'L7', color:'purple',  icon:'file-text',   name:'HTTP Request', value:'GET / HTTP/1.1 — processed by web application' },
+            ],
+            decision:'All headers stripped. Application data (HTTP GET) delivered to the web server process on port 443. Server will generate an HTTP 200 response and repeat the process in reverse.',
+        },
+    ];
+
+    // ═══════════════════════════════════════════════════════════════════
+    //  STATE
+    // ═══════════════════════════════════════════════════════════════════
+    let currentMode  = 'encap';
+    let currentStage = 0;     // 0..3 for encap
+    let currentDevice = 0;    // 0..4 for journey
+
+    // ═══════════════════════════════════════════════════════════════════
+    //  MODE SWITCHING
+    // ═══════════════════════════════════════════════════════════════════
+    function setMode(mode) {
+        currentMode = mode;
+        document.getElementById('encap-section').classList.toggle('hidden', mode !== 'encap');
+        document.getElementById('journey-section').classList.toggle('hidden', mode !== 'journey');
+        // Tab styling
+        const te = document.getElementById('tab-encap');
+        const tj = document.getElementById('tab-journey');
+        te.className = `flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${mode === 'encap' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`;
+        tj.className = `flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${mode === 'journey' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`;
+        if (mode === 'journey') renderJourney();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    //  ENCAPSULATION SECTION
+    // ═══════════════════════════════════════════════════════════════════
+    function renderStageButtons() {
+        const c = document.getElementById('stage-buttons');
+        c.innerHTML = STAGES.map((s, i) => {
+            const colors = {
+                purple: { active:'bg-purple-600 text-white border-purple-500 shadow-lg shadow-purple-500/20', inactive:'bg-slate-800 text-purple-400 border-purple-500/30 hover:bg-purple-900/30' },
+                cyan:   { active:'bg-cyan-600 text-white border-cyan-500 shadow-lg shadow-cyan-500/20',       inactive:'bg-slate-800 text-cyan-400 border-cyan-500/30 hover:bg-cyan-900/30' },
+                teal:   { active:'bg-teal-600 text-white border-teal-500 shadow-lg shadow-teal-500/20',       inactive:'bg-slate-800 text-teal-400 border-teal-500/30 hover:bg-teal-900/30' },
+                emerald:{ active:'bg-emerald-600 text-white border-emerald-500 shadow-lg shadow-emerald-500/20',inactive:'bg-slate-800 text-emerald-400 border-emerald-500/30 hover:bg-emerald-900/30' },
+            };
+            const cls = i === currentStage ? colors[s.color].active : colors[s.color].inactive;
+            const arrow = i < STAGES.length - 1 ? '<i data-lucide="chevron-right" class="w-4 h-4 text-slate-600 mx-1"></i>' : '';
+            return `
+                <button onclick="setStage(${i})" class="stage-btn ${cls} ${i === currentStage ? 'active':''} border rounded-xl px-4 py-2.5 text-sm font-bold flex items-center gap-2">
+                    <i data-lucide="${s.icon}" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">${s.title}</span>
+                    <span class="sm:hidden">${s.pdu}</span>
+                </button>${arrow}`;
+        }).join('');
+        lucide.createIcons();
+    }
+
+    function setStage(idx) {
+        currentStage = idx;
+        renderStageButtons();
+        renderEncapDiagram();
+        renderEncapDetail();
+    }
+
+    function renderEncapDiagram() {
+        const stage = STAGES[currentStage];
+        const diagram = document.getElementById('frame-diagram');
+        const labels  = document.getElementById('frame-labels');
+        const byteEl  = document.getElementById('byte-counter');
+        const dirEl   = document.getElementById('encap-direction');
+
+        byteEl.textContent = stage.totalSize;
+        dirEl.textContent  = `PDU: ${stage.pdu} — ${stage.layer}`;
+
+        let dHtml = '';
+        let lHtml = '';
+
+        FRAME_BLOCKS.forEach((block, i) => {
+            const isActive = stage.activeBlocks.includes(block.id);
+            const c = C[block.colorKey];
+            if (isActive) {
+                dHtml += `
+                    <div class="frame-block readable entering ${c.bg} border ${c.border} ring-1 ${c.ring}"
+                         style="flex:${block.flex}; animation-delay:${i * 80}ms">
+                        <span class="block-label ${c.text}">${block.label}</span>
+                        <span class="block-size ${c.text}">${block.size}</span>
+                    </div>`;
+                lHtml += `<div style="flex:${block.flex}" class="text-center"><span class="text-[10px] font-bold ${c.text} opacity-70">${block.layer}</span></div>`;
+            }
+        });
+
+        diagram.innerHTML = dHtml;
+        labels.innerHTML  = lHtml;
+    }
+
+    function renderEncapDetail() {
+        const stage = STAGES[currentStage];
+        const det = document.getElementById('encap-detail');
+        const stageColors = { purple:'text-purple-400 bg-purple-500/10 border-purple-500/30',
+                              cyan:'text-cyan-400 bg-cyan-500/10 border-cyan-500/30',
+                              teal:'text-teal-400 bg-teal-500/10 border-teal-500/30',
+                              emerald:'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' };
+        const sc = stageColors[stage.color];
+
+        let html = `
+            <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${sc} uppercase tracking-wider border">${stage.layer} — ${stage.pdu}</span>
+            </div>
+            <h3 class="text-lg font-bold text-white">${stage.title}</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">${stage.desc}</p>
+            <div class="pt-1">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">
+                    ${currentStage === 0 ? 'Payload Fields' : 'Header Fields Added'}
+                </p>
+        `;
+
+        stage.fields.forEach(f => {
+            const fc = { purple:'border-purple-500/30 text-purple-400', cyan:'border-cyan-500/30 text-cyan-400',
+                         teal:'border-teal-500/30 text-teal-400', emerald:'border-emerald-500/30 text-emerald-400' };
+            html += `
+                <div class="field-row flex items-start gap-3 py-2 border-b border-slate-800/60">
+                    <span class="text-[10px] font-bold ${fc[f.color]} border rounded px-1.5 py-0.5 mt-0.5 shrink-0">${f.layer}</span>
+                    <div class="min-w-0">
+                        <p class="text-xs font-bold text-slate-300">${f.name}</p>
+                        <p class="text-[11px] text-slate-500 font-mono break-all">${f.value}</p>
+                    </div>
+                </div>`;
+        });
+
+        html += `</div>
+            <div class="mt-3 p-3 bg-slate-800/60 border border-slate-700 rounded-lg">
+                <p class="text-[11px] text-slate-400 leading-relaxed"><strong class="text-slate-300">What's added:</strong> ${stage.added}</p>
+            </div>`;
+
+        det.innerHTML = html;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    //  NETWORK JOURNEY SECTION
+    // ═══════════════════════════════════════════════════════════════════
+    function renderTopology() {
+        const bar = document.getElementById('topology-bar');
+        let html = '';
+        DEVICES.forEach((d, i) => {
+            const isActive = i === currentDevice;
+            const isPast   = i < currentDevice;
+            const cardBg = isActive ? `bg-${d.color}-900/40 border-${d.color}-500/70 shadow-lg` : isPast ? 'bg-slate-700/40 border-slate-600' : 'bg-slate-800/60 border-slate-700';
+            const iconCol = isActive ? `text-${d.color}-400` : isPast ? 'text-slate-400' : 'text-slate-500';
+            const labelCol = isActive ? 'text-white' : 'text-slate-400';
+
+            html += `
+                <div onclick="setDevice(${i})" class="device-card ${isActive ? 'active':''} ${cardBg} border rounded-xl px-4 py-3 flex flex-col items-center gap-1.5 min-w-[90px] z-10"
+                     style="${isActive ? 'box-shadow: 0 0 20px ' + d.hexColor + '22;' : ''}">
+                    <i data-lucide="${d.icon}" class="w-5 h-5 ${iconCol}"></i>
+                    <span class="text-xs font-bold ${labelCol} whitespace-nowrap">${d.name}</span>
+                    <span class="text-[9px] font-bold rounded-full px-2 py-0.5 ${isActive ? `bg-${d.color}-500/20 text-${d.color}-300` : 'bg-slate-700 text-slate-500'} uppercase tracking-wider">${d.badge}</span>
+                </div>`;
+
+            if (i < DEVICES.length - 1) {
+                const lineColor = i < currentDevice ? 'bg-blue-500/50' : 'bg-slate-700';
+                html += `<div class="topo-line ${lineColor} self-center relative">
+                    ${i === currentDevice - 1 || i === currentDevice ? '' : ''}
+                </div>`;
+            }
+        });
+        bar.innerHTML = html;
+        lucide.createIcons();
+    }
+
+    function renderXray() {
+        const dev = DEVICES[currentDevice];
+        const diagram = document.getElementById('xray-diagram');
+        const desc = document.getElementById('device-desc');
+        const badge = document.getElementById('device-role-badge');
+        const counter = document.getElementById('dev-counter');
+
+        desc.textContent = dev.desc;
+        counter.textContent = `${currentDevice + 1} / ${DEVICES.length}`;
+
+        const devColors = { blue:'bg-blue-500/15 text-blue-400 border-blue-500/30', amber:'bg-amber-500/15 text-amber-400 border-amber-500/30',
+                           teal:'bg-teal-500/15 text-teal-400 border-teal-500/30', purple:'bg-purple-500/15 text-purple-400 border-purple-500/30' };
+        badge.innerHTML = `<span class="text-[10px] font-bold px-2.5 py-1 rounded-full border ${devColors[dev.color]} uppercase tracking-wider">${dev.role}</span>`;
+
+        // Frame blocks
+        let dHtml = '';
+        FRAME_BLOCKS.forEach(block => {
+            const isReadable = dev.readable.includes(block.id);
+            const c = C[block.colorKey];
+            const state = isReadable ? `readable ${c.bg} border ${c.border} ring-1 ${c.ring}` : `locked bg-slate-800/80 border border-slate-600/40`;
+            dHtml += `
+                <div class="frame-block ${state}" style="flex:${block.flex}; transition-delay: 50ms">
+                    <span class="block-label ${isReadable ? c.text : 'text-slate-600'}">${block.label}</span>
+                    <span class="block-size ${isReadable ? c.text : 'text-slate-700'}">${block.size}</span>
+                    <span class="block-layer ${isReadable ? c.text : 'text-slate-700'}">${block.layer}</span>
+                </div>`;
+        });
+        diagram.innerHTML = dHtml;
+
+        // Nav buttons
+        document.getElementById('dev-prev-btn').disabled = currentDevice === 0;
+        document.getElementById('dev-next-btn').disabled = currentDevice === DEVICES.length - 1;
+    }
+
+    function renderJourneyDetail() {
+        const dev = DEVICES[currentDevice];
+        const det = document.getElementById('journey-detail');
+
+        let html = `
+            <div class="flex items-center gap-2 mb-1">
+                <i data-lucide="${dev.icon}" class="w-5 h-5 text-${dev.color}-400"></i>
+                <h3 class="text-lg font-bold text-white">${dev.name}</h3>
+            </div>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">What This Device Reads</p>
+        `;
+
+        dev.fields.forEach(f => {
+            const fc = { purple:'border-purple-500/30 text-purple-400', cyan:'border-cyan-500/30 text-cyan-400',
+                         teal:'border-teal-500/30 text-teal-400', emerald:'border-emerald-500/30 text-emerald-400' };
+            html += `
+                <div class="field-row flex items-start gap-3 py-2 border-b border-slate-800/60">
+                    <span class="text-[10px] font-bold ${fc[f.color]} border rounded px-1.5 py-0.5 mt-0.5 shrink-0">${f.layer}</span>
+                    <div class="min-w-0">
+                        <p class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                            <i data-lucide="${f.icon}" class="w-3 h-3 opacity-50"></i>${f.name}
+                        </p>
+                        <p class="text-[11px] text-slate-500 font-mono break-all">${f.value}</p>
+                    </div>
+                </div>`;
+        });
+
+        det.innerHTML = html;
+        lucide.createIcons();
+
+        // Decision box
+        const dbox = document.getElementById('decision-box');
+        const dColors = { blue:'border-blue-500/30', amber:'border-amber-500/30', teal:'border-teal-500/30', purple:'border-purple-500/30' };
+        dbox.innerHTML = `
+            <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="zap" class="w-4 h-4 text-${dev.color}-400"></i>
+                <span class="text-xs font-bold text-white uppercase tracking-wider">Forwarding Decision</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">${dev.decision}</p>`;
+        dbox.className = `decision-box bg-slate-900 border ${dColors[dev.color]} rounded-xl p-4`;
+        lucide.createIcons();
+    }
+
+    function renderJourney() {
+        renderTopology();
+        renderXray();
+        renderJourneyDetail();
+    }
+
+    function setDevice(idx) {
+        currentDevice = idx;
+        renderJourney();
+    }
+    function nextDevice() { if (currentDevice < DEVICES.length - 1) setDevice(currentDevice + 1); }
+    function prevDevice() { if (currentDevice > 0) setDevice(currentDevice - 1); }
+
+    // ═══════════════════════════════════════════════════════════════════
+    //  INIT
+    // ═══════════════════════════════════════════════════════════════════
+    setMode('encap');
+    renderStageButtons();
+    renderEncapDiagram();
+    renderEncapDetail();
+    lucide.createIcons();
+    </script>
+</body>
+</html>

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Learning Hub — Overview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } } } }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tech-card {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .analogy-card {
+            border-left: 4px solid #10b981;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-950 border-b border-slate-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i data-lucide="git-merge" class="w-8 h-8 text-blue-400"></i>
+                <h1 class="text-2xl font-bold tracking-tight">Git <span class="text-slate-400 font-light">&amp;</span>
+                    The Warehouse</h1>
+            </div>
+            <p class="hidden sm:block text-sm text-slate-400">Overview &amp; Quick Reference</p>
+        </div>
+    </header>
+
+    <!-- Sibling Page Nav -->
+    <section class="bg-slate-950 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Git Learning Hub</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                <!-- Git Overview (active) -->
+                <div
+                    class="bg-slate-800 border border-blue-500/40 rounded-2xl overflow-hidden shadow-lg shadow-blue-900/20 ring-1 ring-blue-500/20">
+                    <div class="bg-blue-900/20 px-5 pt-5 pb-3">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-blue-500/20 rounded-lg">
+                                <i data-lucide="book-open" class="w-5 h-5 text-blue-400"></i>
+                            </div>
+                            <h3 class="font-bold text-white">Git Overview</h3>
+                            <span
+                                class="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 font-semibold">You
+                                are here</span>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed">VCS fundamentals, Git basics, setup commands,
+                            and a full quick-reference cheat sheet.</p>
+                    </div>
+                    <div class="px-5 pb-4 pt-3">
+                        <a href="git_index.html"
+                            class="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-blue-600/50 text-blue-200 font-semibold text-sm cursor-default">
+                            <i data-lucide="check" class="w-4 h-4"></i> Current Page
+                        </a>
+                        <p class="text-slate-500 text-xs mt-2">VCS intro &middot; git init &middot; Cheat Sheet</p>
+                    </div>
+                </div>
+
+                <!-- Workflow & Branching -->
+                <div
+                    class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden hover:-translate-y-0.5 transition-transform duration-200 shadow-lg">
+                    <div class="bg-violet-900/10 px-5 pt-5 pb-3">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-violet-500/20 rounded-lg">
+                                <i data-lucide="git-branch" class="w-5 h-5 text-violet-400"></i>
+                            </div>
+                            <h3 class="font-bold text-white">Workflow &amp; Branching</h3>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed">The three-state workflow, branching, merging,
+                            push/pull, remotes, stash, and rebase.</p>
+                    </div>
+                    <div class="px-5 pb-4 pt-3">
+                        <a href="git_workflow.html"
+                            class="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-violet-700 hover:bg-violet-600 text-white font-semibold text-sm transition-colors">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> Open Workflow
+                        </a>
+                        <p class="text-slate-500 text-xs mt-2">Branches &middot; Merging &middot; Push/Pull &middot;
+                            Remotes</p>
+                    </div>
+                </div>
+
+                <!-- History & Commits -->
+                <div
+                    class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden hover:-translate-y-0.5 transition-transform duration-200 shadow-lg">
+                    <div class="bg-emerald-900/10 px-5 pt-5 pb-3">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-emerald-500/20 rounded-lg">
+                                <i data-lucide="git-commit" class="w-5 h-5 text-emerald-400"></i>
+                            </div>
+                            <h3 class="font-bold text-white">History &amp; Commits</h3>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed">git log, commit IDs, going back in time,
+                            reset, revert, and recovering with reflog.</p>
+                    </div>
+                    <div class="px-5 pb-4 pt-3">
+                        <a href="git_status.html"
+                            class="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-semibold text-sm transition-colors">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> Open History
+                        </a>
+                        <p class="text-slate-500 text-xs mt-2">git log &middot; reset &middot; revert &middot; reflog
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <div class="bg-slate-900 border-b border-slate-800 sticky top-[68px] z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex space-x-2 md:space-x-6 overflow-x-auto py-3 no-scrollbar" id="nav-tabs">
+                <!-- Tabs generated by JS -->
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <div id="content-container" class="fade-in">
+            <!-- Content injected by JS -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 text-slate-500 py-6 text-center text-sm">
+        <p>
+            <a href="git_index.html" class="text-blue-400">Git Overview</a> &middot;
+            <a href="git_workflow.html" class="hover:text-blue-400 transition-colors">Workflow &amp; Branching</a>
+            &middot;
+            <a href="git_status.html" class="hover:text-blue-400 transition-colors">History &amp; Commits</a> &middot;
+            <a href="../index.html" class="hover:text-blue-400 transition-colors">&#8592; DevOps Hub</a>
+        </p>
+    </footer>
+
+    <script>
+        const contentData = {
+            vcs: {
+                title: "Version Control Systems (VCS)",
+                icon: "history",
+                intro: "Before diving into Git, we must understand the core problem: managing code history and collaboration as it grows in complexity. Version Control Systems (VCS) provide the infrastructure needed to record and recall specific versions of projects, ensuring no work is ever lost.",
+                sections: [
+                    {
+                        techTitle: "The Requirement for VCS",
+                        techText: "Without VCS, developers make copies of folders (e.g., project_v1, project_final). This leads to lost work and impossible collaboration. VCS provides a strict timeline and the ability to revert mistakes.",
+                        analogyTitle: "The Farm's Record Book",
+                        analogyText: "Imagine running a massive farm with 50 workers. Without a ledger, you don't know who planted what, when, or which fertilizer they used. VCS is the Master Ledger. It records every seed planted and who did it.",
+                        techIcon: "file-code",
+                        analogyIcon: "book-open",
+                        commands: ["git init", "git clone <url>"]
+                    },
+                    {
+                        techTitle: "Distributed VCS (Git)",
+                        techText: "Git is Distributed. Every developer fully clones the entire repository (history and all) to their local machine. You can work completely offline, and it's highly resilient to server crashes.",
+                        analogyTitle: "Distributed Warehouses",
+                        analogyText: "Every farmer has an exact miniature replica of the main city silo on their own farm. You work locally all day, and later sync your personal silo with the city's main silo.",
+                        techIcon: "network",
+                        analogyIcon: "warehouse",
+                        commands: ["git config --global user.name 'Your Name'", "git config --global user.email 'you@example.com'"]
+                    },
+                    {
+                        techTitle: "The Three States Every File Lives In",
+                        techText: "Every file in a Git repo is in one of three states.<br><br><strong>Modified</strong> — you changed it in your working directory, but Git hasn't recorded the change yet.<br><strong>Staged</strong> — you marked the modified file to go into the next commit snapshot.<br><strong>Committed</strong> — the data is safely stored in your local Git database.",
+                        analogyTitle: "Crop → Crate → Shelf",
+                        analogyText: "A harvested carrot sits loose in the field (Modified). You pack it into a labelled crate on the loading dock (Staged). The sealed crate goes onto a numbered shelf in the warehouse (Committed). Nothing in the warehouse can ever be lost.",
+                        techIcon: "layers",
+                        analogyIcon: "package",
+                        commands: ["# See the state of all your files", "git status", "# Stage a file", "git add <file>", "# Commit what's staged", "git commit -m '<message>'"]
+                    },
+                    {
+                        techTitle: "Snapshots, Not Differences",
+                        techText: "Most older VCS tools store file <em>deltas</em> (what changed). Git stores <strong>full snapshots</strong> of every file at each commit. If a file didn't change, Git just stores a pointer to the previous version — making operations blazing fast and history independent.",
+                        analogyTitle: "Photographs vs. Diff Lists",
+                        analogyText: "Imagine taking a complete photograph of every farm plot each harvest day (Git's approach), versus keeping a list of 'what was different from yesterday'. The photo is self-contained — you don't need yesterday to understand today.",
+                        techIcon: "camera",
+                        analogyIcon: "image",
+                        commands: ["# Show a snapshot at a specific commit", "git show <commit>", "# Compare two snapshots", "git diff <commit1> <commit2>"]
+                    },
+                    {
+                        techTitle: "Your Identity in Git",
+                        techText: "Every commit is permanently stamped with your name and email. Git reads these from its global config. Set them once when you first install Git on a machine. They can be overridden per-repo with <code>--local</code>.",
+                        analogyTitle: "Signing the Ledger",
+                        analogyText: "The farm rules say every ledger entry must be signed with a full name and contact number. Without proper identity, no entry is accepted. Your git config is your official farm stamp — applied to every crate you seal.",
+                        techIcon: "user-check",
+                        analogyIcon: "stamp",
+                        commands: ["# Set globally (one time per machine)", "git config --global user.name 'Your Name'", "git config --global user.email 'you@example.com'", "# Verify your config", "git config --list", "# Override for one repo", "git config --local user.email 'work@company.com'"]
+                    },
+                    {
+                        techTitle: "Starting a Repository",
+                        techText: "There are two ways to start with Git. <strong>git init</strong> creates a brand-new repo in an existing folder. <strong>git clone</strong> downloads an existing remote repo (including all history) to your machine. Both result in a fully functional local repository.",
+                        analogyTitle: "Building a New Barn vs. Moving Into One",
+                        analogyText: "<em>git init</em> is like constructing a fresh barn from scratch on your land and starting a new ledger. <em>git clone</em> is like moving into an already-established farm: you get a complete copy of the barn, all its shelves, and every historical ledger entry.",
+                        techIcon: "git-fork",
+                        analogyIcon: "home",
+                        commands: ["# Option 1: Start fresh", "mkdir my-project && cd my-project", "git init", "# Option 2: Copy an existing project", "git clone <url>", "# What git creates inside:", "ls .git"]
+                    }
+                ]
+            },
+            cheatsheet: {
+                title: "Git Command Cheat Sheet",
+                icon: "terminal-square",
+                intro: "Your quick-reference guide for the terminal.",
+                isCheatSheet: true,
+                categories: [
+                    {
+                        name: "1. Setup & Initialization",
+                        items: [
+                            { cmd: "git init", desc: "Initialize a local Git repository in the current folder." },
+                            { cmd: "git clone url", desc: "Download a project and its entire version history." },
+                            { cmd: "git config --global user.name 'Name'", desc: "Set the name attached to your commits." }
+                        ]
+                    },
+                    {
+                        name: "2. The Daily Workflow",
+                        items: [
+                            { cmd: "git status", desc: "List which files are staged, unstaged, and untracked." },
+                            { cmd: "git diff", desc: "Show exact line-by-line changes not yet staged." },
+                            { cmd: "git add file", desc: "Snapshot the file in preparation for versioning." },
+                            { cmd: "git commit -m 'Message'", desc: "Record the snapshot permanently in version history." }
+                        ]
+                    },
+                    {
+                        name: "3. Branching",
+                        items: [
+                            { cmd: "git branch", desc: "List all local branches in the current repository." },
+                            { cmd: "git branch branch-name", desc: "Create a new branch." },
+                            { cmd: "git checkout branch-name", desc: "Switch to the specified branch." },
+                            { cmd: "git checkout -b branch-name", desc: "Create a new branch AND switch to it immediately." }
+                        ]
+                    },
+                    {
+                        name: "4. Merging & History",
+                        items: [
+                            { cmd: "git merge branch-name", desc: "Combine the specified branch's history into the current branch." },
+                            { cmd: "git log", desc: "List version history for the current branch." },
+                            { cmd: "git log --oneline", desc: "Show history in a compact, single-line format." }
+                        ]
+                    },
+                    {
+                        name: "5. Remote Repositories",
+                        items: [
+                            { cmd: "git remote -v", desc: "Show all configured remotes and their URLs." },
+                            { cmd: "git remote add origin url", desc: "Connect a local repo to a remote (e.g. GitHub)." },
+                            { cmd: "git push origin branch", desc: "Upload local branch commits to the remote repository." },
+                            { cmd: "git pull origin branch", desc: "Fetch and merge remote commits into your current branch." },
+                            { cmd: "git fetch origin", desc: "Download remote changes without merging them." }
+                        ]
+                    },
+                    {
+                        name: "6. Stash & Undo",
+                        items: [
+                            { cmd: "git stash", desc: "Temporarily shelve uncommitted changes." },
+                            { cmd: "git stash pop", desc: "Re-apply the most recently stashed changes." },
+                            { cmd: "git revert commit", desc: "Create a new commit that undoes a previous commit (safe for shared branches)." },
+                            { cmd: "git rebase origin/main", desc: "Replay your commits on top of the latest remote main." }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        let currentTab = 'vcs';
+
+        function renderTabs() {
+            const navContainer = document.getElementById('nav-tabs');
+            navContainer.innerHTML = '';
+            Object.keys(contentData).forEach(key => {
+                const data = contentData[key];
+                const isActive = currentTab === key;
+                const btn = document.createElement('button');
+                btn.className = `flex items-center space-x-2 px-4 py-3 text-sm font-semibold rounded-t-lg transition-colors whitespace-nowrap border-b-2 ${isActive
+                    ? 'text-blue-400 bg-slate-800/50 border-blue-400'
+                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 border-transparent'
+                    }`;
+                btn.onclick = () => { currentTab = key; renderTabs(); renderContent(); };
+                btn.innerHTML = `<i data-lucide="${data.icon}" class="w-4 h-4"></i><span>${data.title}</span>`;
+                navContainer.appendChild(btn);
+                if (isActive) requestAnimationFrame(() => btn.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }));
+            });
+            lucide.createIcons();
+        }
+
+        function renderCodeBlock(commands) {
+            if (!commands || commands.length === 0) return '';
+            const cmdHtml = commands.map(cmd => {
+                if (cmd.startsWith('#')) return `<div class="text-slate-500">${cmd}</div>`;
+                return `<div><span class="text-emerald-500 select-none">$ </span><span class="text-slate-200">${cmd}</span></div>`;
+            }).join('');
+            return `
+                <div class="mt-5 rounded-lg overflow-hidden border border-slate-700 shadow-sm bg-slate-900">
+                    <div class="bg-slate-800 px-4 py-1.5 flex items-center space-x-2">
+                        <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                        <span class="text-xs text-slate-400 font-mono ml-4">Terminal</span>
+                    </div>
+                    <div class="p-4 font-mono text-sm leading-relaxed overflow-x-auto">${cmdHtml}</div>
+                </div>`;
+        }
+
+        function renderCheatSheet(data) {
+            let html = `
+                <div class="mb-10 text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">${data.title}</h2>
+                    <p class="text-lg text-slate-400">${data.intro}</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+
+            data.categories.forEach(cat => {
+                html += `
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-lg font-bold text-white border-b border-slate-700 pb-2 mb-4 flex items-center">
+                            <i data-lucide="chevron-right" class="w-5 h-5 text-blue-400 mr-2"></i> ${cat.name}
+                        </h3>
+                        <div class="space-y-4">`;
+                cat.items.forEach(item => {
+                    html += `
+                        <div>
+                            <div class="bg-slate-900 text-green-400 font-mono text-sm p-2 rounded-md mb-1 border border-slate-700">
+                                <span class="text-slate-500 select-none">$ </span>${item.cmd}
+                            </div>
+                            <p class="text-sm text-slate-400 pl-1">${item.desc}</p>
+                        </div>`;
+                });
+                html += `</div></div>`;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function renderContent() {
+            const container = document.getElementById('content-container');
+            const data = contentData[currentTab];
+            container.classList.remove('fade-in');
+            void container.offsetWidth;
+            container.classList.add('fade-in');
+
+            if (data.isCheatSheet) {
+                container.innerHTML = renderCheatSheet(data);
+                lucide.createIcons();
+                return;
+            }
+
+            let html = `
+                <div class="mb-10 text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">${data.title}</h2>
+                    <p class="text-lg text-slate-400">${data.intro}</p>
+                </div>
+            `;
+
+            if (currentTab === 'vcs') {
+                html += `
+                <!-- Generations of VCS Section -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <i data-lucide="layers-3" class="w-5 h-5 text-blue-400"></i>
+                        The Evolution: Three Generations of VCS
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Local VCS -->
+                        <div class="bg-slate-800/40 border border-slate-700/50 rounded-2xl p-6 relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i data-lucide="monitor" class="w-12 h-12"></i>
+                            </div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-slate-700 text-[10px] font-bold text-slate-300">G1</span>
+                                <h4 class="font-bold text-white">Local VCS</h4>
+                            </div>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-4">A simple database built into your local file system. It tracks changes to files on <strong class="text-slate-200">one machine</strong> only.</p>
+                            <div class="text-[10px] text-blue-400/70 font-mono font-bold uppercase tracking-wider">Example: RCS</div>
+                        </div>
+
+                        <!-- Centralized VCS -->
+                        <div class="bg-slate-800/40 border border-slate-700/50 rounded-2xl p-6 relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i data-lucide="server" class="w-12 h-12"></i>
+                            </div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-blue-500/20 text-[10px] font-bold text-blue-400 border border-blue-500/30">G2</span>
+                                <h4 class="font-bold text-white">Centralized (CVCS)</h4>
+                            </div>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-4">A single <strong class="text-slate-200">central server</strong> holds all versions. You check out what you need, but collaboration requires an active network connection.</p>
+                            <div class="text-[10px] text-blue-400/70 font-mono font-bold uppercase tracking-wider">Example: SVN, CVS, TFS</div>
+                        </div>
+
+                        <!-- Distributed VCS -->
+                        <div class="bg-blue-900/10 border border-blue-500/30 rounded-2xl p-6 relative overflow-hidden group ring-1 ring-blue-500/10">
+                            <div class="absolute top-0 right-0 p-3 opacity-20 group-hover:opacity-30 transition-opacity">
+                                <i data-lucide="git-branch" class="w-12 h-12 text-blue-400"></i>
+                            </div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-[10px] font-bold text-white">G3</span>
+                                <h4 class="font-bold text-white">Distributed (DVCS)</h4>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-4">Clients <strong class="text-white text-shadow-sm shadow-blue-500">fully clone</strong> the entire project history. Every clone is a complete backup. Speed and offline work are baseline features.</p>
+                            <div class="text-[10px] text-blue-400/70 font-mono font-bold uppercase tracking-wider">The Standard: Git</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- What is Git? Overview Panel -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 mb-10 shadow-lg">
+                    <div class="flex items-start gap-4 mb-6">
+                        <div class="p-3 bg-blue-500/15 border border-blue-500/25 rounded-xl flex-shrink-0">
+                            <i data-lucide="git-merge" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-white mb-2">What is Git?</h2>
+                            <p class="text-slate-400 leading-relaxed">Git is a <strong class="text-slate-200">distributed version control system</strong> that tracks changes in source code. Every developer gets a full copy of the repository — including complete history — on their own machine.</p>
+                        </div>
+                    </div>
+
+                    <!-- Mental model callout -->
+                    <div class="bg-blue-950/40 border border-blue-500/25 border-l-4 border-l-blue-400 rounded-xl rounded-l-none p-4 mb-6">
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            <strong class="text-blue-400">Mental model:</strong>
+                            <span class="font-mono text-blue-300 text-xs mx-1">Working Directory</span> = your actual files &middot;
+                            <span class="font-mono text-amber-300 text-xs mx-1">Staging Area</span> = what goes into the next commit &middot;
+                            <span class="font-mono text-emerald-300 text-xs mx-1">Repository</span> = permanent snapshot history
+                        </p>
+                    </div>
+
+                    <!-- Three pillars -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 tech-card">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i data-lucide="zap" class="w-4 h-4 text-blue-400"></i>
+                                <h3 class="font-bold text-white text-sm">Why Git?</h3>
+                            </div>
+                            <p class="text-slate-400 text-sm leading-relaxed">Full offline history. Lightning-fast branching. Impossible to lose committed work. The industry standard for a reason.</p>
+                            <div class="mt-3 flex flex-wrap gap-1">
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Offline work</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Speed</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Safety</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5" style="border-left:4px solid #10b981">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i>
+                                <h3 class="font-bold text-white text-sm">Core concepts</h3>
+                            </div>
+                            <p class="text-slate-400 text-sm leading-relaxed">Commits, branches, merges, remotes, HEAD, staging, stash — seven ideas that unlock everything Git can do.</p>
+                            <div class="mt-3 flex flex-wrap gap-1">
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Commits</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Branches</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Remotes</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5" style="border-left:4px solid #a855f7">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i data-lucide="git-commit-horizontal" class="w-4 h-4 text-purple-400"></i>
+                                <h3 class="font-bold text-white text-sm">Daily flow</h3>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3 leading-relaxed">Edit files → stage changes → commit snapshot → push to remote.</p>
+                            <div class="bg-slate-950 rounded-lg overflow-hidden border border-slate-700">
+                                <div class="bg-slate-800/80 px-3 py-1.5 flex items-center gap-1.5">
+                                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                                    <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="p-3 font-mono text-[10px] text-emerald-400 leading-relaxed">
+                                    <div><span class="text-slate-500">$ </span>git add .</div>
+                                    <div><span class="text-slate-500">$ </span>git commit -m "feat: login"</div>
+                                    <div><span class="text-slate-500">$ </span>git push</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }
+
+            html += `<div class="space-y-8">`;
+
+            data.sections.forEach(sec => {
+                const terminalHtml = renderCodeBlock(sec.commands);
+                html += `
+                    <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-700">
+                            <div class="p-6 md:p-8 tech-card bg-slate-900/50 flex flex-col h-full">
+                                <div>
+                                    <div class="flex items-center space-x-3 mb-4">
+                                        <div class="p-2 bg-blue-900/50 rounded-lg text-blue-400">
+                                            <i data-lucide="${sec.techIcon}"></i>
+                                        </div>
+                                        <h3 class="text-xl font-bold text-white">The Technical Reality</h3>
+                                    </div>
+                                    <h4 class="text-sm font-bold uppercase tracking-wider text-blue-400 mb-3">${sec.techTitle}</h4>
+                                    <div class="text-slate-300 leading-relaxed text-sm md:text-base">${sec.techText}</div>
+                                </div>
+                                <div class="mt-auto pt-4">${terminalHtml}</div>
+                            </div>
+                            <div class="p-6 md:p-8 analogy-card bg-emerald-950/20 flex flex-col h-full justify-center">
+                                <div class="flex items-center space-x-3 mb-4">
+                                    <div class="p-2 bg-emerald-900/50 rounded-lg text-emerald-400">
+                                        <i data-lucide="${sec.analogyIcon}"></i>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-white">The Analogy</h3>
+                                </div>
+                                <h4 class="text-sm font-bold uppercase tracking-wider text-emerald-400 mb-3">${sec.analogyTitle}</h4>
+                                <div class="text-slate-300 leading-relaxed text-sm md:text-base italic">"${sec.analogyText}"</div>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        renderTabs();
+        renderContent();
+    </script>
+
+</body>
+
+</html>

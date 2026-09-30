@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linux Logging & Monitoring</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .fade-in { animation: fadeIn 0.4s ease-in-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .tab-btn.active {
+      background-color: rgb(30 41 59);
+      border-color: rgb(20 184 166); /* teal-500 */
+      color: rgb(45 212 191); /* teal-400 */
+    }
+    .tab-btn {
+      transition: all 0.2s;
+    }
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+
+  <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <i data-lucide="activity" class="w-7 h-7 text-teal-500"></i>
+        <h1 class="text-xl font-bold tracking-tight">Linux <span class="text-slate-400 font-light">Logging & Monitoring</span></h1>
+      </div>
+      <a href="linux_index.html" class="flex items-center gap-2 text-sm text-slate-400 hover:text-teal-500 transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span class="hidden sm:inline">Back to Linux Hub</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full fade-in">
+    
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold text-white mb-2">System Logs & Monitoring</h2>
+      <p class="text-slate-400 max-w-3xl leading-relaxed">System logs are records of system activities (including dates, processes, and messages). Log files provide the essential paper trail needed for system troubleshooting, security auditing, and automated analysis.</p>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex overflow-x-auto space-x-2 mb-8 pb-2 border-b border-slate-800 scrollbar-hide" id="tab-container">
+      <!-- Tabs injected by JS -->
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TAB 1: CORE CONCEPTS                           -->
+    <!-- ============================================== -->
+    <section id="sec-core" class="tab-content space-y-8 active">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg border-l-4 border-l-teal-500">
+          <h3 class="font-bold text-white mb-2 text-lg">Logging Services</h3>
+          <p class="text-slate-400 text-sm mb-4">A logging service is a daemon that tracks logs or errors. Log messages are stored in separate files in the <code class="bg-slate-900 px-1 py-0.5 rounded text-teal-300 font-mono">/var/log</code> directory. The main log file is often <code class="bg-slate-900 px-1 py-0.5 rounded text-teal-300 font-mono">/var/log/messages</code> or <code class="bg-slate-900 px-1 py-0.5 rounded text-teal-300 font-mono">/var/log/syslog</code>.</p>
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+            <h4 class="font-bold text-teal-300 mb-2 text-sm flex items-center gap-2"><i data-lucide="bot" class="w-4 h-4"></i> Automating Log Analysis</h4>
+            <p class="text-xs text-slate-400">During maintenance sessions, instead of manually parsing large files, you can automate log analysis by writing Perl or Bash scripts. For example, write a script to parse a mail log and notify you of rejected messages, and execute it via a crontab entry.</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg border-l-4 border-l-emerald-500">
+          <h3 class="font-bold text-white mb-2 text-lg">Automatic Rotation</h3>
+          <p class="text-slate-400 text-sm mb-4">A system of regular rotation of logs to maintain a minimum log file size using the <code class="bg-slate-900 px-1 py-0.5 rounded text-emerald-300 font-mono">logrotate</code> utility.</p>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside">
+            <li>When executed, logrotate adds a <code class="font-mono text-emerald-300">.1</code> to the end of the current log file.</li>
+            <li>Previously rotated files become <code class="font-mono text-emerald-300">.2</code>, <code class="font-mono text-emerald-300">.3</code>, etc.</li>
+            <li>Can be scheduled daily, weekly, or monthly.</li>
+            <li><strong>Why?</strong> Saves disk space! Older log files are pushed out when a limit is reached, preventing the hard drive from running out of free space and crashing the computer.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg border-l-4 border-l-blue-500">
+          <h3 class="font-bold text-white mb-2 text-lg">The Central Network Log Server</h3>
+          <p class="text-slate-400 text-sm mb-4">A server used to implement centralized logging services across a network. It receives syslog messages from Linux/Windows servers and network devices (routers, switches, firewalls).</p>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside">
+            <li>Performs log analysis, data mining, and generates alerts/reports.</li>
+            <li>Ensures logs are safe and available even if the originating computer or disk crashes.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg border-l-4 border-l-indigo-500">
+          <h3 class="font-bold text-white mb-2 text-lg">MRTG</h3>
+          <p class="text-slate-400 text-sm mb-4">Multi Router Traffic Grapher (MRTG) is free software licensed under GPL. It is used to monitor and measure the traffic load on network links, representing the data in graphical form.</p>
+        </div>
+      </div>
+      
+    </section>
+
+    <!-- ============================================== -->
+    <!-- TAB 2: DAEMONS & CONFIGS                       -->
+    <!-- ============================================== -->
+    <section id="sec-daemons" class="tab-content space-y-8">
+
+      <!-- syslogd -->
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg border-t-4 border-t-rose-500">
+        <h3 class="font-bold text-white mb-2 text-xl flex items-center gap-2"><i data-lucide="cpu" class="w-5 h-5 text-rose-400"></i> The syslogd Utility</h3>
+        <p class="text-slate-400 text-sm mb-4">Tracks remote and local system logs. Settings are configured in <code class="bg-slate-900 px-1 py-0.5 rounded text-rose-300 font-mono">/etc/syslog.conf</code>. Syntax: <code class="bg-slate-900 px-1 py-0.5 rounded text-rose-300 font-mono">syslogd [options]</code> (Install via <code class="font-mono">sudo apt install inetutils-syslogd</code>)</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <div>
+            <table class="w-full text-left text-sm text-slate-400 border-collapse">
+              <thead><tr class="border-b border-slate-700 text-white"><th class="py-2 px-2">Option</th><th class="py-2 px-2">Used To</th></tr></thead>
+              <tbody>
+                <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-rose-300 text-xs">-d</td><td class="py-2 px-2 text-xs">Turn on debug mode.</td></tr>
+                <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-rose-300 text-xs">-f {file}</td><td class="py-2 px-2 text-xs">Specify a new config file instead of syslog.conf.</td></tr>
+                <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-rose-300 text-xs">-m {int}</td><td class="py-2 px-2 text-xs">Time interval between timestamp marks in the log.</td></tr>
+                <tr class="hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-rose-300 text-xs">-r</td><td class="py-2 px-2 text-xs">Enable receiving messages from a network.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+            <h4 class="font-bold text-rose-300 mb-2 text-sm">logger</h4>
+            <p class="text-xs text-slate-400">The <code class="font-mono">logger</code> command is the command interface to the system log module. It has options that allow you to customize the content that needs to be logged directly from the terminal or shell scripts.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- rsyslog -->
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg border-t-4 border-t-cyan-500">
+        <h3 class="font-bold text-white mb-2 text-xl flex items-center gap-2"><i data-lucide="server" class="w-5 h-5 text-cyan-400"></i> The rsyslog Utility</h3>
+        <p class="text-slate-400 text-sm mb-4">A more modern alternative to syslogd. Tracks, forwards, and stores messages via the syslog protocol. Configured in <code class="bg-slate-900 px-1 py-0.5 rounded text-cyan-300 font-mono">/etc/rsyslog.conf</code>. Syntax: <code class="bg-slate-900 px-1 py-0.5 rounded text-cyan-300 font-mono">rsyslog [options]</code></p>
+        
+        <table class="w-full text-left text-sm text-slate-400 border-collapse">
+          <thead><tr class="border-b border-slate-700 text-white"><th class="py-2 px-2">Option</th><th class="py-2 px-2">Used To</th></tr></thead>
+          <tbody>
+            <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-cyan-300 text-xs">-d</td><td class="py-2 px-2 text-xs">Turn on debug mode.</td></tr>
+            <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-cyan-300 text-xs">-f {file}</td><td class="py-2 px-2 text-xs">Specify a new config file instead of default.</td></tr>
+            <tr class="hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-cyan-300 text-xs">-N {level}</td><td class="py-2 px-2 text-xs">Check configuration files for validity (level 1+ controls verbosity).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- journalctl -->
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg border-t-4 border-t-purple-500">
+        <h3 class="font-bold text-white mb-2 text-xl flex items-center gap-2"><i data-lucide="book" class="w-5 h-5 text-purple-400"></i> The journalctl Utility</h3>
+        <p class="text-slate-400 text-sm mb-4">A component of systemd that manages and views log files created by the <code class="font-mono">systemd-journald</code> service. Configured in <code class="bg-slate-900 px-1 py-0.5 rounded text-purple-300 font-mono">/etc/systemd/journald.conf</code>. Syntax: <code class="bg-slate-900 px-1 py-0.5 rounded text-purple-300 font-mono">journalctl [options]</code></p>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4">
+          <div class="lg:col-span-2">
+            <table class="w-full text-left text-sm text-slate-400 border-collapse">
+              <thead><tr class="border-b border-slate-700 text-white"><th class="py-2 px-2">Option</th><th class="py-2 px-2">Used To</th></tr></thead>
+              <tbody>
+                <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-purple-300 text-xs">-n {lines}</td><td class="py-2 px-2 text-xs">Specify number of lines to display.</td></tr>
+                <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-purple-300 text-xs">-o {format}</td><td class="py-2 px-2 text-xs">Format output (short, verbose, export).</td></tr>
+                <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-purple-300 text-xs">-f</td><td class="py-2 px-2 text-xs">Follow logs (like tail -f).</td></tr>
+                <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-purple-300 text-xs">-p {priority}</td><td class="py-2 px-2 text-xs">Filter by priority (alert, err, warning, info, etc.).</td></tr>
+                <tr class="hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-purple-300 text-xs">-b</td><td class="py-2 px-2 text-xs">Show log messages from the current boot only.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+            <h4 class="font-bold text-purple-300 mb-2 text-sm">/var/log/journal/</h4>
+            <p class="text-xs text-slate-400">By default, the Systemd Journal only stores logs in memory, cleared on reboot. To persist logs, simply create the <code class="font-mono">/var/log/journal/</code> directory. Systemd will automatically store logs there if the directory exists.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============================================== -->
+    <!-- TAB 3: COMMON FILES & TOOLS                    -->
+    <!-- ============================================== -->
+    <section id="sec-tools" class="tab-content space-y-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg border-l-4 border-l-amber-500">
+          <h3 class="font-bold text-white mb-2 text-lg">Common Log Files</h3>
+          <p class="text-slate-400 text-sm mb-4">By default, syslogd stores most messages in <code class="font-mono">/var/log/messages</code>. The location is controlled by <code class="font-mono">/etc/syslog.conf</code>. Some specific logs include:</p>
+          <table class="w-full text-left text-sm text-slate-400 border-collapse">
+            <tbody>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-amber-300 text-xs">/var/log/syslog</td><td class="py-2 px-2 text-xs">General system info.</td></tr>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-amber-300 text-xs">/var/log/maillog</td><td class="py-2 px-2 text-xs">Mail messages.</td></tr>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-amber-300 text-xs">/var/log/samba</td><td class="py-2 px-2 text-xs">Samba (SMB) messages.</td></tr>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-amber-300 text-xs">/var/log/mrtg</td><td class="py-2 px-2 text-xs">MRTG traffic graphs.</td></tr>
+              <tr class="hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-amber-300 text-xs">/var/log/httpd</td><td class="py-2 px-2 text-xs">Apache web server messages.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg border-l-4 border-l-orange-500">
+          <h3 class="font-bold text-white mb-2 text-lg">The lastlog Command</h3>
+          <p class="text-slate-400 text-sm mb-4">Utilizes data from <code class="bg-slate-900 px-1 py-0.5 rounded text-orange-300 font-mono">/var/log/lastlog</code> to display the latest login details of all users.</p>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside">
+            <li>Displays login name, date, time, and terminal.</li>
+            <li>Highly useful for administrators to view user accounts that have <strong>never</strong> been used, identifying potential security risks or orphaned accounts.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- grep -->
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg border-t-4 border-t-emerald-500">
+          <h3 class="font-bold text-white mb-2 text-lg flex items-center gap-2"><i data-lucide="search" class="w-5 h-5 text-emerald-400"></i> The grep Command</h3>
+          <p class="text-slate-400 text-sm mb-4">Searches a file for a string and prints matching lines. Syntax: <code class="bg-slate-900 px-1 py-0.5 rounded text-emerald-300 font-mono">grep [options] {keyword} {file}</code></p>
+          <table class="w-full text-left text-sm text-slate-400 border-collapse mb-4">
+            <tbody>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-1 px-2 font-mono text-emerald-300 text-xs">-h</td><td class="py-1 px-2 text-xs">Print matching lines without file names.</td></tr>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-1 px-2 font-mono text-emerald-300 text-xs">-w</td><td class="py-1 px-2 text-xs">Restrict search to whole words only.</td></tr>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-1 px-2 font-mono text-emerald-300 text-xs">-c</td><td class="py-1 px-2 text-xs">Display a count of matching lines instead of lines.</td></tr>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-1 px-2 font-mono text-emerald-300 text-xs">-i</td><td class="py-1 px-2 text-xs">Ignore case.</td></tr>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-1 px-2 font-mono text-emerald-300 text-xs">-l</td><td class="py-1 px-2 text-xs">List file names containing matches.</td></tr>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-1 px-2 font-mono text-emerald-300 text-xs">-n</td><td class="py-1 px-2 text-xs">Precede each line with its line number.</td></tr>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-1 px-2 font-mono text-emerald-300 text-xs">-s</td><td class="py-1 px-2 text-xs">Suppress error messages.</td></tr>
+              <tr class="hover:bg-slate-700/20"><td class="py-1 px-2 font-mono text-emerald-300 text-xs">-e</td><td class="py-1 px-2 text-xs">Specify one or more search patterns.</td></tr>
+            </tbody>
+          </table>
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+            <h4 class="font-bold text-emerald-300 mb-2 text-sm">fgrep and egrep</h4>
+            <p class="text-xs text-slate-400"><code class="font-mono">fgrep</code> searches for multiple text patterns but does <em>not</em> use regular expressions. <code class="font-mono">egrep</code> uses an extended set of regular expression elements.</p>
+          </div>
+        </div>
+
+        <!-- tail -->
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg border-t-4 border-t-yellow-500">
+          <h3 class="font-bold text-white mb-2 text-lg flex items-center gap-2"><i data-lucide="align-left" class="w-5 h-5 text-yellow-400"></i> The tail Command</h3>
+          <p class="text-slate-400 text-sm mb-4">Retrieves data from a file, displaying the last 10 lines by default. Syntax: <code class="bg-slate-900 px-1 py-0.5 rounded text-yellow-300 font-mono">tail [options] {file}</code></p>
+          <table class="w-full text-left text-sm text-slate-400 border-collapse">
+            <tbody>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-yellow-300 text-xs">--retry</td><td class="py-2 px-2 text-xs">Force tail to open a file that cannot be opened.</td></tr>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-yellow-300 text-xs">-n {num}</td><td class="py-2 px-2 text-xs">Print specified number of lines from the end.</td></tr>
+              <tr class="border-b border-slate-700/50 hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-yellow-300 text-xs">-c {bytes}</td><td class="py-2 px-2 text-xs">Print specified number of bytes from the end.</td></tr>
+              <tr class="hover:bg-slate-700/20"><td class="py-2 px-2 font-mono text-yellow-300 text-xs">-f</td><td class="py-2 px-2 text-xs">"Follow" — update the output automatically if changes are made to the file.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    // Tab definitions
+    const tabs = [
+        { id: 'sec-core', title: 'Core Concepts', icon: 'zap' },
+        { id: 'sec-daemons', title: 'Daemons & Configs', icon: 'cpu' },
+        { id: 'sec-tools', title: 'Common Files & Tools', icon: 'wrench' }
+    ];
+
+    let currentTab = 'sec-core';
+
+    function renderTabs() {
+        const container = document.getElementById('tab-container');
+        container.innerHTML = '';
+        tabs.forEach(tab => {
+            const btn = document.createElement('button');
+            btn.className = `tab-btn flex items-center gap-2 px-5 py-3 rounded-t-xl font-semibold text-sm border-b-2 whitespace-nowrap focus:outline-none ${currentTab === tab.id ? 'active' : 'border-transparent text-slate-400 hover:text-white hover:bg-slate-800'}`;
+            btn.onclick = () => switchTab(tab.id);
+            btn.innerHTML = `<i data-lucide="${tab.icon}" class="w-4 h-4"></i> ${tab.title}`;
+            container.appendChild(btn);
+        });
+        lucide.createIcons();
+    }
+
+    function switchTab(tabId) {
+        currentTab = tabId;
+        renderTabs();
+        document.querySelectorAll('.tab-content').forEach(el => {
+            el.classList.remove('active');
+        });
+        document.getElementById(tabId).classList.add('active');
+        
+        // Update URL hash without scrolling
+        history.replaceState(null, null, '#' + tabId);
+    }
+
+    // Handle initial hash
+    if (window.location.hash) {
+        const hashTab = window.location.hash.substring(1);
+        if (tabs.find(t => t.id === hashTab)) {
+            currentTab = hashTab;
+        }
+    }
+
+    // Init
+    renderTabs();
+    lucide.createIcons();
+  </script>
+</body>
+</html>
