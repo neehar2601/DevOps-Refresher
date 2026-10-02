@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Security & Cybersecurity Hub | DevOps Learning Hub</title>
+  <meta name="description" content="Master Security Fundamentals, the CIA Triad, Risk Management, Cybersecurity Threat Vectors, Zero Trust, and DevSecOps with interactive simulators and calculators." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          colors: {
+            rose: {
+              450: '#f43f5e',
+              550: '#e11d48'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0b1120;
+      color: #f1f5f9;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card {
+      background: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.25s ease;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(244, 63, 94, 0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-pill {
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .nav-pill.active {
+      background-color: #f43f5e;
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(244, 63, 94, 0.4);
+    }
+
+    /* Pulse animation for live indicators */
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    .pulse-glow {
+      animation: pulse-glow 3s infinite ease-in-out;
+    }
+
+    /* Custom range slider */
+    input[type=range] {
+      accent-color: #f43f5e;
+    }
+
+    /* Code block styling */
+    pre code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+    }
+
+    /* Subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col bg-slate-950 text-slate-100">
+
+  <!-- ── Top Sticky Header ─────────────────────────────────────────── -->
+  <header class="bg-slate-950/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="../index.html" class="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors group" title="Return to Hub Home">
+          <div class="p-2 bg-slate-800 rounded-lg group-hover:bg-slate-700 transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4 text-slate-300"></i>
+          </div>
+          <span class="text-xs uppercase tracking-wider font-semibold hidden md:inline">DevOps Hub</span>
+        </a>
+        <span class="text-slate-600 hidden md:inline">/</span>
+        <div class="flex items-center space-x-2.5">
+          <div class="p-2 bg-rose-500/20 rounded-lg border border-rose-500/30">
+            <i data-lucide="shield-alert" class="w-5 h-5 text-rose-400"></i>
+          </div>
+          <div>
+            <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+              Security <span class="text-rose-400">&</span> Cybersecurity
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">Comprehensive Hub</span>
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <a href="#interactive-suite" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-600/30 hover:bg-rose-600/50 text-rose-300 text-xs font-semibold border border-rose-500/30 transition-all">
+          <i data-lucide="play-circle" class="w-3.5 h-3.5"></i>
+          <span>Interactive Labs</span>
+        </a>
+        <a href="#knowledge-quiz" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors">
+          <i data-lucide="help-circle" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>Knowledge Check</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Navigation Sub-Bar -->
+    <nav class="border-t border-slate-800/80 bg-slate-900/60 overflow-x-auto no-scrollbar">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center space-x-1.5 sm:space-x-2 text-xs font-medium">
+        <a href="#overview" class="px-3 py-1 rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">Overview</a>
+        <a href="#cia-triad" class="px-3 py-1 rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">CIA Triad</a>
+        <a href="#risk-anatomy" class="px-3 py-1 rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">Risk Anatomy</a>
+        <a href="#risk-responses" class="px-3 py-1 rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">4 Risk Responses</a>
+        <a href="#roi-calculator" class="px-3 py-1 rounded-md text-rose-300 hover:bg-rose-950/40 border border-rose-500/20 transition-colors">Risk ROI Tool</a>
+        <a href="#security-lifecycle" class="px-3 py-1 rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">Lifecycle & Drill</a>
+        <a href="#cyber-threats" class="px-3 py-1 rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">Threat Vectors</a>
+        <a href="#zero-trust-defense" class="px-3 py-1 rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">Zero Trust & Defense</a>
+        <a href="#devsecops" class="px-3 py-1 rounded-md text-purple-300 hover:bg-purple-950/40 border border-purple-500/20 transition-colors">DevSecOps Pipeline</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ── Main Content ─────────────────────────────────────────────── -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-16">
+
+    <!-- ── Hero Section ─────────────────────────────────────────────── -->
+    <section class="relative rounded-3xl overflow-hidden border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 p-8 sm:p-12 shadow-2xl">
+      <div class="absolute -right-20 -top-20 w-96 h-96 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="relative z-10 max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs font-semibold mb-5">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+          <span>Foundation to Frontier Cybersecurity</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4">
+          What is Security <span class="bg-clip-text text-transparent bg-gradient-to-r from-rose-400 via-pink-400 to-amber-300">in General?</span>
+        </h1>
+        <p class="text-slate-300 text-base sm:text-lg leading-relaxed mb-8">
+          Security is the discipline of protecting company IT resources from <span class="text-rose-300 font-semibold">harm or loss</span>. And resources encompass <strong class="text-white">everything</strong>: physical facilities, hardware, software, data, employees, finances, and brand reputation.
+        </p>
+
+        <!-- The 3 Universal Goals Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-slate-900/80 border border-emerald-500/30 rounded-2xl p-4 flex items-start space-x-3.5">
+            <div class="p-2.5 bg-emerald-500/20 text-emerald-400 rounded-xl">
+              <i data-lucide="shield-ban" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-xs uppercase font-mono tracking-wider text-emerald-400 font-bold">Goal 1</div>
+              <div class="text-white font-bold text-base">Prevent</div>
+              <p class="text-xs text-slate-400 mt-1">Block threats, harden baselines, and prevent any type of harm or loss.</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/80 border border-amber-500/30 rounded-2xl p-4 flex items-start space-x-3.5">
+            <div class="p-2.5 bg-amber-500/20 text-amber-400 rounded-xl">
+              <i data-lucide="radar" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-xs uppercase font-mono tracking-wider text-amber-400 font-bold">Goal 2</div>
+              <div class="text-white font-bold text-base">Detect</div>
+              <p class="text-xs text-slate-400 mt-1">When prevention fails, instantly detect control gaps, breaches, and failures.</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/80 border border-blue-500/30 rounded-2xl p-4 flex items-start space-x-3.5">
+            <div class="p-2.5 bg-blue-500/20 text-blue-400 rounded-xl">
+              <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-xs uppercase font-mono tracking-wider text-blue-400 font-bold">Goal 3</div>
+              <div class="text-white font-bold text-base">Recover</div>
+              <p class="text-xs text-slate-400 mt-1">Execute disaster recovery plans, restore operations, and minimize impact.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Scope of Resources Section ──────────────────────────────── -->
+    <section id="overview" class="space-y-6">
+      <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div>
+          <span class="text-xs font-mono font-bold tracking-wider uppercase text-rose-400">Total Asset Scope</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">What Are Company Resources?</h2>
+        </div>
+        <p class="text-xs text-slate-400 sm:text-right max-w-md">
+          "Anything that can harm the company is the responsibility of the security team."
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <!-- Physical Facilities -->
+        <div class="glass-card rounded-2xl p-5 text-center flex flex-col items-center">
+          <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center mb-3">
+            <i data-lucide="building-2" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-bold text-white text-sm">Physical Facilities</h3>
+          <p class="text-xs text-slate-400 mt-1">Datacenters, office access, CCTV, biometrics, fire suppression.</p>
+        </div>
+
+        <!-- Hardware & IT -->
+        <div class="glass-card rounded-2xl p-5 text-center flex flex-col items-center">
+          <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-3">
+            <i data-lucide="server" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-bold text-white text-sm">Hardware & IT</h3>
+          <p class="text-xs text-slate-400 mt-1">Servers, switches, laptops, IoT, firmware, network devices.</p>
+        </div>
+
+        <!-- Software & Code -->
+        <div class="glass-card rounded-2xl p-5 text-center flex flex-col items-center">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center mb-3">
+            <i data-lucide="code-2" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-bold text-white text-sm">Software & Apps</h3>
+          <p class="text-xs text-slate-400 mt-1">OS, microservices, container images, source code, CI/CD pipelines.</p>
+        </div>
+
+        <!-- Data & IP -->
+        <div class="glass-card rounded-2xl p-5 text-center flex flex-col items-center">
+          <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-3">
+            <i data-lucide="database" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-bold text-white text-sm">Data & Assets</h3>
+          <p class="text-xs text-slate-400 mt-1">Customer PII, intellectual property, credentials, financial records.</p>
+        </div>
+
+        <!-- Employees & Humans -->
+        <div class="glass-card rounded-2xl p-5 text-center flex flex-col items-center">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3">
+            <i data-lucide="users" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-bold text-white text-sm">Personnel</h3>
+          <p class="text-xs text-slate-400 mt-1">Staff, contractors, social engineering targets, user errors.</p>
+        </div>
+
+        <!-- Finances & Brand -->
+        <div class="glass-card rounded-2xl p-5 text-center flex flex-col items-center">
+          <div class="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center mb-3">
+            <i data-lucide="award" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-bold text-white text-sm">Reputation & Money</h3>
+          <p class="text-xs text-slate-400 mt-1">Stock value, customer trust, compliance fines, legal liabilities.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── The CIA Triad & Interactive Lab ────────────────────────── -->
+    <section id="cia-triad" class="space-y-6">
+      <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div>
+          <span class="text-xs font-mono font-bold tracking-wider uppercase text-emerald-400">Core Security Model</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">The Security Triad (CIA Triad)</h2>
+        </div>
+        <p class="text-xs text-slate-400 max-w-md">
+          Every control, protocol, or policy in information security directly enforces one or more of these three pillars.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- CIA Explanation Cards (7 cols) -->
+        <div class="lg:col-span-7 space-y-4">
+          <!-- Confidentiality -->
+          <div id="card-confidentiality" class="bg-slate-900 border border-blue-500/40 rounded-2xl p-6 relative overflow-hidden transition-all duration-300">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center space-x-3">
+                <div class="p-2.5 bg-blue-500/20 text-blue-400 rounded-xl">
+                  <i data-lucide="lock" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-white">C — Confidentiality</h3>
+                  <span class="text-xs text-blue-400 font-mono">"Accessible ONLY to authorized individuals"</span>
+                </div>
+              </div>
+              <span class="text-xs px-2.5 py-1 rounded-full bg-blue-900/40 text-blue-300 border border-blue-500/30 font-semibold">Pillar 1</span>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              Confidentiality prevents sensitive information from reaching unauthorized eyes. In practice, this often translates to <strong>cryptographic encryption</strong> (at rest & in transit), strict Access Control Lists (ACLs), Multi-Factor Authentication (MFA), and Principle of Least Privilege.
+            </p>
+            <div class="mt-4 pt-3 border-t border-slate-800/80 flex flex-wrap gap-2 text-xs">
+              <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono">TLS 1.3</span>
+              <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono">AES-256</span>
+              <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono">Role-Based Access Control</span>
+              <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono">Data Masking</span>
+            </div>
+          </div>
+
+          <!-- Integrity -->
+          <div id="card-integrity" class="bg-slate-900 border border-emerald-500/40 rounded-2xl p-6 relative overflow-hidden transition-all duration-300">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center space-x-3">
+                <div class="p-2.5 bg-emerald-500/20 text-emerald-400 rounded-xl">
+                  <i data-lucide="check-check" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-white">I — Integrity</h3>
+                  <span class="text-xs text-emerald-400 font-mono">"Resources should NOT be improperly changed"</span>
+                </div>
+              </div>
+              <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-900/40 text-emerald-300 border border-emerald-500/30 font-semibold">Pillar 2</span>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              Integrity guarantees data and system accuracy. Improper changes can stem from an <strong>unauthorized attacker</strong> (malicious tampering) OR an <strong>authorized employee making an accidental mistake</strong>. Preserving integrity requires cryptographic hashes, digital signatures, audit logs, and version control.
+            </p>
+            <div class="mt-4 pt-3 border-t border-slate-800/80 flex flex-wrap gap-2 text-xs">
+              <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono">SHA-256 Hashing</span>
+              <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono">HMAC Verification</span>
+              <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono">Immutable Audit Logs</span>
+              <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono">Git Commits / PR Reviews</span>
+            </div>
+          </div>
+
+          <!-- Availability -->
+          <div id="card-availability" class="bg-slate-900 border border-amber-500/40 rounded-2xl p-6 relative overflow-hidden transition-all duration-300">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center space-x-3">
+                <div class="p-2.5 bg-amber-500/20 text-amber-400 rounded-xl">
+                  <i data-lucide="activity" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-white">A — Availability</h3>
+                  <span class="text-xs text-amber-400 font-mono">"Resources are accessible whenever needed"</span>
+                </div>
+              </div>
+              <span class="text-xs px-2.5 py-1 rounded-full bg-amber-900/40 text-amber-300 border border-amber-500/30 font-semibold">Pillar 3</span>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              If authorized users cannot access the system when needed, security fails. Availability directly touches DevOps infrastructure: <strong>Fault Tolerance (FT)</strong>, <strong>High Availability (HA)</strong> clusters, automated failover, load balancing, DDoS mitigation, and robust backup pipelines.
+            </p>
+            <div class="mt-4 pt-3 border-t border-slate-800/80 flex flex-wrap gap-2 text-xs">
+              <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono">Multi-AZ Redundancy</span>
+              <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono">DDoS Scrubbing (Cloudflare)</span>
+              <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono">Automated Backups</span>
+              <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono">Disaster Recovery (RTO/RPO)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive CIA Triad Explorer (5 cols) -->
+        <div id="interactive-suite" class="lg:col-span-5 bg-slate-900/90 border border-slate-700 rounded-2xl p-6 shadow-xl sticky top-28">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+            <div>
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-rose-400"></i>
+                Interactive CIA Triad Lab
+              </h3>
+              <p class="text-xs text-slate-400">Toggle controls & simulate attack scenarios.</p>
+            </div>
+            <button onclick="resetCiaLab()" class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 transition-colors">
+              Reset
+            </button>
+          </div>
+
+          <!-- Dynamic SVG CIA Diagram -->
+          <div class="py-6 flex justify-center">
+            <svg class="w-64 h-56" viewBox="0 0 300 260">
+              <!-- Triangle background -->
+              <polygon points="150,30 270,220 30,220" fill="rgba(15, 23, 42, 0.6)" stroke="#334155" stroke-width="2" stroke-dasharray="4" />
+              <!-- Center Hub -->
+              <circle cx="150" cy="150" r="32" fill="#0f172a" stroke="#f43f5e" stroke-width="2" />
+              <text x="150" y="154" fill="#ffffff" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">SECURITY</text>
+
+              <!-- Confidentiality Vertex (Top) -->
+              <g id="svg-node-c" class="cursor-pointer" onclick="inspectCia('C')">
+                <circle cx="150" cy="30" r="24" fill="#1e3a8a" stroke="#3b82f6" stroke-width="3" id="circle-c" />
+                <text x="150" y="35" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">C</text>
+              </g>
+
+              <!-- Integrity Vertex (Bottom-Right) -->
+              <g id="svg-node-i" class="cursor-pointer" onclick="inspectCia('I')">
+                <circle cx="270" cy="220" r="24" fill="#064e3b" stroke="#10b981" stroke-width="3" id="circle-i" />
+                <text x="270" y="225" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">I</text>
+              </g>
+
+              <!-- Availability Vertex (Bottom-Left) -->
+              <g id="svg-node-a" class="cursor-pointer" onclick="inspectCia('A')">
+                <circle cx="30" cy="220" r="24" fill="#78350f" stroke="#f59e0b" stroke-width="3" id="circle-a" />
+                <text x="30" y="225" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">A</text>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Attack Simulation Triggers -->
+          <div class="space-y-3">
+            <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">Trigger Simulated Attack:</span>
+            <div class="grid grid-cols-3 gap-2">
+              <button onclick="simulateCiaAttack('C')" class="px-2.5 py-2 rounded-xl bg-blue-950/60 hover:bg-blue-900/80 border border-blue-500/30 text-blue-300 text-xs font-semibold text-center transition-all">
+                🔓 Packet Sniff
+              </button>
+              <button onclick="simulateCiaAttack('I')" class="px-2.5 py-2 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-500/30 text-emerald-300 text-xs font-semibold text-center transition-all">
+                ✏️ SQL Tampering
+              </button>
+              <button onclick="simulateCiaAttack('A')" class="px-2.5 py-2 rounded-xl bg-amber-950/60 hover:bg-amber-900/80 border border-amber-500/30 text-amber-300 text-xs font-semibold text-center transition-all">
+                🌊 DDoS Outage
+              </button>
+            </div>
+          </div>
+
+          <!-- Simulation Live Status Box -->
+          <div id="cia-status-box" class="mt-4 p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1.5 min-h-[90px] flex flex-col justify-center">
+            <div class="text-slate-400 font-mono flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              <span>All 3 Pillars: <span class="text-emerald-400 font-semibold">Protected & Stable</span></span>
+            </div>
+            <p class="text-slate-400 leading-normal">
+              Click a letter above or trigger an attack to inspect how CIA controls counter threats.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Risk Anatomy Section ────────────────────────────────────── -->
+    <section id="risk-anatomy" class="space-y-8">
+      <div class="border-b border-slate-800 pb-4">
+        <span class="text-xs font-mono font-bold tracking-wider uppercase text-rose-400">Risk Vocabulary & Anatomy</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">Vulnerabilities, Threats, Impact & Risk</h2>
+        <p class="text-slate-400 text-sm mt-1">
+          "Sometimes words seem really simple, but they can actually be really complex. We have to understand all these terms to understand risk."
+        </p>
+      </div>
+
+      <!-- The Big 3 Comparison Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Vulnerability -->
+        <div class="bg-slate-900/80 border border-amber-500/30 rounded-2xl p-6 relative">
+          <div class="flex items-center space-x-3 mb-3">
+            <div class="p-2.5 bg-amber-500/20 text-amber-400 rounded-xl">
+              <i data-lucide="shield-alert" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-white">Vulnerability</h3>
+              <span class="text-xs font-mono text-amber-400">The Weakness</span>
+            </div>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+            A <strong>weakness in a resource</strong> that exposes it to harm. It doesn't mean somebody necessarily did something wrong—it is simply a condition of vulnerability.
+          </p>
+          <div class="space-y-2 text-xs text-slate-400">
+            <div class="p-2 rounded bg-slate-950/80 border border-slate-800 flex items-center gap-2">
+              <i data-lucide="x-circle" class="w-4 h-4 text-amber-400 shrink-0"></i>
+              <span>Poor physical security (no guards, propped doors)</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950/80 border border-slate-800 flex items-center gap-2">
+              <i data-lucide="x-circle" class="w-4 h-4 text-amber-400 shrink-0"></i>
+              <span>Untrained users accidentally making mistakes</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950/80 border border-slate-800 flex items-center gap-2">
+              <i data-lucide="x-circle" class="w-4 h-4 text-amber-400 shrink-0"></i>
+              <span>Missing OS patches or software bugs</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950/80 border border-slate-800 flex items-center gap-2">
+              <i data-lucide="x-circle" class="w-4 h-4 text-amber-400 shrink-0"></i>
+              <span>Datacenter in an active earthquake zone</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Threat -->
+        <div class="bg-slate-900/80 border border-rose-500/30 rounded-2xl p-6 relative">
+          <div class="flex items-center space-x-3 mb-3">
+            <div class="p-2.5 bg-rose-500/20 text-rose-400 rounded-xl">
+              <i data-lucide="zap" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-white">Threat</h3>
+              <span class="text-xs font-mono text-rose-400">The Danger</span>
+            </div>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+            <strong>Any event or action that could cause harm</strong>. Threats do <span class="text-rose-300 font-semibold">NOT</span> have to be intentional or human-generated.
+          </p>
+          <div class="space-y-2 text-xs text-slate-400">
+            <div class="p-2 rounded bg-slate-950/80 border border-slate-800 flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400 shrink-0"></i>
+              <span>Malicious hackers, ransomware syndicates</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950/80 border border-slate-800 flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400 shrink-0"></i>
+              <span>Employee blunder (accidental S3 bucket public leak)</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950/80 border border-slate-800 flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400 shrink-0"></i>
+              <span>Third-party vendor outage or supply chain compromise</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950/80 border border-slate-800 flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400 shrink-0"></i>
+              <span>Natural disaster (earthquake, flood, power grid surge)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Impact -->
+        <div class="bg-slate-900/80 border border-purple-500/30 rounded-2xl p-6 relative">
+          <div class="flex items-center space-x-3 mb-3">
+            <div class="p-2.5 bg-purple-500/20 text-purple-400 rounded-xl">
+              <i data-lucide="trending-down" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-white">Impact</h3>
+              <span class="text-xs font-mono text-purple-400">The Damage</span>
+            </div>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+            The quantifiable <strong>harm or damage caused</strong> when a threat successfully exploits a vulnerability. Ultimately, almost all impacts translate into <strong>financial loss</strong>.
+          </p>
+          <div class="space-y-2 text-xs text-slate-400">
+            <div class="p-2 rounded bg-slate-950/80 border border-slate-800 flex items-center gap-2">
+              <i data-lucide="flame" class="w-4 h-4 text-purple-400 shrink-0"></i>
+              <span>Loss or destruction of physical equipment & data</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950/80 border border-slate-800 flex items-center gap-2">
+              <i data-lucide="flame" class="w-4 h-4 text-purple-400 shrink-0"></i>
+              <span>Brand & reputation ruin (customers abandon platform)</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950/80 border border-slate-800 flex items-center gap-2">
+              <i data-lucide="flame" class="w-4 h-4 text-purple-400 shrink-0"></i>
+              <span>Unauthorized downtime & SLA penalty payouts</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950/80 border border-slate-800 flex items-center gap-2">
+              <i data-lucide="flame" class="w-4 h-4 text-purple-400 shrink-0"></i>
+              <span>Regulatory compliance fines (GDPR, HIPAA, PCI-DSS)</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- The Core Risk Equation Formula Banner -->
+      <div class="bg-gradient-to-r from-rose-950/60 via-slate-900 to-slate-950 border border-rose-500/30 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-2 max-w-xl">
+          <div class="text-xs font-mono text-rose-400 uppercase tracking-widest font-bold">The Fundamental Risk Definition</div>
+          <h3 class="text-xl sm:text-2xl font-bold text-white">What is Risk?</h3>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            <strong>Risk</strong> is the <span class="text-rose-300 font-semibold">probability or likelihood</span> that a threat will exploit a vulnerability, multiplied by the corresponding <span class="text-purple-300 font-semibold">impact</span>.
+          </p>
+        </div>
+        <div class="bg-slate-950/80 border border-slate-800 rounded-xl px-6 py-4 font-mono text-center shrink-0">
+          <div class="text-xs text-slate-500 mb-1">Standard Risk Formula</div>
+          <div class="text-lg sm:text-xl font-bold text-rose-400">
+            Risk = Likelihood × Impact
+          </div>
+          <div class="text-[11px] text-slate-400 mt-1">Likelihood = Threat × Vulnerability</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 4 Risk Responses & Economics ────────────────────────────── -->
+    <section id="risk-responses" class="space-y-8">
+      <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div>
+          <span class="text-xs font-mono font-bold tracking-wider uppercase text-cyan-400">Strategy & Economics</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">The 4 Risk Responses & Cost Realities</h2>
+        </div>
+        <p class="text-xs text-slate-400 max-w-md">
+          "Can you eliminate risk? Just say no. Resources are always finite. Budget must be prioritized to mitigate the biggest risks."
+        </p>
+      </div>
+
+      <!-- Two Important Risk Concepts: Appetite & Residual Risk -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+          <div class="flex items-center space-x-3 mb-2">
+            <div class="p-2 bg-amber-500/20 text-amber-400 rounded-lg"><i data-lucide="scale" class="w-5 h-5"></i></div>
+            <h3 class="text-lg font-bold text-white">Risk Appetite</h3>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            The company's comfort level regarding risk. Startups may have a high risk appetite (willing to move fast and break things), while banks and hospitals have virtually zero risk appetite.
+          </p>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+          <div class="flex items-center space-x-3 mb-2">
+            <div class="p-2 bg-rose-500/20 text-rose-400 rounded-lg"><i data-lucide="percent" class="w-5 h-5"></i></div>
+            <h3 class="text-lg font-bold text-white">Residual Risk</h3>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            The risk leftover <em>after</em> you have implemented all the controls and mitigations you planned or could afford. Because risk can never be 100% eliminated, organizations must consciously accept this leftover residual risk.
+          </p>
+        </div>
+      </div>
+
+      <!-- The 4 Risk Responses -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- 1. Avoidance -->
+        <div class="bg-slate-900 border border-red-500/30 rounded-2xl p-5 flex flex-col justify-between hover:border-red-500/60 transition-all">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center mb-3">
+              <i data-lucide="ban" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[11px] font-mono font-bold text-red-400 uppercase tracking-wider">Response 1</span>
+            <h4 class="text-lg font-bold text-white mt-1 mb-2">Risk Avoidance</h4>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              <strong>Abandon the risky behavior completely.</strong> This is the <span class="text-white font-semibold">only</span> place where you can truly eliminate risk.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-300 space-y-1">
+            <div class="text-slate-500 font-mono">Example:</div>
+            <div>Scared of car accidents? Walk instead. Worried about credit card theft? Don't store card numbers; use Stripe checkout.</div>
+          </div>
+        </div>
+
+        <!-- 2. Mitigation -->
+        <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-5 flex flex-col justify-between hover:border-emerald-500/60 transition-all">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3">
+              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[11px] font-mono font-bold text-emerald-400 uppercase tracking-wider">Response 2</span>
+            <h4 class="text-lg font-bold text-white mt-1 mb-2">Risk Mitigation</h4>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              <strong>Implement controls to reduce likelihood or impact.</strong> Controls are anything you put in place to decrease the probability or damage.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-300 space-y-1">
+            <div class="text-slate-500 font-mono">Example:</div>
+            <div>Install protective grills on a car, take a defensive driving class, deploy firewalls, mandate MFA across all employee accounts.</div>
+          </div>
+        </div>
+
+        <!-- 3. Transference -->
+        <div class="bg-slate-900 border border-blue-500/30 rounded-2xl p-5 flex flex-col justify-between hover:border-blue-500/60 transition-all">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-3">
+              <i data-lucide="repeat" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[11px] font-mono font-bold text-blue-400 uppercase tracking-wider">Response 3</span>
+            <h4 class="text-lg font-bold text-white mt-1 mb-2">Risk Transference</h4>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              <strong>Transfer the financial or operational liability to a 3rd party.</strong> When the event occurs, the impact is borne by the external entity.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-300 space-y-1">
+            <div class="text-slate-500 font-mono">Example:</div>
+            <div>Buying car insurance, purchasing enterprise cyber liability insurance, shifting infrastructure uptime liability to AWS SLAs.</div>
+          </div>
+        </div>
+
+        <!-- 4. Acceptance -->
+        <div class="bg-slate-900 border border-amber-500/30 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-500/60 transition-all">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-3">
+              <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[11px] font-mono font-bold text-amber-400 uppercase tracking-wider">Response 4</span>
+            <h4 class="text-lg font-bold text-white mt-1 mb-2">Risk Acceptance</h4>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              <strong>Continue risky behavior without controls.</strong> Practiced when: (1) no controls exist, or (2) the cost to mitigate exceeds the cost of the risk.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-300 space-y-1">
+            <div class="text-slate-500 font-mono">Example:</div>
+            <div>Refusing $25/yr insurance on a $125 tablet, or declining a $5,000 firewall when a hack causes at most $3,000 in loss.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Interactive Risk ROI & 5x5 Matrix Calculator ───────────── -->
+    <section id="roi-calculator" class="bg-slate-900/90 border border-slate-700 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8">
+      <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold mb-2">
+            <i data-lucide="calculator" class="w-3.5 h-3.5"></i> Interactive Security Decision Engine
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">Risk Matrix & Cost-Benefit ROI Calculator</h2>
+          <p class="text-slate-400 text-sm mt-1">
+            Demonstrating the economic reality of security: when to purchase controls vs. when to practice Risk Acceptance.
+          </p>
+        </div>
+
+        <!-- Quick Pre-fill Presets -->
+        <div class="flex flex-wrap gap-2 text-xs">
+          <button onclick="loadScenarioPreset('tablet')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors">
+            📱 $125 Tablet Example
+          </button>
+          <button onclick="loadScenarioPreset('car')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors">
+            🏎️ $10k Insurance vs $5k Loss
+          </button>
+          <button onclick="loadScenarioPreset('firewall')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors">
+            🔥 $5k Firewall vs $3k Hack
+          </button>
+          <button onclick="loadScenarioPreset('ransomware')" class="px-3 py-1.5 rounded-lg bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-500/30 transition-colors">
+            ⚠️ Production Ransomware
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Controls & Inputs (6 cols) -->
+        <div class="lg:col-span-6 space-y-6">
+          <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-6 space-y-5">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="sliders" class="w-4 h-4 text-rose-400"></i> Parameters
+            </h3>
+
+            <!-- Likelihood Slider -->
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-300 mb-1.5">
+                <span>Likelihood / Annual Probability:</span>
+                <span id="label-likelihood" class="font-mono text-rose-400 text-sm">3 — Moderate (20% / yr)</span>
+              </div>
+              <input id="slider-likelihood" type="range" min="1" max="5" value="3" class="w-full h-2 bg-slate-800 rounded-lg cursor-pointer" oninput="updateRiskCalc()" />
+              <div class="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
+                <span>1: Rare (&lt;2%)</span>
+                <span>3: Moderate (20%)</span>
+                <span>5: Very Likely (&gt;80%)</span>
+              </div>
+            </div>
+
+            <!-- Single Loss Expectancy / Impact -->
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-300 mb-1.5">
+                <span>Total Potential Incident Impact ($):</span>
+                <span id="label-impact" class="font-mono text-purple-400 text-sm">$5,000</span>
+              </div>
+              <input id="input-impact" type="number" value="5000" min="50" step="50" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:border-rose-500 focus:outline-none" oninput="updateRiskCalc()" />
+              <p class="text-[11px] text-slate-500 mt-1">Direct damage, downtime loss, recovery fees, or device value.</p>
+            </div>
+
+            <!-- Control / Insurance Cost -->
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-300 mb-1.5">
+                <span>Annual Cost of Control / Insurance ($):</span>
+                <span id="label-control-cost" class="font-mono text-blue-400 text-sm">$10,000</span>
+              </div>
+              <input id="input-control" type="number" value="10000" min="0" step="50" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:border-rose-500 focus:outline-none" oninput="updateRiskCalc()" />
+              <p class="text-[11px] text-slate-500 mt-1">Cost of firewall hardware, insurance premium, defensive training, etc.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Output & Heatmap (6 cols) -->
+        <div class="lg:col-span-6 space-y-6">
+          <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-6 space-y-5">
+            <h3 class="text-base font-bold text-white flex items-center justify-between">
+              <span class="flex items-center gap-2">
+                <i data-lucide="activity" class="w-4 h-4 text-emerald-400"></i> Calculated Risk & Decision Verdict
+              </span>
+              <span id="badge-risk-level" class="text-xs font-bold font-mono px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                MEDIUM RISK
+              </span>
+            </h3>
+
+            <!-- Financial Metrics Grid -->
+            <div class="grid grid-cols-2 gap-3 text-xs">
+              <div class="p-3 bg-slate-900 rounded-xl border border-slate-800">
+                <div class="text-slate-500">Annualized Loss Expectancy (ALE):</div>
+                <div id="stat-ale" class="text-lg font-bold text-white font-mono mt-1">$1,000 / yr</div>
+                <div class="text-[10px] text-slate-400 mt-0.5">Expected loss = Probability × Impact</div>
+              </div>
+              <div class="p-3 bg-slate-900 rounded-xl border border-slate-800">
+                <div class="text-slate-500">Cost of Safeguard:</div>
+                <div id="stat-cost" class="text-lg font-bold text-blue-400 font-mono mt-1">$10,000 / yr</div>
+                <div class="text-[10px] text-slate-400 mt-0.5">Control investment required</div>
+              </div>
+            </div>
+
+            <!-- Dynamic Decision Banner -->
+            <div id="decision-banner" class="p-4 rounded-xl border transition-all text-xs space-y-1 bg-amber-950/40 border-amber-500/40 text-amber-200">
+              <div class="font-bold text-sm flex items-center gap-2">
+                <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                <span id="decision-title">Recommended Strategy: Risk Acceptance</span>
+              </div>
+              <p id="decision-desc" class="leading-relaxed">
+                The control costs $10,000, but your expected annualized loss is only $1,000. It is financially irrational to spend $10,000 to save $1,000! Just take your chances or accept the risk, unless strictly mandated by compliance law.
+              </p>
+            </div>
+
+            <!-- 5x5 Heatmap Matrix Visualizer -->
+            <div>
+              <div class="text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-2 flex justify-between">
+                <span>NIST 5x5 Risk Heatmap</span>
+                <span id="heatmap-coords" class="text-rose-400">Score: 9 / 25</span>
+              </div>
+              <div class="grid grid-cols-5 gap-1.5 p-2 bg-slate-900 rounded-xl border border-slate-800 text-[10px] font-mono text-center font-bold">
+                <!-- Row 5 (Likelihood 5) -->
+                <div id="cell-1-5" class="p-2 rounded bg-amber-500/30 text-amber-200">5</div>
+                <div id="cell-2-5" class="p-2 rounded bg-orange-500/30 text-orange-200">10</div>
+                <div id="cell-3-5" class="p-2 rounded bg-rose-500/40 text-rose-200">15</div>
+                <div id="cell-4-5" class="p-2 rounded bg-rose-600/60 text-white">20</div>
+                <div id="cell-5-5" class="p-2 rounded bg-rose-700/80 text-white">25</div>
+
+                <!-- Row 4 (Likelihood 4) -->
+                <div id="cell-1-4" class="p-2 rounded bg-emerald-500/20 text-emerald-200">4</div>
+                <div id="cell-2-4" class="p-2 rounded bg-amber-500/30 text-amber-200">8</div>
+                <div id="cell-3-4" class="p-2 rounded bg-orange-500/30 text-orange-200">12</div>
+                <div id="cell-4-4" class="p-2 rounded bg-rose-500/40 text-rose-200">16</div>
+                <div id="cell-5-4" class="p-2 rounded bg-rose-600/60 text-white">20</div>
+
+                <!-- Row 3 (Likelihood 3) -->
+                <div id="cell-1-3" class="p-2 rounded bg-emerald-500/20 text-emerald-200">3</div>
+                <div id="cell-2-3" class="p-2 rounded bg-amber-500/30 text-amber-200">6</div>
+                <div id="cell-3-3" class="p-2 rounded bg-amber-500/40 text-amber-100 ring-2 ring-white">9</div>
+                <div id="cell-4-3" class="p-2 rounded bg-orange-500/30 text-orange-200">12</div>
+                <div id="cell-5-3" class="p-2 rounded bg-rose-500/40 text-rose-200">15</div>
+
+                <!-- Row 2 (Likelihood 2) -->
+                <div id="cell-1-2" class="p-2 rounded bg-emerald-500/20 text-emerald-200">2</div>
+                <div id="cell-2-2" class="p-2 rounded bg-emerald-500/20 text-emerald-200">4</div>
+                <div id="cell-3-2" class="p-2 rounded bg-amber-500/30 text-amber-200">6</div>
+                <div id="cell-4-2" class="p-2 rounded bg-amber-500/30 text-amber-200">8</div>
+                <div id="cell-5-2" class="p-2 rounded bg-orange-500/30 text-orange-200">10</div>
+
+                <!-- Row 1 (Likelihood 1) -->
+                <div id="cell-1-1" class="p-2 rounded bg-emerald-500/20 text-emerald-200">1</div>
+                <div id="cell-2-1" class="p-2 rounded bg-emerald-500/20 text-emerald-200">2</div>
+                <div id="cell-3-1" class="p-2 rounded bg-emerald-500/20 text-emerald-200">3</div>
+                <div id="cell-4-1" class="p-2 rounded bg-emerald-500/20 text-emerald-200">4</div>
+                <div id="cell-5-1" class="p-2 rounded bg-amber-500/30 text-amber-200">5</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Security Management Lifecycle & Incident Drill ──────────── -->
+    <section id="security-lifecycle" class="space-y-8">
+      <div class="border-b border-slate-800 pb-4">
+        <span class="text-xs font-mono font-bold tracking-wider uppercase text-emerald-400">Security Operations Lifecycle</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">The 4 Phases of Security Management</h2>
+        <p class="text-slate-400 text-sm mt-1">
+          "It is very difficult, if not impossible, to protect something if you don't know it exists."
+        </p>
+      </div>
+
+      <!-- 4 Phases Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Phase 1: Identify -->
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 relative">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono font-bold text-blue-400 bg-blue-950/60 px-2.5 py-1 rounded-md border border-blue-500/30">PHASE 1</span>
+            <i data-lucide="search" class="w-5 h-5 text-blue-400"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Identify Assets</h3>
+          <p class="text-slate-400 text-xs leading-relaxed mb-4">
+            Do you know every single asset in your infrastructure? Hardware, software packages, data lakes, personnel, vendor APIs. If you don't inventory it, you can't defend it.
+          </p>
+          <div class="border-t border-slate-800 pt-3 text-[11px] text-slate-300 space-y-1">
+            <div class="text-blue-400 font-semibold font-mono">Key Actions:</div>
+            <div>• Automated CMDB / asset discovery</div>
+            <div>• Data classification (Public, Internal, Secret)</div>
+            <div>• Third-party supply chain mapping</div>
+          </div>
+        </div>
+
+        <!-- Phase 2: Harden -->
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 relative">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-md border border-emerald-500/30">PHASE 2</span>
+            <i data-lucide="shield" class="w-5 h-5 text-emerald-400"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Harden & Prevent</h3>
+          <p class="text-slate-400 text-xs leading-relaxed mb-4">
+            "Harden means to make something more secure." Secure baseline configurations, patch management, subject identities, access regulation, user security awareness training.
+          </p>
+          <div class="border-t border-slate-800 pt-3 text-[11px] text-slate-300 space-y-1">
+            <div class="text-emerald-400 font-semibold font-mono">Key Actions:</div>
+            <div>• CIS benchmarks & OS hardening</div>
+            <div>• Least-privilege IAM policies</div>
+            <div>• Anti-phishing training & simulated drills</div>
+          </div>
+        </div>
+
+        <!-- Phase 3: Detect & Audit -->
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 relative">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono font-bold text-amber-400 bg-amber-950/60 px-2.5 py-1 rounded-md border border-amber-500/30">PHASE 3</span>
+            <i data-lucide="bell" class="w-5 h-5 text-amber-400"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Detect & Audit</h3>
+          <p class="text-slate-400 text-xs leading-relaxed mb-4">
+            Auditing evaluates control performance. Detect control failures (e.g. firewall service stopped) and control gaps (e.g. unmonitored ports). Alert the right team immediately.
+          </p>
+          <div class="border-t border-slate-800 pt-3 text-[11px] text-slate-300 space-y-1">
+            <div class="text-amber-400 font-semibold font-mono">Key Actions:</div>
+            <div>• Centralized logging (SIEM) & IDS/IPS</div>
+            <div>• Automated vulnerability scanning</div>
+            <div>• Anomaly detection & PagerDuty alerts</div>
+          </div>
+        </div>
+
+        <!-- Phase 4: Recover -->
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 relative">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono font-bold text-rose-400 bg-rose-950/60 px-2.5 py-1 rounded-md border border-rose-500/30">PHASE 4</span>
+            <i data-lucide="life-buoy" class="w-5 h-5 text-rose-400"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Respond & Recover</h3>
+          <p class="text-slate-400 text-xs leading-relaxed mb-4">
+            When disaster occurs despite controls, what is the plan? That's why schools do fire drills. Clear incident playbooks, containment procedures, and tested disaster recovery backups.
+          </p>
+          <div class="border-t border-slate-800 pt-3 text-[11px] text-slate-300 space-y-1">
+            <div class="text-rose-400 font-semibold font-mono">Key Actions:</div>
+            <div>• Incident Response Playbooks (IRP)</div>
+            <div>• Immutable offsite snapshot backups</div>
+            <div>• Disaster drills & Tabletop exercises</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Interactive Tabletop Drill Mini-Game -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-2">
+          <div>
+            <span class="text-xs font-mono font-bold text-rose-400 uppercase tracking-wider">Live Tabletop Simulation</span>
+            <h3 class="text-xl font-bold text-white mt-0.5">Security Incident Response Drill</h3>
+          </div>
+          <div id="drill-score" class="text-xs font-mono bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 text-slate-300">
+            Drill Stage: <span class="text-amber-400 font-bold">Step 1 of 3</span>
+          </div>
+        </div>
+
+        <div id="drill-content" class="py-6 space-y-4">
+          <div class="p-4 rounded-xl bg-red-950/30 border border-red-500/30 text-sm space-y-1">
+            <div class="text-red-400 font-bold flex items-center gap-2">
+              <i data-lucide="alert-octagon" class="w-4 h-4"></i> Incident Alert: Unauthorized Root SSH Session Detected!
+            </div>
+            <p class="text-slate-300 text-xs">
+              At 02:41 AM, your detection system alerts that root SSH was established on production database <code class="font-mono text-red-300">db-master-01</code> from an unknown IP in an unfamiliar country.
+            </p>
+          </div>
+
+          <div class="text-xs text-slate-300 font-semibold">What is your immediate primary response action?</div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <button onclick="handleDrillChoice(1)" class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-left border border-slate-700 text-xs text-slate-200 transition-colors">
+              <span class="font-bold text-white block mb-1">A) Reboot the server</span>
+              Turn it off and restart to wipe memory.
+            </button>
+            <button onclick="handleDrillChoice(2)" class="p-3 rounded-xl bg-emerald-950/40 hover:bg-emerald-900/60 text-left border border-emerald-500/30 text-xs text-slate-200 transition-colors">
+              <span class="font-bold text-emerald-400 block mb-1">B) Isolate & Revoke</span>
+              Sever network connection (Security Group / VLAN) and revoke active SSH keys.
+            </button>
+            <button onclick="handleDrillChoice(3)" class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-left border border-slate-700 text-xs text-slate-200 transition-colors">
+              <span class="font-bold text-white block mb-1">C) Send an email</span>
+              Email the team asking if anyone logged in late at night.
+            </button>
+          </div>
+
+          <div id="drill-feedback" class="hidden p-3 rounded-xl text-xs font-mono"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Modern Cybersecurity Concepts: Threat Vectors & Attacks ─── -->
+    <section id="cyber-threats" class="space-y-8">
+      <div class="border-b border-slate-800 pb-4">
+        <span class="text-xs font-mono font-bold tracking-wider uppercase text-rose-400">Cybersecurity Concepts</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">Modern Threat Vectors & The Attack Chain</h2>
+        <p class="text-slate-400 text-sm mt-1">
+          From human social engineering to OWASP Top 10 vulnerabilities and automated ransomware payloads.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Phishing & Social Engineering -->
+        <div class="glass-card rounded-2xl p-6">
+          <div class="flex items-center space-x-3 mb-3">
+            <div class="p-2.5 bg-rose-500/20 text-rose-400 rounded-xl">
+              <i data-lucide="mail-warning" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Social Engineering</h3>
+              <span class="text-xs font-mono text-rose-400">Hacking the Human</span>
+            </div>
+          </div>
+          <p class="text-slate-300 text-xs leading-relaxed mb-4">
+            Over 80% of data breaches involve human element exploitation: Spear phishing, CEO fraud, fake password reset portals, and pretexting.
+          </p>
+          <div class="text-[11px] text-slate-400 bg-slate-950/80 p-3 rounded-xl border border-slate-800 font-mono">
+            <span class="text-emerald-400 font-bold">Countermeasure:</span> Hardware FIDO2 keys (YubiKey), security awareness training, strict secondary out-of-band verification.
+          </div>
+        </div>
+
+        <!-- Ransomware & Malware -->
+        <div class="glass-card rounded-2xl p-6">
+          <div class="flex items-center space-x-3 mb-3">
+            <div class="p-2.5 bg-amber-500/20 text-amber-400 rounded-xl">
+              <i data-lucide="skull" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Ransomware</h3>
+              <span class="text-xs font-mono text-amber-400">Hostage Encryption</span>
+            </div>
+          </div>
+          <p class="text-slate-300 text-xs leading-relaxed mb-4">
+            Malicious software that encrypts critical databases and file systems, demanding multi-million dollar extortion payments for decryption keys.
+          </p>
+          <div class="text-[11px] text-slate-400 bg-slate-950/80 p-3 rounded-xl border border-slate-800 font-mono">
+            <span class="text-emerald-400 font-bold">Countermeasure:</span> Immutable air-gapped backups (WORM storage), EDR agents, endpoint isolation, rapid recovery drills.
+          </div>
+        </div>
+
+        <!-- OWASP Web Application Exploits -->
+        <div class="glass-card rounded-2xl p-6">
+          <div class="flex items-center space-x-3 mb-3">
+            <div class="p-2.5 bg-blue-500/20 text-blue-400 rounded-xl">
+              <i data-lucide="file-code-2" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">OWASP Web Top 10</h3>
+              <span class="text-xs font-mono text-blue-400">Application Flaws</span>
+            </div>
+          </div>
+          <p class="text-slate-300 text-xs leading-relaxed mb-4">
+            Vulnerabilities in web endpoints: SQL Injection (SQLi), Cross-Site Scripting (XSS), Server-Side Request Forgery (SSRF), and Broken Object Level Authorization (BOLA).
+          </p>
+          <div class="text-[11px] text-slate-400 bg-slate-950/80 p-3 rounded-xl border border-slate-800 font-mono">
+            <span class="text-emerald-400 font-bold">Countermeasure:</span> Parameterized queries, Web Application Firewall (WAF), input validation, SAST/DAST testing.
+          </div>
+        </div>
+
+        <!-- Supply Chain & Dependency Poisoning -->
+        <div class="glass-card rounded-2xl p-6">
+          <div class="flex items-center space-x-3 mb-3">
+            <div class="p-2.5 bg-purple-500/20 text-purple-400 rounded-xl">
+              <i data-lucide="package-x" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Supply Chain Attacks</h3>
+              <span class="text-xs font-mono text-purple-400">Dependency Poisoning</span>
+            </div>
+          </div>
+          <p class="text-slate-300 text-xs leading-relaxed mb-4">
+            Attackers inject malicious backdoors into widely used NPM, PyPI, or Go packages (like the XZ Utils or solarwinds compromises).
+          </p>
+          <div class="text-[11px] text-slate-400 bg-slate-950/80 p-3 rounded-xl border border-slate-800 font-mono">
+            <span class="text-emerald-400 font-bold">Countermeasure:</span> Software Bill of Materials (SBOM), SCA vulnerability scanners (Trivy, Snyk), package pinning & hash locks.
+          </div>
+        </div>
+
+        <!-- Denial of Service (DoS / DDoS) -->
+        <div class="glass-card rounded-2xl p-6">
+          <div class="flex items-center space-x-3 mb-3">
+            <div class="p-2.5 bg-cyan-500/20 text-cyan-400 rounded-xl">
+              <i data-lucide="waves" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Distributed DoS</h3>
+              <span class="text-xs font-mono text-cyan-400">Availability Attack</span>
+            </div>
+          </div>
+          <p class="text-slate-300 text-xs leading-relaxed mb-4">
+            Botnets flood network pipes (SYN floods, UDP reflection) or application APIs (HTTP GET floods) to choke infrastructure and crash services.
+          </p>
+          <div class="text-[11px] text-slate-400 bg-slate-950/80 p-3 rounded-xl border border-slate-800 font-mono">
+            <span class="text-emerald-400 font-bold">Countermeasure:</span> Anycast CDN scrubbing networks (Cloudflare, AWS Shield), rate limiting, autoscaling backends.
+          </div>
+        </div>
+
+        <!-- Credential Stuffing & Brute Force -->
+        <div class="glass-card rounded-2xl p-6">
+          <div class="flex items-center space-x-3 mb-3">
+            <div class="p-2.5 bg-orange-500/20 text-orange-400 rounded-xl">
+              <i data-lucide="key" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Credential Stuffing</h3>
+              <span class="text-xs font-mono text-orange-400">Password Reuse</span>
+            </div>
+          </div>
+          <p class="text-slate-300 text-xs leading-relaxed mb-4">
+            Automated scripts take username/password dumps from previous breaches and test them across thousands of corporate SaaS logins.
+          </p>
+          <div class="text-[11px] text-slate-400 bg-slate-950/80 p-3 rounded-xl border border-slate-800 font-mono">
+            <span class="text-emerald-400 font-bold">Countermeasure:</span> Universal MFA enforcement, Passkeys (WebAuthn), IP reputation scoring, CAPTCHA on login.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Modern Defense: Zero Trust & Defense in Depth ────────────── -->
+    <section id="zero-trust-defense" class="space-y-8">
+      <div class="border-b border-slate-800 pb-4">
+        <span class="text-xs font-mono font-bold tracking-wider uppercase text-cyan-400">Architectural Paradigms</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">Zero Trust Architecture & Defense in Depth</h2>
+        <p class="text-slate-400 text-sm mt-1">
+          Moving beyond the outdated "castle-and-moat" perimeter security into assumed breach and microsegmentation.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        
+        <!-- Zero Trust Principles -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-semibold">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> "Never Trust, Always Verify"
+            </div>
+            <h3 class="text-2xl font-bold text-white">Zero Trust Architecture (ZTA)</h3>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              Traditional networks trusted everything inside the corporate firewall. Zero Trust assumes attackers <em>already exist inside the network</em>. Every user, device, and packet must be continuously authenticated and authorized.
+            </p>
+            
+            <div class="space-y-3 pt-2">
+              <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-start gap-3">
+                <div class="p-1.5 bg-cyan-500/20 text-cyan-400 rounded-lg shrink-0 mt-0.5"><i data-lucide="check" class="w-4 h-4"></i></div>
+                <div>
+                  <div class="text-sm font-bold text-white">Explicit Verification</div>
+                  <div class="text-xs text-slate-400">Authenticate using all available data points (identity, device posture, location, anomaly risk).</div>
+                </div>
+              </div>
+
+              <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-start gap-3">
+                <div class="p-1.5 bg-cyan-500/20 text-cyan-400 rounded-lg shrink-0 mt-0.5"><i data-lucide="check" class="w-4 h-4"></i></div>
+                <div>
+                  <div class="text-sm font-bold text-white">Least Privilege Access (PoLP)</div>
+                  <div class="text-xs text-slate-400">Limit user and service rights with Just-In-Time (JIT) and Just-Enough-Access (JEA).</div>
+                </div>
+              </div>
+
+              <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-start gap-3">
+                <div class="p-1.5 bg-cyan-500/20 text-cyan-400 rounded-lg shrink-0 mt-0.5"><i data-lucide="check" class="w-4 h-4"></i></div>
+                <div>
+                  <div class="text-sm font-bold text-white">Assume Breach</div>
+                  <div class="text-xs text-slate-400">Minimize blast radius by micro-segmenting networks, encrypting all internal traffic, and continuous telemetry.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Defense in Depth (Layered Onion Sandbox) -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-semibold">
+              <i data-lucide="layers" class="w-3.5 h-3.5"></i> Layered Security
+            </div>
+            <h3 class="text-2xl font-bold text-white">Defense-in-Depth Model</h3>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              No single security control is 100% impenetrable. Defense-in-depth places multiple overlapping layers so if an attacker bypasses one, the next stops them.
+            </p>
+
+            <!-- Interactive Layer Visualizer -->
+            <div class="space-y-2 font-mono text-xs">
+              <div class="p-2.5 rounded-xl bg-purple-950/40 border border-purple-500/30 flex items-center justify-between text-purple-200">
+                <span class="flex items-center gap-2"><i data-lucide="database" class="w-4 h-4"></i> 1. Data Layer</span>
+                <span class="text-[10px] text-purple-400 font-sans">KMS, AES-256 at Rest, Tokenization</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-blue-950/40 border border-blue-500/30 flex items-center justify-between text-blue-200">
+                <span class="flex items-center gap-2"><i data-lucide="globe" class="w-4 h-4"></i> 2. Application Layer</span>
+                <span class="text-[10px] text-blue-400 font-sans">WAF, Input Sanitization, OAuth2</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-between text-emerald-200">
+                <span class="flex items-center gap-2"><i data-lucide="server" class="w-4 h-4"></i> 3. Host / Compute Layer</span>
+                <span class="text-[10px] text-emerald-400 font-sans">CIS Hardened OS, EDR, SELinux</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-amber-950/40 border border-amber-500/30 flex items-center justify-between text-amber-200">
+                <span class="flex items-center gap-2"><i data-lucide="network" class="w-4 h-4"></i> 4. Network Layer</span>
+                <span class="text-[10px] text-amber-400 font-sans">Firewall, DMZ, VPC Microsegmentation</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-rose-950/40 border border-rose-500/30 flex items-center justify-between text-rose-200">
+                <span class="flex items-center gap-2"><i data-lucide="shield" class="w-4 h-4"></i> 5. Perimeter Layer</span>
+                <span class="text-[10px] text-rose-400 font-sans">DDoS Scrubbing, Geo-blocking, DNSSEC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── DevSecOps: Shift-Left Pipeline Simulator ─────────────────── -->
+    <section id="devsecops" class="space-y-8">
+      <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div>
+          <span class="text-xs font-mono font-bold tracking-wider uppercase text-purple-400">DevOps Integration</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">DevSecOps & The "Shift-Left" Pipeline</h2>
+        </div>
+        <p class="text-xs text-slate-400 max-w-md">
+          Security is no longer a checklist done right before production; it is automated within every Git commit and CI/CD step.
+        </p>
+      </div>
+
+      <!-- DevSecOps Interactive Pipeline Scanner Tool -->
+      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="git-pull-request" class="w-5 h-5 text-purple-400"></i>
+              Interactive CI/CD Security Gate Simulator
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">Toggle security gates, simulate a commit, and watch how automated gates catch or leak flaws.</p>
+          </div>
+          <button onclick="runPipelineSimulation()" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition-all shadow-lg shadow-purple-600/30 flex items-center gap-2">
+            <i data-lucide="play" class="w-4 h-4"></i> Run Pipeline Test
+          </button>
+        </div>
+
+        <!-- Pipeline Stages Flow Graphic -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 pt-2">
+          
+          <!-- Stage 1: Commit -->
+          <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800 flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] font-mono text-purple-400 uppercase font-bold">Stage 1: Commit</div>
+              <div class="text-sm font-bold text-white mt-1">Secret Scan</div>
+              <p class="text-[11px] text-slate-400 mt-1">Gitleaks / TruffleHog checks for API keys in code.</p>
+            </div>
+            <label class="mt-3 flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+              <input type="checkbox" id="gate-secret" checked class="rounded accent-purple-500">
+              <span>Gate Active</span>
+            </label>
+          </div>
+
+          <!-- Stage 2: Dependencies -->
+          <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800 flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] font-mono text-purple-400 uppercase font-bold">Stage 2: Build</div>
+              <div class="text-sm font-bold text-white mt-1">SCA Scanner</div>
+              <p class="text-[11px] text-slate-400 mt-1">Snyk / Trivy checks for CVEs in package.json.</p>
+            </div>
+            <label class="mt-3 flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+              <input type="checkbox" id="gate-sca" checked class="rounded accent-purple-500">
+              <span>Gate Active</span>
+            </label>
+          </div>
+
+          <!-- Stage 3: SAST -->
+          <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800 flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] font-mono text-purple-400 uppercase font-bold">Stage 3: Test</div>
+              <div class="text-sm font-bold text-white mt-1">SAST Code Scan</div>
+              <p class="text-[11px] text-slate-400 mt-1">SonarQube / Semgrep inspects static source code.</p>
+            </div>
+            <label class="mt-3 flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+              <input type="checkbox" id="gate-sast" checked class="rounded accent-purple-500">
+              <span>Gate Active</span>
+            </label>
+          </div>
+
+          <!-- Stage 4: DAST / Container -->
+          <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800 flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] font-mono text-purple-400 uppercase font-bold">Stage 4: Staging</div>
+              <div class="text-sm font-bold text-white mt-1">DAST & Container</div>
+              <p class="text-[11px] text-slate-400 mt-1">OWASP ZAP scans live endpoints; base image linter.</p>
+            </div>
+            <label class="mt-3 flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+              <input type="checkbox" id="gate-dast" checked class="rounded accent-purple-500">
+              <span>Gate Active</span>
+            </label>
+          </div>
+
+          <!-- Stage 5: Deploy & Monitor -->
+          <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800 flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] font-mono text-purple-400 uppercase font-bold">Stage 5: Prod</div>
+              <div class="text-sm font-bold text-white mt-1">Runtime eBPF</div>
+              <p class="text-[11px] text-slate-400 mt-1">Falco monitors abnormal kernel sys-calls in containers.</p>
+            </div>
+            <label class="mt-3 flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+              <input type="checkbox" id="gate-runtime" checked class="rounded accent-purple-500">
+              <span>Gate Active</span>
+            </label>
+          </div>
+
+        </div>
+
+        <!-- Pipeline Live Terminal Output -->
+        <div class="bg-slate-950 rounded-2xl border border-slate-800 p-4 font-mono text-xs">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800/80 mb-3 text-slate-500 text-[11px]">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+              CI/CD Pipeline Console Log
+            </span>
+            <span id="pipeline-status-badge" class="text-emerald-400 font-bold">STATUS: READY</span>
+          </div>
+          <div id="pipeline-console" class="space-y-1 text-slate-300 min-h-[90px] leading-relaxed">
+            <span class="text-slate-500">// Click 'Run Pipeline Test' to simulate pushing code with an uncommitted secret and an unpatched library...</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Interactive Knowledge Check & Quiz ───────────────────────── -->
+    <section id="knowledge-quiz" class="space-y-8">
+      <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div>
+          <span class="text-xs font-mono font-bold tracking-wider uppercase text-amber-400">Retention & Practice</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">Security Knowledge Check</h2>
+        </div>
+        <div id="quiz-progress-text" class="text-xs font-mono text-slate-400">
+          Question <span id="quiz-current-num" class="text-amber-400 font-bold">1</span> of 5
+        </div>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl max-w-3xl mx-auto space-y-6">
+        
+        <div id="quiz-card" class="space-y-5">
+          <!-- Question Title -->
+          <div class="space-y-1">
+            <span id="quiz-category" class="text-[11px] font-mono font-bold text-rose-400 uppercase tracking-wider">Concept Quiz</span>
+            <h3 id="quiz-question-title" class="text-lg sm:text-xl font-bold text-white leading-snug">
+              Loading question...
+            </h3>
+          </div>
+
+          <!-- Options Grid -->
+          <div id="quiz-options-container" class="space-y-3">
+            <!-- Options dynamically rendered by JavaScript -->
+          </div>
+
+          <!-- Explanation box -->
+          <div id="quiz-explanation-box" class="hidden p-4 rounded-xl text-xs space-y-1 border">
+            <!-- Feedback explanation -->
+          </div>
+
+          <!-- Controls -->
+          <div class="flex items-center justify-between pt-4 border-t border-slate-800">
+            <div id="quiz-score-badge" class="text-xs font-mono text-slate-400">
+              Score: <span class="text-white font-bold" id="quiz-score-val">0</span> / 5
+            </div>
+            <button id="btn-next-quiz" onclick="nextQuizQuestion()" class="hidden px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs border border-slate-700 transition-colors">
+              Next Question →
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Quick Reference Cheatsheet Summary ──────────────────────── -->
+    <section class="bg-slate-900/50 border border-slate-800 rounded-3xl p-8 space-y-6">
+      <h3 class="text-xl font-bold text-white flex items-center gap-2">
+        <i data-lucide="bookmark" class="w-5 h-5 text-rose-400"></i>
+        Quick Reference Summary
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800/80 space-y-1">
+          <div class="font-bold text-white">3 Universal Security Goals</div>
+          <div class="text-slate-400">1. Prevent harm/loss</div>
+          <div class="text-slate-400">2. Detect if prevention fails</div>
+          <div class="text-slate-400">3. Recover from impact</div>
+        </div>
+        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800/80 space-y-1">
+          <div class="font-bold text-white">The CIA Triad</div>
+          <div class="text-slate-400"><strong>C:</strong> Confidentiality (Encryption, ACLs)</div>
+          <div class="text-slate-400"><strong>I:</strong> Integrity (Hashes, signing, backups)</div>
+          <div class="text-slate-400"><strong>A:</strong> Availability (Uptime, HA, FT)</div>
+        </div>
+        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800/80 space-y-1">
+          <div class="font-bold text-white">The 4 Risk Responses</div>
+          <div class="text-slate-400">• Avoidance (abandon risky action)</div>
+          <div class="text-slate-400">• Mitigation (implement controls)</div>
+          <div class="text-slate-400">• Transference (insurance, cloud SLA)</div>
+          <div class="text-slate-400">• Acceptance (no controls / cost > risk)</div>
+        </div>
+        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800/80 space-y-1">
+          <div class="font-bold text-white">4 Management Phases</div>
+          <div class="text-slate-400">1. Asset Identification</div>
+          <div class="text-slate-400">2. Hardening & Prevention</div>
+          <div class="text-slate-400">3. Detection & Auditing</div>
+          <div class="text-slate-400">4. Incident Response & Recovery</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────────── -->
+  <footer class="bg-slate-950 border-t border-slate-800 text-slate-500 py-8 text-center text-xs mt-16 space-y-2">
+    <div class="flex items-center justify-center space-x-4 text-slate-400 mb-2">
+      <a href="../index.html" class="hover:text-white transition-colors">Home</a>
+      <span>•</span>
+      <a href="../Networking/Network_index.html" class="hover:text-white transition-colors">Networking Hub</a>
+      <span>•</span>
+      <a href="../Networking/Network_Security_Guide.html" class="hover:text-white transition-colors">Firewalls & VPNs</a>
+      <span>•</span>
+      <a href="../docker/docker_index.html" class="hover:text-white transition-colors">Docker</a>
+      <span>•</span>
+      <a href="../Linux/linux_index.html" class="hover:text-white transition-colors">Linux</a>
+    </div>
+    <p>DevOps Learning Hub · Security & Cybersecurity Guide · High-Impact Interactive Architecture</p>
+  </footer>
+
+  <!-- ── Toast Notification Container ────────────────────────────── -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden max-w-lg w-[calc(100%-2rem)]
+              bg-slate-800 border border-slate-600 text-slate-200 text-sm px-5 py-3
+              rounded-2xl shadow-2xl transition-all font-mono">
+  </div>
+
+  <!-- ── Interactive Logic Script ────────────────────────────────── -->
+  <script>
+    // Initialize Lucide icons
+    document.addEventListener("DOMContentLoaded", () => {
+      if (typeof lucide !== "undefined") lucide.createIcons();
+      updateRiskCalc();
+      loadQuizQuestion(0);
+    });
+
+    // ── 1. Interactive CIA Triad Explorer ─────────────────────────────
+    function inspectCia(pillar) {
+      const box = document.getElementById("cia-status-box");
+      const c = document.getElementById("circle-c");
+      const i = document.getElementById("circle-i");
+      const a = document.getElementById("circle-a");
+
+      // Reset strokes
+      c.setAttribute("stroke-width", "3");
+      i.setAttribute("stroke-width", "3");
+      a.setAttribute("stroke-width", "3");
+
+      if (pillar === 'C') {
+        c.setAttribute("stroke-width", "6");
+        box.innerHTML = `
+          <div class="text-blue-400 font-bold font-mono">CONFIDENTIALITY FOCUS</div>
+          <p class="text-slate-300">Guarantees privacy. Only authorized entities can view data. Breaches include credential dumps, packet eavesdropping, and unencrypted S3 leaks.</p>
+        `;
+        document.getElementById("card-confidentiality").scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (pillar === 'I') {
+        i.setAttribute("stroke-width", "6");
+        box.innerHTML = `
+          <div class="text-emerald-400 font-bold font-mono">INTEGRITY FOCUS</div>
+          <p class="text-slate-300">Guarantees data accuracy and authenticity. Defends against unauthorized modifications and accidental staff errors. Enforced via SHA-256 hashes and HMACs.</p>
+        `;
+        document.getElementById("card-integrity").scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (pillar === 'A') {
+        a.setAttribute("stroke-width", "6");
+        box.innerHTML = `
+          <div class="text-amber-400 font-bold font-mono">AVAILABILITY FOCUS</div>
+          <p class="text-slate-300">Guarantees system uptime and responsiveness. Defends against DDoS attacks, datacenter fires, hardware failure, and ransomware outages.</p>
+        `;
+        document.getElementById("card-availability").scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function simulateCiaAttack(type) {
+      const box = document.getElementById("cia-status-box");
+      if (type === 'C') {
+        box.innerHTML = `
+          <div class="text-blue-400 font-bold font-mono flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span> Attack Simulated: Packet Sniffing / Man-in-the-Middle
+          </div>
+          <p class="text-slate-300">Attacker intercepted unencrypted transit traffic! <strong class="text-white">Confidentiality Violated.</strong> Fix: Enforce TLS 1.3 encryption and HSTS headers.</p>
+        `;
+      } else if (type === 'I') {
+        box.innerHTML = `
+          <div class="text-emerald-400 font-bold font-mono flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Attack Simulated: SQL Injection & Row Modification
+          </div>
+          <p class="text-slate-300">Attacker modified account balance records! <strong class="text-white">Integrity Violated.</strong> Fix: Parameterized queries, cryptographic transaction hashing & audit logs.</p>
+        `;
+      } else if (type === 'A') {
+        box.innerHTML = `
+          <div class="text-amber-400 font-bold font-mono flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> Attack Simulated: 100 Gbps UDP Flood Attack
+          </div>
+          <p class="text-slate-300">Web servers maxed out CPU and collapsed! <strong class="text-white">Availability Violated.</strong> Fix: Anycast DDoS filtering (Cloudflare/AWS Shield) and rate limiters.</p>
+        `;
+      }
+    }
+
+    function resetCiaLab() {
+      const box = document.getElementById("cia-status-box");
+      box.innerHTML = `
+        <div class="text-slate-400 font-mono flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>All 3 Pillars: <span class="text-emerald-400 font-semibold">Protected & Stable</span></span>
+        </div>
+        <p class="text-slate-400 leading-normal">Click a letter above or trigger an attack to inspect how CIA controls counter threats.</p>
+      `;
+      document.getElementById("circle-c").setAttribute("stroke-width", "3");
+      document.getElementById("circle-i").setAttribute("stroke-width", "3");
+      document.getElementById("circle-a").setAttribute("stroke-width", "3");
+    }
+
+    // ── 2. Interactive Risk Matrix & ROI Engine ────────────────────────
+    const likelihoodProbMap = {
+      1: { text: "1 — Rare (1% / yr)", prob: 0.01 },
+      2: { text: "2 — Unlikely (5% / yr)", prob: 0.05 },
+      3: { text: "3 — Moderate (20% / yr)", prob: 0.20 },
+      4: { text: "4 — Likely (50% / yr)", prob: 0.50 },
+      5: { text: "5 — Highly Likely (90% / yr)", prob: 0.90 }
+    };
+
+    function updateRiskCalc() {
+      const lVal = parseInt(document.getElementById("slider-likelihood").value);
+      const impactVal = parseFloat(document.getElementById("input-impact").value) || 0;
+      const controlCost = parseFloat(document.getElementById("input-control").value) || 0;
+
+      // Update Likelihood label
+      const probData = likelihoodProbMap[lVal];
+      document.getElementById("label-likelihood").textContent = probData.text;
+      document.getElementById("label-impact").textContent = "$" + impactVal.toLocaleString();
+      document.getElementById("label-control-cost").textContent = "$" + controlCost.toLocaleString();
+
+      // Calculate ALE (Annualized Loss Expectancy)
+      const ale = Math.round(impactVal * probData.prob);
+      document.getElementById("stat-ale").textContent = "$" + ale.toLocaleString() + " / yr";
+      document.getElementById("stat-cost").textContent = "$" + controlCost.toLocaleString() + " / yr";
+
+      // Compute heatmap score (1-25)
+      // Normalize impact into 1-5 scale for matrix display
+      let iScale = 1;
+      if (impactVal > 100000) iScale = 5;
+      else if (impactVal > 25000) iScale = 4;
+      else if (impactVal > 5000) iScale = 3;
+      else if (impactVal > 1000) iScale = 2;
+      else iScale = 1;
+
+      const score = lVal * iScale;
+      document.getElementById("heatmap-coords").textContent = `Likelihood: ${lVal} × Impact: ${iScale} = Score ${score}/25`;
+
+      // Highlight heatmap cell
+      document.querySelectorAll("[id^='cell-']").forEach(el => el.classList.remove("ring-4", "ring-white", "scale-105"));
+      const targetCell = document.getElementById(`cell-${iScale}-${lVal}`);
+      if (targetCell) targetCell.classList.add("ring-4", "ring-white", "scale-105");
+
+      // Badge level
+      const badge = document.getElementById("badge-risk-level");
+      if (score >= 15) {
+        badge.textContent = "CRITICAL RISK";
+        badge.className = "text-xs font-bold font-mono px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40";
+      } else if (score >= 9) {
+        badge.textContent = "HIGH RISK";
+        badge.className = "text-xs font-bold font-mono px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/40";
+      } else if (score >= 4) {
+        badge.textContent = "MEDIUM RISK";
+        badge.className = "text-xs font-bold font-mono px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40";
+      } else {
+        badge.textContent = "LOW RISK";
+        badge.className = "text-xs font-bold font-mono px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+      }
+
+      // Economic Decision Engine
+      const banner = document.getElementById("decision-banner");
+      const dTitle = document.getElementById("decision-title");
+      const dDesc = document.getElementById("decision-desc");
+
+      if (controlCost > ale * 1.5) {
+        // Control costs far more than the annualized loss
+        banner.className = "p-4 rounded-xl border transition-all text-xs space-y-1 bg-amber-950/40 border-amber-500/40 text-amber-200";
+        dTitle.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4"></i> Economic Verdict: Practice Risk Acceptance`;
+        dDesc.innerHTML = `The safeguard costs <strong>$${controlCost.toLocaleString()}</strong>, while your annualized expected loss is only <strong>$${ale.toLocaleString()}</strong>. It makes no financial sense to spend more on protection than the loss itself! Continue the activity without controls or negotiate a cheaper solution.`;
+      } else if (controlCost === 0) {
+        banner.className = "p-4 rounded-xl border transition-all text-xs space-y-1 bg-blue-950/40 border-blue-500/40 text-blue-200";
+        dTitle.innerHTML = `<i data-lucide="help-circle" class="w-4 h-4"></i> Zero Control Cost Defined`;
+        dDesc.innerHTML = `No control cost entered. Compare the safeguard cost against your ALE of <strong>$${ale.toLocaleString()}</strong>.`;
+      } else {
+        // Control is financially justified!
+        banner.className = "p-4 rounded-xl border transition-all text-xs space-y-1 bg-emerald-950/40 border-emerald-500/40 text-emerald-200";
+        dTitle.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Economic Verdict: Implement Control / Mitigation!`;
+        dDesc.innerHTML = `Investing <strong>$${controlCost.toLocaleString()}</strong> saves you an expected <strong>$${ale.toLocaleString()}</strong> in annualized loss. The ROI is positive and safeguards the organization against substantial financial/reputational damage!`;
+      }
+      if (typeof lucide !== "undefined") lucide.createIcons();
+    }
+
+    function loadScenarioPreset(type) {
+      if (type === 'tablet') {
+        document.getElementById("slider-likelihood").value = 2; // ~5%
+        document.getElementById("input-impact").value = 125;
+        document.getElementById("input-control").value = 25;
+      } else if (type === 'car') {
+        document.getElementById("slider-likelihood").value = 3; // 20%
+        document.getElementById("input-impact").value = 5000;
+        document.getElementById("input-control").value = 10000;
+      } else if (type === 'firewall') {
+        document.getElementById("slider-likelihood").value = 2; // ~5%
+        document.getElementById("input-impact").value = 3000;
+        document.getElementById("input-control").value = 5000;
+      } else if (type === 'ransomware') {
+        document.getElementById("slider-likelihood").value = 4; // 50%
+        document.getElementById("input-impact").value = 250000;
+        document.getElementById("input-control").value = 15000;
+      }
+      updateRiskCalc();
+    }
+
+    // ── 3. Tabletop Incident Response Mini-Game ───────────────────────
+    let currentDrillStep = 1;
+    function handleDrillChoice(choice) {
+      const feedback = document.getElementById("drill-feedback");
+      feedback.classList.remove("hidden", "bg-red-950/50", "border-red-500/40", "text-red-200", "bg-emerald-950/50", "border-emerald-500/40", "text-emerald-200");
+      
+      if (choice === 2) {
+        feedback.classList.add("bg-emerald-950/50", "border", "border-emerald-500/40", "text-emerald-200");
+        feedback.innerHTML = `
+          <strong>✅ EXCELLENT INCIDENT RESPONSE!</strong><br>
+          Isolating the host prevents lateral movement across the VPC while preserving volatile memory (RAM) for forensic analysis. Terminating active sessions stops the attacker instantly.
+        `;
+      } else if (choice === 1) {
+        feedback.classList.add("bg-red-950/50", "border", "border-red-500/40", "text-red-200");
+        feedback.innerHTML = `
+          <strong>❌ MISTAKE — REBOOTING DESTROYS FORENSIC EVIDENCE!</strong><br>
+          Rebooting immediately clears volatile RAM, destroying active process memory, in-memory payloads, and open sockets required to investigate the intrusion.
+        `;
+      } else {
+        feedback.classList.add("bg-red-950/50", "border", "border-red-500/40", "text-red-200");
+        feedback.innerHTML = `
+          <strong>❌ CRITICAL DELAY — UNACCEPTABLE LATENCY!</strong><br>
+          Sending casual emails during an active root compromise allows an attacker minutes or hours to exfiltrate database records or deploy ransomware. Immediate containment is required.
+        `;
+      }
+    }
+
+    // ── 4. DevSecOps Pipeline Simulator ──────────────────────────────
+    function runPipelineSimulation() {
+      const gSecret = document.getElementById("gate-secret").checked;
+      const gSca = document.getElementById("gate-sca").checked;
+      const gSast = document.getElementById("gate-sast").checked;
+      const gDast = document.getElementById("gate-dast").checked;
+      const gRuntime = document.getElementById("gate-runtime").checked;
+
+      const consoleEl = document.getElementById("pipeline-console");
+      const badge = document.getElementById("pipeline-status-badge");
+      
+      badge.textContent = "RUNNING CI/CD PIPELINE...";
+      badge.className = "text-amber-400 font-bold animate-pulse";
+      consoleEl.innerHTML = `<div class="text-slate-400">[00:00:01] Initiating build: git push origin feat/payment-v2 ...</div>`;
+
+      setTimeout(() => {
+        // Stage 1 Secret Scan
+        if (gSecret) {
+          consoleEl.innerHTML += `
+            <div class="text-rose-400">[00:00:02] [Gitleaks] 🚨 BLOCKED: Hardcoded AWS Secret Key detected in config/db.js (Line 42)!</div>
+            <div class="text-red-300 font-bold">[BUILD FAILED] Pipeline rejected commit before it reached cloud repository. Shift-Left succeeded!</div>
+          `;
+          badge.textContent = "FAILED: SECRET DETECTED";
+          badge.className = "text-rose-400 font-bold";
+          return;
+        } else {
+          consoleEl.innerHTML += `<div class="text-amber-300">[00:00:02] [Secret Scan Skipped] Leaked credentials slipped through!</div>`;
+        }
+
+        // Stage 2 SCA
+        setTimeout(() => {
+          if (gSca) {
+            consoleEl.innerHTML += `
+              <div class="text-rose-400">[00:00:04] [Snyk / Trivy SCA] 🚨 BLOCKED: CVE-2024-21538 found in dependency 'tar@4.4.18' (Severity: High).</div>
+              <div class="text-red-300 font-bold">[BUILD FAILED] Pipeline blocked container build due to vulnerable package.</div>
+            `;
+            badge.textContent = "FAILED: CVE DETECTED";
+            badge.className = "text-rose-400 font-bold";
+            return;
+          } else {
+            consoleEl.innerHTML += `<div class="text-amber-300">[00:00:04] [SCA Scan Skipped] Vulnerable libraries packaged into Docker image!</div>`;
+          }
+
+          // Stage 3 SAST
+          setTimeout(() => {
+            if (gSast) {
+              consoleEl.innerHTML += `
+                <div class="text-rose-400">[00:00:06] [Semgrep SAST] 🚨 BLOCKED: Raw SQL concatenation detected in userController.js! (CWE-89: SQL Injection).</div>
+                <div class="text-red-300 font-bold">[BUILD FAILED] Code review gate prevented deployment of SQLi vulnerability.</div>
+              `;
+              badge.textContent = "FAILED: SQLi VULNERABILITY";
+              badge.className = "text-rose-400 font-bold";
+              return;
+            }
+
+            // Production breach scenario if all turned off!
+            consoleEl.innerHTML += `
+              <div class="text-emerald-400">[00:00:08] Image deployed to Kubernetes production cluster...</div>
+              <div class="text-rose-500 font-bold bg-rose-950/80 p-2 rounded mt-2 border border-rose-500/50">
+                🚨 CATASTROPHIC BREACH: Attacker found un-scanned AWS key and exploited unpatched SQLi in production! Data leaked.
+              </div>
+            `;
+            badge.textContent = "PRODUCTION COMPROMISED!";
+            badge.className = "text-rose-500 font-bold animate-pulse";
+          }, 800);
+        }, 800);
+      }, 800);
+    }
+
+    // ── 5. Security & Cybersecurity Quiz Engine ──────────────────────
+    const quizQuestions = [
+      {
+        category: "Goals of Security",
+        q: "According to IT security fundamentals, what are the three overarching goals of security management?",
+        options: [
+          "Confidentiality, Integrity, and Availability",
+          "Prevent, Detect, and Recover from harm or loss",
+          "Avoidance, Mitigation, Transference, and Acceptance",
+          "Identify, Authenticate, and Authorize"
+        ],
+        correct: 1,
+        exp: "The three ultimate operational goals are to <strong>Prevent</strong> harm/loss; if prevention fails, to <strong>Detect</strong> it; and finally to <strong>Recover</strong> from it. (CIA refers to the Triad model)."
+      },
+      {
+        category: "The CIA Triad",
+        q: "An authorized database engineer accidentally ran a DROP TABLE command during routine maintenance. Which pillar of the CIA triad was directly violated?",
+        options: [
+          "Confidentiality",
+          "Integrity",
+          "Availability",
+          "Non-repudiation"
+        ],
+        correct: 1,
+        exp: "<strong>Integrity</strong> means resources are not improperly changed. This includes both malicious changes by outsiders and <em>accidental mistakes made by authorized personnel</em>!"
+      },
+      {
+        category: "Risk Terminology",
+        q: "A company's datacenter is located directly along an active earthquake fault line. In risk management terminology, what is the earthquake fault line?",
+        options: [
+          "A Threat",
+          "A Vulnerability",
+          "An Impact",
+          "A Control"
+        ],
+        correct: 1,
+        exp: "The geographical location on an earthquake fault is a <strong>Vulnerability</strong> (a weakness in the resource). The actual earthquake event itself would be the <strong>Threat</strong>."
+      },
+      {
+        category: "Risk Responses",
+        q: "A company considers buying a $5,000 firewall to prevent a cyber incident that causes at most $3,000 in total damages. What is the most rational risk response?",
+        options: [
+          "Risk Avoidance",
+          "Risk Mitigation",
+          "Risk Transference",
+          "Risk Acceptance"
+        ],
+        correct: 3,
+        exp: "<strong>Risk Acceptance</strong>! It makes no economic sense to spend $5,000 on a control to cover a $3,000 potential loss. Unless required by law, the rational decision is to accept the risk."
+      },
+      {
+        category: "Cybersecurity Architecture",
+        q: "What is the core philosophy behind Zero Trust Architecture (ZTA)?",
+        options: [
+          "Trust everything that is already inside the internal firewall perimeter.",
+          "'Never Trust, Always Verify' — verify identity and posture on every single request.",
+          "Completely avoid connecting company computers to the public internet.",
+          "Use only open-source software packages to inspect every line of code."
+        ],
+        correct: 1,
+        exp: "Zero Trust abandons the old castle-and-moat perimeter model and enforces <strong>'Never Trust, Always Verify'</strong> across every identity, network packet, and endpoint."
+      }
+    ];
+
+    let currentQuizIdx = 0;
+    let quizScore = 0;
+
+    function loadQuizQuestion(idx) {
+      currentQuizIdx = idx;
+      const q = quizQuestions[idx];
+      document.getElementById("quiz-category").textContent = q.category;
+      document.getElementById("quiz-current-num").textContent = (idx + 1);
+      document.getElementById("quiz-question-title").textContent = q.q;
+
+      const optsContainer = document.getElementById("quiz-options-container");
+      optsContainer.innerHTML = "";
+
+      const expBox = document.getElementById("quiz-explanation-box");
+      expBox.classList.add("hidden");
+      document.getElementById("btn-next-quiz").classList.add("hidden");
+
+      q.options.forEach((optText, oIdx) => {
+        const btn = document.createElement("button");
+        btn.className = "w-full text-left p-3.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs text-slate-200 transition-all flex items-start gap-3";
+        btn.innerHTML = `
+          <span class="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px] font-mono text-slate-400 shrink-0 mt-0.5">${String.fromCharCode(65 + oIdx)}</span>
+          <span class="leading-relaxed">${optText}</span>
+        `;
+        btn.onclick = () => selectQuizAnswer(oIdx, btn);
+        optsContainer.appendChild(btn);
+      });
+    }
+
+    function selectQuizAnswer(chosenIdx, clickedBtn) {
+      const q = quizQuestions[currentQuizIdx];
+      const allButtons = document.getElementById("quiz-options-container").querySelectorAll("button");
+      allButtons.forEach(b => b.disabled = true);
+
+      const expBox = document.getElementById("quiz-explanation-box");
+      expBox.classList.remove("hidden", "bg-emerald-950/40", "border-emerald-500/40", "text-emerald-200", "bg-rose-950/40", "border-rose-500/40", "text-rose-200");
+
+      if (chosenIdx === q.correct) {
+        quizScore++;
+        document.getElementById("quiz-score-val").textContent = quizScore;
+        clickedBtn.classList.add("bg-emerald-900/40", "border-emerald-500");
+        expBox.classList.add("bg-emerald-950/40", "border-emerald-500/40", "text-emerald-200");
+        expBox.innerHTML = `<strong>Correct! 🎉</strong><br>${q.exp}`;
+      } else {
+        clickedBtn.classList.add("bg-rose-900/40", "border-rose-500");
+        allButtons[q.correct].classList.add("bg-emerald-900/40", "border-emerald-500");
+        expBox.classList.add("bg-rose-950/40", "border-rose-500/40", "text-rose-200");
+        expBox.innerHTML = `<strong>Incorrect.</strong> The correct answer is <strong>${String.fromCharCode(65 + q.correct)}</strong>.<br>${q.exp}`;
+      }
+
+      const nextBtn = document.getElementById("btn-next-quiz");
+      nextBtn.classList.remove("hidden");
+      if (currentQuizIdx === quizQuestions.length - 1) {
+        nextBtn.textContent = "Restart Quiz ↺";
+      } else {
+        nextBtn.textContent = "Next Question →";
+      }
+    }
+
+    function nextQuizQuestion() {
+      if (currentQuizIdx < quizQuestions.length - 1) {
+        loadQuizQuestion(currentQuizIdx + 1);
+      } else {
+        quizScore = 0;
+        document.getElementById("quiz-score-val").textContent = "0";
+        loadQuizQuestion(0);
+      }
+    }
+  </script>
+</body>
+
+</html>
