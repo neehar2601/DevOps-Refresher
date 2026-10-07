@@ -159,11 +159,14 @@
         <a href="#roi-calculator" class="px-3 py-1 rounded-md text-rose-300 hover:bg-rose-950/40 border border-rose-500/20 transition-colors">Risk ROI Tool</a>
         <a href="#security-lifecycle" class="px-3 py-1 rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">Lifecycle & Drill</a>
         <a href="#cyber-threats" class="px-3 py-1 rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">Threat Vectors</a>
+        <a href="#wireless-threats" class="px-3 py-1 rounded-md text-amber-300 hover:bg-amber-950/40 border border-amber-500/20 transition-colors">Wireless Attacks</a>
+        <a href="#password-attacks" class="px-3 py-1 rounded-md text-rose-300 hover:bg-rose-950/40 border border-rose-500/20 transition-colors">Password Attacks</a>
         <a href="#zero-trust-defense" class="px-3 py-1 rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">Zero Trust & Defense</a>
         <a href="#iam-access-control" class="px-3 py-1 rounded-md text-sky-300 hover:bg-sky-950/40 border border-sky-500/20 transition-colors">IAM & Access Control</a>
         <a href="#endpoint-hardening" class="px-3 py-1 rounded-md text-emerald-300 hover:bg-emerald-950/40 border border-emerald-500/20 transition-colors">Endpoint Hardening</a>
         <a href="#certificates-https" class="px-3 py-1 rounded-md text-amber-300 hover:bg-amber-950/40 border border-amber-500/20 transition-colors">Certificates & HTTPS</a>
         <a href="#devsecops" class="px-3 py-1 rounded-md text-purple-300 hover:bg-purple-950/40 border border-purple-500/20 transition-colors">DevSecOps Pipeline</a>
+        <a href="#vuln-pentesting" class="px-3 py-1 rounded-md text-teal-300 hover:bg-teal-950/40 border border-teal-500/20 transition-colors">Vuln Scanning & PenTesting</a>
       </div>
     </nav>
   </header>
@@ -1131,6 +1134,440 @@
           </div>
         </div>
 
+      </div>
+    </section>
+
+    <!-- ── Wireless & Bluetooth Attacks (RF & 802.11 Threat Vectors) ── -->
+    <section id="wireless-threats" class="space-y-10">
+      <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div>
+          <span class="text-xs font-mono font-bold tracking-wider uppercase text-amber-400">Radio Frequency &amp; 802.11 Protocols</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">Wireless Threat Vectors &amp; RF Exploits</h2>
+          <p class="text-slate-400 text-sm mt-1">
+            From rogue access points and Evil Twin SSID clones to disassociation floods, war driving, and Bluetooth exfiltration.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+            Airborne Attack Surface
+          </span>
+        </div>
+      </div>
+
+      <!-- Part 1: Rogue APs vs Evil Twins & The Reconnect Trap -->
+      <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="wifi" class="w-5 h-5 text-amber-400"></i>
+            Part 1: Rogue Access Points vs. Evil Twins &amp; The Diagnostic Hallmark
+          </h3>
+          <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">802.11 Reconnaissance &amp; Spoofing</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-300 leading-relaxed">
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 space-y-3">
+            <div class="flex items-center gap-2 text-rose-400 font-bold text-sm">
+              <i data-lucide="radio" class="w-4 h-4"></i> Rogue Access Point (Unauthorized Hardware)
+            </div>
+            <p>
+              <strong>Rogue</strong> in cybersecurity strictly signifies <em>unauthorized hardware</em>. A rogue AP is an unauthorized wireless access point physically connected to a company network (e.g., an employee plugs in a cheap consumer router with SSID <code class="text-amber-300">HW</code> or <code class="text-amber-300">Home</code> because the office Wi-Fi has weak reception in their cubicle).
+            </p>
+            <p>
+              <strong>Corporate Risk:</strong> It bypasses corporate perimeter firewalls, 802.1X network access control, and corporate monitoring, giving any passerby in the parking lot an unauthenticated bridge directly into the corporate LAN. It also risks creating an on-path (Man-in-the-Middle) threat if other employees connect to it.
+            </p>
+          </div>
+
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 space-y-3">
+            <div class="flex items-center gap-2 text-amber-400 font-bold text-sm">
+              <i data-lucide="copy" class="w-4 h-4"></i> Evil Twin Attack (Identical SSID Clone)
+            </div>
+            <p>
+              An <strong>Evil Twin</strong> is a significantly more dangerous rogue access point that broadcasts the <strong>exact same SSID</strong> as the legitimate network (e.g., legitimate is <code class="text-emerald-300">Company_Guest</code>, Evil Twin is also <code class="text-rose-300">Company_Guest</code>).
+            </p>
+            <p>
+              <strong>The Reconnect Trap:</strong> Because operating systems automatically check <em>"Remember this network"</em> and hunt for matching SSIDs, devices in range will roam and connect to whichever signal is stronger. If the attacker amplifies their antenna, devices silently associate with the attacker!
+            </p>
+            <div class="p-3 rounded-lg bg-amber-950/40 border border-amber-500/30 text-amber-200">
+              <strong class="text-amber-300 block mb-0.5">🚨 The Hallmark Diagnostic Clue:</strong>
+              When victim employees are duped by an Evil Twin, <em>they have Internet access</em> (because the attacker proxies WAN traffic via cellular), but <strong>they cannot access internal company resources</strong> (intranet sites, local databases, or SMB file shares) because the Evil Twin is completely disconnected from the legitimate corporate LAN!
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Evil Twin & Disassociation Attack Simulator -->
+        <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-5" id="wireless-sim-container">
+          <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="play-circle" class="w-4 h-4 text-amber-400"></i>
+                Interactive Evil Twin &amp; Disassociation Attack Simulator
+              </h4>
+              <p class="text-xs text-slate-400 mt-0.5">Step through the attack lifecycle to see how deauthentication frames force client handover:</p>
+            </div>
+            <div class="flex flex-wrap gap-1.5" id="wireless-sim-steps">
+              <button onclick="runWirelessSim(1)" id="btn-wstep-1" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-amber-500/50 bg-amber-950/50 text-amber-300">1. Normal</button>
+              <button onclick="runWirelessSim(2)" id="btn-wstep-2" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:text-white">2. Deploy Evil Twin</button>
+              <button onclick="runWirelessSim(3)" id="btn-wstep-3" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:text-white">3. Disassociate Flood</button>
+              <button onclick="runWirelessSim(4)" id="btn-wstep-4" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:text-white">4. Reconnect Trap</button>
+              <button onclick="runWirelessSim(5)" id="btn-wstep-5" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:text-white">5. Test Access &amp; Sniff</button>
+            </div>
+          </div>
+
+          <div id="wireless-sim-console" class="bg-slate-900/80 p-5 rounded-xl border border-slate-800 font-mono text-xs space-y-3">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Part 2: Disassociation Attacks, War Driving & War Flying -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Disassociation Attack Breakdown -->
+        <div class="glass-panel p-6 sm:p-7 rounded-2xl space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+            <i data-lucide="zap-off" class="w-5 h-5 text-rose-400"></i>
+            <h3 class="text-base font-bold text-white">Disassociation (Deauth) Attacks</h3>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            In standard 802.11 wireless networks, management frames (including disassociation and deauthentication frames) are transmitted unencrypted without cryptographic authentication.
+          </p>
+          <div class="space-y-2 text-xs">
+            <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
+              <span class="text-amber-400 font-bold block">The Exploit Mechanics:</span>
+              <p class="text-slate-400">The attacker forges the source MAC address of the legitimate AP and blasts a stream of broadcast deauth frames (<code class="text-rose-300">0xC0 subtype</code>). All connected client workstations accept the frame as authentic and immediately drop their wireless connections.</p>
+            </div>
+            <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
+              <span class="text-teal-400 font-bold block">Why Combine with Evil Twin?</span>
+              <p class="text-slate-400">Disconnecting users is not the end goal—it is the catalyst. When 100 laptops are booted off the network at once, their Wi-Fi chipsets immediately rescan the airspace. The attacker's nearby Evil Twin offers a stronger RSSI signal, so victims auto-reconnect straight into the trap.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- War Driving & War Flying & WiGLE.net -->
+        <div class="glass-panel p-6 sm:p-7 rounded-2xl space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+              <i data-lucide="car" class="w-5 h-5 text-sky-400"></i>
+              <h3 class="text-base font-bold text-white">War Driving &amp; War Flying (WiGLE.net)</h3>
+            </div>
+            <span class="text-xs font-mono text-sky-400">Geospatial Recon</span>
+          </div>
+
+          <div class="flex gap-2">
+            <button onclick="switchWarTab('wardriving')" id="btn-war-drive" class="px-2.5 py-1 rounded bg-sky-950/60 border border-sky-500/40 text-sky-300 text-xs font-bold">War Driving</button>
+            <button onclick="switchWarTab('warflying')" id="btn-war-fly" class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400 text-xs hover:text-white">War Flying</button>
+            <button onclick="switchWarTab('wigle')" id="btn-war-wigle" class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400 text-xs hover:text-white">WiGLE.net Database</button>
+          </div>
+
+          <div id="war-tab-detail" class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Part 3: Bluetooth Attack Vectors: Bluejacking vs Bluesnarfing -->
+      <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="bluetooth" class="w-5 h-5 text-blue-400"></i>
+            Part 3: Bluetooth Attack Vectors — Bluejacking vs. Bluesnarfing
+          </h3>
+          <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">Short-Range RF Threats</span>
+        </div>
+
+        <p class="text-slate-300 text-sm leading-relaxed">
+          Bluetooth attacks target discoverable short-range personal area networks (PANs). Certification exams and real-world audits frequently test your ability to distinguish between harmless spam and critical data theft:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sky-400 font-bold text-sm flex items-center gap-1.5">
+                <i data-lucide="message-square" class="w-4 h-4"></i> Bluejacking (Spam over Bluetooth)
+              </span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-500/10 text-sky-300 border border-sky-500/20">Nuisance / Spam</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              <strong>Bluejacking</strong> is sending unsolicited messages, vCards, or digital business cards to discoverable Bluetooth devices in the vicinity.
+            </p>
+            <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+              <li><strong>Payload:</strong> Text messages, spam advertisements, or social engineering pretexting.</li>
+              <li><strong>Data Compromise:</strong> <span class="text-emerald-400 font-bold">ZERO.</span> No data is accessed, exfiltrated, or modified on the victim's device.</li>
+              <li><strong>Analogy:</strong> Exactly like receiving an unsolicited Smishing text message, but transmitted over Bluetooth pairing ranges.</li>
+              <li><strong>Modern Mitigations:</strong> Modern iOS and Android systems disable background discoverability by default.</li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-rose-400 font-bold text-sm flex items-center gap-1.5">
+                <i data-lucide="unlock" class="w-4 h-4"></i> Bluesnarfing (Data Theft over Bluetooth)
+              </span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20">Critical Data Breach</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              <strong>Bluesnarfing</strong> is the unauthorized theft and exfiltration of sensitive confidential data from a device via an exploitable Bluetooth connection.
+            </p>
+            <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+              <li><strong>Payload:</strong> Malicious OBEX pull / RFCOMM protocol commands that bypass authorization.</li>
+              <li><strong>Data Compromise:</strong> <span class="text-rose-400 font-bold">SEVERE.</span> Attacker copies contact books, SMS history, calendar appointments, emails, and private photos.</li>
+              <li><strong>Exam Mnemonic:</strong> <span class="text-amber-300 italic font-mono">"Dude, you have to SNARF data! Bluesnarfing steals data; Bluejacking just jacks your attention with spam."</span></li>
+              <li><strong>Defense:</strong> Keep Bluetooth turned off when in untrusted public places, update firmware, and require authentication for pairing.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Password Attacks & Hash Collisions (Authentication Vectors) ── -->
+    <section id="password-attacks" class="space-y-10">
+      <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div>
+          <span class="text-xs font-mono font-bold tracking-wider uppercase text-rose-400">Authentication &amp; Cryptanalysis</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">Password Attacks &amp; Cryptographic Collisions</h2>
+          <p class="text-slate-400 text-sm mt-1">
+            From online account lockouts and stealth password spraying to precomputed rainbow tables and the Birthday Paradox.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 border border-rose-500/30">
+            Credential Attack Vectors
+          </span>
+        </div>
+      </div>
+
+      <!-- Part 1: Online vs Offline Password Attacks -->
+      <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="server" class="w-5 h-5 text-rose-400"></i>
+            Part 1: Attack Execution Models — Online vs. Offline
+          </h3>
+          <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">Operational Boundaries</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-300 leading-relaxed">
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
+                <i data-lucide="globe" class="w-4 h-4"></i> Online Password Attacks
+              </span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Constrained &amp; Observable</span>
+            </div>
+            <p>
+              The attacker attempts to authenticate against a live, running server or cloud login endpoint across the network (e.g., SSH, Web Login, RDP, Active Directory).
+            </p>
+            <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+              <li><strong>Speed Limitation:</strong> Bound by network ping latency and server response time (typically 10 to 50 attempts/sec maximum).</li>
+              <li><strong>Defensive Blockers:</strong> Account lockout policies (e.g., 3-5 failed attempts locks the user account), IP rate limiting (HTTP 429), and CAPTCHAs.</li>
+              <li><strong>Detection:</strong> Highly visible in SIEM logs; easily triggers failed login alerts.</li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-rose-400 font-bold text-sm flex items-center gap-1.5">
+                <i data-lucide="database" class="w-4 h-4"></i> Offline Password Attacks
+              </span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20">Unconstrained GPU Cracking</span>
+            </div>
+            <p>
+              The attacker has already breached the target system or stolen a database dump containing cryptographic password hashes (e.g., <code class="text-rose-300">/etc/shadow</code> or an SQL dump).
+            </p>
+            <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+              <li><strong>Speed Limitation:</strong> <strong class="text-rose-400">Virtually unlimited.</strong> Runs on attacker-owned multi-GPU rigs (Hashcat, John the Ripper) at <strong>billions of hashes per second</strong>.</li>
+              <li><strong>Defensive Blockers:</strong> <span class="text-rose-400 font-bold">Zero account lockouts.</span> The target server has no idea the attack is taking place.</li>
+              <li><strong>Only Defense:</strong> Strong password length, modern adaptive key-stretching algorithms (Argon2id, bcrypt, PBKDF2), and unique random cryptographic salts.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Part 2: Brute Force vs Dictionary vs Password Spraying -->
+      <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="crosshair" class="w-5 h-5 text-orange-400"></i>
+            Part 2: Brute Force vs. Dictionary Attack vs. Password Spraying
+          </h3>
+          <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20">The Tactical Spectrum</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+            <span class="font-bold text-sky-400 flex items-center gap-1.5">
+              <i data-lucide="cpu" class="w-4 h-4"></i> Brute Force Attack
+            </span>
+            <p class="text-slate-300 leading-relaxed">
+              Exhaustively tries every conceivable combination of characters ($a, b, c... aa, ab...$) until the matching one is found.
+            </p>
+            <div class="text-[11px] text-slate-400 pt-1">
+              <span class="text-emerald-400 font-bold">Strength:</span> Mathematically 100% guaranteed to succeed if compute and time are infinite.<br>
+              <span class="text-rose-400 font-bold">Weakness:</span> Slowest attack; defeated immediately by account lockouts or length ≥ 14 chars.
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+            <span class="font-bold text-amber-400 flex items-center gap-1.5">
+              <i data-lucide="book-open" class="w-4 h-4"></i> Dictionary Attack
+            </span>
+            <p class="text-slate-300 leading-relaxed">
+              Tries thousands of words from a wordlist (<code class="text-amber-300">rockyou.txt</code>, common passwords) against <strong>one or a small number of accounts</strong>.
+            </p>
+            <div class="text-[11px] text-slate-400 pt-1">
+              <span class="text-emerald-400 font-bold">Pattern:</span> <strong class="text-white">1 Account × 10,000 Passwords</strong>.<br>
+              <span class="text-rose-400 font-bold">Weakness:</span> In online systems, triggers Account Lockout after attempt #3 or #5.
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+            <span class="font-bold text-rose-400 flex items-center gap-1.5">
+              <i data-lucide="sparkles" class="w-4 h-4"></i> Password Spraying
+            </span>
+            <p class="text-slate-300 leading-relaxed">
+              The tactical opposite of dictionary attacks! Tries <strong>one common password</strong> (e.g. <code class="text-rose-300">Summer2024!</code>) across <strong>thousands of accounts</strong>.
+            </p>
+            <div class="text-[11px] text-slate-400 pt-1">
+              <span class="text-emerald-400 font-bold">Pattern:</span> <strong class="text-white">10,000 Accounts × 1 Password</strong>.<br>
+              <span class="text-amber-300 font-bold">Superpower:</span> Completely bypasses account lockout thresholds because no single user ever receives more than 1 failed attempt!
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Password Attack Simulator -->
+        <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-5" id="pwd-sim-container">
+          <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="play-circle" class="w-4 h-4 text-orange-400"></i>
+                Interactive Credential Attack Simulator (Lockout vs. Spraying)
+              </h4>
+              <p class="text-xs text-slate-400 mt-0.5">Simulate how Active Directory account lockouts react to dictionary attacks vs stealth spraying:</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="runPasswordSim('dictionary')" id="btn-pwd-dict" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:text-white transition-all">
+                Run Dictionary Attack (1 Target)
+              </button>
+              <button onclick="runPasswordSim('spray')" id="btn-pwd-spray" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-rose-500/50 bg-rose-950/50 text-rose-300 transition-all">
+                Run Password Spraying (Many Targets)
+              </button>
+              <button onclick="runPasswordSim('bruteforce')" id="btn-pwd-brute" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:text-white transition-all">
+                Brute Force Math
+              </button>
+            </div>
+          </div>
+
+          <div id="pwd-sim-console" class="bg-slate-900/80 p-5 rounded-xl border border-slate-800 font-mono text-xs space-y-3">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Part 3 & 4: Rainbow Tables & Birthday Paradox -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Rainbow Tables & Cryptographic Salting -->
+        <div class="glass-panel p-6 sm:p-7 rounded-2xl space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="table" class="w-5 h-5 text-purple-400"></i>
+              Part 3: Rainbow Tables &amp; Salt Defenses
+            </h3>
+            <span class="text-xs font-mono text-purple-400">Precomputed Hashes</span>
+          </div>
+
+          <p class="text-xs text-slate-300 leading-relaxed">
+            In an offline attack, reversing billions of hashes one-by-one is computationally expensive. A <strong>Rainbow Table</strong> precomputes millions of plaintext passwords into their corresponding hashes and stores them in optimized lookup chains.
+          </p>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3 font-mono text-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-400">Test Hash Inversion:</span>
+              <div class="flex gap-2">
+                <button onclick="runRainbowSim(false)" id="btn-rainbow-unsalted" class="px-2.5 py-1 rounded text-[11px] font-bold border border-purple-500/40 bg-purple-950/60 text-purple-300">
+                  Unsalted Hash
+                </button>
+                <button onclick="runRainbowSim(true)" id="btn-rainbow-salted" class="px-2.5 py-1 rounded text-[11px] font-bold border border-slate-700 bg-slate-900 text-slate-400 hover:text-white">
+                  Salted Hash (Defense)
+                </button>
+              </div>
+            </div>
+            <div id="rainbow-result-box" class="p-3 bg-slate-900 rounded-lg border border-slate-800 text-[11px] space-y-1.5">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+
+          <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1">
+            <strong class="text-emerald-400 block">Why Salting Defeats Rainbow Tables:</strong>
+            <p class="text-slate-400">A salt is a unique, random string appended to the password prior to hashing. Because each user has a unique salt, the attacker's precomputed table is useless—they would need to recompute a 100GB table for every single user on Earth!</p>
+          </div>
+        </div>
+
+        <!-- The Birthday Attack & The Birthday Paradox -->
+        <div class="glass-panel p-6 sm:p-7 rounded-2xl space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="cake" class="w-5 h-5 text-pink-400"></i>
+              Part 4: The Birthday Attack &amp; Collision Math
+            </h3>
+            <span class="text-xs font-mono text-pink-400">Birthday Paradox</span>
+          </div>
+
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Most people intuitively believe you need 183 or 367 people to have a 50% chance of two sharing the exact same birthday. But mathematical probability proves you only need <strong>23 people</strong>!
+          </p>
+
+          <!-- Interactive Probability Slider -->
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3 font-mono text-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-400">Group Size (People in Room):</span>
+              <span id="bday-people-count" class="text-pink-400 font-bold text-sm">23 People</span>
+            </div>
+            <input type="range" id="bday-slider" min="2" max="60" value="23" oninput="updateBirthdayProb(this.value)" class="w-full accent-pink-500 cursor-pointer">
+            <div class="flex items-center justify-between pt-1 border-t border-slate-800 text-[11px]">
+              <span class="text-slate-400">Collision Probability:</span>
+              <span id="bday-prob-badge" class="font-bold text-pink-300 px-2 py-0.5 rounded bg-pink-950/60 border border-pink-500/40">50.7% (Tipping Point!)</span>
+            </div>
+            <p id="bday-explanation" class="text-[11px] text-slate-300 leading-relaxed font-sans pt-1">
+              In a room of 23 people, there are 253 pairwise comparisons (23 × 22 / 2). This delivers a 50.7% mathematical certainty of a shared birthday.
+            </p>
+          </div>
+
+          <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1">
+            <strong class="text-pink-400 block">Cryptographic Birthday Attack Impact:</strong>
+            <p class="text-slate-400">An attacker doesn't need to crack <em>your</em> exact password ($2^N$ search space). They only need to find <em>any two inputs</em> that produce the same hash collision ($2^{N/2}$ search space). This quadratic reduction is why MD5 and SHA-1 were cryptographically deprecated.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Part 5: Credential Stuffing & Password Reuse -->
+      <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="shield-alert" class="w-5 h-5 text-rose-400"></i>
+            Part 5: Credential Stuffing — The Catastrophe of Password Reuse
+          </h3>
+          <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">#1 Real-World Threat</span>
+        </div>
+
+        <p class="text-slate-300 text-sm leading-relaxed">
+          <strong>Credential Stuffing</strong> is the automated injection of stolen username and password pairs into website login forms. Attackers download massive breach databases (billions of credentials dumped on the Dark Web from compromised gaming forums, retail sites, or streaming services) and feed them into automated stuffing bots.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
+          <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-1.5">
+            <span class="text-rose-400 font-bold block">1. The Single Breach</span>
+            <p class="text-slate-400 font-sans">An obscure e-commerce forum gets breached. Employee's email <code class="text-slate-300">john@enterprise.com</code> and password <code class="text-slate-300">P@ssword2024!</code> are leaked.</p>
+          </div>
+          <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-1.5">
+            <span class="text-amber-400 font-bold block">2. Automated Stuffing</span>
+            <p class="text-slate-400 font-sans">Bots automatically test that exact credential pair against Office365, AWS Console, corporate VPN, GitHub, and online banking.</p>
+          </div>
+          <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-1.5">
+            <span class="text-emerald-400 font-bold block">3. Modern Defense</span>
+            <p class="text-slate-400 font-sans">Enforce <strong>MFA</strong> (FIDO2 / TOTP), mandate enterprise <strong>Password Managers</strong> so every site has a unique 20-character password, and adopt passwordless Passkeys.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -2968,6 +3405,322 @@
 
       </section>
 
+
+    <!-- ── Vulnerability Assessment, Fuzzing & Ethical Hacking ───────── -->
+    <section id="vuln-pentesting" class="space-y-10">
+      <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div>
+          <span class="text-xs font-mono font-bold tracking-wider uppercase text-teal-400">Offensive &amp; Defensive Assessment</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-1">Vulnerability Assessment, Fuzzing &amp; Ethical Hacking</h2>
+        </div>
+        <span class="text-xs font-mono text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1 rounded-full w-fit">Interactive Security Labs</span>
+      </div>
+
+      <!-- Part 1: Vulnerability Scanning vs Ethical Hacking -->
+      <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="scan" class="w-5 h-5 text-teal-400"></i>
+            Part 1: Automated Vulnerability Scanning vs. Ethical Penetration Testing
+          </h3>
+          <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">Discovery &amp; Verification</span>
+        </div>
+
+        <p class="text-slate-300 text-sm leading-relaxed">
+          Maintaining security requires constant discovery of weaknesses. Organizations utilize two distinct assessment methodologies: automated signature-based <strong>Vulnerability Scanning</strong> and human-driven <strong>Ethical Hacking (Penetration Testing)</strong>.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 space-y-3">
+            <h4 class="text-teal-400 font-bold text-sm flex items-center gap-2">
+              <i data-lucide="cpu" class="w-4 h-4"></i> Automated Vulnerability Scanning (e.g., Nessus, OpenVAS)
+            </h4>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Scanners query constantly updated databases of known CVEs against network devices, servers, and software. They are fast, broad, and inspect thousands of hosts automatically.
+            </p>
+            <div class="space-y-2 text-xs">
+              <div class="p-2.5 rounded bg-slate-950 border border-slate-800">
+                <span class="text-amber-400 font-bold">Non-Credentialed Scan:</span>
+                <span class="text-slate-400 block text-[11px] mt-0.5">Scans over the network without login rights. Observes open ports and banners from the outside. Cannot inspect internal OS patch levels or kernel updates (<em class="text-rose-400">"OS security patch assessment failed"</em>). High rate of inconclusive findings.</span>
+              </div>
+              <div class="p-2.5 rounded bg-slate-950 border border-slate-800">
+                <span class="text-emerald-400 font-bold">Credentialed Scan:</span>
+                <span class="text-slate-400 block text-[11px] mt-0.5">Supplied with administrative credentials (SSH key / Windows Admin). Logs in locally to audit installed package databases (<code class="text-slate-300">apt</code>, <code class="text-slate-300">rpm</code>), registry settings, and exact kernel patch levels. Provides comprehensive, high-fidelity results.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 space-y-3">
+            <h4 class="text-rose-400 font-bold text-sm flex items-center gap-2">
+              <i data-lucide="terminal" class="w-4 h-4"></i> Ethical Hacking &amp; Penetration Testing
+            </h4>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              A certified security professional with explicit written permission employs the exact tools and exploits of malicious hackers to discover and actively breach system defenses.
+            </p>
+            <div class="space-y-2 text-xs">
+              <div class="p-2.5 rounded bg-slate-950 border border-slate-800">
+                <span class="text-sky-400 font-bold">Zero False Positives:</span>
+                <span class="text-slate-400 block text-[11px] mt-0.5">Unlike scanners that guess, a penetration tester validates vulnerabilities by actively weaponizing them. If the tester gains access, the risk is 100% verified.</span>
+              </div>
+              <div class="p-2.5 rounded bg-slate-950 border border-slate-800">
+                <span class="text-purple-400 font-bold">Scoped Engagement &amp; Advice:</span>
+                <span class="text-slate-400 block text-[11px] mt-0.5">Ethical hackers do not fix the client's network. They document exploited attack paths and deliver a comprehensive remediation roadmap for internal administrators to execute.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- False Positives vs False Negatives Warning Box -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 rounded-xl bg-amber-950/30 border border-amber-500/30 text-xs space-y-1">
+            <span class="font-bold text-amber-300 flex items-center gap-1.5 text-sm">
+              <i data-lucide="alert-triangle" class="w-4 h-4"></i> False Positive (The Common Nuisance)
+            </span>
+            <p class="text-slate-300 leading-relaxed">
+              The scanner raises an alarm for a vulnerability that <strong>does not actually exist</strong> or is not exploitable in practice. Scanners prefer generating false positives rather than missing a threat. Reports must always be manually audited by administrators.
+            </p>
+          </div>
+          <div class="p-4 rounded-xl bg-rose-950/40 border border-rose-500/40 text-xs space-y-1">
+            <span class="font-bold text-rose-300 flex items-center gap-1.5 text-sm">
+              <i data-lucide="shield-alert" class="w-4 h-4"></i> False Negative (The Silent Catastrophe)
+            </span>
+            <p class="text-slate-300 leading-relaxed">
+              The scanner reports <strong>no alert</strong>, but a critical vulnerability <strong>actually exists</strong>! False negatives are far more dangerous because they create a false sense of security while leaving unpatched openings for real-world adversaries.
+            </p>
+          </div>
+        </div>
+
+        <!-- Interactive Vulnerability Scanner Simulator -->
+        <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-5">
+          <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="play-circle" class="w-4 h-4 text-teal-400"></i>
+                Interactive Vulnerability Scanner Simulator (Nessus Engine)
+              </h4>
+              <p class="text-xs text-slate-400 mt-0.5">Toggle scan mode to compare credentialed vs non-credentialed visibility:</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="runVulnScanner('non_cred')" id="btn-scan-non-cred" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:text-white transition-all">
+                Non-Credentialed Scan
+              </button>
+              <button onclick="runVulnScanner('credentialed')" id="btn-scan-cred" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-teal-500/50 bg-teal-950/50 text-teal-300 transition-all">
+                Credentialed Scan (Admin Credentials)
+              </button>
+            </div>
+          </div>
+
+          <div id="vuln-scanner-console" class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 font-mono text-xs space-y-3">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Part 2: Application Security, Defensive Coding & Fuzz Testing -->
+      <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="code-2" class="w-5 h-5 text-indigo-400"></i>
+            Part 2: Application Security, Defensive Coding &amp; Fuzz Testing (Fuzzing)
+          </h3>
+          <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">The 25 vs 500 Rule</span>
+        </div>
+
+        <p class="text-slate-300 text-sm leading-relaxed">
+          Application developers face an asymmetric challenge: users and adversaries will supply unexpected, malformed, or malicious input just to see what breaks. Securing software demands rigorous input validation and error handling.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 space-y-3">
+            <h4 class="text-amber-400 font-bold text-sm flex items-center gap-2">
+              <i data-lucide="check-square" class="w-4 h-4"></i> Input Validation &amp; Error Handling
+            </h4>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              <strong>Input Validation:</strong> Ensuring all user input is restricted strictly to allowable formats, lengths, and numerical boundaries before processing. (e.g. Rejecting negative ages like <code class="text-slate-300">-10</code> or non-numeric characters).
+            </p>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              <strong>Error &amp; Exception Handling:</strong> Code designed to catch unexpected system faults gracefully without crashing or leaking sensitive stack traces and database schemas.
+            </p>
+            <div class="p-3 bg-indigo-950/40 rounded-lg border border-indigo-500/30 text-xs text-indigo-200">
+              <strong>💡 The 25 vs 500 Axiom:</strong> <em>"It takes 25 lines of code to build an application feature that works; it takes 500 lines of code to secure it against malicious inputs, edge cases, and unexpected errors."</em>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 space-y-3">
+            <h4 class="text-purple-400 font-bold text-sm flex items-center gap-2">
+              <i data-lucide="zap" class="w-4 h-4"></i> Fuzz Testing (Fuzzing / Fuzzers)
+            </h4>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Fuzzers take the human guesswork out of finding software flaws. Instead of guessing what bizarre inputs someone might try (like shooting a virtual cow in a video game just to see what happens), fuzzers bombard applications with automated streams of random, malformed, or boundary-breaking data.
+            </p>
+            <ul class="text-xs text-slate-400 space-y-1.5 list-disc list-inside">
+              <li><strong>Target:</strong> Tests input validation routines to induce application crashes or memory leaks.</li>
+              <li><strong>Uncovers:</strong> Buffer overflows, unhandled null exceptions, integer overflows, format string bugs.</li>
+              <li><strong>Popular Fuzzing Engines:</strong> AFL (American Fuzzy Lop), Boofuzz, Radamsa, Peach.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Interactive Fuzzing & Input Validation Lab -->
+        <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-5">
+          <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="terminal" class="w-4 h-4 text-purple-400"></i>
+                Interactive Fuzzing &amp; Defensive Coding Lab
+              </h4>
+              <p class="text-xs text-slate-400 mt-0.5">Test naive unvalidated code vs. defensive 500-line hardened validation:</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="runFuzzLab('normal')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs">Normal Input</button>
+              <button onclick="runFuzzLab('negative')" class="px-2.5 py-1 rounded bg-amber-950/60 border border-amber-500/40 text-amber-300 text-xs">Negative Age (-10)</button>
+              <button onclick="runFuzzLab('overflow')" class="px-2.5 py-1 rounded bg-rose-950/60 border border-rose-500/40 text-rose-300 text-xs">Integer Overflow</button>
+              <button onclick="runFuzzLab('xss')" class="px-2.5 py-1 rounded bg-purple-950/60 border border-purple-500/40 text-purple-300 text-xs">XSS Script</button>
+              <button onclick="runFuzzLab('fuzzer_batch')" class="px-3 py-1 rounded bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center gap-1">
+                <i data-lucide="play" class="w-3 h-3"></i> Run Fuzz Batch (1,000 Payloads)
+              </button>
+            </div>
+          </div>
+
+          <div id="fuzz-lab-console" class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 font-mono text-xs space-y-3">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Part 3: The 3 Security Assessment Models -->
+      <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="box" class="w-5 h-5 text-sky-400"></i>
+            Part 3: Security Testing Models: Black-Box, Gray-Box &amp; White-Box
+          </h3>
+          <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">Assessment Scope</span>
+        </div>
+
+        <p class="text-slate-300 text-sm leading-relaxed">
+          Penetration tests and vulnerability audits are categorized by the degree of insider information provided to the testing team prior to engagement:
+        </p>
+
+        <!-- 3 Models Grid with interactive selector -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button onclick="showTestingModel('black')" id="btn-model-black" class="model-tab p-5 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-900 text-left transition-all space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">ZERO KNOWLEDGE</span>
+              <i data-lucide="eye-off" class="w-4 h-4 text-slate-400"></i>
+            </div>
+            <h4 class="text-white font-bold text-sm">Black-Box Testing</h4>
+            <p class="text-xs text-slate-400 leading-relaxed">Tester is completely "in the dark." Given only target company name or IP range.</p>
+          </button>
+
+          <button onclick="showTestingModel('gray')" id="btn-model-gray" class="model-tab p-5 rounded-xl border border-slate-800 bg-slate-900/40 hover:bg-slate-900 text-left transition-all space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-950/60 text-amber-400 border border-amber-500/30">PARTIAL KNOWLEDGE</span>
+              <i data-lucide="help-circle" class="w-4 h-4 text-amber-400"></i>
+            </div>
+            <h4 class="text-white font-bold text-sm">Gray-Box Testing</h4>
+            <p class="text-xs text-slate-400 leading-relaxed">Tester knows something, but not everything (e.g., standard employee login, partial subnet diagram).</p>
+          </button>
+
+          <button onclick="showTestingModel('white')" id="btn-model-white" class="model-tab p-5 rounded-xl border border-slate-800 bg-slate-900/40 hover:bg-slate-900 text-left transition-all space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-500/30">FULL KNOWLEDGE</span>
+              <i data-lucide="eye" class="w-4 h-4 text-emerald-400"></i>
+            </div>
+            <h4 class="text-white font-bold text-sm">White-Box Testing</h4>
+            <p class="text-xs text-slate-400 leading-relaxed">Tester is given full source code, architecture schematics, credentials, and network diagrams.</p>
+          </button>
+        </div>
+
+        <div id="testing-model-detail" class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
+          <!-- Dynamically populated via JS -->
+        </div>
+      </div>
+
+      <!-- Part 4: The 6 Stages of Ethical Hacking & Penetration Testing -->
+      <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="list-ordered" class="w-5 h-5 text-rose-400"></i>
+            Part 4: The 6-Stage Penetration Testing Lifecycle &amp; Hacking Kill Chain
+          </h3>
+          <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">Operational Execution</span>
+        </div>
+
+        <p class="text-slate-300 text-sm leading-relaxed">
+          Both malicious adversaries and ethical penetration testers follow a structured, multi-phase methodology from initial research to post-exploitation:
+        </p>
+
+        <!-- Stepper Navigation -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2" id="pentest-steps-bar">
+          <!-- Populated by JS -->
+        </div>
+
+        <div id="pentest-step-content" class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Part 5: Bug Bounties & Legal Authorization -->
+      <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="award" class="w-5 h-5 text-amber-400"></i>
+            Part 5: Bug Bounties, Safe Harbor &amp; Legal Authorization
+          </h3>
+          <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">Legal Governance</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-4 text-xs text-slate-300 leading-relaxed">
+            <div class="p-4 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-200 space-y-2">
+              <span class="font-bold flex items-center gap-1.5 text-sm">
+                <i data-lucide="shield-alert" class="w-4 h-4"></i> Absolute Legal Rule: Permission is Mandatory
+              </span>
+              <p>
+                <strong>The difference between ethical hacking and a federal cybercrime is written legal permission.</strong> If you test without documented authorization, good intentions do not protect you from prosecution. Always obtain a formal <em>Rules of Engagement (RoE)</em> letter signed by authorized corporate officers.
+              </p>
+            </div>
+            <p>
+              When participating in bug bounties, always archive the program's official policy page, scope boundaries, and safe harbor text to prove permission if questioned.
+            </p>
+          </div>
+
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 space-y-3">
+            <h4 class="text-amber-400 font-bold text-sm flex items-center gap-2">
+              <i data-lucide="dollar-sign" class="w-4 h-4"></i> How Bug Bounty Programs Operate (e.g., HackerOne)
+            </h4>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Companies offer blanket public authorization for researchers to find vulnerabilities under defined terms. In return for private disclosure, organizations reward researchers with bounties scaled by severity:
+            </p>
+            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+              <div class="p-2.5 rounded bg-slate-950 border border-slate-800 text-slate-300">
+                <span class="text-slate-500 block">LOW SEVERITY</span>
+                <span class="text-white font-bold">$100 – $500</span>
+                <span class="text-slate-400 block text-[10px]">Info disclosure, open redirects</span>
+              </div>
+              <div class="p-2.5 rounded bg-slate-950 border border-slate-800 text-slate-300">
+                <span class="text-slate-500 block">MEDIUM SEVERITY</span>
+                <span class="text-amber-400 font-bold">$500 – $2,500</span>
+                <span class="text-slate-400 block text-[10px]">CSRF, sensitive data leaks</span>
+              </div>
+              <div class="p-2.5 rounded bg-slate-950 border border-slate-800 text-slate-300">
+                <span class="text-slate-500 block">HIGH SEVERITY</span>
+                <span class="text-rose-400 font-bold">$2,500 – $10,000</span>
+                <span class="text-slate-400 block text-[10px]">SQLi, Auth bypass, SSRF</span>
+              </div>
+              <div class="p-2.5 rounded bg-slate-950 border border-slate-800 text-slate-300">
+                <span class="text-slate-500 block">CRITICAL SEVERITY</span>
+                <span class="text-purple-400 font-bold">$10,000 – $50,000+</span>
+                <span class="text-slate-400 block text-[10px]">Remote Code Execution (RCE)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
     <!-- ── Interactive Knowledge Check & Quiz ───────────────────────── -->
     <section id="knowledge-quiz" class="space-y-8">
       <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
@@ -3117,7 +3870,654 @@
   <!-- ── Interactive Logic Script ────────────────────────────────── -->
   <script>
     // Initialize Lucide icons
+    
+    // ── Wireless & Bluetooth Threats Logic ──────────────────────
+    const wirelessSimSteps = {
+      1: {
+        stepName: "Step 1: Normal Authorized Wireless Communication",
+        status: "AUTHORIZED & HEALTHY",
+        badgeClass: "bg-emerald-950/80 text-emerald-300 border-emerald-500/40",
+        log: [
+          "[+] Client workstation 'Alice-ThinkPad' associated with AP 'Company_WiFi' (BSSID: 00:14:22:01:23:45).",
+          "[+] Security Protocol: WPA2-Enterprise with 802.1X EAP-TLS certificate handshake.",
+          "[+] Internal IP Assigned: 10.10.4.88/24 via Corporate DHCP Server.",
+          "[✓] WAN Internet Access: ONLINE (Gateway: 10.10.4.1 -> Edge Firewall).",
+          "[✓] Corporate Intranet: REACHABLE (Accessing https://intranet.corp.local and SMB file share \\\\nas01.corp)."
+        ],
+        metrics: { signal: "-58 dBm (Strong)", gateway: "10.10.4.1 (Authentic)", intranet: "Accessible (100%)", mitm: "None (Secure)" }
+      },
+      2: {
+        stepName: "Step 2: Attacker Deploys Evil Twin Access Point",
+        status: "ROGUE ACCESS POINT DETECTED IN AIRSPACE",
+        badgeClass: "bg-amber-950/80 text-amber-300 border-amber-500/40",
+        log: [
+          "[!] Attacker parks nearby with high-gain directional Alfa Wi-Fi adapter.",
+          "[!] Attacker broadcasts rogue AP with IDENTICAL SSID 'Company_WiFi' (BSSID: AA:BB:CC:11:22:33).",
+          "[!] Rogue AP configured on 2.4GHz Channel 6 with amplified 1000mW transmission power.",
+          "[*] Client workstation remains connected to authentic AP for now (sticky BSSID association).",
+          "[⚠️] WARNING: Two distinct BSSIDs are now broadcasting the exact same SSID in the same facility."
+        ],
+        metrics: { signal: "-42 dBm (Rogue Stronger)", gateway: "192.168.4.1 (Rogue Hotspot)", intranet: "Accessible (Still on Authentic AP)", mitm: "Armed & Waiting" }
+      },
+      3: {
+        stepName: "Step 3: Attacker Floods 802.11 Disassociation Management Frames",
+        status: "DISASSOCIATION ATTACK IN PROGRESS",
+        badgeClass: "bg-rose-950/80 text-rose-300 border-rose-500/40",
+        log: [
+          "[💥] Launching Aireplay-ng deauth attack: spoofing source MAC 00:14:22:01:23:45...",
+          "[💥] Transmitting 128 unencrypted 802.11 disassociation frames (Reason Code: 0x07 - Class 3 frame received from nonassociated STA).",
+          "[!] Client 'Alice-ThinkPad' accepts spoofed deauth frame without cryptographic verification.",
+          "[⚡] CONNECTION DROPPED: Alice's Wi-Fi interface forcibly disconnected from legitimate AP!",
+          "[*] Alice's operating system enters automatic network hunt mode ('Remember this network' active)."
+        ],
+        metrics: { signal: "Disconnected (Searching...)", gateway: "None", intranet: "DISCONNECTED", mitm: "Triggering Handover" }
+      },
+      4: {
+        stepName: "Step 4: Client Reconnects — Trapped by Evil Twin",
+        status: "CLIENT TRAPPED BY ROGUE ACCESS POINT",
+        badgeClass: "bg-rose-950/80 text-rose-300 border-rose-500/40",
+        log: [
+          "[+] Alice's laptop scans airspace for remembered SSID 'Company_WiFi'.",
+          "[+] Rogue Evil Twin signal (-42 dBm) is significantly stronger than corporate AP (-58 dBm).",
+          "[🚨] AUTO-RECONNECT TRAP: Laptop automatically associates with Attacker's Evil Twin (AA:BB:CC:11:22:33)!",
+          "[+] Attacker DHCP server hands Alice rogue IP: 192.168.4.105/24 with Gateway 192.168.4.1.",
+          "[+] Attacker enables IP forwarding via LTE cellular tether to provide outbound Internet."
+        ],
+        metrics: { signal: "-42 dBm (Connected to Rogue)", gateway: "192.168.4.1 (Attacker Gateway)", intranet: "SEVERED", mitm: "ACTIVE ON-PATH" }
+      },
+      5: {
+        stepName: "Step 5: Testing Resource Access & The Diagnostic Hallmark",
+        status: "HALLMARK OBSERVED: INTERNET PASSES, INTRANET FAILS",
+        badgeClass: "bg-purple-950/80 text-purple-300 border-purple-500/40",
+        log: [
+          "[✓] User tests Google / YouTube: SUCCESS! (Traffic relayed through attacker's cellular uplink).",
+          "[❌] User tests https://intranet.corp.local: CONNECTION TIMED OUT (DNS lookup failed).",
+          "[❌] User tests \\\\nas01.corp\\share: NETWORK PATH NOT FOUND.",
+          "[🚨] DIAGNOSTIC HALLMARK CONFIRMED: User has Internet, but CANNOT reach internal company resources!",
+          "[💀] ATTACKER RECON CAPTURE: Sniffed plaintext HTTP session cookies, harvested NTLMv2 hashes, and credential relay primed."
+        ],
+        metrics: { signal: "-42 dBm (Evil Twin)", gateway: "192.168.4.1 (Attacker)", intranet: "UNREACHABLE (Hallmark Symptom)", mitm: "CREDENTIALS HARVESTED" }
+      }
+    };
+
+    function runWirelessSim(step) {
+      const data = wirelessSimSteps[step];
+      if (!data) return;
+
+      for (let s = 1; s <= 5; s++) {
+        const btn = document.getElementById(`btn-wstep-${s}`);
+        if (btn) {
+          if (s === step) {
+            btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold border border-amber-500/50 bg-amber-950/50 text-amber-300";
+          } else {
+            btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:text-white transition-all";
+          }
+        }
+      }
+
+      const consoleEl = document.getElementById("wireless-sim-console");
+      if (consoleEl) {
+        consoleEl.innerHTML = `
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800 flex-wrap gap-2">
+            <span class="text-amber-400 font-bold">${data.stepName}</span>
+            <span class="px-2 py-0.5 rounded border text-[11px] font-bold ${data.badgeClass}">${data.status}</span>
+          </div>
+          <div class="space-y-1 text-slate-300">
+            ${data.log.map(line => `<div class="${line.startsWith('[🚨]') || line.startsWith('[💀]') || line.startsWith('[❌]') ? 'text-rose-400 font-bold' : line.startsWith('[✓]') ? 'text-emerald-400' : line.startsWith('[⚠️]') ? 'text-amber-400' : ''}">${line}</div>`).join('')}
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t border-slate-800 text-[11px]">
+            <div class="p-2 rounded bg-slate-950 border border-slate-800">
+              <span class="text-slate-500 block">SIGNAL STRENGTH</span>
+              <span class="text-white font-bold">${data.metrics.signal}</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950 border border-slate-800">
+              <span class="text-slate-500 block">DEFAULT GATEWAY</span>
+              <span class="text-sky-300 font-bold">${data.metrics.gateway}</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950 border border-slate-800">
+              <span class="text-slate-500 block">INTERNAL INTRANET</span>
+              <span class="text-amber-300 font-bold">${data.metrics.intranet}</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950 border border-slate-800">
+              <span class="text-slate-500 block">MITM POSITION</span>
+              <span class="text-rose-400 font-bold">${data.metrics.mitm}</span>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    const warTabContent = {
+      wardriving: {
+        title: "War Driving (Terrestrial RF Mapping)",
+        badge: "Ground Mapping",
+        desc: "Driving or walking through geographic zones equipped with a GPS receiver, high-gain omnidirectional Wi-Fi antenna, and software like Kismet or Aircrack-ng to log coordinates and security configurations of wireless access points.",
+        tools: "Kismet, Aircrack-ng, GPS Dongle, WiGLE WiFi App",
+        risk: "Identifies vulnerable WEP/unencrypted guest networks, default admin passwords, and corporate Wi-Fi leaking beyond facility boundaries."
+      },
+      warflying: {
+        title: "War Flying (Aerial Drone RF Reconnaissance)",
+        badge: "Airborne Mapping",
+        desc: "Mounting lightweight software-defined radios (SDRs) or Raspberry Pi Wi-Fi audit rigs onto commercial quadcopter drones. Allows attackers to map wireless signals radiating from top floors of corporate skyscrapers and high-security campuses without trespassing on physical grounds.",
+        tools: "DJI Drone / Custom UAV, Raspberry Pi Zero W, Alfa AWUS036ACH, Kismet drone payload",
+        risk: "Bypasses perimeter fences, guard checkpoints, and CCTV cameras by surveying access points through upper-floor exterior glass windows."
+      },
+      wigle: {
+        title: "WiGLE.net (Wireless Geographic Logging Engine)",
+        badge: "Crowdsourced Intelligence",
+        desc: "A massive worldwide database of mapped wireless networks contributed by wardrivers globally. Contains over 1 billion Wi-Fi networks with BSSID, SSID, encryption type, and exact GPS latitude/longitude coordinates.",
+        tools: "https://wigle.net, REST API, Geographic Heatmaps",
+        risk: "Penetration testers and adversaries can conduct passive OSINT on a target company's Wi-Fi infrastructure from anywhere in the world without emitting a single radio packet."
+      }
+    };
+
+    function switchWarTab(tab) {
+      ['wardriving', 'warflying', 'wigle'].forEach(t => {
+        const btn = document.getElementById(`btn-war-${t === 'wardriving' ? 'drive' : t === 'warflying' ? 'fly' : 'wigle'}`);
+        if (btn) {
+          if (t === tab) {
+            btn.className = "px-2.5 py-1 rounded bg-sky-950/60 border border-sky-500/40 text-sky-300 text-xs font-bold";
+          } else {
+            btn.className = "px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400 text-xs hover:text-white";
+          }
+        }
+      });
+
+      const data = warTabContent[tab];
+      const el = document.getElementById("war-tab-detail");
+      if (el && data) {
+        el.innerHTML = `
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span class="font-bold text-white text-xs">${data.title}</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-500/10 text-sky-300 border border-sky-500/20">${data.badge}</span>
+          </div>
+          <p class="text-slate-300 leading-relaxed">${data.desc}</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 font-mono text-[11px]">
+            <div class="p-2 rounded bg-slate-900 border border-slate-800 text-slate-400">
+              <strong class="text-slate-300 block">Auditing Tools:</strong> ${data.tools}
+            </div>
+            <div class="p-2 rounded bg-slate-900 border border-slate-800 text-amber-300">
+              <strong class="text-amber-200 block">Security Impact:</strong> ${data.risk}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // ── Password Attacks Logic ──────────────────────────────────
+    const pwdSimScenarios = {
+      dictionary: {
+        title: "Targeted Dictionary Attack on Single Account 'sferrell'",
+        pattern: "Single Account × 10,000 Common Passwords",
+        status: "ACCOUNT LOCKED OUT (ACTIVE DIRECTORY DEFENSE TRIGGERED)",
+        badgeClass: "bg-amber-950/80 text-amber-300 border-amber-500/40",
+        log: [
+          "[+] Attacking target: 'sferrell@company.com' via corporate OWA login portal...",
+          "[-] Attempt 1: 'password' -> FAILED (HTTP 401)",
+          "[-] Attempt 2: '123456' -> FAILED (HTTP 401)",
+          "[-] Attempt 3: 'qwerty' -> FAILED (HTTP 401)",
+          "[-] Attempt 4: 'welcome' -> FAILED (HTTP 401)",
+          "[-] Attempt 5: 'sferrell2024' -> FAILED (HTTP 401)",
+          "[🚨] Active Directory Group Policy Event 4740: User Account Locked Out!",
+          "[🛡️] DEFENSE SUCCESS: Account lockout policy (Threshold = 5 attempts) neutralized dictionary attack.",
+          "[!] Result: Attacker blocked; security team notified via SIEM incident alert."
+        ],
+        summary: "Dictionary attacks against single accounts are rapidly defeated by basic Account Lockout thresholds."
+      },
+      spray: {
+        title: "Stealth Password Spraying Across 20 Employee Accounts",
+        pattern: "Many Accounts × 1 Common Seasonal Password ('Spring2025!')",
+        status: "STEALTH COMPROMISE: ZERO LOCKOUTS TRIGGERED",
+        badgeClass: "bg-rose-950/80 text-rose-300 border-rose-500/40",
+        log: [
+          "[+] Selected seasonal spray payload: 'Spring2025!' (satisfies 8 char, uppercase, number, symbol policy).",
+          "[-] Testing 'sferrell' with 'Spring2025!' -> Failed (Attempt count: 1 / 5)",
+          "[-] Testing 'cshah' with 'Spring2025!' -> Failed (Attempt count: 1 / 5)",
+          "[-] Testing 'alice' with 'Spring2025!' -> Failed (Attempt count: 1 / 5)",
+          "[🚨] Testing 'jdoe' with 'Spring2025!' -> ACCESS GRANTED! HTTP 200 OK (Auth token issued)!",
+          "[-] Testing 'bob' with 'Spring2025!' -> Failed (Attempt count: 1 / 5)",
+          "[💀] EXPLOITATION SUCCESS: Account 'jdoe' breached on attempt #4 without tripping account lockout on ANY user!",
+          "[🛡️] Countermeasure Required: Mandatory MFA, Passkeys, and smart lockout across IP subnets."
+        ],
+        summary: "Password spraying spreads single attempts across hundreds of accounts, evading per-account lockout counters completely!"
+      },
+      bruteforce: {
+        title: "Exhaustive Mathematical Permutation Search (Brute Force)",
+        pattern: "All Combinations across Character Space (94 Printable ASCII)",
+        status: "MATHEMATICAL TIME-TO-CRACK ANALYSIS",
+        badgeClass: "bg-sky-950/80 text-sky-300 border-sky-500/40",
+        log: [
+          "[+] Character Space Analysis: Lowercase (26), Alphanumeric (62), Full ASCII with Symbols (94).",
+          "[*] 6 Chars Lowercase (26^6 = 308,915,776 combinations): ~0.03 seconds on 8x RTX 4090 GPU rig.",
+          "[*] 8 Chars Alphanumeric (62^8 = 218 trillion combinations): ~3.6 minutes on GPU rig.",
+          "[*] 10 Chars Complex (94^10 = 5.38 x 10^19 combinations): ~170 years on GPU rig.",
+          "[*] 14 Chars Complex (94^14 = 4.20 x 10^27 combinations): ~1.3 BILLION years (Cryptographically secure).",
+          "[✓] CONCLUSION: Password length exponentially trumps character complexity. 16+ chars resists brute force indefinitely."
+        ],
+        summary: "Brute force is mathematically guaranteed to work if given infinite time, but made computationally impossible by password length ≥ 14."
+      }
+    };
+
+    function runPasswordSim(type) {
+      const data = pwdSimScenarios[type];
+      if (!data) return;
+
+      ['dict', 'spray', 'brute'].forEach(t => {
+        const btn = document.getElementById(`btn-pwd-${t}`);
+        if (btn) {
+          const match = (t === 'dict' && type === 'dictionary') || (t === 'spray' && type === 'spray') || (t === 'brute' && type === 'bruteforce');
+          if (match) {
+            btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold border border-rose-500/50 bg-rose-950/50 text-rose-300 transition-all";
+          } else {
+            btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:text-white transition-all";
+          }
+        }
+      });
+
+      const consoleEl = document.getElementById("pwd-sim-console");
+      if (consoleEl) {
+        consoleEl.innerHTML = `
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800 flex-wrap gap-2">
+            <div>
+              <span class="text-white font-bold">${data.title}</span>
+              <span class="text-[10px] text-slate-500 block font-mono">Strategy: ${data.pattern}</span>
+            </div>
+            <span class="px-2 py-0.5 rounded border text-[11px] font-bold ${data.badgeClass}">${data.status}</span>
+          </div>
+          <div class="space-y-1 text-slate-300">
+            ${data.log.map(line => `<div class="${line.startsWith('[🚨]') || line.startsWith('[💀]') ? 'text-rose-400 font-bold' : line.startsWith('[✓]') || line.startsWith('[🛡️]') ? 'text-emerald-400' : line.startsWith('[-]') ? 'text-slate-400' : ''}">${line}</div>`).join('')}
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 text-[11px] text-amber-300 mt-2">
+            <strong>Key Insight:</strong> ${data.summary}
+          </div>
+        `;
+      }
+    }
+
+    function runRainbowSim(isSalted) {
+      const btnUnsalted = document.getElementById("btn-rainbow-unsalted");
+      const btnSalted = document.getElementById("btn-rainbow-salted");
+      if (btnUnsalted && btnSalted) {
+        if (isSalted) {
+          btnSalted.className = "px-2.5 py-1 rounded text-[11px] font-bold border border-emerald-500/40 bg-emerald-950/60 text-emerald-300";
+          btnUnsalted.className = "px-2.5 py-1 rounded text-[11px] font-bold border border-slate-700 bg-slate-900 text-slate-400 hover:text-white";
+        } else {
+          btnUnsalted.className = "px-2.5 py-1 rounded text-[11px] font-bold border border-purple-500/40 bg-purple-950/60 text-purple-300";
+          btnSalted.className = "px-2.5 py-1 rounded text-[11px] font-bold border border-slate-700 bg-slate-900 text-slate-400 hover:text-white";
+        }
+      }
+
+      const box = document.getElementById("rainbow-result-box");
+      if (!box) return;
+
+      if (!isSalted) {
+        box.innerHTML = `
+          <div><span class="text-slate-500">Target Plaintext:</span> <span class="text-white font-bold">password123</span></div>
+          <div><span class="text-slate-500">Stolen Hash (MD5):</span> <code class="text-purple-300">482c811da5d5b4bc6d497ffa98491e38</code></div>
+          <div><span class="text-slate-500">Rainbow Table Query:</span> <span class="text-rose-400 font-bold">MATCH FOUND in 0.001s!</span></div>
+          <div class="text-rose-300 font-bold pt-1">💥 RESULT: Password Cracked Instantly. Precomputed table reversed the unsalted hash with zero computation!</div>
+        `;
+      } else {
+        box.innerHTML = `
+          <div><span class="text-slate-500">Target Plaintext:</span> <span class="text-white font-bold">password123</span></div>
+          <div><span class="text-slate-500">Cryptographic Salt:</span> <code class="text-amber-300">k8#9vP!x_92aB</code> (Unique per user)</div>
+          <div><span class="text-slate-500">Salted Hash:</span> <code class="text-emerald-300">9b8a2164d782bc4e16d8a3429188d492</code></div>
+          <div><span class="text-slate-500">Rainbow Table Query:</span> <span class="text-emerald-400 font-bold">MISS (Precomputed table lacks this salt)</span></div>
+          <div class="text-emerald-300 font-bold pt-1">🛡️ RESULT: Rainbow Table Neutralized. Attacker cannot use precomputed tables and must calculate 100% of hashes from scratch!</div>
+        `;
+      }
+    }
+
+    function updateBirthdayProb(n) {
+      n = parseInt(n, 10);
+      const countEl = document.getElementById("bday-people-count");
+      if (countEl) countEl.textContent = `${n} People`;
+
+      let probNoMatch = 1.0;
+      for (let i = 0; i < n; i++) {
+        probNoMatch *= (365 - i) / 365;
+      }
+      const probMatch = Math.min(100, Math.max(0, (1.0 - probNoMatch) * 100));
+      const formatted = probMatch.toFixed(1);
+
+      const badge = document.getElementById("bday-prob-badge");
+      const expEl = document.getElementById("bday-explanation");
+      if (badge) {
+        if (n === 23) {
+          badge.textContent = `${formatted}% — The Birthday Paradox Milestone!`;
+          badge.className = "font-bold text-pink-300 px-2 py-0.5 rounded bg-pink-950/60 border border-pink-500/40";
+        } else if (probMatch >= 50) {
+          badge.textContent = `${formatted}% (High Collision Certainty)`;
+          badge.className = "font-bold text-rose-300 px-2 py-0.5 rounded bg-rose-950/60 border border-rose-500/40";
+        } else {
+          badge.textContent = `${formatted}% (Low Collision Probability)`;
+          badge.className = "font-bold text-slate-300 px-2 py-0.5 rounded bg-slate-900 border border-slate-700";
+        }
+      }
+
+      if (expEl) {
+        const pairs = (n * (n - 1)) / 2;
+        expEl.innerHTML = `In a room of <strong>${n} people</strong>, there are <strong>${pairs} distinct pairs</strong> comparing birthdays against each other. Even though there are 365 days, having 253 pairs at 23 people yields a <strong>${formatted}% probability</strong> of a shared birthday. In cryptography, an attacker searching for ANY hash collision experiences this same quadratic speedup: an N-bit hash is broken in only $2^{N/2}$ attempts!`;
+      }
+    }
+
+    // ── Vulnerability Scanner Simulator Logic ────────────────────
+    const vulnScanResults = {
+      non_cred: {
+        modeName: "NON-CREDENTIALED SCAN (Network Discovery)",
+        status: "COMPLETED WITH WARNINGS",
+        badgeClass: "bg-amber-950/80 text-amber-300 border-amber-500/40",
+        log: [
+          "[+] Initializing unauthenticated TCP SYN port scan against 192.168.1.105...",
+          "[+] Open port detected: 80/tcp (Apache httpd 2.4.52)",
+          "[+] Open port detected: 22/tcp (OpenSSH 8.9p1 Ubuntu)",
+          "[+] Banner grabbing performed: Leaked OS signature 'Ubuntu Linux'",
+          "[!] ATTEMPTING LOCAL OS PATCH AUDIT...",
+          "[⚠️] ERROR: Remote authentication credentials NOT provided.",
+          "[⚠️] OS SECURITY PATCH ASSESSMENT FAILED: Unable to query dpkg/kernel database.",
+          "[!] Heuristic match: 12 potential vulnerabilities flagged based solely on network banners.",
+          "[!] NOTE: High likelihood of FALSE POSITIVES. Manual administrator verification required!"
+        ],
+        stats: { tested: 1000, detected: 12, falsePositives: "High (Estimated 40%)", verified: "No (Unauthenticated)" }
+      },
+      credentialed: {
+        modeName: "CREDENTIALED SCAN (Authenticated via SSH/Admin Key)",
+        status: "COMPLETED (HIGH FIDELITY)",
+        badgeClass: "bg-teal-950/80 text-teal-300 border-teal-500/40",
+        log: [
+          "[+] Connecting to 192.168.1.105 using provided administrative SSH key...",
+          "[+] Successfully authenticated as security_scanner (sudo audit privileges granted).",
+          "[+] Querying local kernel version: Linux 5.15.0-88-generic (CRITICAL: 18 months out of date)",
+          "[+] Auditing local dpkg package database: 1,420 packages inspected.",
+          "[+] Verified: OpenSSL 3.0.2 patched for CVE-2022-3602 (Flagged banner dismissed as FALSE POSITIVE).",
+          "[🚨] DISCOVERED: CVE-2024-1086 (Linux Kernel netfilter privilege escalation - CVSS 7.8).",
+          "[🚨] DISCOVERED: World-writable sensitive directory /opt/backup/ configured in crontab.",
+          "[+] Assessment complete. False positives eliminated. OS patch assessment verified!"
+        ],
+        stats: { tested: 1420, detected: 2, falsePositives: "Zero (Locally Verified)", verified: "Yes (100% Confirmed)" }
+      }
+    };
+
+    function runVulnScanner(mode) {
+      const data = vulnScanResults[mode];
+      if (!data) return;
+
+      const btnNon = document.getElementById('btn-scan-non-cred');
+      const btnCred = document.getElementById('btn-scan-cred');
+      if (mode === 'non_cred') {
+        if (btnNon) btnNon.className = "px-3 py-1.5 rounded-lg text-xs font-bold border border-amber-500/50 bg-amber-950/50 text-amber-300 transition-all";
+        if (btnCred) btnCred.className = "px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 transition-all";
+      } else {
+        if (btnNon) btnNon.className = "px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 transition-all";
+        if (btnCred) btnCred.className = "px-3 py-1.5 rounded-lg text-xs font-bold border border-teal-500/50 bg-teal-950/50 text-teal-300 transition-all";
+      }
+
+      const consoleEl = document.getElementById('vuln-scanner-console');
+      if (consoleEl) {
+        consoleEl.innerHTML = `
+          <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-800 text-[11px]">
+            <span class="text-white font-bold">${data.modeName}</span>
+            <span class="px-2 py-0.5 rounded font-mono text-[10px] border ${data.badgeClass}">${data.status}</span>
+          </div>
+          <div class="space-y-1 text-slate-300 leading-relaxed py-1">
+            ${data.log.map(line => `<div>${line}</div>`).join('')}
+          </div>
+          <div class="pt-2 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px]">
+            <div><span class="text-slate-500 block">AUDITED ITEMS</span><span class="text-white font-bold">${data.stats.tested}</span></div>
+            <div><span class="text-slate-500 block">VULNERABILITIES</span><span class="text-rose-400 font-bold">${data.stats.detected}</span></div>
+            <div><span class="text-slate-500 block">FALSE POSITIVE RISK</span><span class="text-amber-400 font-bold">${data.stats.falsePositives}</span></div>
+            <div><span class="text-slate-500 block">PATCH VERIFIED</span><span class="text-teal-400 font-bold">${data.stats.verified}</span></div>
+          </div>
+        `;
+      }
+    }
+
+    // ── Fuzzing & Input Validation Lab Logic ──────────────────────
+    const fuzzScenarios = {
+      normal: {
+        title: "Scenario: Standard Valid User Input (Age: 25, Name: 'Shad Ferrell')",
+        naiveResult: "Accepted. App operates normally (25 lines of basic code suffices for happy path).",
+        hardenedResult: "Accepted. Sanitized, validated against regex ^[a-zA-Z ]{2,50}$, bounded 1 <= age <= 120.",
+        status: "SUCCESS",
+        statusColor: "text-emerald-400"
+      },
+      negative: {
+        title: "Scenario: Negative Age Input Bug (Age: -10)",
+        naiveResult: "❌ LOGIC FLAW: Unchecked integer stored as -10 in DB! System grants discount intended for unborn children or breaks date calculations.",
+        hardenedResult: "🛡️ DEFENSIVE VALIDATION: Clamped & Rejected. Exception caught: 'InvalidAgeRangeError: Age must be positive integer between 1 and 120'.",
+        status: "BOUNDARY ERROR PREVENTED",
+        statusColor: "text-amber-400"
+      },
+      overflow: {
+        title: "Scenario: Extreme Integer Overflow (Age: 99999999999999999999999999)",
+        naiveResult: "💥 CRASH: Unhandled Exception 'ArithmeticException: Integer Overflow'! Application thread terminated (500 Internal Server Error).",
+        hardenedResult: "🛡️ DEFENSIVE HANDLING: Bounded integer parsing. Rejection message sent cleanly with HTTP 400 Bad Request. Server remains 100% online.",
+        status: "CRASH PREVENTED",
+        statusColor: "text-teal-400"
+      },
+      xss: {
+        title: "Scenario: Cross-Site Scripting Injection (Name: '<script>alert(1)<\\/script>')",
+        naiveResult: "🚨 SECURITY BREACH: Raw HTML reflected to other users! Attacker executes arbitrary JavaScript to hijack session cookies.",
+        hardenedResult: "🛡️ DEFENSIVE SANITIZATION: Escaped into '&amp;lt;script&amp;gt;alert(1)&amp;lt;/script&amp;gt;'. Script harmlessly rendered as literal text.",
+        status: "EXPLOIT NEUTRALIZED",
+        statusColor: "text-teal-400"
+      },
+      fuzzer_batch: {
+        title: "Automated Fuzzer Bombardment (1,000 Semi-Random Payloads via AFL/Boofuzz)",
+        naiveResult: "💥 CRITICAL FAILURE: 147 unhandled exceptions triggered! Memory leak detected at byte offset 0x4F, daemon crashed on payload #83 (null byte injection).",
+        hardenedResult: "💎 1,000 / 1,000 PAYLOADS DEFENDED: 100% of malformed inputs caught by defensive boundary checks & exception handlers. 0 crashes.",
+        status: "100% RESILIENCE ACHIEVED",
+        statusColor: "text-teal-400"
+      }
+    };
+
+    function runFuzzLab(scenario) {
+      const data = fuzzScenarios[scenario];
+      if (!data) return;
+
+      const consoleEl = document.getElementById('fuzz-lab-console');
+      if (consoleEl) {
+        consoleEl.innerHTML = `
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800 text-[11px]">
+            <span class="text-white font-bold">${data.title}</span>
+            <span class="font-bold ${data.statusColor}">${data.status}</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px] pt-1">
+            <div class="p-3 rounded-lg bg-rose-950/30 border border-rose-500/30 space-y-1">
+              <span class="text-rose-400 font-bold block">Naive App (25 Lines of Code - Happy Path Only):</span>
+              <p class="text-slate-300 leading-relaxed">${data.naiveResult}</p>
+            </div>
+            <div class="p-3 rounded-lg bg-teal-950/30 border border-teal-500/30 space-y-1">
+              <span class="text-teal-300 font-bold block">Hardened App (500 Lines of Code - Defensive Programming):</span>
+              <p class="text-slate-300 leading-relaxed">${data.hardenedResult}</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // ── Testing Models Logic (Black, Gray, White) ─────────────────
+    const testingModelData = {
+      black: {
+        title: "Black-Box Testing (Blind Assessment)",
+        knowledge: "Zero prior knowledge of architecture, network topology, or source code.",
+        simulation: "Simulates an external remote malicious hacker with zero insider access.",
+        pros: "Realistic test of external perimeter defenses; eliminates testing bias.",
+        cons: "Spends excessive billable hours on initial reconnaissance; may miss deep internal flaws.",
+        bestFor: "Perimeter firewall validation, public API security, external penetration tests."
+      },
+      gray: {
+        title: "Gray-Box Testing (Partial Knowledge Assessment)",
+        knowledge: "Partial knowledge (e.g., standard user credentials, high-level system architecture, or contractor access).",
+        simulation: "Simulates an external attacker who breached initial perimeter defenses or a partner/contractor.",
+        pros: "Balances testing depth with time efficiency; skips redundant blind discovery to focus on deep exploitation.",
+        cons: "Does not test pure external stealth or full source code logic.",
+        bestFor: "Internal network penetration testing, SaaS application tenant isolation audits."
+      },
+      white: {
+        title: "White-Box Testing (Crystal Box / Full Knowledge)",
+        knowledge: "Complete knowledge: full source code, database schemas, network diagrams, and root credentials.",
+        simulation: "Simulates a malicious insider (disgruntled software engineer or rogue systems administrator).",
+        pros: "Maximum thoroughness; uncovers hidden logic flaws, hardcoded credentials, and architectural vulnerabilities.",
+        cons: "Time-intensive; tester may get bogged down in non-exploitable theoretical code flaws.",
+        bestFor: "Pre-production secure code audits, DevSecOps SAST reviews, critical financial/health software."
+      }
+    };
+
+    function showTestingModel(model) {
+      const data = testingModelData[model];
+      if (!data) return;
+
+      document.querySelectorAll('.model-tab').forEach(tab => {
+        tab.className = "model-tab p-5 rounded-xl border border-slate-800 bg-slate-900/40 hover:bg-slate-900 text-left transition-all space-y-2";
+      });
+
+      const activeTab = document.getElementById(`btn-model-${model}`);
+      if (activeTab) {
+        activeTab.className = "model-tab p-5 rounded-xl border border-teal-500/50 bg-teal-950/40 text-left transition-all space-y-2";
+      }
+
+      const detailEl = document.getElementById('testing-model-detail');
+      if (detailEl) {
+        detailEl.innerHTML = `
+          <div class="border-b border-slate-800 pb-3">
+            <h4 class="text-base font-bold text-white">${data.title}</h4>
+            <p class="text-xs text-teal-400 mt-0.5">Threat Model: ${data.simulation}</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="p-3 rounded-lg bg-slate-900 border border-slate-800 space-y-1">
+              <span class="text-slate-400 font-bold block">Information Provided:</span>
+              <p class="text-slate-300">${data.knowledge}</p>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-900 border border-slate-800 space-y-1">
+              <span class="text-slate-400 font-bold block">Best Suited For:</span>
+              <p class="text-slate-300">${data.bestFor}</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pt-1">
+            <div class="text-emerald-400"><strong class="text-emerald-300">Advantages:</strong> ${data.pros}</div>
+            <div class="text-amber-400"><strong class="text-amber-300">Limitations:</strong> ${data.cons}</div>
+          </div>
+        `;
+      }
+    }
+
+    // ── 6 Stages of Ethical Hacking Lifecycle Logic ───────────────
+    const penTestStages = [
+      {
+        id: "s1",
+        num: "1",
+        name: "Passive Recon (OSINT)",
+        subtitle: "Zero-Contact Intelligence Gathering",
+        color: "text-sky-400",
+        details: "Researching the target without contacting their network or sending a single packet. Uses Open Source Intelligence (OSINT) such as Google Dorking, DNS MX/TXT records, Whois records, and the OSINT Framework. As seen in the classic 1984 film <em>WarGames</em>, thorough research sets up successful operations.",
+        tool: "Whois, Google Dorking, theHarvester, Shodan"
+      },
+      {
+        id: "s2",
+        num: "2",
+        name: "Active Recon",
+        subtitle: "Direct Probing & Footprinting",
+        color: "text-indigo-400",
+        details: "Directly contacting the target. Involves port scanning (e.g., discovering Port 80 HTTP and Port 3306 MySQL) and <strong>Banner Grabbing</strong> (reading service banners from web servers or Linksys routers to identify the exact hardware model and firmware version). Creates a comprehensive network footprint.",
+        tool: "Nmap, Netcat, Masscan, Wireshark"
+      },
+      {
+        id: "s3",
+        num: "3",
+        name: "Initial Exploitation",
+        subtitle: "Gaining Access",
+        color: "text-amber-400",
+        details: "Using intelligence gathered in reconnaissance to execute a targeted exploit and breach perimeter defenses. Gaining access does not mean root access—it simply means obtaining an initial foothold (such as a low-privilege www-data web shell).",
+        tool: "Metasploit, SQLmap, Custom Exploit Scripts"
+      },
+      {
+        id: "s4",
+        num: "4",
+        name: "Privilege Escalation",
+        subtitle: "Vertical Elevation to Administrator",
+        color: "text-rose-400",
+        details: "Escalating from an unprivileged user account to full administrative control (root on Linux, NT AUTHORITY\SYSTEM on Windows). Required to gain permission to install persistent tools, modify security policies, and extract sensitive databases.",
+        tool: "LinPEAS, WinPEAS, Kernel Exploits, SUID Abuse"
+      },
+      {
+        id: "s5",
+        num: "5",
+        name: "Persistence",
+        subtitle: "Installing Backdoors & Rootkits",
+        color: "text-purple-400",
+        details: "Ensuring the attacker can re-enter the target at will without re-exploiting vulnerabilities. The attacker installs a <strong>backdoor</strong> (bypassing authentication) or a <strong>rootkit</strong> (modifying OS kernel to hide files, processes, and network sockets).",
+        tool: "Scheduled Cron Tasks, SSH Authorized Keys, Rootkits"
+      },
+      {
+        id: "s6",
+        num: "6",
+        name: "Clearing Tracks",
+        subtitle: "Anti-Forensics & Removing IoCs",
+        color: "text-slate-400",
+        details: "Removing Indicators of Compromise (IoCs) and sanitizing authentication logs (/var/log/auth.log) to avoid detection. <em>Real-world case study: An intruder repeatedly breached a Colorado firm and patched the system behind them so rival attackers couldn't get in—the patch itself became the IoC!</em>",
+        tool: "Log sanitizers, Timestomp, History scrubbing"
+      },
+      {
+        id: "s7",
+        num: "7",
+        name: "Reporting",
+        subtitle: "Executive & Remediation Roadmap",
+        color: "text-teal-400",
+        details: "The defining hallmark of ethical hacking. The consultant compiles an exhaustive report detailing discovered vulnerabilities, exploited vectors, business impact, and remediation steps. Ethical hackers don't fix your network—they tell you where the problems are so you can patch them.",
+        tool: "Formal Technical & Executive Audit Report"
+      }
+    ];
+
+    let currentPenStep = 0;
+
+    function renderPenTestSteps() {
+      const barEl = document.getElementById('pentest-steps-bar');
+      if (!barEl) return;
+
+      barEl.innerHTML = penTestStages.map((st, idx) => `
+        <button onclick="goToPenTestStep(${idx})" id="btn-penstep-${idx}" class="p-2.5 rounded-lg border text-xs font-bold text-center transition-all ${idx === currentPenStep ? 'border-teal-500 bg-teal-950/60 text-white' : 'border-slate-800 bg-slate-900/50 text-slate-400 hover:text-white'}">
+          <div class="text-[10px] text-slate-500 font-mono">STAGE ${st.num}</div>
+          <div class="truncate text-[11px]">${st.name}</div>
+        </button>
+      `).join('');
+
+      const stage = penTestStages[currentPenStep];
+      const contentEl = document.getElementById('pentest-step-content');
+      if (contentEl) {
+        contentEl.innerHTML = `
+          <div class="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-slate-800">
+            <div>
+              <span class="text-[10px] font-mono text-teal-400 uppercase tracking-wider font-bold">Stage ${stage.num} of 7</span>
+              <h4 class="text-base font-bold text-white">${stage.name} — <span class="${stage.color}">${stage.subtitle}</span></h4>
+            </div>
+            <span class="text-xs font-mono px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400">Tools: ${stage.tool}</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">${stage.details}</p>
+          <div class="flex justify-between pt-2">
+            <button onclick="goToPenTestStep(${Math.max(0, currentPenStep - 1)})" class="px-3 py-1 rounded bg-slate-900 hover:bg-slate-800 text-xs text-slate-300 ${currentPenStep === 0 ? 'opacity-50 pointer-events-none' : ''}">← Previous Stage</button>
+            <button onclick="goToPenTestStep(${Math.min(penTestStages.length - 1, currentPenStep + 1)})" class="px-3 py-1 rounded bg-teal-600 hover:bg-teal-500 text-xs text-white font-bold ${currentPenStep === penTestStages.length - 1 ? 'opacity-50 pointer-events-none' : ''}">Next Stage →</button>
+          </div>
+        `;
+      }
+    }
+
+    function goToPenTestStep(idx) {
+      currentPenStep = idx;
+      renderPenTestSteps();
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
+      runWirelessSim(1);
+      switchWarTab('wardriving');
+      runPasswordSim('spray');
+      runRainbowSim(false);
+      updateBirthdayProb(23);
+      runVulnScanner('credentialed');
+      runFuzzLab('normal');
+      showTestingModel('black');
+      goToPenTestStep(0);
+
       if (typeof lucide !== "undefined") lucide.createIcons();
       updateRiskCalc();
       loadQuizQuestion(0);
@@ -4502,7 +5902,176 @@
         correct: 1,
         exp: "<strong>Key Escrow & Legal Discovery:</strong> Legal discovery mandates that parties exchange evidence for testing (trials are not poker games). If corporate data is encrypted, companies cannot evade subpoenas by claiming the key is lost. Escrow with a neutral third party allows legitimate court warrants to decrypt evidence."
       }
-    ];
+    ,
+      {
+        category: "Vulnerability Scanning",
+        q: "Why do vulnerability scanners like Nessus generate a high frequency of false positives when performing non-credentialed scans?",
+        options: [
+          "Because they deliberately manufacture vulnerabilities to sell remediation software",
+          "Because without local credentials, scanners rely on network banners and err on the side of caution rather than risk a false negative",
+          "Because non-credentialed scans actively exploit remote hosts, causing system crashes",
+          "Because non-credentialed scans can only audit encrypted VPN connections"
+        ],
+        correct: 1,
+        exp: "<strong>False Positives vs Caution:</strong> When a scanner cannot verify internal patch states (e.g., unable to query local package databases), it flags potential vulnerabilities out of caution. Scanners prefer generating a false positive over a catastrophic false negative."
+      },
+      {
+        category: "Vulnerability Scanning",
+        q: "Which security testing outcome represents the most dangerous scenario for an enterprise?",
+        options: [
+          "False Positive (Scanner raises an alert for a vulnerability that does not exist)",
+          "False Negative (Scanner reports no alert, but a critical exploitable vulnerability exists)",
+          "True Positive (Scanner alerts on an existing unpatched vulnerability)",
+          "True Negative (Scanner correctly reports that an unvulnerable port is safe)"
+        ],
+        correct: 1,
+        exp: "<strong>The Danger of False Negatives:</strong> A false negative creates a false sense of security while leaving unpatched openings exposed to adversaries, whereas a false positive is merely an operational nuisance requiring verification."
+      },
+      {
+        category: "Application Security",
+        q: "In secure software development, what does 'fuzz testing' (fuzzing) specifically entail?",
+        options: [
+          "Having programmers manually review code line-by-line using highlighters",
+          "Sending massive volumes of automated random, malformed, or boundary input data into an application to induce crashes and discover flaws",
+          "Compiling source code with debug symbols stripped to hide memory addresses",
+          "Simulating a Denial of Service attack against edge firewalls"
+        ],
+        correct: 1,
+        exp: "<strong>Fuzz Testing:</strong> Fuzzers automate edge-case discovery by bombarding application inputs with semi-random, malformed, or boundary-breaking inputs (e.g., negative numbers, huge strings, null bytes) to trigger unhandled exceptions and memory crashes."
+      },
+      {
+        category: "Application Security",
+        q: "What is the primary security objective of comprehensive input validation?",
+        options: [
+          "To speed up database query execution times",
+          "To restrict all user inputs strictly to allowable formats, data types, and numerical boundaries, preventing unexpected application crashes and injections",
+          "To automatically compress images uploaded by web users",
+          "To encrypt database passwords using symmetrical RC4 ciphers"
+        ],
+        correct: 1,
+        exp: "<strong>Input Validation:</strong> Defensive programming mandates that any data supplied by external users must be strictly bounded and validated before processing, preventing logic crashes and injection vulnerabilities."
+      },
+      {
+        category: "Ethical Hacking Models",
+        q: "A contractor who engineered one specific network subnet is asked by a client to conduct a security assessment of the entire corporate enterprise. What testing model does this represent?",
+        options: [
+          "Black-Box Testing (The tester has zero knowledge of any part of the network)",
+          "Gray-Box Testing (The tester knows one part of the environment intimately, but is in the dark regarding the rest)",
+          "White-Box Testing (The tester holds root keys and full source code for every enterprise system)",
+          "Red-Teaming Physical Breach Testing"
+        ],
+        correct: 1,
+        exp: "<strong>Gray-Box Testing:</strong> Gray-box testing describes scenarios where the assessor possesses partial inside knowledge (knowing some aspects but not everything), simulating an adversary with partial foothold or contractor credentials."
+      },
+      {
+        category: "Penetration Testing Stages",
+        q: "During a penetration test, after an attacker escalates privileges to administrator, what is the primary purpose of the 'establishing persistence' stage?",
+        options: [
+          "To delete the client's hard drives permanently",
+          "To install backdoors or rootkits that allow the attacker to re-enter the target at will without repeating the exploitation effort",
+          "To email the CEO asking for a bug bounty payout",
+          "To perform passive OSINT reconnaissance on employee social media"
+        ],
+        correct: 1,
+        exp: "<strong>Establishing Persistence:</strong> Once administrative rights are obtained, attackers install backdoors, scheduled tasks, or rootkits so they maintain persistent access at any time without having to re-exploit complex vulnerabilities."
+      },
+      {
+        category: "Wireless Attacks",
+        q: "An employee at a corporate branch reports that their laptop is connected to Wi-Fi ('CompanyNet') and can browse public internet websites, but cannot connect to internal git repositories or the local intranet file server. What attack is most likely taking place?",
+        options: [
+          "Evil Twin Attack (The victim's laptop auto-reconnected to an attacker's rogue hotspot broadcasting the exact same SSID)",
+          "Bluejacking attack over short-range radio",
+          "Buffer Overflow on the client's network interface card",
+          "DNS Sinkholing by the corporate firewall"
+        ],
+        correct: 0,
+        exp: "<strong>The Evil Twin Diagnostic Hallmark:</strong> When duped by an Evil Twin, the victim has outbound Internet access (proxied through the attacker's cellular link), but <strong>cannot access internal corporate resources</strong> because the attacker's rogue hotspot is physically disconnected from the legitimate corporate LAN."
+      },
+      {
+        category: "Wireless Attacks",
+        q: "Why do attackers transmit 802.11 disassociation (deauthentication) frames when deploying an Evil Twin access point?",
+        options: [
+          "To permanently burn out the client's Wi-Fi antenna hardware",
+          "To forcibly disconnect clients from the legitimate AP, triggering an automatic reconnection search where devices associate with the attacker's stronger rogue signal",
+          "To recalculate AES-CCMP encryption keys in real-time",
+          "To clear the router's DNS cache"
+        ],
+        correct: 1,
+        exp: "<strong>Disassociation Flooding:</strong> Because 802.11 management frames are unauthenticated, spoofed deauth frames forcibly boot clients off the legitimate AP. Client operating systems immediately scan the airspace and latch onto the attacker's nearby Evil Twin broadcasting the same SSID with higher signal strength."
+      },
+      {
+        category: "Wireless Reconnaissance",
+        q: "What is the operational distinction between 'war driving' and 'war flying'?",
+        options: [
+          "War driving attacks cell towers, while war flying attacks satellite uplinks",
+          "War driving maps wireless networks from motor vehicles or on foot, while war flying utilizes aerial drones (UAVs) equipped with Wi-Fi audit rigs to map signals from rooftops and high-rises",
+          "War driving only targets Bluetooth devices, while war flying targets Wi-Fi",
+          "War driving is legal, while war flying is only performed by military personnel"
+        ],
+        correct: 1,
+        exp: "<strong>War Driving vs War Flying:</strong> War driving utilizes vehicles, GPS, and Wi-Fi sniffers (often uploading to databases like WiGLE.net). War flying extends this by utilizing drones to audit upper-floor skyscraper office windows and high-security industrial perimeters where ground access is restricted."
+      },
+      {
+        category: "Bluetooth Attacks",
+        q: "An attacker exploits a Bluetooth vulnerability on an executive's smartphone to secretly exfiltrate their private contact book, text messages, and photos. What specific attack was executed?",
+        options: [
+          "Bluejacking (sending unsolicited text spam over Bluetooth)",
+          "Bluesnarfing (unauthorized data theft and exfiltration over Bluetooth)",
+          "Evil Twin Access Point handover",
+          "Cross-Site Scripting (XSS)"
+        ],
+        correct: 1,
+        exp: "<strong>Bluesnarfing vs Bluejacking:</strong> Bluejacking is merely sending unsolicited spam or digital business cards. Bluesnarfing is the unauthorized theft and exfiltration of confidential data (contacts, SMS, photos). Remember: <em>'Dude, you have to SNARF data!'</em>"
+      },
+      {
+        category: "Password Attacks",
+        q: "Why are offline password attacks significantly more devastating and faster than online password attacks?",
+        options: [
+          "Offline attacks require sending packets across the public internet",
+          "Offline attacks run locally against an exfiltrated database of password hashes on high-performance GPU rigs, completely bypassing network latency, rate limits, and account lockout policies",
+          "Offline attacks can only crack passwords shorter than 4 characters",
+          "Offline attacks automatically guess the plaintext without running any algorithms"
+        ],
+        correct: 1,
+        exp: "<strong>Online vs Offline Cracking:</strong> Online attacks are constrained by network roundtrips, rate limiters, and account lockout rules (e.g. 5 failed attempts locks the user). Offline attacks execute against stolen hash dumps locally on multi-GPU rigs at billions of hashes per second with <strong>zero account lockouts</strong>."
+      },
+      {
+        category: "Password Attacks",
+        q: "An enterprise enforces a strict policy: 'Lock user account after 3 consecutive failed attempts'. How does a Password Spraying attack successfully evade this defense?",
+        options: [
+          "By sending 10,000 common passwords against the CEO's account within 3 seconds",
+          "By trying 1 common seasonal password (e.g., 'Spring2025!') across thousands of different employee accounts, never exceeding the 3-attempt threshold for any single user",
+          "By injecting SQL commands into the Kerberos port",
+          "By cracking the root certificate using the Birthday Paradox"
+        ],
+        correct: 1,
+        exp: "<strong>Password Spraying:</strong> While a dictionary attack tests thousands of passwords against one account (quickly triggering lockout), password spraying does the inverse: it tests one or two common passwords across thousands of user accounts, staying well beneath the lockout threshold while finding users who chose weak common passwords."
+      },
+      {
+        category: "Cryptographic Defenses",
+        q: "What defensive implementation completely renders precomputed Rainbow Tables useless against stolen password databases?",
+        options: [
+          "Capitalizing the first letter of every password",
+          "Cryptographic Salting (appending a unique, random string to each user's password before hashing)",
+          "Storing password hashes in an unencrypted CSV file",
+          "Disabling SSH remote administration"
+        ],
+        correct: 1,
+        exp: "<strong>Cryptographic Salting:</strong> Rainbow tables rely on precomputed hashes of common passwords. When a unique cryptographic salt is added to each user's password, an attacker would have to generate a brand-new multi-gigabyte rainbow table for each individual user's unique salt, rendering precomputed tables obsolete."
+      },
+      {
+        category: "Cryptanalysis & Collision",
+        q: "Why does the mathematical principle behind the Birthday Paradox pose a serious risk to cryptographic hash algorithms?",
+        options: [
+          "It proves that birthdays cannot be stored securely in databases",
+          "It demonstrates that finding ANY two inputs that produce the same hash collision requires vastly fewer operations (~2^(N/2)) than finding a specific targeted preimage (~2^N), enabling collision forgery in weak algorithms",
+          "It mandates that user passwords must expire every 365 days",
+          "It causes SSL certificates to automatically invalidate on leap years"
+        ],
+        correct: 1,
+        exp: "<strong>The Birthday Attack:</strong> Just as only 23 people are needed for a 50% chance of a shared birthday (due to pairwise comparison combinatorics), an attacker searching for <em>any</em> hash collision only needs approximately 2^(N/2) attempts instead of 2^N. This quadratic reduction allows forging digital signatures on collision-vulnerable algorithms like MD5 and SHA-1."
+      }
+];
 
     let currentQuizIdx = 0;
     let quizScore = 0;

@@ -103,7 +103,10 @@
                     <a href="#ports" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
                         <i data-lucide="hash" class="w-3.5 h-3.5 text-emerald-400"></i> Ports Reference
                     </a>
-                    <a href="#protocols-deep-dive" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
+                                        <a href="#wireless-architecture" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
+                        <i data-lucide="wifi" class="w-3.5 h-3.5 text-sky-400"></i> Wireless &amp; RF Architecture
+                    </a>
+<a href="#protocols-deep-dive" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
                         <i data-lucide="book-open" class="w-3.5 h-3.5 text-blue-400"></i> Protocols Deep Dive
                     </a>
                 </nav>
@@ -465,6 +468,37 @@
                                 <strong class="text-white block">3. Remote Network:</strong>
                                 Any node residing on a different subnet or network segment, requiring a Layer 3 router to forward packets.
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <!-- WLAN Deep Dive -->
+                <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-6">
+                    <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-sky-500/10 rounded-lg border border-sky-500/20">
+                                <i data-lucide="wifi" class="w-5 h-5 text-sky-400"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-white">Wireless Local Area Network (WLAN)</h4>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono font-medium">IEEE 802.11 • RF Spectrum • Mobility</span>
+                    </div>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                        A <strong class="text-white">Wireless Local Area Network (WLAN)</strong> links two or more devices using high-frequency radio waves (RF) rather than physical copper or optical cables. It enables endpoint mobility while bridging back to a wired Ethernet backbone via a central Wireless Access Point (WAP).
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block mb-1">PHYSICAL MEDIUM</span>
+                            <span class="text-sky-400 font-bold">2.4 GHz, 5 GHz &amp; 6 GHz RF Bands</span>
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block mb-1">ACCESS METHOD</span>
+                            <span class="text-emerald-400 font-bold">CSMA/CA (Collision Avoidance)</span>
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block mb-1">KEY CONSIDERATIONS</span>
+                            <span class="text-amber-400 font-bold">Attenuation, Interference &amp; WPA3</span>
                         </div>
                     </div>
                 </div>
@@ -1432,6 +1466,350 @@
             </div>
         </section>
 
+
+        <!-- ── Section 10: Wireless & RF Networking Architecture ──────────────── -->
+        <section id="wireless-architecture" class="bg-slate-900 rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-xl space-y-8">
+            <div class="border-b border-slate-800 pb-5">
+                <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+                    <h3 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2.5">
+                        <i data-lucide="wifi" class="w-6 h-6 text-sky-400"></i>
+                        Wireless Networks, RF Physics &amp; Mesh Architecture
+                    </h3>
+                    <span class="text-xs font-mono text-sky-400 bg-sky-950/60 px-3 py-1 rounded-full border border-sky-500/30">IEEE 802.11 Engineering</span>
+                </div>
+                <p class="text-slate-400 text-sm">
+                    Comprehensive architectural analysis of wireless local area networks: RF propagation, environmental disruption, 802.11 standards, operating modes, SSID association, attenuation site surveys, mesh extension, and physical RF containment.
+                </p>
+            </div>
+
+            <!-- 1. RF Fundamentals & 802.11 Standards -->
+            <div class="space-y-4">
+                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="radio" class="w-5 h-5 text-indigo-400"></i>
+                    1. RF Transmission, Environmental Disruptions &amp; 802.11 Standards
+                </h4>
+                <p class="text-slate-300 text-sm leading-relaxed">
+                    Wireless networking uses high-frequency radio waves to carry digital signals through free space. Unlike guided wired media (Cat6 copper, single-mode fiber), the RF environment is inherently shared, open, and susceptible to severe environmental interference:
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-4">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <div class="text-amber-400 font-bold text-xs flex items-center gap-2">
+                            <i data-lucide="brick-wall" class="w-4 h-4"></i> Physical Obstructions
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Reinforced cement walls, brick, steel framing, elevator shafts, and reflective glass attenuate and reflect RF waves, creating severe signal dead zones and multipath distortion.
+                        </p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <div class="text-rose-400 font-bold text-xs flex items-center gap-2">
+                            <i data-lucide="zap-off" class="w-4 h-4"></i> Electromagnetic Interference
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Fluorescent lighting ballasts, industrial electric motors, microwave ovens (2.45 GHz), and cordless phones emit electromagnetic radiation that corrupts 802.11 frames.
+                        </p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <div class="text-sky-400 font-bold text-xs flex items-center gap-2">
+                            <i data-lucide="layers" class="w-4 h-4"></i> High Signal &amp; Device Density
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            When hundreds of client devices and overlapping SSIDs share the same 20/40/80 MHz frequency channels, contention overhead degrades throughput. Modern standards use OFDMA and beamforming to mitigate crowding.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Standards Table -->
+                <div class="overflow-x-auto rounded-xl border border-slate-800 mt-4">
+                    <table class="w-full text-xs text-left">
+                        <thead class="bg-slate-950 text-slate-400 font-mono uppercase text-[11px] border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">Standard / Generation</th>
+                                <th class="p-3">Frequency Bands</th>
+                                <th class="p-3">Max Raw Speed</th>
+                                <th class="p-3">Indoor Range</th>
+                                <th class="p-3">Key Architectural Innovation</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/70 bg-slate-950/40 text-slate-300 font-sans">
+                            <tr>
+                                <td class="p-3 font-bold text-white">802.11b (Legacy)</td>
+                                <td class="p-3 font-mono text-amber-400">2.4 GHz</td>
+                                <td class="p-3 font-mono">11 Mbps</td>
+                                <td class="p-3 font-mono text-slate-400">~35 m</td>
+                                <td class="p-3">DSSS modulation; foundational consumer Wi-Fi standard.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-white">802.11a (Legacy)</td>
+                                <td class="p-3 font-mono text-blue-400">5 GHz</td>
+                                <td class="p-3 font-mono">54 Mbps</td>
+                                <td class="p-3 font-mono text-slate-400">~25 m</td>
+                                <td class="p-3">OFDM modulation in the uncrowded 5 GHz band (incompatible with 802.11b).</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-white">802.11g (Legacy)</td>
+                                <td class="p-3 font-mono text-amber-400">2.4 GHz</td>
+                                <td class="p-3 font-mono">54 Mbps</td>
+                                <td class="p-3 font-mono text-slate-400">~38 m</td>
+                                <td class="p-3">OFDM in 2.4 GHz; backwards compatible with 802.11b.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-white">802.11n (Wi-Fi 4)</td>
+                                <td class="p-3 font-mono text-purple-400">2.4 GHz / 5 GHz</td>
+                                <td class="p-3 font-mono">600 Mbps</td>
+                                <td class="p-3 font-mono text-slate-400">~70 m</td>
+                                <td class="p-3">Introduced <strong>MIMO</strong> (Multiple-Input Multiple-Output) spatial streams &amp; 40 MHz channel bonding.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-white">802.11ac (Wi-Fi 5)</td>
+                                <td class="p-3 font-mono text-blue-400">5 GHz</td>
+                                <td class="p-3 font-mono">3.46 Gbps</td>
+                                <td class="p-3 font-mono text-slate-400">~35 m</td>
+                                <td class="p-3"><strong>MU-MIMO</strong> (Multi-User MIMO), 80/160 MHz channels, 256-QAM beamforming.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-white">802.11ax (Wi-Fi 6 / 6E)</td>
+                                <td class="p-3 font-mono text-emerald-400">2.4 / 5 / 6 GHz</td>
+                                <td class="p-3 font-mono">9.6 Gbps</td>
+                                <td class="p-3 font-mono text-slate-400">~30 m</td>
+                                <td class="p-3"><strong>OFDMA</strong> (cellular-style sub-carrier resource units), Target Wake Time (IoT), 1024-QAM.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-white">802.11be (Wi-Fi 7)</td>
+                                <td class="p-3 font-mono text-sky-400">2.4 / 5 / 6 GHz</td>
+                                <td class="p-3 font-mono">46 Gbps</td>
+                                <td class="p-3 font-mono text-slate-400">~30 m</td>
+                                <td class="p-3">320 MHz channels, 4096-QAM, Multi-Link Operation (MLO across bands simultaneously).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-400">
+                    <strong class="text-amber-400">Frequency Compatibility Rule:</strong> Devices operating on different physical frequencies (e.g. 5 GHz only vs 2.4 GHz only) cannot communicate directly over RF without dual-band access points. Modern dual/tri-band WAPs broadcast simultaneous radios to ensure seamless backward compatibility.
+                </div>
+            </div>
+
+            <!-- 2. Operating Modes: Infrastructure vs Ad-Hoc -->
+            <div class="space-y-4">
+                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="network" class="w-5 h-5 text-emerald-400"></i>
+                    2. Wireless Operating Modes: Infrastructure vs. Ad-Hoc
+                </h4>
+                <p class="text-slate-300 text-sm leading-relaxed">
+                    IEEE 802.11 networks establish topology connections in one of two distinct structural topologies:
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-4">
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h5 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
+                                <i data-lucide="router" class="w-4 h-4"></i> Infrastructure Mode (BSS / ESS)
+                            </h5>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">Standard Enterprise &amp; Home</span>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            All wireless client endpoints route traffic through a central <strong>Wireless Access Point (WAP)</strong>. The WAP acts as a bridge connecting wireless clients to the wired Ethernet backbone (distribution system).
+                        </p>
+                        <div class="p-3 bg-slate-900/60 rounded-lg border border-slate-800 text-xs text-slate-300 space-y-1">
+                            <div class="text-emerald-400 font-bold text-[11px]">SOHO Multifunction Routers:</div>
+                            <div class="text-slate-400 text-[11px]">In home networks, the "Wi-Fi Router" is a multi-function appliance combining: (1) WAP, (2) Layer 3 Router, (3) 4-port Gigabit Switch, (4) DHCP Server, (5) NAT engine, and (6) Stateful Firewall into a single physical unit.</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h5 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                                <i data-lucide="shuffle" class="w-4 h-4"></i> Ad-Hoc Mode (IBSS / Peer-to-Peer)
+                            </h5>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold">Device-to-Device</span>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Devices communicate directly with each other without any central access point or infrastructure. Each participating endpoint acts as both an emitter and a receiver in an Independent Basic Service Set (IBSS).
+                        </p>
+                        <div class="p-3 bg-rose-950/40 rounded-lg border border-rose-500/30 text-xs text-rose-300 space-y-1">
+                            <div class="font-bold text-[11px]">⚠️ IoT Zero-Configuration &amp; Security Warning:</div>
+                            <div class="text-[11px] leading-relaxed">Modern IoT smart home devices (video doorbells, smart plugs, Wi-Fi cameras) briefly broadcast an ad-hoc Wi-Fi network so a mobile app can connect directly and transmit the home Wi-Fi SSID and password. <strong>Ad-hoc connections are fundamentally unencrypted</strong>. They must never be maintained for continuous operations.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. SSID & The Myth of Hidden SSIDs -->
+            <div class="space-y-4">
+                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="tag" class="w-5 h-5 text-cyan-400"></i>
+                    3. SSID Architecture, Association &amp; The Myth of Hidden Networks
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-4">
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <h5 class="text-sm font-bold text-sky-400 flex items-center gap-2">
+                            <i data-lucide="broadcast" class="w-4 h-4"></i> SSID &amp; The Association Handshake
+                        </h5>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            The <strong>Service Set Identifier (SSID)</strong> is a 32-character case-sensitive alphanumeric string that names the wireless network. The SSID acts as a symmetric identifier: clients must match the SSID to initiate communication.
+                        </p>
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 text-xs text-slate-300 space-y-1.5 font-mono">
+                            <div>1. <strong>Probe Request / Beacon:</strong> AP broadcasts Beacon frames containing its SSID ~10 times per second.</div>
+                            <div>2. <strong>Authentication:</strong> Client proves identity (Open or 802.11i).</div>
+                            <div>3. <strong>Association:</strong> Client sends Association Request. Once accepted, client and AP allocate frame buffer resources.</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <h5 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                            <i data-lucide="eye-off" class="w-4 h-4"></i> Hidden SSIDs: Security Through Obscurity
+                        </h5>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Many guides recommend disabling SSID beacon broadcasts to create a "hidden network." In reality, this provides <strong>virtually zero additional security</strong> against any competent adversary.
+                        </p>
+                        <ul class="text-xs text-slate-400 space-y-2 list-disc list-inside">
+                            <li><strong class="text-slate-300">Instantly Revealed via Sniffing:</strong> Even if beacons omit the SSID, client devices actively broadcast Probe Requests containing the SSID in plaintext when attempting to reconnect.</li>
+                            <li><strong class="text-slate-300">Deauthentication Attack:</strong> An attacker sends a spoofed 802.11 deauth frame to disconnect a client. When the client reconnects, the Association Request packet exposes the hidden SSID immediately in Wireshark.</li>
+                            <li><strong class="text-slate-300">Administrative Inconvenience:</strong> Causes client battery drain, connection drops, and user frustration that heavily outweighs any trivial obscurity benefit.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Attenuation, Site Surveys & Heat Maps -->
+            <div class="space-y-4">
+                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="activity" class="w-5 h-5 text-amber-400"></i>
+                    4. Attenuation, RF Site Surveys &amp; Signal Heat Maps
+                </h4>
+                <p class="text-slate-300 text-sm leading-relaxed">
+                    <strong>Attenuation</strong> is the natural reduction in radio frequency signal amplitude as an electromagnetic wave travels through space or penetrates physical barriers.
+                </p>
+
+                <!-- Heat Map Visualizer Box -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4 font-mono text-xs">
+                    <div class="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-slate-800">
+                        <span class="text-slate-300 font-bold flex items-center gap-2">
+                            <i data-lucide="map" class="w-4 h-4 text-emerald-400"></i> Enterprise Wi-Fi RF Heat Map Calibration Scale
+                        </span>
+                        <span class="text-slate-500 text-[11px]">Decibels Relative to Milliwatt (dBm)</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                        <div class="p-3 rounded-lg bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 space-y-1">
+                            <div class="font-bold">-30 to -55 dBm</div>
+                            <div class="text-[10px] text-emerald-400/80">MAXIMUM / OPTIMAL</div>
+                            <div class="text-[11px] font-sans text-slate-300">Adjacent to Access Point. Ultra-high throughput, negligible latency, perfect for HD video and dense VoIP.</div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-sky-950/60 border border-sky-500/40 text-sky-300 space-y-1">
+                            <div class="font-bold">-56 to -67 dBm</div>
+                            <div class="text-[10px] text-sky-400/80">EXCELLENT / ENTERPRISE MINIMUM</div>
+                            <div class="text-[11px] font-sans text-slate-300">Standard design target for corporate coverage. Fast roaming without packet loss.</div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-amber-950/60 border border-amber-500/40 text-amber-300 space-y-1">
+                            <div class="font-bold">-68 to -75 dBm</div>
+                            <div class="text-[10px] text-amber-400/80">FAIR / CONFINEMENT EDGE</div>
+                            <div class="text-[11px] font-sans text-slate-300">Acceptable for web browsing. Recommended maximum threshold at building exterior walls to limit signal leakage.</div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-rose-950/60 border border-rose-500/40 text-rose-300 space-y-1">
+                            <div class="font-bold">&lt; -80 dBm</div>
+                            <div class="text-[10px] text-rose-400/80">DEAD ZONE / UNUSABLE</div>
+                            <div class="text-[11px] font-sans text-slate-300">Severe packet drops, disconnections, and retry storms. Requires additional AP placement.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Extending Coverage: Repeaters vs APs vs Wireless Mesh -->
+            <div class="space-y-4">
+                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="share-2" class="w-5 h-5 text-purple-400"></i>
+                    5. Extending Wireless Coverage: Repeaters vs. Multiple APs vs. Wireless Mesh
+                </h4>
+                <p class="text-slate-300 text-sm leading-relaxed">
+                    When single-device RF coverage cannot penetrate large buildings or multistory facilities, network architects choose between three expansion architectures:
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 my-4">
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <div class="text-amber-400 font-bold text-sm flex items-center gap-2">
+                            <i data-lucide="repeat" class="w-4 h-4"></i> 1. Wireless Extender / Repeater
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Picks up existing RF broadcast and regenerates it into a dead zone.
+                        </p>
+                        <div class="text-xs text-slate-400 space-y-1.5 pt-2 border-t border-slate-800/80">
+                            <div>• <strong>SSID Fragmentation:</strong> Usually creates a second network (e.g., <code>Office_EXT</code>), forcing manual switching.</div>
+                            <div>• <strong>50% Bandwidth Penalty:</strong> Operates half-duplex on the exact same radio channel as client devices, instantly cutting usable throughput in half.</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <div class="text-blue-400 font-bold text-sm flex items-center gap-2">
+                            <i data-lucide="hard-drive" class="w-4 h-4"></i> 2. Additional Hardwired AP
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            A second distinct WAP connected back to the core switch via physical Cat6 Ethernet.
+                        </p>
+                        <div class="text-xs text-slate-400 space-y-1.5 pt-2 border-t border-slate-800/80">
+                            <div>• <strong>Full Gigabit Backhaul:</strong> 100% throughput preserved; no wireless channel sharing for distribution.</div>
+                            <div>• <strong>Roaming Friction:</strong> Without an enterprise Wireless LAN Controller (WLC), clients "stick" to the weaker AP until completely disconnected.</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <div class="text-emerald-400 font-bold text-sm flex items-center gap-2">
+                            <i data-lucide="cpu" class="w-4 h-4"></i> 3. Wireless Mesh System
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Multiple intelligent mesh nodes working together as a single unified wireless network fabric.
+                        </p>
+                        <div class="text-xs text-slate-400 space-y-1.5 pt-2 border-t border-slate-800/80">
+                            <div>• <strong>Single Unified SSID:</strong> Seamless roaming across nodes using 802.11r/k/v fast-transition protocols.</div>
+                            <div>• <strong>Dedicated Backhaul Channel:</strong> Premium mesh systems utilize a separate, reserved radio channel (tri-band 5 GHz or 6 GHz) exclusively for node-to-node relay, protecting 100% of client communication bandwidth!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Physical RF Containment, Transmit Power & Antennas -->
+            <div class="space-y-4">
+                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="shield" class="w-5 h-5 text-rose-400"></i>
+                    6. Physical RF Containment, Transmit Power Tuning &amp; Antennas
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-4">
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <h5 class="text-sm font-bold text-rose-400 flex items-center gap-2">
+                            <i data-lucide="gauge" class="w-4 h-4"></i> Transmit Power (Tx) &amp; Parking Lot Eavesdropping
+                        </h5>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            In networking, "more power" is not always better. Increasing AP transmit power pushes the signal boundary far past physical office walls into parking lots and adjacent buildings.
+                        </p>
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 text-xs text-slate-300 space-y-1">
+                            <div>• <strong>Perimeter Containment:</strong> Calibrate AP transmit power so signals attenuate below usable signal levels at the property line (-75 to -80 dBm), denying wardrivers the ability to attack from parked vehicles.</div>
+                            <div>• <strong>Regulatory Compliance:</strong> Follow FCC/ETSI legal transmission limits for Equivalent Isotropically Radiated Power (EIRP).</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <h5 class="text-sm font-bold text-indigo-400 flex items-center gap-2">
+                            <i data-lucide="radio" class="w-4 h-4"></i> Antenna Geometry: Omnidirectional vs. Directional
+                        </h5>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Selecting the correct antenna geometry focuses radio energy precisely where coverage is needed:
+                        </p>
+                        <div class="space-y-2 text-xs">
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800">
+                                <span class="text-blue-400 font-bold">Omnidirectional (Dipole / Rubber Ducky):</span>
+                                <span class="text-slate-400 block text-[11px] mt-0.5">Radiates RF power uniformly in 360 degrees. Best for central ceiling installations in open office spaces.</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800">
+                                <span class="text-emerald-400 font-bold">Directional (Yagi / Patch / Parabolic Dish):</span>
+                                <span class="text-slate-400 block text-[11px] mt-0.5">Focuses energy in a narrow, high-gain directional cone. Used for long-distance point-to-point building links and preventing signal spillage behind walls.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
     </main>
 
     <!-- ── Footer ─────────────────────────────────────────── -->
@@ -1576,7 +1954,10 @@
             <a href="#ports" onclick="closeFabMenu()" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
                 <i data-lucide="hash" class="w-4 h-4 text-emerald-400 shrink-0"></i> Ports Reference Matrix
             </a>
-            <a href="#protocols-deep-dive" onclick="closeFabMenu()" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+                                <a href="#wireless-architecture" class="nav-link px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white border border-slate-700 transition-colors whitespace-nowrap flex items-center gap-1.5">
+                        <i data-lucide="wifi" class="w-3.5 h-3.5 text-sky-400"></i> Wireless &amp; RF Architecture
+                    </a>
+<a href="#protocols-deep-dive" onclick="closeFabMenu()" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
                 <i data-lucide="book-open" class="w-4 h-4 text-blue-400 shrink-0"></i> Protocols Deep Dive
             </a>
         </div>
