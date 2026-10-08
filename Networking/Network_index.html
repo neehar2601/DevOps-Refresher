@@ -447,9 +447,9 @@
                     },
                     {
                         title: "Network Components, Hardware & Architecture Guide",
-                        desc: "In-depth guide covering Components, Hardware, Scopes (LAN/MAN/WAN), Topologies, TCP vs UDP, Ports & Protocol Deep Dives.",
+                        desc: "In-depth guide covering Components, Hardware, Wireless & Mesh Architectures, Scopes (LAN/WLAN/WAN), Topologies, TCP vs UDP, Ports & Protocols.",
                         url: "Network_components.html",
-                        subtext: "Components • Architecture • Protocols",
+                        subtext: "Components • Wireless & Mesh • Scopes • Topologies",
                         borderColor: "border-emerald-500/30",
                         bgClass: "bg-emerald-950/20",
                         iconBgClass: "bg-emerald-500/20",
@@ -458,16 +458,28 @@
                         btnClass: "bg-emerald-600 hover:bg-emerald-500"
                     },
                     {
-                        title: "Network Security & VPN Guide",
-                        desc: "Comprehensive guide on VPNs, Site-to-Site vs Remote Access, Tunneling protocols, and security best practices.",
+                        title: "Network Security, Firewalls & IAM Guide",
+                        desc: "In-depth guide covering Defense in Depth, Firewalls, IDS/IPS, IAM, Wireless Security (WPA2/WPA3, AAA, RADIUS), and VPNs.",
                         url: "Network_Security_Guide.html",
-                        subtext: "VPNs • Protocols • Security",
+                        subtext: "Defense in Depth • Firewalls • Wireless Security • IAM • VPNs",
                         borderColor: "border-rose-500/30",
                         bgClass: "bg-rose-950/20",
                         iconBgClass: "bg-rose-500/20",
                         iconColor: "text-rose-400",
                         icon: "shield-check",
                         btnClass: "bg-rose-600 hover:bg-rose-500"
+                    },
+                    {
+                        title: "Security & Cyber Hub",
+                        desc: "Full guide covering Security Fundamentals, CIA Triad, Risk Management, Threat Vectors, Zero Trust, and DevSecOps.",
+                        url: "../Security/security_index.html",
+                        subtext: "CIA Triad • Risk Matrix • DevSecOps",
+                        borderColor: "border-purple-500/30",
+                        bgClass: "bg-purple-950/20",
+                        iconBgClass: "bg-purple-500/20",
+                        iconColor: "text-purple-400",
+                        icon: "shield-alert",
+                        btnClass: "bg-purple-600 hover:bg-purple-500"
                     }
                 ]
             },
@@ -539,6 +551,18 @@
                 icon: "terminal",
                 intro: "Essential Linux networking utilities for DevOps troubleshooting, socket inspection, routing, container diagnostics, and packet captures.",
                 categories: [
+                    {
+                        name: "Wireless & Wi-Fi Management (CLI)",
+                        tag: "Wireless",
+                        commands: [
+                            { cmd: "nmcli dev wifi list", desc: "Scan and display surrounding Wi-Fi networks, SSIDs, BSSIDs, signal bars, and security modes." },
+                            { cmd: "nmcli dev wifi connect 'SSID' password 'PASS'", desc: "Authenticate and associate with a personal or enterprise WPA2/WPA3 wireless network." },
+                            { cmd: "iwconfig", desc: "Display active wireless network parameters (SSID, Frequency, Bit Rate, Tx-Power, Link Quality)." },
+                            { cmd: "sudo iw dev wlan0 scan", desc: "Execute raw 802.11 kernel radio scan for nearby AP beacons, channels, and capabilities." },
+                            { cmd: "sudo wavemon", desc: "Launch real-time interactive terminal monitor for RF signal levels, noise floor, and link quality." },
+                            { cmd: "wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf", desc: "Run background WPA/WPA2/WPA3 and IEEE 802.1X enterprise authentication daemon." }
+                        ]
+                    },
                     {
                         name: "Network Interface & Address Management (iproute2)",
                         tag: "Modern",

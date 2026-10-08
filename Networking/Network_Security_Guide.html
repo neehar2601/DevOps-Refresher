@@ -264,6 +264,10 @@
                             class="text-slate-500 font-light">Hub</span></h1>
                 </div>
                 <nav class="flex items-center gap-6">
+                    <a href="../Security/security_index.html"
+                        class="text-rose-400 hover:text-rose-300 transition-colors flex items-center gap-2 text-sm font-semibold">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i> Security & Cyber Hub
+                    </a>
                     <a href="Network_index.html"
                         class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium">
                         <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Networking
@@ -315,6 +319,1279 @@
 
     <script>
 const contentData = {
+    defense_in_depth: {
+        title: "Defense in Depth & Network Zones",
+        icon: "layers",
+        intro: "A layered approach to network security: grouping assets into security zones, subnets, VLANs, and perimeter defense.",
+        sections: [
+            {
+                title: "1. The Layered Defense Model & Security Zones",
+                content: `
+                    <p class="text-slate-300 mb-6"><strong>Defense in Depth</strong> is a layered approach to security. Rather than attempting to secure every asset individually, assets are grouped into <strong>security zones</strong> that share similar security needs. Security controls are then deployed to strictly regulate movement between these zones.</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <h4 class="text-blue-400 font-bold flex items-center gap-2">
+                                <i data-lucide="target" class="w-5 h-5"></i> The Concentric Ring Principle
+                            </h4>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Assets are arranged into concentric defense zones. Critical and highly valuable assets are placed in the innermost interior zones. The more valuable the asset, the more security controls an intruder must overcome to reach it.
+                            </p>
+                            <p class="text-xs text-slate-400">
+                                <strong>Efficiency Advantage:</strong> Grouping devices into zones allows administrators to secure an entire zone boundary rather than hardening every individual device in isolation.
+                            </p>
+                        </div>
+
+                        <!-- Shad's Apartment Analogy -->
+                        <div class="bg-amber-950/20 p-6 rounded-xl border border-amber-500/30 space-y-3">
+                            <h4 class="text-amber-400 font-bold flex items-center gap-2">
+                                <i data-lucide="home" class="w-5 h-5"></i> Real-Life Analogy: The Holiday Apartment
+                            </h4>
+                            <div class="space-y-2 text-xs text-slate-300 leading-relaxed font-sans">
+                                <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 flex items-start gap-2.5">
+                                    <span class="w-3 h-3 rounded-full bg-amber-400 mt-1 shrink-0"></span>
+                                    <div>
+                                        <strong class="text-amber-300">Yellow Zone (Outermost / Public):</strong> Front door opens into a combined living and dining room. On holidays, visiting guests mingle freely here.
+                                    </div>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 flex items-start gap-2.5">
+                                    <span class="w-3 h-3 rounded-full bg-blue-400 mt-1 shrink-0"></span>
+                                    <div>
+                                        <strong class="text-blue-300">Blue Zone (Intermediate / Restricted):</strong> A physical puppy gate sits between the dining room and kitchen. The homeowner's wife allows only people who are helping cook or getting plates into the kitchen.
+                                    </div>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 flex items-start gap-2.5">
+                                    <span class="w-3 h-3 rounded-full bg-rose-400 mt-1 shrink-0"></span>
+                                    <div>
+                                        <strong class="text-rose-300">Red Zone (Innermost / Highly Restricted):</strong> Bedroom doors are kept closed at all times. Nobody should be entering except the homeowners.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Network vs Subnet Clarification -->
+                    <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300 leading-relaxed">
+                        <strong class="text-sky-400 block mb-1">Vocabulary Clarification: Networks vs. Subnets</strong>
+                        From a TCP/IP protocol perspective, the terms <strong>network</strong> and <strong>subnet</strong> effectively mean the same thing (a local area network is a subnet). In common engineering usage, a <em>subnet</em> refers to a smaller, subdivided network that forms part of a larger interconnected network system.
+                    </div>
+                `
+            },
+            {
+                title: "2. Subnets vs. VLANs & Broadcast Isolation",
+                content: `
+                    <p class="text-slate-300 mb-6">Subnets can be created to organize devices with similar security needs. However, when subnets cannot be physically separated onto distinct physical switches due to wiring, office layout, or hardware constraints, we deploy a <strong>VLAN (Virtual Local Area Network)</strong>.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <!-- The Broadcast Hazard -->
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-rose-500/30 space-y-3">
+                            <h4 class="text-rose-400 font-bold flex items-center gap-2">
+                                <i data-lucide="alert-triangle" class="w-5 h-5"></i> The Switch Broadcast Hazard
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                When a laptop on a switch sends a unicast frame to another specific laptop, the switch forwards that frame directly to the target port.
+                            </p>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                However, when a <strong>broadcast frame</strong> is sent, the switch forwards it to <strong>every port on the switch</strong>. If a broadcast contains sensitive data or protocol discovery, an unauthorized machine on another port running a <em>packet sniffer</em> can intercept and analyze that traffic.
+                            </p>
+                            <div class="p-2.5 rounded-lg bg-rose-950/30 border border-rose-500/20 text-[11px] text-rose-200">
+                                <strong>The Risk:</strong> Unrestricted broadcast domains on a shared switch allow eavesdropping and lateral reconnaissance.
+                            </div>
+                        </div>
+
+                        <!-- VLAN Isolation Solution -->
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-emerald-500/30 space-y-3">
+                            <h4 class="text-emerald-400 font-bold flex items-center gap-2">
+                                <i data-lucide="split" class="w-5 h-5"></i> The VLAN Isolation Solution
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                By configuring a <strong>Red VLAN</strong> and a <strong>Purple VLAN</strong> on the same physical switch:
+                            </p>
+                            <ul class="text-xs text-slate-300 space-y-2 list-disc pl-5">
+                                <li>When a broadcast originates from a computer on the <strong>Red VLAN</strong>, the switch restricts transmission <strong>only to other ports assigned to the Red VLAN</strong>.</li>
+                                <li>Devices on the <strong>Purple VLAN</strong> never receive the broadcast.</li>
+                                <li>The physical switch acts logically as if it were multiple completely separate physical switches.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Essential VLAN Engineering Facts -->
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400">
+                            Essential VLAN Engineering Facts
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
+                            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                                <div class="text-amber-400 font-bold mb-1">Managed Switches</div>
+                                <p class="text-[11px] text-slate-400 font-sans">VLANs require managed switches with switch operating systems supporting 802.1Q tagging. Unmanaged switches cannot create VLANs.</p>
+                            </div>
+                            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                                <div class="text-sky-400 font-bold mb-1">Internal Separation</div>
+                                <p class="text-[11px] text-slate-400 font-sans">Used to separate <strong>internal users from other internal users</strong> (e.g., HR workstations from Engineering).</p>
+                            </div>
+                            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                                <div class="text-purple-400 font-bold mb-1">Distinct Subnets</div>
+                                <p class="text-[11px] text-slate-400 font-sans">Each VLAN constitutes a distinct IP subnet. Devices in different VLANs have IP addresses in different subnets.</p>
+                            </div>
+                            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                                <div class="text-emerald-400 font-bold mb-1">Routing Required</div>
+                                <p class="text-[11px] text-slate-400 font-sans">To communicate across VLAN boundaries, traffic must pass through a router or the routing engine of a <strong>Layer 3 switch</strong>.</p>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300">
+                            <strong class="text-purple-300">Why Some Setups Don't Use a Separate Router (Layer 3 Switches):</strong>
+                            When administrators configure VLANs without a separate physical router, they are using a <strong>Layer 3 switch</strong>. A Layer 3 switch performs both Layer 2 switching and Layer 3 IP routing inside the same physical chassis. Technically, inter-VLAN packets are still routed through the routing core of the switch.
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "3. The Medieval Castle Analogy & The Demilitarized Zone (DMZ)",
+                content: `
+                    <p class="text-slate-300 mb-6">When visualizing network perimeter defense, look to historical architecture: <em>"Nobody understood defense in depth quite like the Medieval Geeks."</em></p>
+
+                    <!-- Medieval Castle Analogy Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-slate-900/50 p-5 rounded-xl border border-sky-500/30 space-y-2">
+                            <div class="text-[10px] font-mono uppercase tracking-wider text-sky-400 font-bold">Layer 1: Perimeter</div>
+                            <h4 class="text-white font-bold text-sm flex items-center gap-1.5">
+                                <i data-lucide="waves" class="w-4 h-4 text-sky-400"></i> The Castle Moat
+                            </h4>
+                            <div class="text-xs text-sky-300 font-mono font-semibold">= External Firewall</div>
+                            <p class="text-xs text-slate-400 leading-relaxed font-sans">
+                                The first physical obstacle to keep outsiders out. In wartime, they pull up the drawbridge and outsiders must swim across (with crocodiles). In networks, the external firewall blocks unauthorized external connection attempts.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 p-5 rounded-xl border border-amber-500/30 space-y-2">
+                            <div class="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-bold">Layer 2: Buffer Zone</div>
+                            <h4 class="text-white font-bold text-sm flex items-center gap-1.5">
+                                <i data-lucide="shopping-bag" class="w-4 h-4 text-amber-400"></i> The Grassy Market
+                            </h4>
+                            <div class="text-xs text-amber-300 font-mono font-semibold">= DMZ / Perimeter Network</div>
+                            <p class="text-xs text-slate-400 leading-relaxed font-sans">
+                                In peacetime, people from neighboring castles visit this grassy area outside the walls to trade fruits, vegetables, swords, and pottery. It is protected by castle archers, but inherently insecure because outsiders have direct access.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 p-5 rounded-xl border border-purple-500/30 space-y-2">
+                            <div class="text-[10px] font-mono uppercase tracking-wider text-purple-400 font-bold">Layer 3: Inner Citadel</div>
+                            <h4 class="text-white font-bold text-sm flex items-center gap-1.5">
+                                <i data-lucide="shield" class="w-4 h-4 text-purple-400"></i> The Castle Wall
+                            </h4>
+                            <div class="text-xs text-purple-300 font-mono font-semibold">= Internal Firewall</div>
+                            <p class="text-xs text-slate-400 leading-relaxed font-sans">
+                                High stone battlements (no Kevin Costner Robin Hood sneaking in with rope). You do not get inside the castle walls unless you genuinely live inside the castle. In networks, the internal firewall blocks all traffic originating from the Internet.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 p-5 rounded-xl border border-emerald-500/30 space-y-2">
+                            <div class="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold">Layer 4: Endpoints</div>
+                            <h4 class="text-white font-bold text-sm flex items-center gap-1.5">
+                                <i data-lucide="lock" class="w-4 h-4 text-emerald-400"></i> Bedroom Door Locks
+                            </h4>
+                            <div class="text-xs text-emerald-300 font-mono font-semibold">= Host-Based Firewall</div>
+                            <p class="text-xs text-slate-400 leading-relaxed font-sans">
+                                Even inside the castle, pickpockets and thieves exist. Residents still lock their doors. In networks, host-based firewalls protect individual computers from internal threats (e.g., infected USB drives or worms spreading laterally).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- DMZ Network Architecture Diagram -->
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 font-mono text-[10px] sm:text-xs overflow-hidden relative min-h-[300px] mb-6">
+                        <!-- Internet -->
+                        <div class="absolute left-4 top-1/2 -translate-y-1/2 flex flex-col items-center z-10">
+                            <i data-lucide="globe" class="w-8 h-8 text-slate-400 mb-2"></i>
+                            <div class="text-slate-400 font-bold">Internet</div>
+                        </div>
+
+                        <!-- Traffic Line In -->
+                        <div class="absolute left-16 top-1/2 -translate-y-1/2 w-16 h-1 bg-red-500/50"></div>
+
+                        <!-- External Firewall -->
+                        <div class="absolute left-32 top-1/2 -translate-y-1/2 flex flex-col items-center z-10">
+                            <div class="w-8 h-24 bg-red-900/80 border-2 border-red-500 rounded flex items-center justify-center mb-2 shadow-[0_0_15px_rgba(239,68,68,0.4)]">
+                                <i data-lucide="flame" class="w-5 h-5 text-red-400"></i>
+                            </div>
+                            <div class="text-red-400 font-bold text-center">External<br>Firewall</div>
+                        </div>
+
+                        <!-- Traffic Line DMZ -->
+                        <div class="absolute left-40 top-1/2 -translate-y-1/2 w-24 h-1 bg-amber-500/50"></div>
+
+                        <!-- DMZ Subnet -->
+                        <div class="absolute left-64 top-1/6 bottom-1/6 w-36 bg-amber-900/20 border-2 border-amber-500/50 border-dashed rounded-xl flex flex-col items-center justify-center z-0 p-3">
+                            <div class="absolute -top-5 text-amber-400 font-bold tracking-widest uppercase text-[10px]">DMZ / Perimeter</div>
+                            
+                            <div class="flex flex-col gap-2 z-10 w-full">
+                                <div class="bg-slate-800 px-2 py-1.5 rounded border border-slate-600 flex items-center gap-1.5 text-[10px]">
+                                    <i data-lucide="server" class="w-3.5 h-3.5 text-amber-300"></i> Public Web Srv
+                                </div>
+                                <div class="bg-slate-800 px-2 py-1.5 rounded border border-slate-600 flex items-center gap-1.5 text-[10px]">
+                                    <i data-lucide="mail" class="w-3.5 h-3.5 text-amber-300"></i> Email Gateway
+                                </div>
+                                <div class="bg-slate-800 px-2 py-1.5 rounded border border-slate-600 flex items-center gap-1.5 text-[10px]">
+                                    <i data-lucide="globe-2" class="w-3.5 h-3.5 text-amber-300"></i> Public DNS Srv
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Traffic Line Internal -->
+                        <div class="absolute left-[26rem] top-1/2 -translate-y-1/2 w-24 h-1 bg-emerald-500/50"></div>
+
+                        <!-- Internal Firewall -->
+                        <div class="absolute left-[32rem] top-1/2 -translate-y-1/2 flex flex-col items-center z-10">
+                            <div class="w-8 h-24 bg-emerald-900/80 border-2 border-emerald-500 rounded flex items-center justify-center mb-2 shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+                                <i data-lucide="shield" class="w-5 h-5 text-emerald-400"></i>
+                            </div>
+                            <div class="text-emerald-400 font-bold text-center">Internal<br>Firewall</div>
+                        </div>
+
+                        <!-- Traffic Line LAN -->
+                        <div class="absolute left-[34rem] right-16 top-1/2 -translate-y-1/2 h-1 bg-emerald-500/50"></div>
+
+                        <!-- Internal LAN -->
+                        <div class="absolute right-4 top-1/6 bottom-1/6 w-36 bg-emerald-900/20 border-2 border-emerald-500/50 border-dashed rounded-xl flex flex-col items-center justify-center z-0 p-3">
+                            <div class="absolute -top-5 text-emerald-400 font-bold tracking-widest uppercase text-[10px]">Internal Network</div>
+                            
+                            <div class="flex flex-col gap-2 z-10 w-full">
+                                <div class="bg-slate-800 px-2 py-1.5 rounded border border-slate-600 flex items-center gap-1.5 text-[10px]">
+                                    <i data-lucide="database" class="w-3.5 h-3.5 text-emerald-300"></i> Finance DB
+                                </div>
+                                <div class="bg-slate-800 px-2 py-1.5 rounded border border-slate-600 flex items-center gap-1.5 text-[10px]">
+                                    <i data-lucide="users" class="w-3.5 h-3.5 text-emerald-300"></i> Staff Desktops
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hardening and Golden Rule of Separation -->
+                    <div class="grid md:grid-cols-2 gap-4 text-xs">
+                        <div class="p-4 rounded-xl bg-amber-950/20 border border-amber-500/30 space-y-1.5">
+                            <strong class="text-amber-300 flex items-center gap-1.5">
+                                <i data-lucide="shield-alert" class="w-4 h-4"></i> Why DMZ Devices Require Stricter Hardening
+                            </strong>
+                            <p class="text-slate-300 leading-relaxed font-sans">
+                                Anything public-facing (Public Web Servers, Email Gateways, Public DNS) is placed in the DMZ. Because internet clients directly contact these systems, <strong>devices in the DMZ need even better security and hardening than internal servers</strong>.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-indigo-950/20 border border-indigo-500/30 space-y-1.5">
+                            <strong class="text-indigo-300 flex items-center gap-1.5">
+                                <i data-lucide="check-circle" class="w-4 h-4"></i> The Golden Rule of Separation
+                            </strong>
+                            <div class="space-y-1 text-slate-300 font-sans">
+                                <div>• <strong>Separating internal devices from other internal devices:</strong> Deploy a <strong class="text-white">VLAN</strong>.</div>
+                                <div>• <strong>Separating internal devices from external untrusted networks:</strong> Deploy a <strong class="text-white">DMZ</strong>.</div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ]
+    },
+    firewalls_gateways: {
+        title: "Firewalls, NAT & Proxies",
+        icon: "shield",
+        intro: "Controlling network boundaries with rule-based firewalls, connection state tracking, NAT, and reverse proxies.",
+        sections: [
+            {
+                title: "1. Firewall Principles & Rule-Based Access Control",
+                content: `
+                    <p class="text-slate-300 mb-6">Firewalls implement <strong>Rule-Based Access Control (RuBAC)</strong>. They filter traffic by evaluating packet attributes against an ordered list of criteria.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <!-- Directionality Defaults -->
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <h4 class="text-blue-400 font-bold flex items-center gap-2">
+                                <i data-lucide="arrow-left-right" class="w-5 h-5"></i> Directionality & Default Security Posture
+                            </h4>
+                            <ul class="text-xs text-slate-300 space-y-2 list-disc pl-5">
+                                <li>
+                                    <strong class="text-rose-400">Incoming Traffic: Implicit Deny</strong><br>
+                                    In formal security examinations, certifications, and enterprise architectures, incoming traffic is universally presumed to have an <em>implicit deny</em>: unless a rule explicitly allows the traffic, it is dropped.
+                                </li>
+                                <li>
+                                    <strong class="text-emerald-400">Outgoing Traffic: Implicit Allow</strong><br>
+                                    Many production firewalls (including the standard Windows Firewall) enforce an <em>implicit allow</em> for outbound traffic: internal users can initiate outbound sessions freely unless an explicit outbound rule blocks them.
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Rule Ordering: First Match Wins -->
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <h4 class="text-amber-400 font-bold flex items-center gap-2">
+                                <i data-lucide="list-ordered" class="w-5 h-5"></i> Rule Evaluation Order: First Match Wins
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Firewalls evaluate rules sequentially from top to bottom. <strong>The first rule that matches the packet wins; subsequent rules are never evaluated.</strong>
+                            </p>
+                            <p class="text-xs text-amber-300 font-semibold leading-relaxed">
+                                Golden Engineering Rule: Place specific rules ABOVE generic rules!
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- The Concrete Ordering Trap Example -->
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4 font-mono text-xs">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <span class="text-slate-400 font-bold uppercase tracking-wider font-sans">The Specific vs. Generic Ordering Trap</span>
+                            <span class="text-rose-400 font-bold font-sans">Flawed vs. Correct Architecture</span>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <!-- Flawed Order -->
+                            <div class="p-4 rounded-lg bg-rose-950/20 border border-rose-500/30 space-y-2">
+                                <div class="text-rose-400 font-bold font-sans text-xs">❌ Incorrect Configuration (Flawed Order)</div>
+                                <div class="text-[11px] text-slate-300 space-y-1">
+                                    <div class="p-1.5 bg-slate-900 rounded border border-slate-800">
+                                        <span class="text-amber-400 font-bold">Rule 1 (Generic):</span> Any ➔ 192.168.1.0/24 : 80 <span class="text-emerald-400 font-bold">[ALLOW]</span>
+                                    </div>
+                                    <div class="p-1.5 bg-slate-900 rounded border border-slate-800">
+                                        <span class="text-amber-400 font-bold">Rule 2 (Specific):</span> Any ➔ 192.168.1.10 : 80 <span class="text-rose-400 font-bold">[DENY]</span>
+                                    </div>
+                                </div>
+                                <p class="text-[11px] text-rose-300 font-sans leading-relaxed">
+                                    <strong>Flaw:</strong> When traffic destined for <code>192.168.1.10:80</code> arrives, it matches Rule 1 first (since .10 is part of the /24 subnet) and is <strong>ALLOWED</strong>. Rule 2 is never reached!
+                                </p>
+                            </div>
+
+                            <!-- Correct Order -->
+                            <div class="p-4 rounded-lg bg-emerald-950/20 border border-emerald-500/30 space-y-2">
+                                <div class="text-emerald-400 font-bold font-sans text-xs">✅ Correct Configuration (Specific First)</div>
+                                <div class="text-[11px] text-slate-300 space-y-1">
+                                    <div class="p-1.5 bg-slate-900 rounded border border-slate-800">
+                                        <span class="text-emerald-400 font-bold">Rule 1 (Specific):</span> Any ➔ 192.168.1.10 : 80 <span class="text-rose-400 font-bold">[DENY]</span>
+                                    </div>
+                                    <div class="p-1.5 bg-slate-900 rounded border border-slate-800">
+                                        <span class="text-emerald-400 font-bold">Rule 2 (Generic):</span> Any ➔ 192.168.1.0/24 : 80 <span class="text-emerald-400 font-bold">[ALLOW]</span>
+                                    </div>
+                                </div>
+                                <p class="text-[11px] text-emerald-300 font-sans leading-relaxed">
+                                    <strong>Success:</strong> Packets for <code>192.168.1.10:80</code> hit Rule 1 and are immediately dropped. All other addresses in the /24 network fall through to Rule 2 and are allowed.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "2. The 5 Generations of Firewalls",
+                content: `
+                    <p class="text-slate-300 mb-6">Firewalls have evolved from basic packet header inspectors to application-aware, forensic-grade security engines.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <!-- 1. Packet Filtering -->
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-blue-400 font-bold flex items-center gap-2">
+                                    <i data-lucide="zap" class="w-4 h-4"></i> 1. Packet Filtering (Stateless)
+                                </h4>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300">Fastest</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Examines only basic L3/L4 header fields: Source IP, Destination IP, Source Port, Destination Port, and Protocol.
+                            </p>
+                            <div class="p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-400 font-sans italic">
+                                <strong>Airport Metal Detector Analogy:</strong> Checks one person at a time through the scanner. Very fast throughput, but cannot detect coordinated multi-packet attack patterns or analyze what is inside luggage.
+                            </div>
+                        </div>
+
+                        <!-- 2. Stateful Firewalls -->
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-emerald-400 font-bold flex items-center gap-2">
+                                    <i data-lucide="activity" class="w-4 h-4"></i> 2. Stateful Firewalls
+                                </h4>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">State Table</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Tracks the lifecycle of conversations in a <strong>State Table</strong> (connection tracking).
+                            </p>
+                            <ul class="text-xs text-slate-300 space-y-1 list-disc pl-5 font-sans">
+                                <li>If an incoming packet is an <strong>established reply</strong> to an outbound request, it is automatically allowed.</li>
+                                <li>Packets that are not part of an existing conversation are checked against the rule set.</li>
+                                <li>Eliminates the need for manual return rules for every web request.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 3. Application-Layer / NGFW -->
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-purple-400 font-bold flex items-center gap-2">
+                                    <i data-lucide="microscope" class="w-4 h-4"></i> 3. Application-Layer (NGFW / Layer 7)
+                                </h4>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300">Deep Inspection</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Unpacks the entire packet up to Layer 7 (Application Layer) of the OSI protocol stack.
+                            </p>
+                            <div class="p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-400 font-sans italic">
+                                <strong>Forensics & Customs Edition:</strong> Inspects full packet content, URLs (e.g., blocking <code>shad.com</code>), banned keywords on web pages, user identities, and application protocols.
+                            </div>
+                        </div>
+
+                        <!-- 4 & 5. WAF vs WSG Comparison -->
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-amber-400 font-bold flex items-center gap-2">
+                                    <i data-lucide="arrow-left-right" class="w-4 h-4"></i> 4 & 5. WAF vs. Web Security Gateway (WSG)
+                                </h4>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">Layer 7 Web</span>
+                            </div>
+                            <div class="space-y-2 text-xs font-sans">
+                                <div class="p-2.5 rounded-lg bg-slate-950 border border-slate-800">
+                                    <strong class="text-rose-400">WAF (Web Application Firewall) — Inbound:</strong><br>
+                                    Protects <strong>internal web servers from external web attacks</strong> (e.g., SQL Injection, Cross-Site Scripting / XSS).
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-slate-950 border border-slate-800">
+                                    <strong class="text-sky-400">WSG (Web Security Gateway) — Outbound:</strong><br>
+                                    Protects <strong>internal users from malicious web attacks</strong> as they browse external websites across the Internet.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stateful Connection Tracking Table (Conntrack) -->
+                    <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700 mb-6">
+                        <h4 class="text-amber-400 font-bold mb-3">Live State Table Demonstration (Conntrack)</h4>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="text-slate-500 border-b border-slate-700">
+                                    <tr>
+                                        <th class="pb-2">Protocol</th>
+                                        <th class="pb-2">Source IP:Port</th>
+                                        <th class="pb-2">Dest IP:Port</th>
+                                        <th class="pb-2">State</th>
+                                        <th class="pb-2">Timeout</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-emerald-400">
+                                    <tr>
+                                        <td class="pt-2">TCP</td>
+                                        <td class="pt-2">192.168.1.50:54321</td>
+                                        <td class="pt-2">93.184.216.34:443</td>
+                                        <td class="pt-2">ESTABLISHED</td>
+                                        <td class="pt-2">432000s</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pt-2 text-blue-400">UDP</td>
+                                        <td class="pt-2 text-blue-400">192.168.1.50:53</td>
+                                        <td class="pt-2 text-blue-400">8.8.8.8:53</td>
+                                        <td class="pt-2 text-blue-400">UNREPLIED</td>
+                                        <td class="pt-2 text-blue-400">30s</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-sm text-slate-400 mt-4">Because the stateful firewall tracks connection metadata and TCP sequence numbers, return packets from <code>93.184.216.34:443</code> are matched against the table and permitted without requiring an open inbound port.</p>
+                    </div>
+                `
+            },
+            {
+                title: "3. Forward vs. Reverse Proxies & NAT",
+                content: `
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                            <h4 class="text-purple-400 font-bold mb-3 flex items-center gap-2"><i data-lucide="arrow-right-circle" class="w-5 h-5"></i> Forward Proxy</h4>
+                            <p class="text-sm text-slate-400 mb-4">Protects the <strong>Client</strong>. It sits inside a corporate network and fetches internet resources on behalf of internal users.</p>
+                            <ul class="text-sm text-slate-400 space-y-2">
+                                <li><strong>Anonymity:</strong> The internet only sees the IP of the proxy, not the internal user.</li>
+                                <li><strong>Content Filtering:</strong> The proxy can block access to malicious or non-work-related websites.</li>
+                                <li><strong>Caching:</strong> If 100 users request the same file, the proxy downloads it once and serves it locally 99 times.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                            <h4 class="text-rose-400 font-bold mb-3 flex items-center gap-2"><i data-lucide="arrow-left-circle" class="w-5 h-5"></i> Reverse Proxy (e.g., Nginx)</h4>
+                            <p class="text-sm text-slate-400 mb-4">Protects the <strong>Server</strong>. It sits in front of backend web servers and handles all incoming internet traffic.</p>
+                            <ul class="text-sm text-slate-400 space-y-2">
+                                <li><strong>SSL Termination:</strong> The proxy handles the heavy math of decrypting HTTPS traffic, then forwards unencrypted HTTP traffic to backend servers, saving their CPU.</li>
+                                <li><strong>Load Balancing:</strong> Distributes incoming traffic across dozens of backend servers.</li>
+                                <li><strong>WAF Integration:</strong> Can inspect the decrypted HTTP payload for SQL injection before passing it to the backend.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                            <h4 class="text-amber-400 font-bold mb-2">SNAT (Source NAT)</h4>
+                            <p class="text-sm text-slate-400 mb-2">Changes the <strong>Source IP</strong> of outbound packets.</p>
+                            <p class="text-xs text-slate-500 mb-2"><strong>Use Case:</strong> When 100 employees in an office browse the internet, their internal IPs (10.x.x.x) are stripped by the router and replaced with a single Public IP assigned by the ISP.</p>
+                            <div class="mt-4 bg-slate-950 p-2 rounded border border-slate-800 text-[10px] font-mono text-emerald-400">
+                                10.0.1.50:4592 -> [Router SNAT] -> 203.0.113.1:14592
+                            </div>
+                        </div>
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
+                            <h4 class="text-emerald-400 font-bold mb-2">DNAT (Destination NAT)</h4>
+                            <p class="text-sm text-slate-400 mb-2">Changes the <strong>Destination IP</strong> of inbound packets ("Port Forwarding").</p>
+                            <p class="text-xs text-slate-500 mb-2"><strong>Use Case:</strong> When an internet client requests your public IP on port 443, the router translates the destination to the internal web server IP.</p>
+                            <div class="mt-4 bg-slate-950 p-2 rounded border border-slate-800 text-[10px] font-mono text-blue-400">
+                                User -> 203.0.113.1:443 -> [Router DNAT] -> 10.0.1.80:443
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ]
+    },
+    ids_monitoring: {
+        title: "Intrusion Detection & Prevention (IDS/IPS)",
+        icon: "radar",
+        intro: "Visibility and active defense: IDS vs IPS, deployment scopes, detection engines, training baselines, and log correlation.",
+        sections: [
+            {
+                title: "1. IDS vs. IPS & Strategic Network Placement",
+                content: `
+                    <p class="text-slate-300 mb-6">Firewalls inspect headers and connections, but <strong>Intrusion Systems</strong> inspect network traffic for malicious activity and attacks.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-sky-500/30 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sky-400 font-bold flex items-center gap-2">
+                                    <i data-lucide="bell" class="w-5 h-5"></i> Intrusion Detection System (IDS)
+                                </h4>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300">Passive Alert</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Detects an intrusion, generates an alert/alarm to the monitoring dashboard, and <strong>allows the attack to continue</strong>. It takes no direct action to block or terminate the malicious session.
+                            </p>
+                            <p class="text-[11px] text-slate-400 italic">
+                                "Of course it's packets, not burglars, but you get the idea: it rings the alarm, and then does nothing else."
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-rose-500/30 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-rose-400 font-bold flex items-center gap-2">
+                                    <i data-lucide="shield-alert" class="w-5 h-5"></i> Intrusion Prevention System (IPS)
+                                </h4>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300">Active Block</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Detects the intrusion, generates an alert, and <strong>actively takes action to terminate and block the attack</strong> (e.g., dropping packets, resetting TCP connections, or injecting firewall shun rules).
+                            </p>
+                            <p class="text-[11px] text-slate-400 italic">
+                                "It detects the intrusion, generates the alert, and then jumps in to do something to stop it."
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Strategic Placement -->
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-3">
+                        <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i data-lucide="network" class="w-4 h-4 text-amber-400"></i> Why Deploy Both an IDS and an IPS? (Defense in Depth Architecture)
+                        </h4>
+                        <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                            In enterprise network design, administrators often place an <strong>IDS in front of the external firewall</strong>, and an <strong>IPS behind the firewall</strong>:
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono pt-2">
+                            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                                <div class="text-sky-300 font-bold mb-1">1. IDS (Front of Firewall)</div>
+                                <p class="text-[11px] text-slate-400 font-sans">Captures full situational awareness. Logs all raw attack probes, port scans, and threats hitting your public edge.</p>
+                            </div>
+                            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                                <div class="text-amber-300 font-bold mb-1">2. External Firewall</div>
+                                <p class="text-[11px] text-slate-400 font-sans">Blocks known bad IP addresses, invalid ports, and unauthorized protocol attempts.</p>
+                            </div>
+                            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                                <div class="text-rose-300 font-bold mb-1">3. IPS (Behind Firewall)</div>
+                                <p class="text-[11px] text-slate-400 font-sans">Stops sophisticated intrusions and exploits that slipped past the firewall rules before they reach internal hosts.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "2. Complete Deployment Scopes & Acronym Guide",
+                content: `
+                    <p class="text-slate-300 mb-4">Intrusion systems can be deployed at multiple architectural scopes. Master this simple breakdown: <strong>H</strong> = Host, <strong>N</strong> = Network, <strong>W</strong> = Wireless; <strong>D</strong> = Detect, <strong>P</strong> = Prevent.</p>
+
+                    <div class="overflow-x-auto mb-6">
+                        <table class="w-full text-left text-xs font-mono">
+                            <thead class="bg-slate-900 text-slate-300">
+                                <tr>
+                                    <th class="p-3">Scope</th>
+                                    <th class="p-3 text-sky-400">Detection (IDS)</th>
+                                    <th class="p-3 text-rose-400">Prevention (IPS)</th>
+                                    <th class="p-3 text-slate-400">Deployment Location & Purpose</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800 bg-slate-950 font-sans text-xs text-slate-300">
+                                <tr>
+                                    <td class="p-3 font-bold text-amber-300 font-mono">Host-Based</td>
+                                    <td class="p-3 font-mono text-sky-300 font-bold">HIDS</td>
+                                    <td class="p-3 font-mono text-rose-300 font-bold">HIPS</td>
+                                    <td class="p-3">Installed directly on an individual host (workstation/server). Monitors system calls, local log files, and memory. Protects only that single host.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-emerald-300 font-mono">Network-Based</td>
+                                    <td class="p-3 font-mono text-sky-300 font-bold">NIDS</td>
+                                    <td class="p-3 font-mono text-rose-300 font-bold">NIPS</td>
+                                    <td class="p-3">Installed inline on a network segment or attached via SPAN/TAP port. Analyzes network packets on the wire to protect multiple hosts across the subnet.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-purple-300 font-mono">Wireless</td>
+                                    <td class="p-3 font-mono text-sky-300 font-bold">WIDS</td>
+                                    <td class="p-3 font-mono text-rose-300 font-bold">WIPS</td>
+                                    <td class="p-3">Monitors the RF radio spectrum. Detects rogue access points, deauthentication attacks, evil twins, and unauthorized Wi-Fi clients.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Interactive Access Control Model Decision Simulator -->
+                    <div class="mt-8 bg-slate-950/80 p-6 rounded-2xl border border-indigo-500/30 space-y-5">
+                        <div class="border-b border-slate-800 pb-3 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                            <div>
+                                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                                    <i data-lucide="sliders" class="w-5 h-5 text-indigo-400"></i>
+                                    Access Control Models Decision Simulator
+                                </h4>
+                                <p class="text-xs text-slate-400">See how identical access requests are evaluated under each access control model.</p>
+                            </div>
+                            <div class="text-[11px] font-mono text-slate-400 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
+                                Scenario: Alice accessing Production Core DB
+                            </div>
+                        </div>
+
+                        <!-- Request Scenario Details -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 text-[11px] font-mono p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-300">
+                            <div><span class="text-slate-500">Subject:</span> Alice (Dev)</div>
+                            <div><span class="text-slate-500">Clearance:</span> Secret</div>
+                            <div><span class="text-slate-500">Object:</span> Prod DB (Top Secret)</div>
+                            <div><span class="text-slate-500">Time/Location:</span> 23:30 / Home Wi-Fi</div>
+                        </div>
+
+                        <!-- Model Selector Buttons -->
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                            <button onclick="selectAccessModel(\'MAC\')" id="model-btn-MAC" class="model-sel-btn p-2.5 rounded-xl border border-rose-500/40 bg-rose-950/40 text-rose-300 text-xs font-bold transition-all text-center">
+                                MAC
+                            </button>
+                            <button onclick="selectAccessModel(\'DAC\')" id="model-btn-DAC" class="model-sel-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                DAC
+                            </button>
+                            <button onclick="selectAccessModel(\'RBAC\')" id="model-btn-RBAC" class="model-sel-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                RBAC
+                            </button>
+                            <button onclick="selectAccessModel(\'RuBAC\')" id="model-btn-RuBAC" class="model-sel-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                RuBAC
+                            </button>
+                            <button onclick="selectAccessModel(\'ABAC\')" id="model-btn-ABAC" class="model-sel-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                ABAC
+                            </button>
+                        </div>
+
+                        <!-- Decision Result Card -->
+                        <div id="model-decision-card" class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="text-xs font-mono uppercase text-slate-400">Enforcement Authority: <span id="model-authority" class="font-bold text-rose-400">Operating System Kernel</span></div>
+                                <div id="model-verdict-badge" class="px-3 py-1 rounded-md text-xs font-bold font-mono bg-rose-950/80 text-rose-400 border border-rose-500/40">
+                                    DENIED
+                                </div>
+                            </div>
+                            <p id="model-rationale" class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Alice holds 'Secret' clearance, but the database object is classified 'Top Secret'. The OS kernel unconditionally enforces mandatory classification labels. Zero human discretion allowed.
+                            </p>
+                        </div>
+                    </div>
+
+                `
+            },
+            {
+                title: "3. Detection Methodologies & The Anomaly Learning Gotchas",
+                content: `
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <h4 class="text-blue-400 font-bold flex items-center gap-2">
+                                <i data-lucide="file-check" class="w-4 h-4"></i> Signature-Based Detection
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Detects intrusions by matching packet byte sequences against a database of known attack signatures.
+                            </p>
+                            <ul class="text-xs text-slate-300 space-y-1 list-disc pl-5 font-sans">
+                                <li><strong>Advantage:</strong> Extremely fast and accurate for known exploits with near-zero false positives.</li>
+                                <li><strong>Disadvantage:</strong> Completely blind to brand new, unknown <strong>zero-day attacks</strong>.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <h4 class="text-purple-400 font-bold flex items-center gap-2">
+                                <i data-lucide="trending-up" class="w-4 h-4"></i> Anomaly-Based (Behavioral / Heuristic)
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Observes network traffic flow over an initial <strong>training period</strong> to establish a mathematical baseline of what "normal" looks like. It triggers an alert whenever observed traffic deviates from that baseline.
+                            </p>
+                            <p class="text-xs text-slate-400 font-sans">
+                                Also referred to as <em>behavior-based</em> or <em>heuristic</em> (patterns of behavior).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- The 4 Critical Challenges of Anomaly Systems -->
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-rose-400 flex items-center gap-2">
+                            <i data-lucide="alert-octagon" class="w-4 h-4"></i> The 4 Critical Challenges of Anomaly-Based Systems
+                        </h4>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-sans">
+                            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+                                <div class="font-bold text-amber-300 flex items-center gap-2">
+                                    <i data-lucide="clock" class="w-4 h-4"></i> 1. The Training Period & Clean Network Rule
+                                </div>
+                                <p class="text-slate-300 leading-relaxed">
+                                    Anomaly engines require significant time to observe traffic and build their baseline. <strong>Crucial Gotcha:</strong> The training period <strong>must occur when there are no issues on the network</strong>. If the network is already infected, the malware/worm traffic is learned as "normal", and will never trigger an alert!
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+                                <div class="font-bold text-sky-300 flex items-center gap-2">
+                                    <i data-lucide="file-question" class="w-4 h-4"></i> 2. High False Positives & Expert Tuning
+                                </div>
+                                <p class="text-slate-300 leading-relaxed">
+                                    During training, systems generate heavy <strong>false positives</strong> (alerts on legitimate events).
+                                </p>
+                                <p class="text-[11px] text-slate-400 italic">
+                                    <strong>The Adobe Reader Analogy:</strong> Like a new security app flagging Adobe Reader as dangerous when opening a PDF for the first time. An experienced human administrator must supervise the training period to approve benign software.
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2 md:col-span-2">
+                                <div class="font-bold text-rose-300 flex items-center gap-2">
+                                    <i data-lucide="volume-x" class="w-4 h-4"></i> 3 & 4. Alert Fatigue & "The Little IDS That Cried Alert"
+                                </div>
+                                <p class="text-slate-300 leading-relaxed">
+                                    When an anomaly-based system triggers hundreds of false alarms daily, operators suffer from <strong>alert fatigue</strong>.
+                                </p>
+                                <p class="text-[11px] text-amber-200">
+                                    <strong>The Parking Lot Car Alarm Analogy:</strong> <em>"When a car alarm goes off in a shopping mall parking lot, nobody runs over thinking a car is being stolen — everyone ignores it because alarms go off for no reason all the time."</em> In cybersecurity, alert fatigue causes engineers to ignore alerts when a real attack is taking place.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "4. SIEM & Log Correlation",
+                content: `
+                    <h4 class="text-emerald-400 font-bold mb-2">Security Information and Event Management (SIEM)</h4>
+                    <p class="text-sm text-slate-400 mb-4">A SIEM (e.g., Splunk, Elastic Security) is a centralized data pipeline that ingests logs from firewalls, IDS/IPS, and servers to correlate attack chains across the enterprise.</p>
+                    
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800">
+                        <h5 class="text-slate-300 font-bold mb-3">The SIEM Pipeline:</h5>
+                        <ul class="text-sm text-slate-400 space-y-3 list-decimal pl-5">
+                            <li><strong>Ingestion:</strong> Agents (like Filebeat/Fluentd) stream syslog, NetFlow, and event logs to the central cluster.</li>
+                            <li><strong>Parsing & Normalization:</strong> Raw heterogeneous logs are parsed into unified schema fields (e.g., Elastic Common Schema).</li>
+                            <li><strong>Correlation Rules:</strong> Automated rules detect multi-stage attacks across disparate systems (e.g., 5 failed logins on VPN followed by admin database query).</li>
+                            <li><strong>SOAR (Orchestration & Automated Response):</strong> Automated playbooks block malicious IPs on firewalls and quarantine compromised endpoints in real time.</li>
+                        </ul>
+                    </div>
+                `
+            }
+        ]
+    },
+
+    iam_access_control: {
+        title: "Identity, Authentication & Access Control (IAM)",
+        icon: "user-check",
+        intro: "Controlling who accesses what: subjects, objects, authentication factors, MFA, SSO, Kerberos, LDAP, and the 5 access control models.",
+        sections: [
+            {
+                title: "1. Identity, Claims, Subjects & Objects",
+                content: `
+                    <p class="text-slate-300 mb-6">Before regulating access to corporate resources, systems must establish clear identities for every entity seeking access.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <h4 class="text-indigo-400 font-bold flex items-center gap-2">
+                                <i data-lucide="users" class="w-5 h-5"></i> Subjects vs. Objects
+                            </h4>
+                            <div class="space-y-2 text-xs text-slate-300">
+                                <div>• <strong class="text-white">Subject:</strong> An active entity requesting access to a resource (users, software applications, background services, or network devices).</div>
+                                <div>• <strong class="text-white">Object:</strong> The passive resource being accessed (files, databases, servers, network shares, or API endpoints).</div>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-2">
+                                <strong>Example:</strong> When a backup script reads an SQL database file, the script is the <em>subject</em> and the database is the <em>object</em>.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <h4 class="text-emerald-400 font-bold flex items-center gap-2">
+                                <i data-lucide="fingerprint" class="w-5 h-5"></i> Identity & The "Which Joe?" Rule
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                                An identity is a <strong>symbolic representation</strong> of a subject within the system. It does <em>not</em> need to be secret, but it <strong class="text-white">MUST be unique</strong> across the enterprise.
+                            </p>
+                            <div class="p-2.5 rounded-lg bg-slate-950 border border-slate-800 text-[11px] text-slate-400 italic">
+                                "My wife and I will talk: 'Joe is doing this.' 'Which Joe? No, not that Joe, this other Joe!' Unique IDs prevent identity collision across thousands of enterprise users."
+                            </div>
+                            <p class="text-[10px] text-slate-500 font-mono">Usernames · Email addresses · Employee IDs · Security IDs (SIDs) · National IDs</p>
+                        </div>
+                    </div>
+
+                    <!-- Choosing Identities Wisely & Claim vs AuthN -->
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="p-5 rounded-xl bg-amber-950/20 border border-amber-500/30 space-y-2">
+                            <div class="font-bold text-amber-300 flex items-center gap-2 text-sm">
+                                <i data-lucide="lightbulb" class="w-4 h-4"></i> Choosing Identities: The 50% Rule & "Connor" the Canine Son
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                In the 1990s, IT philosophy assumed users couldn't remember complex names, creating simple usernames like <code>sfarrell</code>. The flaw? <em>"If an attacker knows my username is sfarrell, and my canine son is Connor, they easily deduce his account is <code>cfarrell</code>. They already possess <strong>50% of what they need</strong> to hack that account!"</em>
+                            </p>
+                            <p class="text-[11px] text-amber-200">
+                                <strong>Best Practice:</strong> Prefer identities resilient against social engineering (e.g., <code>employee2345</code>), especially when single-factor passwords are used. With MFA, identity predictability becomes less critical.
+                            </p>
+                        </div>
+
+                        <div class="p-5 rounded-xl bg-sky-950/20 border border-sky-500/30 space-y-2">
+                            <div class="font-bold text-sky-300 flex items-center gap-2 text-sm">
+                                <i data-lucide="shield-alert" class="w-4 h-4"></i> Claim vs. Authentication
+                            </div>
+                            <div class="space-y-2 text-xs text-slate-300">
+                                <div>• <strong class="text-sky-300">Claim:</strong> Asserting an identity (e.g. typing <em>"sfarrell, open up!"</em>). It is an unverified statement; the system cannot objectively confirm who is typing.</div>
+                                <div>• <strong class="text-emerald-300">Authentication (AuthN):</strong> Mathematically verifying that the entity asserting the identity is genuine by requiring a secret or credential known only to that entity.</div>
+                                <div>• <strong class="text-purple-300">Directory:</strong> A centralized security database (e.g., Microsoft Active Directory, OpenLDAP) storing all symbolic identities, credentials, and group memberships.</div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "2. The 5 Authentication Factors & Multi-Factor Authentication (MFA)",
+                content: `
+                    <p class="text-slate-300 mb-6">To authenticate, a subject must supply information from one or more <strong>Authentication Factors</strong>. Master the 5 universal categories:</p>
+
+                    <!-- 5 Factors Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                        <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-700 space-y-2">
+                            <div class="text-[10px] font-mono uppercase text-sky-400 font-bold">Factor 1</div>
+                            <h4 class="text-white font-bold text-sm flex items-center gap-1.5">
+                                <i data-lucide="brain" class="w-4 h-4 text-sky-400"></i> Something You Know
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Passwords, passphrases, PINs (Personal Identification Numbers), security challenge questions (mother's maiden name, childhood street).
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-700 space-y-2">
+                            <div class="text-[10px] font-mono uppercase text-emerald-400 font-bold">Factor 2</div>
+                            <h4 class="text-white font-bold text-sm flex items-center gap-1.5">
+                                <i data-lucide="credit-card" class="w-4 h-4 text-emerald-400"></i> Something You Have
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Physical smart cards with chips, Common Access Cards (CAC), cell phone OTPs, RSA SecurID hardware token fobs, digital certificates.
+                            </p>
+                            <p class="text-[10px] text-emerald-300 font-sans italic">
+                                Note: SMS OTP codes count as "something you have" because they verify physical possession of the phone hardware, not PIN knowledge.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-700 space-y-2">
+                            <div class="text-[10px] font-mono uppercase text-purple-400 font-bold">Factor 3</div>
+                            <h4 class="text-white font-bold text-sm flex items-center gap-1.5">
+                                <i data-lucide="scan" class="w-4 h-4 text-purple-400"></i> Something You Are
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Physical biometrics: Fingerprint scanner, facial recognition geometry, hand geometry, iris scanner (colored eye muscle), retina scanner (blood vessel patterns at back of eye).
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-700 space-y-2">
+                            <div class="text-[10px] font-mono uppercase text-amber-400 font-bold">Factor 4</div>
+                            <h4 class="text-white font-bold text-sm flex items-center gap-1.5">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-amber-400"></i> Somewhere You Are
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Geolocation via IP address, GPS coordinates, context-based access control (detecting "impossible travel" e.g., logging in from New York and 10 minutes later from Beijing).
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-700 space-y-2 md:col-span-2 lg:col-span-2">
+                            <div class="text-[10px] font-mono uppercase text-rose-400 font-bold">Factor 5</div>
+                            <h4 class="text-white font-bold text-sm flex items-center gap-1.5">
+                                <i data-lucide="activity" class="w-4 h-4 text-rose-400"></i> Something You Do
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Behavioral biometrics: Gait analysis (how an individual walks under CCTV surveillance), typing cadence and keystroke dynamics, signature writing velocity, and touch gestures.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Single Factor vs Multi-Factor & The Biometric Hack Debate -->
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
+                        <div class="grid md:grid-cols-2 gap-4 text-xs font-sans">
+                            <div class="p-4 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+                                <h5 class="font-bold text-amber-300 flex items-center gap-2">
+                                    <i data-lucide="layers" class="w-4 h-4"></i> Single-Factor vs. Multi-Factor (MFA)
+                                </h5>
+                                <p class="text-slate-300 leading-relaxed">
+                                    Requiring 20 items from the <em>same factor</em> (e.g., password + mother's maiden name + childhood pet + PIN) is <strong>STILL SINGLE-FACTOR</strong> because all items belong to <em>"something you know"</em>.
+                                </p>
+                                <p class="text-emerald-300 font-semibold">
+                                    True Multi-Factor (MFA) requires $\\ge 2$ items from DIFFERENT factor categories (e.g., Bank Card [have] + PIN [know]).
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+                                <h5 class="font-bold text-purple-300 flex items-center gap-2">
+                                    <i data-lucide="shield-check" class="w-4 h-4"></i> Why MFA Beats Biometrics Alone
+                                </h5>
+                                <p class="text-slate-300 leading-relaxed">
+                                    Students often argue: <em>"Aren't biometrics superior to everything?"</em> No! When enrolling a face or fingerprint, the mathematical template is stored in a software database. If an attacker breaches that database, your biometric templates are compromised.
+                                </p>
+                                <p class="text-purple-200">
+                                    By contrast, stealing an employee's physical CAC card [have] AND social-engineering their PIN [know] requires two completely distinct attack vectors. <strong>Adding another factor is what creates true defense.</strong>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive MFA Factor Simulator -->
+                    <div class="mt-8 bg-slate-950/80 p-6 rounded-2xl border border-blue-500/30 space-y-5">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800 pb-4">
+                            <div>
+                                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                                    <i data-lucide="shield-check" class="w-5 h-5 text-blue-400"></i>
+                                    Interactive MFA Strength & Factors Calculator
+                                </h4>
+                                <p class="text-xs text-slate-400">Select credentials to simulate how systems evaluate single-factor vs. multi-factor authentication strength.</p>
+                            </div>
+                            <button onclick="resetMfaSimulator()" class="self-start md:self-auto text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono transition-all">
+                                Reset Selection
+                            </button>
+                        </div>
+
+                        <!-- Credential Option Buttons -->
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 text-xs">
+                            <button onclick="toggleMfaItem(\'pwd\', \'know\', this)" class="mfa-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-left hover:border-slate-700 transition-all text-slate-300">
+                                <div class="font-bold flex items-center gap-1.5 text-sky-400"><i data-lucide="key" class="w-3.5 h-3.5"></i> Password</div>
+                                <div class="text-[10px] text-slate-500 mt-1">Something You Know</div>
+                            </button>
+                            <button onclick="toggleMfaItem(\'pin\', \'know\', this)" class="mfa-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-left hover:border-slate-700 transition-all text-slate-300">
+                                <div class="font-bold flex items-center gap-1.5 text-sky-400"><i data-lucide="hash" class="w-3.5 h-3.5"></i> 6-Digit PIN</div>
+                                <div class="text-[10px] text-slate-500 mt-1">Something You Know</div>
+                            </button>
+                            <button onclick="toggleMfaItem(\'sec_q\', \'know\', this)" class="mfa-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-left hover:border-slate-700 transition-all text-slate-300">
+                                <div class="font-bold flex items-center gap-1.5 text-sky-400"><i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Security Question</div>
+                                <div class="text-[10px] text-slate-500 mt-1">Something You Know</div>
+                            </button>
+                            <button onclick="toggleMfaItem(\'cac\', \'have\', this)" class="mfa-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-left hover:border-slate-700 transition-all text-slate-300">
+                                <div class="font-bold flex items-center gap-1.5 text-emerald-400"><i data-lucide="credit-card" class="w-3.5 h-3.5"></i> Smart Card / CAC</div>
+                                <div class="text-[10px] text-slate-500 mt-1">Something You Have</div>
+                            </button>
+                            <button onclick="toggleMfaItem(\'otp\', \'have\', this)" class="mfa-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-left hover:border-slate-700 transition-all text-slate-300">
+                                <div class="font-bold flex items-center gap-1.5 text-emerald-400"><i data-lucide="smartphone" class="w-3.5 h-3.5"></i> Auth App OTP</div>
+                                <div class="text-[10px] text-slate-500 mt-1">Something You Have</div>
+                            </button>
+                            <button onclick="toggleMfaItem(\'fob\', \'have\', this)" class="mfa-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-left hover:border-slate-700 transition-all text-slate-300">
+                                <div class="font-bold flex items-center gap-1.5 text-emerald-400"><i data-lucide="shield" class="w-3.5 h-3.5"></i> Hardware Fob</div>
+                                <div class="text-[10px] text-slate-500 mt-1">Something You Have</div>
+                            </button>
+                            <button onclick="toggleMfaItem(\'fp\', \'are\', this)" class="mfa-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-left hover:border-slate-700 transition-all text-slate-300">
+                                <div class="font-bold flex items-center gap-1.5 text-purple-400"><i data-lucide="fingerprint" class="w-3.5 h-3.5"></i> Fingerprint</div>
+                                <div class="text-[10px] text-slate-500 mt-1">Something You Are</div>
+                            </button>
+                            <button onclick="toggleMfaItem(\'iris\', \'are\', this)" class="mfa-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-left hover:border-slate-700 transition-all text-slate-300">
+                                <div class="font-bold flex items-center gap-1.5 text-purple-400"><i data-lucide="eye" class="w-3.5 h-3.5"></i> Retina / Iris</div>
+                                <div class="text-[10px] text-slate-500 mt-1">Something You Are</div>
+                            </button>
+                            <button onclick="toggleMfaItem(\'geo\', \'where\', this)" class="mfa-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-left hover:border-slate-700 transition-all text-slate-300">
+                                <div class="font-bold flex items-center gap-1.5 text-amber-400"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Office Geolocation</div>
+                                <div class="text-[10px] text-slate-500 mt-1">Somewhere You Are</div>
+                            </button>
+                            <button onclick="toggleMfaItem(\'type\', \'do\', this)" class="mfa-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-left hover:border-slate-700 transition-all text-slate-300">
+                                <div class="font-bold flex items-center gap-1.5 text-rose-400"><i data-lucide="activity" class="w-3.5 h-3.5"></i> Keystroke Dynamic</div>
+                                <div class="text-[10px] text-slate-500 mt-1">Something You Do</div>
+                            </button>
+                        </div>
+
+                        <!-- Real-time Evaluation Dashboard -->
+                        <div id="mfa-result-box" class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="space-y-1 text-center sm:text-left">
+                                <div class="text-xs text-slate-400">Total Items: <span id="mfa-item-count" class="font-bold text-white font-mono">0</span> | Distinct Factor Categories: <span id="mfa-category-count" class="font-bold text-white font-mono">0</span> / 5</div>
+                                <div id="mfa-verdict-title" class="text-sm font-bold text-slate-400">Select credentials above to evaluate authentication level</div>
+                                <div id="mfa-verdict-desc" class="text-xs text-slate-500">True MFA mandates credentials from at least 2 distinct factor categories.</div>
+                            </div>
+                            <div id="mfa-badge" class="px-4 py-2 rounded-lg font-mono text-xs font-bold uppercase tracking-wider bg-slate-800 text-slate-400 border border-slate-700 shrink-0">
+                                Awaiting Selection
+                            </div>
+                        </div>
+                    </div>
+
+                `
+            },
+            {
+                title: "3. Account Governance & The Detective Story",
+                content: `
+                    <p class="text-slate-300 mb-6">Accountability means any security event can be definitively traced back to the actions of a specific individual subject. Without proper account structure, accountability collapses.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-rose-500/30 space-y-3">
+                            <h4 class="text-rose-400 font-bold flex items-center gap-2">
+                                <i data-lucide="user-x" class="w-5 h-5"></i> Shared Accounts (Strictly Prohibited)
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                More than one person knows the credentials. If "admin" modifies a file or deletes logs, who did it? <strong>Accountability is destroyed.</strong>
+                            </p>
+                            <div class="p-3 rounded-lg bg-slate-950 border border-slate-800 text-[11px] text-slate-300 italic font-sans">
+                                <strong>The Detective Story:</strong> "The detective says: 'It's elementary! Shad wrote that the boss is funny looking with big ears!' But if four admins share the admin password, who wrote it? Nobody knows. Shared accounts break accountability."
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-sky-500/30 space-y-3">
+                            <h4 class="text-sky-400 font-bold flex items-center gap-2">
+                                <i data-lucide="shield" class="w-5 h-5"></i> Multiple Accounts for Privileged Users
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Privileged administrators should possess <strong>two separate accounts</strong>:
+                            </p>
+                            <ul class="text-xs text-slate-300 space-y-1 list-disc pl-5">
+                                <li><strong>Standard User Account:</strong> Used for daily tasks (email, web browsing). If a browser exploit or phishing email executes, it runs with zero administrative rights.</li>
+                                <li><strong>Administrative Account:</strong> Used exclusively when performing maintenance, elevated via <code>runas</code> in Windows or <code>sudo</code> in Linux.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-2">
+                            <h4 class="text-amber-400 font-bold text-sm">Generic Accounts</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Accounts with default names (<code>Administrator</code>, <code>Guest</code>, <code>root</code>). Attackers immediately know these usernames exist, giving them 50% of the credentials. Windows disables Guest and Administrator by default; Linux best practices mandate disabling root SSH login and enforcing sudo.
+                            </p>
+                        </div>
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-2">
+                            <h4 class="text-emerald-400 font-bold text-sm">Service Accounts</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Non-human accounts utilized by software services (e.g., automated backup agents). Historically, administrators set service account passwords to "never expire" because services broke when passwords expired. Modern architectures mandate Group Managed Service Accounts (gMSA) or short-lived Vault tokens with automated rotation.
+                            </p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "4. Single Sign-On (SSO), Kerberos & Federation",
+                content: `
+                    <p class="text-slate-300 mb-6"><strong>Single Sign-On (SSO)</strong> allows a user to authenticate once and access resources across multiple independent systems. It improves security because users manage fewer passwords, choose stronger credentials, and face fewer phishing opportunities.</p>
+
+                    <!-- Directory Protocols: LDAP & Kerberos -->
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <h4 class="text-blue-400 font-bold flex items-center gap-2">
+                                <i data-lucide="server" class="w-5 h-5"></i> LDAP vs. LDAPS
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Lightweight Directory Access Protocol queries and modifies directory databases (e.g., Active Directory, OpenLDAP).
+                            </p>
+                            <div class="grid grid-cols-2 gap-2 text-xs font-mono pt-1">
+                                <div class="p-2.5 bg-slate-950 rounded-lg border border-slate-800">
+                                    <div class="text-slate-400 font-bold">LDAP</div>
+                                    <div class="text-rose-400">Port 389</div>
+                                    <div class="text-[10px] text-slate-500 font-sans">Plaintext / Unencrypted</div>
+                                </div>
+                                <div class="p-2.5 bg-slate-950 rounded-lg border border-slate-800">
+                                    <div class="text-slate-400 font-bold">LDAPS</div>
+                                    <div class="text-emerald-400">Port 636</div>
+                                    <div class="text-[10px] text-slate-500 font-sans">Encrypted over SSL/TLS</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-purple-500/30 space-y-3">
+                            <h4 class="text-purple-400 font-bold flex items-center gap-2">
+                                <i data-lucide="ticket" class="w-5 h-5"></i> Kerberos Protocol
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                                The gold standard authentication protocol in Active Directory and Linux realms. Built around <strong>tickets</strong>, symmetric encryption, and the <strong>Key Distribution Center (KDC)</strong>.
+                            </p>
+                            <ul class="text-xs text-slate-300 space-y-1 list-disc pl-5 font-sans">
+                                <li><strong>Ticket Granting Ticket (TGT):</strong> Master electronic ID badge issued upon user login.</li>
+                                <li><strong>Service Tickets:</strong> Requested using the TGT to access specific resources (e.g., file servers).</li>
+                                <li><strong>Time Sensitivity:</strong> Enforces a maximum <strong class="text-white">5-minute clock skew</strong> between client and server to prevent replay attacks.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Federated Identity -->
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
+                        <div class="border-b border-slate-800 pb-3">
+                            <span class="text-[10px] font-mono uppercase text-amber-400 font-bold">Web Single Sign-On</span>
+                            <h4 class="text-sm font-bold text-white flex items-center gap-2 mt-1">
+                                <i data-lucide="globe" class="w-4 h-4 text-amber-400"></i> Federated Trust (IdP vs. SP)
+                            </h4>
+                            <p class="text-xs text-slate-400 font-sans mt-1">
+                                In modern web applications, federation links authentication across organizational boundaries (e.g., <em>"Sign up with Google"</em> or <em>"Sign in with Facebook"</em>).
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-sans">
+                            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 space-y-1">
+                                <strong class="text-sky-300">Identity Provider (IdP)</strong>
+                                <p class="text-slate-400">Maintains the user accounts and authenticates the subject (e.g., Google, Okta, Microsoft Entra ID).</p>
+                            </div>
+                            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 space-y-1">
+                                <strong class="text-emerald-300">Service Provider (SP)</strong>
+                                <p class="text-slate-400">Hosts the application or resource (e.g., SaaS app). It trusts the IdP and never sees the user's master password.</p>
+                            </div>
+                            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 space-y-1">
+                                <strong class="text-purple-300">Federation Protocols</strong>
+                                <div class="text-[11px] text-slate-300 font-mono space-y-0.5">
+                                    <div>• <strong>SAML:</strong> XML-based AuthN & AuthZ</div>
+                                    <div>• <strong>OpenID:</strong> Authentication</div>
+                                    <div>• <strong>OAuth 2.0:</strong> Authorization</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "5. Access Control Models, Implicit Deny & Least Privilege",
+                content: `
+                    <p class="text-slate-300 mb-6">Once authenticated, the operating system generates an <strong>Access Token</strong> (electronic ID badge). When accessing an object, the system checks the token against the object's <strong>Access Control List (ACL)</strong>.</p>
+
+                    <!-- Implicit Deny & The Mother Analogy -->
+                    <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-700 space-y-3 mb-8">
+                        <h4 class="text-amber-300 font-bold text-sm flex items-center gap-2">
+                            <i data-lucide="shield-x" class="w-4 h-4 text-amber-400"></i> The Implicit Deny Principle & The Mother Analogy
+                        </h4>
+                        <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                            An Access Control List has an <strong>Implicit Deny</strong>: if there is no explicit rule allowing access, access is denied.
+                        </p>
+                        <div class="p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs text-amber-200 italic font-sans">
+                            "My mom had an implicit deny. Once I went to the movies without getting her permission in advance. After the police left, we had a discussion: 'If I have not said yes, you should assume the answer is NO.' If an ACL has no rule granting access, nobody gets in."
+                        </div>
+                    </div>
+
+                    <!-- Least Privilege & Privilege Creep -->
+                    <div class="grid md:grid-cols-2 gap-6 mb-8 text-xs font-sans">
+                        <div class="p-4 rounded-xl bg-slate-900/40 border border-slate-700 space-y-2">
+                            <strong class="text-emerald-400 block font-bold text-sm">Principle of Least Privilege</strong>
+                            <p class="text-slate-300 leading-relaxed">
+                                Give users exactly what they need to execute their job—no more, no less.
+                            </p>
+                            <p class="text-slate-400 italic">
+                                "As a security administrator, your job is to take away as many rights as possible. It is the end user's job to cry and get them back. In the middle, they get exactly what they need."
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-900/40 border border-slate-700 space-y-2">
+                            <strong class="text-rose-400 block font-bold text-sm">Privilege Creep & Auditing</strong>
+                            <p class="text-slate-300 leading-relaxed">
+                                Over time, employees accumulate permissions as they transfer between projects and departments. Routine privilege audits must be conducted to revoke outdated access.
+                            </p>
+                            <p class="text-slate-400">
+                                <strong>Data Retention & Destruction:</strong> Retaining unneeded data "forever" creates legal liability. Securely destroy data when retention periods expire.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- The 5 Access Control Models Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-mono">
+                            <thead class="bg-slate-900 text-slate-300">
+                                <tr>
+                                    <th class="p-3">Model</th>
+                                    <th class="p-3 text-sky-400">Core Mechanism</th>
+                                    <th class="p-3 text-emerald-400">Enforcement Authority</th>
+                                    <th class="p-3 text-slate-400">Primary Real-World Use Case</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800 bg-slate-950 font-sans text-xs text-slate-300">
+                                <tr>
+                                    <td class="p-3 font-bold text-rose-300 font-mono">MAC<br><span class="text-[10px] text-slate-500 font-sans">Mandatory Access Control</span></td>
+                                    <td class="p-3">Security labels & classifications (Top Secret, Secret, Unclassified) matched against subject clearance levels.</td>
+                                    <td class="p-3 font-semibold text-rose-400">Operating System (No human discretion)</td>
+                                    <td class="p-3">Military, DoD, intelligence agencies, SELinux.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-amber-300 font-mono">DAC<br><span class="text-[10px] text-slate-500 font-sans">Discretionary Access Control</span></td>
+                                    <td class="p-3">Object owner has full discretion to assign Read/Write permissions on the ACL.</td>
+                                    <td class="p-3 font-semibold text-amber-400">Data Owner</td>
+                                    <td class="p-3">Standard Windows NTFS permissions, Linux file permissions (chmod).</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-blue-300 font-mono">RBAC<br><span class="text-[10px] text-slate-500 font-sans">Role-Based Access Control</span></td>
+                                    <td class="p-3">Permissions assigned to job functions (Roles), implemented via user groups (Marketing, Engineering).</td>
+                                    <td class="p-3 font-semibold text-blue-400">Directory Administrator</td>
+                                    <td class="p-3">Most common enterprise model (Active Directory groups, AWS IAM roles).</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-purple-300 font-mono">RuBAC<br><span class="text-[10px] text-slate-500 font-sans">Rule-Based Access Control</span></td>
+                                    <td class="p-3">Ordered rule set evaluated sequentially (First rule that matches wins; implicit deny at the end).</td>
+                                    <td class="p-3 font-semibold text-purple-400">Security Appliances</td>
+                                    <td class="p-3">Network firewalls, router ACLs, proxy rules.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-emerald-300 font-mono">ABAC<br><span class="text-[10px] text-slate-500 font-sans">Attribute-Based Access Control</span></td>
+                                    <td class="p-3">Dynamic attributes (department, time of day, device health, IP location) evaluated conditionally.</td>
+                                    <td class="p-3 font-semibold text-emerald-400">Policy Engine</td>
+                                    <td class="p-3">Next-Gen Zero Trust, Cloud IAM policies, Azure Conditional Access.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Interactive Access Control Model Decision Simulator -->
+                    <div class="mt-8 bg-slate-950/80 p-6 rounded-2xl border border-indigo-500/30 space-y-5">
+                        <div class="border-b border-slate-800 pb-3 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                            <div>
+                                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                                    <i data-lucide="sliders" class="w-5 h-5 text-indigo-400"></i>
+                                    Access Control Models Decision Simulator
+                                </h4>
+                                <p class="text-xs text-slate-400">See how identical access requests are evaluated under each access control model.</p>
+                            </div>
+                            <div class="text-[11px] font-mono text-slate-400 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
+                                Scenario: Alice accessing Production Core DB
+                            </div>
+                        </div>
+
+                        <!-- Request Scenario Details -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 text-[11px] font-mono p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-300">
+                            <div><span class="text-slate-500">Subject:</span> Alice (Dev)</div>
+                            <div><span class="text-slate-500">Clearance:</span> Secret</div>
+                            <div><span class="text-slate-500">Object:</span> Prod DB (Top Secret)</div>
+                            <div><span class="text-slate-500">Time/Location:</span> 23:30 / Home Wi-Fi</div>
+                        </div>
+
+                        <!-- Model Selector Buttons -->
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                            <button onclick="selectAccessModel(\'MAC\')" id="model-btn-MAC" class="model-sel-btn p-2.5 rounded-xl border border-rose-500/40 bg-rose-950/40 text-rose-300 text-xs font-bold transition-all text-center">
+                                MAC
+                            </button>
+                            <button onclick="selectAccessModel(\'DAC\')" id="model-btn-DAC" class="model-sel-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                DAC
+                            </button>
+                            <button onclick="selectAccessModel(\'RBAC\')" id="model-btn-RBAC" class="model-sel-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                RBAC
+                            </button>
+                            <button onclick="selectAccessModel(\'RuBAC\')" id="model-btn-RuBAC" class="model-sel-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                RuBAC
+                            </button>
+                            <button onclick="selectAccessModel(\'ABAC\')" id="model-btn-ABAC" class="model-sel-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                ABAC
+                            </button>
+                        </div>
+
+                        <!-- Decision Result Card -->
+                        <div id="model-decision-card" class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="text-xs font-mono uppercase text-slate-400">Enforcement Authority: <span id="model-authority" class="font-bold text-rose-400">Operating System Kernel</span></div>
+                                <div id="model-verdict-badge" class="px-3 py-1 rounded-md text-xs font-bold font-mono bg-rose-950/80 text-rose-400 border border-rose-500/40">
+                                    DENIED
+                                </div>
+                            </div>
+                            <p id="model-rationale" class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Alice holds 'Secret' clearance, but the database object is classified 'Top Secret'. The OS kernel unconditionally enforces mandatory classification labels. Zero human discretion allowed.
+                            </p>
+                        </div>
+                    </div>
+
+                `
+            }
+        ]
+    },
+
     vpn_basics: {
         title: "Virtual Private Networks (VPN)",
         icon: "shield-check",
@@ -421,6 +1698,7 @@ const contentData = {
             }
         ]
     },
+
     vpn_architectures: {
         title: "VPN Architectures & Routing",
         icon: "git-branch",
@@ -602,135 +1880,7 @@ const contentData = {
         ]
 
     },
-    firewalls_dmz_nat: {
-        title: "Firewalls, DMZ & Gateways",
-        icon: "shield",
-        intro: "Securing the network perimeter using Firewalls, Demilitarized Zones (DMZ), and Network Address Translation.",
-        sections: [
-            {
-                title: "1. Network Firewalls",
-                content: `
-                    <p class="text-slate-300 mb-6">Firewalls monitor and control incoming and outgoing network traffic based on predetermined security rules. They establish a barrier between a trusted network and an untrusted network.</p>
-                    <div class="grid md:grid-cols-2 gap-6 mb-8">
-                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
-                            <h4 class="text-amber-400 font-bold mb-2">Stateful vs Stateless</h4>
-                            <ul class="text-sm text-slate-400 space-y-2">
-                                <li><strong>Stateless:</strong> Examines each packet individually based purely on source/destination IPs and ports (e.g., standard Router ACLs). Fast but less secure.</li>
-                                <li><strong>Stateful:</strong> Tracks the operating state and characteristics of network connections. It remembers if a packet is part of an established connection.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
-                            <h4 class="text-emerald-400 font-bold mb-2">Advanced Firewalls</h4>
-                            <ul class="text-sm text-slate-400 space-y-2">
-                                <li><strong>NGFW (Next-Gen):</strong> Adds Application-layer (Layer 7) awareness, Deep Packet Inspection (DPI), and Intrusion Prevention Systems (IPS).</li>
-                                <li><strong>WAF (Web App Firewall):</strong> Specifically protects web applications by filtering HTTP/HTTPS traffic from exploits like SQL injection and XSS.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "2. The Demilitarized Zone (DMZ)",
-                content: `
-                    <p class="text-slate-300 mb-6">A <strong>DMZ</strong> (Demilitarized Zone) is a physical or logical subnetwork that contains and exposes an organization's external-facing services to an untrusted network (the Internet). The purpose of a DMZ is to add an additional layer of security to an organization's Local Area Network (LAN): an external attacker only has direct access to equipment in the DMZ, rather than the entire internal network.</p>
-                    
-                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 font-mono text-[10px] sm:text-xs overflow-hidden relative min-h-[300px]">
-                        
-                        <!-- Internet -->
-                        <div class="absolute left-4 top-1/2 -translate-y-1/2 flex flex-col items-center z-10">
-                            <i data-lucide="globe" class="w-8 h-8 text-slate-400 mb-2"></i>
-                            <div class="text-slate-400 font-bold">Internet</div>
-                        </div>
 
-                        <!-- Traffic Line In -->
-                        <div class="absolute left-16 top-1/2 -translate-y-1/2 w-16 h-1 bg-red-500/50"></div>
-
-                        <!-- External Firewall -->
-                        <div class="absolute left-32 top-1/2 -translate-y-1/2 flex flex-col items-center z-10">
-                            <div class="w-8 h-24 bg-red-900/80 border-2 border-red-500 rounded flex items-center justify-center mb-2 shadow-[0_0_15px_rgba(239,68,68,0.4)]">
-                                <i data-lucide="flame" class="w-5 h-5 text-red-400"></i>
-                            </div>
-                            <div class="text-red-400 font-bold text-center">External<br>Firewall</div>
-                        </div>
-
-                        <!-- Traffic Line DMZ -->
-                        <div class="absolute left-40 top-1/2 -translate-y-1/2 w-24 h-1 bg-amber-500/50"></div>
-
-                        <!-- DMZ Subnet -->
-                        <div class="absolute left-64 top-1/4 bottom-1/4 w-32 bg-amber-900/20 border-2 border-amber-500/50 border-dashed rounded-xl flex flex-col items-center justify-center z-0">
-                            <div class="absolute -top-6 text-amber-400 font-bold tracking-widest uppercase">DMZ</div>
-                            
-                            <div class="flex flex-col gap-4 z-10">
-                                <div class="bg-slate-800 px-3 py-2 rounded border border-slate-600 flex items-center gap-2">
-                                    <i data-lucide="server" class="w-4 h-4 text-amber-300"></i> Web Srv
-                                </div>
-                                <div class="bg-slate-800 px-3 py-2 rounded border border-slate-600 flex items-center gap-2">
-                                    <i data-lucide="mail" class="w-4 h-4 text-amber-300"></i> Mail Srv
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Traffic Line Internal -->
-                        <div class="absolute left-[24rem] top-1/2 -translate-y-1/2 w-24 h-1 bg-emerald-500/50"></div>
-
-                        <!-- Internal Firewall -->
-                        <div class="absolute left-[30rem] top-1/2 -translate-y-1/2 flex flex-col items-center z-10">
-                            <div class="w-8 h-24 bg-emerald-900/80 border-2 border-emerald-500 rounded flex items-center justify-center mb-2 shadow-[0_0_15px_rgba(16,185,129,0.4)]">
-                                <i data-lucide="shield" class="w-5 h-5 text-emerald-400"></i>
-                            </div>
-                            <div class="text-emerald-400 font-bold text-center">Internal<br>Firewall</div>
-                        </div>
-
-                        <!-- Traffic Line LAN -->
-                        <div class="absolute left-[32rem] right-16 top-1/2 -translate-y-1/2 h-1 bg-emerald-500/50"></div>
-
-                        <!-- Internal LAN -->
-                        <div class="absolute right-4 top-1/4 bottom-1/4 w-32 bg-emerald-900/20 border-2 border-emerald-500/50 border-dashed rounded-xl flex flex-col items-center justify-center z-0">
-                            <div class="absolute -top-6 text-emerald-400 font-bold tracking-widest uppercase">Internal LAN</div>
-                            
-                            <div class="flex flex-col gap-4 z-10">
-                                <div class="bg-slate-800 px-3 py-2 rounded border border-slate-600 flex items-center gap-2">
-                                    <i data-lucide="database" class="w-4 h-4 text-emerald-300"></i> DB Srv
-                                </div>
-                                <div class="bg-slate-800 px-3 py-2 rounded border border-slate-600 flex items-center gap-2">
-                                    <i data-lucide="users" class="w-4 h-4 text-emerald-300"></i> Staff PCs
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 info-box border-amber-500 bg-amber-500/5">
-                        <strong class="text-amber-400">Security Benefit</strong>
-                        <p class="text-sm">If an attacker breaches the Web Server in the DMZ, they still face the Internal Firewall before they can access sensitive databases or staff computers. The Web Server is isolated.</p>
-                    </div>
-                `
-            },
-            {
-                title: "3. NAT & Proxies",
-                content: `
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <h4 class="text-blue-400 font-bold mb-2">Network Address Translation</h4>
-                            <p class="text-sm text-slate-400 mb-4">NAT was designed to save IP space, but acts as a de facto security layer.</p>
-                            <ul class="text-sm text-slate-400 space-y-2 mb-6">
-                                <li><strong>SNAT (Source NAT / Masquerading):</strong> Rewrites the source IP of outgoing packets to the router's public IP. Internal topology is hidden from the internet.</li>
-                                <li><strong>DNAT (Destination NAT / Port Forwarding):</strong> Allows external users to hit a specific port on the router's public IP and be forwarded to a specific internal machine.</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="text-purple-400 font-bold mb-2">Proxies</h4>
-                            <p class="text-sm text-slate-400 mb-4">Proxies terminate connections on behalf of another machine.</p>
-                            <ul class="text-sm text-slate-400 space-y-2 mb-6">
-                                <li><strong>Forward Proxy:</strong> Sits in front of <em>clients</em>. It fetches internet resources for internal users, acting as a filter and cache.</li>
-                                <li><strong>Reverse Proxy:</strong> Sits in front of <em>servers</em>. It receives internet requests and distributes them to internal servers (Load Balancing, SSL Termination, WAF). E.g. Nginx, HAProxy.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            }
-        ]
-    }
-    ,
     core_principles: {
         title: "Core Security Principles",
         icon: "key",
@@ -796,6 +1946,7 @@ const contentData = {
             }
         ]
     },
+
     cloud_security: {
         title: "Cloud & Network Controls",
         icon: "cloud-lightning",
@@ -845,6 +1996,63 @@ const contentData = {
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Interactive Access Control Model Decision Simulator -->
+                    <div class="mt-8 bg-slate-950/80 p-6 rounded-2xl border border-indigo-500/30 space-y-5">
+                        <div class="border-b border-slate-800 pb-3 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                            <div>
+                                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                                    <i data-lucide="sliders" class="w-5 h-5 text-indigo-400"></i>
+                                    Access Control Models Decision Simulator
+                                </h4>
+                                <p class="text-xs text-slate-400">See how identical access requests are evaluated under each access control model.</p>
+                            </div>
+                            <div class="text-[11px] font-mono text-slate-400 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
+                                Scenario: Alice accessing Production Core DB
+                            </div>
+                        </div>
+
+                        <!-- Request Scenario Details -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 text-[11px] font-mono p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-300">
+                            <div><span class="text-slate-500">Subject:</span> Alice (Dev)</div>
+                            <div><span class="text-slate-500">Clearance:</span> Secret</div>
+                            <div><span class="text-slate-500">Object:</span> Prod DB (Top Secret)</div>
+                            <div><span class="text-slate-500">Time/Location:</span> 23:30 / Home Wi-Fi</div>
+                        </div>
+
+                        <!-- Model Selector Buttons -->
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                            <button onclick="selectAccessModel(\'MAC\')" id="model-btn-MAC" class="model-sel-btn p-2.5 rounded-xl border border-rose-500/40 bg-rose-950/40 text-rose-300 text-xs font-bold transition-all text-center">
+                                MAC
+                            </button>
+                            <button onclick="selectAccessModel(\'DAC\')" id="model-btn-DAC" class="model-sel-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                DAC
+                            </button>
+                            <button onclick="selectAccessModel(\'RBAC\')" id="model-btn-RBAC" class="model-sel-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                RBAC
+                            </button>
+                            <button onclick="selectAccessModel(\'RuBAC\')" id="model-btn-RuBAC" class="model-sel-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                RuBAC
+                            </button>
+                            <button onclick="selectAccessModel(\'ABAC\')" id="model-btn-ABAC" class="model-sel-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                ABAC
+                            </button>
+                        </div>
+
+                        <!-- Decision Result Card -->
+                        <div id="model-decision-card" class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="text-xs font-mono uppercase text-slate-400">Enforcement Authority: <span id="model-authority" class="font-bold text-rose-400">Operating System Kernel</span></div>
+                                <div id="model-verdict-badge" class="px-3 py-1 rounded-md text-xs font-bold font-mono bg-rose-950/80 text-rose-400 border border-rose-500/40">
+                                    DENIED
+                                </div>
+                            </div>
+                            <p id="model-rationale" class="text-xs text-slate-300 leading-relaxed font-sans">
+                                Alice holds 'Secret' clearance, but the database object is classified 'Top Secret'. The OS kernel unconditionally enforces mandatory classification labels. Zero human discretion allowed.
+                            </p>
+                        </div>
+                    </div>
+
                 `
             },
             {
@@ -866,106 +2074,7 @@ const contentData = {
             }
         ]
     },
-    firewalls_dmz_nat: {
-        title: "Firewalls, Proxies & NAT",
-        icon: "shield",
-        intro: "A deep dive into perimeter defense mechanisms and packet filtering.",
-        sections: [
-            {
-                title: "1. The Mechanics of a Stateful Firewall",
-                content: `
-                    <p class="text-slate-300 mb-4">Unlike basic routers which filter blindly based on IPs and Ports (stateless), a <strong>Stateful Firewall</strong> tracks the lifecycle of every network connection passing through it.</p>
-                    
-                    <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700 mb-6">
-                        <h4 class="text-amber-400 font-bold mb-3">The Connection Tracking Table (Conntrack)</h4>
-                        <p class="text-sm text-slate-400 mb-4">When a user initiates an HTTP request to a web server through a stateful firewall, the firewall creates an entry in its state table. It monitors the TCP handshake (SYN, SYN-ACK, ACK).</p>
-                        
-                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead class="text-slate-500 border-b border-slate-700">
-                                    <tr>
-                                        <th class="pb-2">Protocol</th>
-                                        <th class="pb-2">Source IP:Port</th>
-                                        <th class="pb-2">Dest IP:Port</th>
-                                        <th class="pb-2">State</th>
-                                        <th class="pb-2">Timeout</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-emerald-400">
-                                    <tr>
-                                        <td class="pt-2">TCP</td>
-                                        <td class="pt-2">192.168.1.50:54321</td>
-                                        <td class="pt-2">93.184.216.34:443</td>
-                                        <td class="pt-2">ESTABLISHED</td>
-                                        <td class="pt-2">432000s</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="pt-2 text-blue-400">UDP</td>
-                                        <td class="pt-2 text-blue-400">192.168.1.50:53</td>
-                                        <td class="pt-2 text-blue-400">8.8.8.8:53</td>
-                                        <td class="pt-2 text-blue-400">UNREPLIED</td>
-                                        <td class="pt-2 text-blue-400">30s</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <p class="text-sm text-slate-400 mt-4">Because the firewall <em>knows</em> the connection is "ESTABLISHED", it automatically allows the inbound HTTP response from the server back to the user without needing an explicit inbound rule. It also tracks Sequence numbers to prevent TCP hijacking.</p>
-                    </div>
-                `
-            },
-            {
-                title: "2. Forward vs Reverse Proxies",
-                content: `
-                    <p class="text-slate-300 mb-4">A proxy is a server that acts as an intermediary for requests from clients seeking resources from other servers.</p>
-                    
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
-                            <h4 class="text-purple-400 font-bold mb-3 flex items-center gap-2"><i data-lucide="arrow-right-circle" class="w-5 h-5"></i> Forward Proxy</h4>
-                            <p class="text-sm text-slate-400 mb-4">Protects the <strong>Client</strong>. It sits inside a corporate network and fetches internet resources on behalf of internal users.</p>
-                            <ul class="text-sm text-slate-400 space-y-2">
-                                <li><strong>Anonymity:</strong> The internet only sees the IP of the proxy, not the internal user.</li>
-                                <li><strong>Content Filtering:</strong> The proxy can block access to malicious or non-work-related websites.</li>
-                                <li><strong>Caching:</strong> If 100 users request the same file, the proxy downloads it once and serves it locally 99 times.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
-                            <h4 class="text-rose-400 font-bold mb-3 flex items-center gap-2"><i data-lucide="arrow-left-circle" class="w-5 h-5"></i> Reverse Proxy (e.g., Nginx)</h4>
-                            <p class="text-sm text-slate-400 mb-4">Protects the <strong>Server</strong>. It sits in front of backend web servers and handles all incoming internet traffic.</p>
-                            <ul class="text-sm text-slate-400 space-y-2">
-                                <li><strong>SSL Termination:</strong> The proxy handles the heavy math of decrypting HTTPS traffic, then forwards unencrypted HTTP traffic to backend servers, saving their CPU.</li>
-                                <li><strong>Load Balancing:</strong> Distributes incoming traffic across dozens of backend servers.</li>
-                                <li><strong>WAF:</strong> Can inspect the decrypted HTTP payload for SQL injection before passing it to the backend.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "3. Network Address Translation (NAT)",
-                content: `
-                    <p class="text-slate-300 mb-6">Network Address Translation is the process where a network device, usually a firewall or router, assigns a public address to a computer (or group of computers) inside a private network. Its primary purpose historically was to slow the depletion of IPv4 addresses, but it inherently adds a layer of security by hiding internal network structures.</p>
-                    <div class="grid md:grid-cols-2 gap-6 mb-8">
-                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
-                            <h4 class="text-amber-400 font-bold mb-2">SNAT (Source NAT)</h4>
-                            <p class="text-sm text-slate-400 mb-2">Changes the <strong>Source IP</strong> of outbound packets.</p>
-                            <p class="text-xs text-slate-500 mb-2"><strong>Use Case:</strong> When 100 employees in an office browse the internet, their internal IPs (10.x.x.x) are stripped by the router and replaced with a single Public IP assigned by the ISP. The internet only sees the router.</p>
-                            <div class="mt-4 bg-slate-950 p-2 rounded border border-slate-800 text-[10px] font-mono text-emerald-400">
-                                10.0.1.50:4592 -> [Router SNAT] -> 203.0.113.1:14592
-                            </div>
-                        </div>
-                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
-                            <h4 class="text-emerald-400 font-bold mb-2">DNAT (Destination NAT)</h4>
-                            <p class="text-sm text-slate-400 mb-2">Changes the <strong>Destination IP</strong> of inbound packets. Often called "Port Forwarding".</p>
-                            <p class="text-xs text-slate-500 mb-2"><strong>Use Case:</strong> When a user on the internet wants to hit your internal Web Server. They hit your public IP on port 443, and the router translates that destination to the internal 10.x.x.x IP.</p>
-                            <div class="mt-4 bg-slate-950 p-2 rounded border border-slate-800 text-[10px] font-mono text-blue-400">
-                                User -> 203.0.113.1:443 -> [Router DNAT] -> 10.0.1.80:443
-                            </div>
-                        </div>
-                    </div>
-                `
-            }
-        ]
-    },
+
     security_protocols: {
         title: "Cryptographic Protocols",
         icon: "lock",
@@ -1025,49 +2134,7 @@ const contentData = {
             }
         ]
     },
-    ids_monitoring: {
-        title: "Intrusion & Monitoring",
-        icon: "radar",
-        intro: "Visibility is the key to defense. Understanding how to detect, prevent, and log anomalous network activity.",
-        sections: [
-            {
-                title: "1. IDS vs IPS Methodology",
-                content: `
-                    <p class="text-slate-300 mb-6">Firewalls evaluate headers (IPs/Ports). Intrusion systems (IDS/IPS) perform <strong>Deep Packet Inspection (DPI)</strong>, analyzing the actual payload of the traffic.</p>
-                    
-                    <div class="grid md:grid-cols-2 gap-6 mb-6">
-                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
-                            <h4 class="text-blue-400 font-bold mb-2">Signature-Based Detection</h4>
-                            <p class="text-sm text-slate-400 mb-2">Operates like antivirus software. It maintains a massive database of known attack signatures (specific byte sequences of malware, exploit payloads, or SQL injection strings).</p>
-                            <p class="text-sm text-slate-500 mt-2"><strong>Pros:</strong> Fast, highly accurate, low false positives.<br><strong>Cons:</strong> Completely blind to "Zero-Day" attacks that have no known signature yet.</p>
-                        </div>
-                        <div class="bg-slate-900/40 p-6 rounded-xl border border-slate-700">
-                            <h4 class="text-purple-400 font-bold mb-2">Anomaly-Based Detection</h4>
-                            <p class="text-sm text-slate-400 mb-2">Uses Machine Learning to establish a baseline of "normal" network behavior over weeks (e.g., bandwidth usage, protocol ratios). It alerts on statistical deviations.</p>
-                            <p class="text-sm text-slate-500 mt-2"><strong>Pros:</strong> Can catch brand new Zero-Day exploits and insider threats.<br><strong>Cons:</strong> Computationally heavy, high rate of false positives if network behavior changes legitimately.</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "2. SIEM & Log Correlation",
-                content: `
-                    <h4 class="text-emerald-400 font-bold mb-2">Security Information and Event Management (SIEM)</h4>
-                    <p class="text-sm text-slate-400 mb-4">A SIEM (e.g., Splunk, Elastic Security) is a massive data pipeline that centralizes logs from across the entire infrastructure to detect complex attacks that a single firewall would miss.</p>
-                    
-                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800">
-                        <h5 class="text-slate-300 font-bold mb-3">The SIEM Pipeline:</h5>
-                        <ul class="text-sm text-slate-400 space-y-3 list-decimal pl-5">
-                            <li><strong>Ingestion:</strong> Agents (like Filebeat/Fluentd) installed on servers and firewalls stream logs to the central SIEM.</li>
-                            <li><strong>Parsing & Normalization:</strong> The SIEM parses raw logs (using Grok/Regex) into standardized JSON. A Windows logon event and a Linux SSH event are mapped to the same generic "authentication_success" field.</li>
-                            <li><strong>Correlation Rules:</strong> The security team writes rules. For example: <em>"If a user fails login 5 times on the VPN, and then successfully logs in, and then immediately accesses a high-value database within 2 minutes -> Generate Critical Alert."</em></li>
-                            <li><strong>SOAR (Orchestration):</strong> Modern SIEMs can automatically trigger a script to block the attacker's IP on the firewall without human intervention.</li>
-                        </ul>
-                    </div>
-                `
-            }
-        ]
-    },
+
     devsecops: {
         title: "DevSecOps Pipeline",
         icon: "refresh-cw",
@@ -1120,15 +2187,600 @@ const contentData = {
                 `
             }
         ]
+    },
+    wireless_security: {
+        title: "Wireless Security, WPA3 & AAA",
+        icon: "wifi",
+        intro: "Securing radio frequency (RF) networks, 802.11 Wi-Fi encryption evolution (WEP to WPA3), WPA-Enterprise 802.1X, and centralized AAA (RADIUS/TACACS+) architectures.",
+        sections: [
+            {
+                title: "1. Open Wi-Fi, Hotspots & Captive Portals",
+                content: `
+                    <p class="text-slate-300 mb-6">Wireless networks transmit data using unguided radio frequency (RF) waves instead of physical copper or fiber cables. Because RF signals propagate omnidirectionally through the air, anyone in physical proximity can capture raw frames if encryption is absent.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-4">
+                            <h4 class="text-amber-400 font-bold flex items-center gap-2">
+                                <i data-lucide="radio" class="w-5 h-5"></i> Open Wi-Fi &amp; Public Hotspots
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Public networks in coffee shops, hotels, and airports operate with <strong>zero Layer-2 encryption</strong>. Every frame transmitted between the client device and the Wireless Access Point (WAP) is broadcast in plaintext.
+                            </p>
+                            <div class="p-3 bg-rose-950/40 rounded-lg border border-rose-500/30 text-xs text-rose-300 space-y-1">
+                                <div><strong>⚠️ Threat Vector:</strong> An adversary using a wireless packet sniffer (e.g., Wireshark or <code>airodump-ng</code>) can intercept unencrypted HTTP sessions, DNS queries, and session cookies.</div>
+                                <div><strong>🛡️ Mandatory Defense:</strong> Always tunnel traffic through an encrypted <strong>VPN (Virtual Private Network)</strong> when connecting to open Wi-Fi. The VPN encapsulates all IP traffic in an AES/ChaCha20 encrypted tunnel, rendering intercepted RF packets unreadable.</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-4">
+                            <h4 class="text-sky-400 font-bold flex items-center gap-2">
+                                <i data-lucide="external-link" class="w-5 h-5"></i> Captive Portals &amp; Legal Liability
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                A <strong>Captive Portal</strong> is a web gateway that intercepts HTTP/DNS traffic upon initial association and forces the user to view an authentication or landing page before granting outbound network routing.
+                            </p>
+                            <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-400 space-y-2">
+                                <div class="flex items-start gap-2">
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+                                    <div><strong>Terms of Service (TOS) Acceptance:</strong> Mandates the user accept an Acceptable Use Policy (AUP) to shield the organization from legal liability for illegal guest activities.</div>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
+                                    <div><strong>No Security Guarantee:</strong> A captive portal <em>does not encrypt wireless RF transmissions</em>. Once authenticated, data is still broadcast in the clear unless underlying WPA encryption is active.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "2. The Evolution of Wi-Fi Encryption (WEP to WPA3)",
+                content: `
+                    <p class="text-slate-300 mb-6">Over three decades, Wi-Fi security evolved through four major cryptographic generations to overcome protocol design flaws, collision vulnerabilities, and brute-force attacks.</p>
+
+                    <!-- Interactive Protocol Analyzer -->
+                    <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-700 mb-8 shadow-xl">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-5 mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                    <i data-lucide="lock" class="w-5 h-5 text-indigo-400"></i>
+                                    Interactive 802.11 Encryption Protocol Analyzer
+                                </h3>
+                                <p class="text-xs text-slate-400 mt-1">Select a wireless cryptographic standard to inspect its cipher, handshake mechanics, and vulnerability profile:</p>
+                            </div>
+                            <span class="text-xs font-mono text-indigo-400 bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-500/30">Cryptographic Inspector</span>
+                        </div>
+
+                        <!-- Protocol Buttons -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                            <button onclick="selectWifiProto('WEP')" id="btn-proto-WEP" class="proto-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                WEP (1997)
+                                <span class="block text-[10px] text-rose-400 font-normal mt-0.5">Broken / Insecure</span>
+                            </button>
+                            <button onclick="selectWifiProto('WPA')" id="btn-proto-WPA" class="proto-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                WPA (2003)
+                                <span class="block text-[10px] text-amber-400 font-normal mt-0.5">Deprecated Stopgap</span>
+                            </button>
+                            <button onclick="selectWifiProto('WPA2')" id="btn-proto-WPA2" class="proto-btn p-3 rounded-xl border border-blue-500/50 bg-blue-950/40 text-blue-300 text-xs font-bold transition-all text-center">
+                                WPA2 (2004)
+                                <span class="block text-[10px] text-emerald-400 font-normal mt-0.5">AES Baseline</span>
+                            </button>
+                            <button onclick="selectWifiProto('WPA3')" id="btn-proto-WPA3" class="proto-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center">
+                                WPA3 (2018)
+                                <span class="block text-[10px] text-sky-400 font-normal mt-0.5">Modern Standard</span>
+                            </button>
+                        </div>
+
+                        <!-- Inspector Dashboard -->
+                        <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-5">
+                            <div class="flex items-center justify-between flex-wrap gap-3 border-b border-slate-800/80 pb-4">
+                                <div>
+                                    <span class="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-1">Standard &amp; Rating</span>
+                                    <h4 id="proto-name" class="text-xl font-bold text-white">WPA2 (IEEE 802.11i)</h4>
+                                </div>
+                                <span id="proto-badge" class="px-3 py-1 rounded-md text-xs font-bold font-mono border bg-emerald-950/80 text-emerald-300 border-emerald-500/40">INDUSTRY STANDARD BASELINE</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800">
+                                    <span class="text-[11px] text-slate-500 uppercase tracking-wider font-bold block mb-1">Cipher &amp; Key Length</span>
+                                    <div id="proto-cipher" class="text-sm font-bold text-slate-200">AES (128-bit)</div>
+                                </div>
+                                <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800">
+                                    <span class="text-[11px] text-slate-500 uppercase tracking-wider font-bold block mb-1">Integrity Protocol</span>
+                                    <div id="proto-integrity" class="text-sm font-bold text-slate-200">CCMP (CBC-MAC)</div>
+                                </div>
+                                <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800">
+                                    <span class="text-[11px] text-slate-500 uppercase tracking-wider font-bold block mb-1">Authentication Handshake</span>
+                                    <div id="proto-handshake" class="text-sm font-bold text-slate-200">4-Way EAPOL Handshake (PSK)</div>
+                                </div>
+                            </div>
+
+                            <div class="p-4 bg-slate-900/40 rounded-lg border border-slate-800 text-xs text-slate-300 space-y-2">
+                                <div class="text-indigo-400 font-bold uppercase tracking-wider text-[11px]">Architectural Analysis &amp; Vulnerability Profile:</div>
+                                <p id="proto-analysis" class="leading-relaxed text-slate-300">
+                                    WPA2 replaced the flawed RC4 cipher with the Advanced Encryption Standard (AES) utilizing CCMP (Counter Mode with Cipher Block Chaining Message Authentication Code Protocol). It provides robust symmetric encryption and tamper resistance. However, WPA2-PSK is susceptible to offline dictionary attacks if an attacker captures the 4-way handshake, and it lacks Perfect Forward Secrecy unless upgraded.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "3. Wi-Fi Authentication: Personal (PSK) vs. Enterprise (802.1X)",
+                content: `
+                    <p class="text-slate-300 mb-6">Regardless of whether you run WPA2 or WPA3, wireless networks operate in one of two fundamental authentication modes: <strong>Personal</strong> or <strong>Enterprise</strong>.</p>
+
+                    <!-- Interactive Mode Toggle -->
+                    <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-700 mb-8 shadow-xl">
+                        <div class="flex items-center justify-between flex-wrap gap-4 border-b border-slate-800 pb-4 mb-6">
+                            <div>
+                                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                                    <i data-lucide="layers" class="w-5 h-5 text-emerald-400"></i>
+                                    Interactive Authentication Flow Simulator
+                                </h4>
+                                <p class="text-xs text-slate-400 mt-1">Toggle between Home PSK and Enterprise 802.1X to observe the architectural differences:</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="selectWifiAuthMode('personal')" id="btn-auth-personal" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-emerald-500/50 bg-emerald-950/40 text-emerald-300 transition-all">
+                                    Personal (WPA-PSK)
+                                </button>
+                                <button onclick="selectWifiAuthMode('enterprise')" id="btn-auth-enterprise" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-800 bg-slate-900 text-slate-400 transition-all">
+                                    Enterprise (802.1X / RADIUS)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="auth-flow-container" class="bg-slate-950 p-6 rounded-xl border border-slate-800 font-mono text-xs space-y-4">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <h4 class="text-emerald-400 font-bold flex items-center gap-2">
+                                <i data-lucide="home" class="w-5 h-5"></i> Personal Mode (WPA-PSK)
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Designed for Home and SOHO environments. A single Pre-Shared Key (passphrase) is manually configured on the wireless router and entered on all connecting client devices.
+                            </p>
+                            <ul class="text-xs text-slate-400 space-y-1.5 list-disc list-inside">
+                                <li><strong>Low Complexity:</strong> No external directory or authentication server required.</li>
+                                <li><strong>Zero Accountability:</strong> All clients share the exact same key. You cannot determine which individual performed an action.</li>
+                                <li><strong>Revocation Nightmare:</strong> If an employee leaves or a passphrase is compromised, the key must be manually changed on <em>every single device</em> in the building.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-3">
+                            <h4 class="text-sky-400 font-bold flex items-center gap-2">
+                                <i data-lucide="building" class="w-5 h-5"></i> Enterprise Mode (802.1X / WPA-Enterprise)
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Built for corporate enterprises and universities. Employs IEEE 802.1X Port-Based Network Access Control (PNAC) combined with an external AAA server (such as RADIUS).
+                            </p>
+                            <ul class="text-xs text-slate-400 space-y-1.5 list-disc list-inside">
+                                <li><strong>The 3 Roles:</strong> <em>Supplicant</em> (Client device), <em>Authenticator</em> (Wireless AP), and <em>Authentication Server</em> (RADIUS).</li>
+                                <li><strong>Individual Accountability:</strong> Every user enters their unique directory credentials (LDAP/Active Directory) or uses an individual X.509 client certificate.</li>
+                                <li><strong>Dynamic Encryption Keys:</strong> The RADIUS server generates unique ephemeral Pairwise Master Keys (PMK) for each session, preventing clients from decrypting each other's over-the-air traffic.</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "4. Centralized AAA Framework: RADIUS vs. TACACS+",
+                content: `
+                    <p class="text-slate-300 mb-6">In modern enterprise architectures, network devices (WAPs, VPN concentrators, core switches) do not store local user databases. Instead, they offload access governance to a centralized <strong>AAA (Authentication, Authorization, and Accounting)</strong> server.</p>
+
+                    <div class="grid md:grid-cols-3 gap-4 mb-8">
+                        <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700">
+                            <h4 class="text-blue-400 font-bold text-sm mb-2 flex items-center gap-2">
+                                <i data-lucide="user-check" class="w-4 h-4"></i> 1. Authentication (AuthN)
+                            </h4>
+                            <p class="text-xs text-slate-400"><em>"Who are you?"</em> Verifies the identity of the user or device using credentials, MFA tokens, or digital certificates.</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700">
+                            <h4 class="text-emerald-400 font-bold text-sm mb-2 flex items-center gap-2">
+                                <i data-lucide="shield-check" class="w-4 h-4"></i> 2. Authorization (AuthZ)
+                            </h4>
+                            <p class="text-xs text-slate-400"><em>"What are you permitted to do?"</em> Assigns dynamic VLANs, ACL policies, and firewall rules to the user's connection profile.</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-5 rounded-xl border border-slate-700">
+                            <h4 class="text-amber-400 font-bold text-sm mb-2 flex items-center gap-2">
+                                <i data-lucide="clipboard-list" class="w-4 h-4"></i> 3. Accounting (Acct)
+                            </h4>
+                            <p class="text-xs text-slate-400"><em>"What did you do and for how long?"</em> Records connection timestamps, session duration, and data transfer volumes for compliance auditing.</p>
+                        </div>
+                    </div>
+
+                    <!-- Comparison Table -->
+                    <div class="overflow-x-auto mb-8">
+                        <table class="w-full text-xs text-left border border-slate-800 rounded-xl overflow-hidden">
+                            <thead class="bg-slate-900 text-slate-300 font-mono uppercase text-[11px] border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3.5">Feature</th>
+                                    <th class="p-3.5 text-sky-400">RADIUS (Remote Authentication Dial-In)</th>
+                                    <th class="p-3.5 text-purple-400">TACACS+ (Terminal Access Control)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/80 bg-slate-950/60 text-slate-300 font-sans">
+                                <tr>
+                                    <td class="p-3.5 font-bold text-white">Standard / Origin</td>
+                                    <td class="p-3.5">Open IETF Standard (RFC 2865 / 2866)</td>
+                                    <td class="p-3.5">Cisco Proprietary (RFC 8907)</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3.5 font-bold text-white">Transport Protocol &amp; Port</td>
+                                    <td class="p-3.5 font-mono text-sky-400">UDP Ports 1812 (AuthN/AuthZ) &amp; 1813 (Acct)</td>
+                                    <td class="p-3.5 font-mono text-purple-400">TCP Port 49 (Reliable connection-oriented)</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3.5 font-bold text-white">AuthN / AuthZ Separation</td>
+                                    <td class="p-3.5">Combines Authentication &amp; Authorization in a single packet flow.</td>
+                                    <td class="p-3.5">Completely <strong>separates AuthN, AuthZ, and Accounting</strong> into independent transactions.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3.5 font-bold text-white">Packet Encryption</td>
+                                    <td class="p-3.5 text-amber-300">Encrypts <em>only the password field</em> in the packet; packet headers and attributes remain plaintext.</td>
+                                    <td class="p-3.5 text-emerald-400">Encrypts the <strong>entire payload body</strong> (everything except the TACACS header).</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3.5 font-bold text-white">Primary Use Case</td>
+                                    <td class="p-3.5">802.1X Wireless Networks, VPN Concentrators, 802.1X Ethernet Switch Ports.</td>
+                                    <td class="p-3.5">Device Administration (CLI router/switch command-by-command authorization).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `
+            },
+            {
+                title: "5. Physical RF Containment, Transmit Power Tuning & Antenna Engineering",
+                content: `
+                    <p class="text-slate-300 mb-6">Network security must address the physical layer. Unlike wired networks bounded by drywall and conduits, unguided radio waves freely penetrate standard office walls, windows, and perimeter fences.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-4">
+                            <h4 class="text-rose-400 font-bold flex items-center gap-2">
+                                <i data-lucide="signal-high" class="w-5 h-5"></i> Transmit Power (Tx) &amp; Perimeter Bleed
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Network engineers often crank access point transmission power to 100% to ensure coverage. However, from a <strong>security engineering perspective</strong>, excess transmit power causes wireless signals to bleed into parking lots, public sidewalks, and adjacent corporate tenant suites.
+                            </p>
+                            <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-400 space-y-2">
+                                <div>• <strong>Wardriving &amp; Eavesdropping:</strong> Attackers park outside in vehicles with high-gain antennas to silently capture handshakes without triggering physical security alarms.</div>
+                                <div>• <strong>Power Containment Solution:</strong> Reduce AP Equivalent Isotropically Radiated Power (EIRP) so signal strength reaches the edge of physical exterior walls (-75 dBm threshold) without spilling beyond the building boundary.</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 space-y-4">
+                            <h4 class="text-indigo-400 font-bold flex items-center gap-2">
+                                <i data-lucide="radio" class="w-5 h-5"></i> Omnidirectional vs. Directional Antennas
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Antenna selection dictates the geometric radiation pattern of radio energy:
+                            </p>
+                            <div class="space-y-3 text-xs">
+                                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                                    <div class="text-blue-400 font-bold mb-1 flex items-center gap-1.5">
+                                        <i data-lucide="circle-dot" class="w-3.5 h-3.5"></i> Omnidirectional (Dipole)
+                                    </div>
+                                    <div class="text-slate-400">Radiates RF energy in a 360-degree doughnut pattern. Optimal for central ceiling mounts providing indoor floor coverage, but spills signal equally in all directions.</div>
+                                </div>
+                                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                                    <div class="text-emerald-400 font-bold mb-1 flex items-center gap-1.5">
+                                        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Directional (Yagi / Patch / Parabolic)
+                                    </div>
+                                    <div class="text-slate-400">Focuses RF energy into a concentrated, high-gain narrow beam. Ideal for bridging connections between campus buildings or pointing down narrow corridors without leaking into external spaces.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ]
     }
-    
 };
 
         const navTabs = document.getElementById('nav-tabs');
         const contentContainer = document.getElementById('content-container');
-        let activeTab = 'vpn_basics';
+        let activeTab = 'defense_in_depth';
 
-        function renderTabs() {
+        
+        // --- Interactive MFA Simulator Logic ---
+        let selectedMfaCredentials = {};
+
+        function toggleMfaItem(id, factor, btn) {
+            if (selectedMfaCredentials[id]) {
+                delete selectedMfaCredentials[id];
+                btn.classList.remove('border-blue-500', 'bg-blue-600/20', 'text-white');
+                btn.classList.add('border-slate-800', 'bg-slate-900', 'text-slate-300');
+            } else {
+                selectedMfaCredentials[id] = factor;
+                btn.classList.remove('border-slate-800', 'bg-slate-900', 'text-slate-300');
+                btn.classList.add('border-blue-500', 'bg-blue-600/20', 'text-white');
+            }
+            updateMfaDashboard();
+        }
+
+        function resetMfaSimulator() {
+            selectedMfaCredentials = {};
+            document.querySelectorAll('.mfa-btn').forEach(btn => {
+                btn.classList.remove('border-blue-500', 'bg-blue-600/20', 'text-white');
+                btn.classList.add('border-slate-800', 'bg-slate-900', 'text-slate-300');
+            });
+            updateMfaDashboard();
+        }
+
+        function updateMfaDashboard() {
+            const countEl = document.getElementById('mfa-item-count');
+            const catCountEl = document.getElementById('mfa-category-count');
+            const titleEl = document.getElementById('mfa-verdict-title');
+            const descEl = document.getElementById('mfa-verdict-desc');
+            const badgeEl = document.getElementById('mfa-badge');
+
+            if (!countEl || !catCountEl || !titleEl || !descEl || !badgeEl) return;
+
+            const items = Object.keys(selectedMfaCredentials);
+            const categories = new Set(Object.values(selectedMfaCredentials));
+            countEl.textContent = items.length;
+            catCountEl.textContent = categories.size;
+
+            if (items.length === 0) {
+                titleEl.textContent = "Select credentials above to evaluate authentication level";
+                titleEl.className = "text-sm font-bold text-slate-400";
+                descEl.textContent = "True MFA mandates credentials from at least 2 distinct factor categories.";
+                badgeEl.textContent = "Awaiting Selection";
+                badgeEl.className = "px-4 py-2 rounded-lg font-mono text-xs font-bold uppercase tracking-wider bg-slate-800 text-slate-400 border border-slate-700 shrink-0";
+            } else if (categories.size === 1) {
+                titleEl.textContent = "⚠️ Single-Factor Authentication (SFA)";
+                titleEl.className = "text-sm font-bold text-amber-400";
+                descEl.textContent = `Even with ${items.length} credential(s), all belong to the SAME factor category. Vulnerable to credential stuffing or single attack vectors!`;
+                badgeEl.textContent = "Single Factor (Weak)";
+                badgeEl.className = "px-4 py-2 rounded-lg font-mono text-xs font-bold uppercase tracking-wider bg-amber-950/80 text-amber-300 border border-amber-500/40 shrink-0";
+            } else if (categories.size === 2) {
+                titleEl.textContent = "🛡️ True Two-Factor Authentication (2FA)";
+                titleEl.className = "text-sm font-bold text-emerald-400";
+                descEl.textContent = "Strong defense! An attacker must compromise two completely independent physical and informational attack vectors.";
+                badgeEl.textContent = "2-Factor Validated (Strong)";
+                badgeEl.className = "px-4 py-2 rounded-lg font-mono text-xs font-bold uppercase tracking-wider bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 shrink-0";
+            } else {
+                titleEl.textContent = "💎 Multi-Factor Authentication (MFA / 3+ Factors)";
+                titleEl.className = "text-sm font-bold text-sky-400";
+                descEl.textContent = `Enterprise military-grade defense spanning ${categories.size} distinct physical, biological, and environmental vectors!`;
+                badgeEl.textContent = `${categories.size}-Factor Elite (Maximum)`;
+                badgeEl.className = "px-4 py-2 rounded-lg font-mono text-xs font-bold uppercase tracking-wider bg-sky-950/80 text-sky-300 border border-sky-500/40 shrink-0";
+            }
+        }
+
+        // --- Interactive Access Control Model Simulator Logic ---
+        const accessModelData = {
+            MAC: {
+                authority: "Operating System Kernel",
+                status: "DENIED",
+                statusClass: "bg-rose-950/80 text-rose-400 border-rose-500/40",
+                colorClass: "text-rose-400",
+                btnClass: "border-rose-500/40 bg-rose-950/40 text-rose-300",
+                rationale: "Alice holds 'Secret' clearance, but the database object is classified 'Top Secret'. The OS kernel unconditionally enforces mandatory classification labels. Zero human discretion allowed."
+            },
+            DAC: {
+                authority: "Data Owner (Lead Architect)",
+                status: "CONDITIONAL / GRANTED BY OWNER",
+                statusClass: "bg-amber-950/80 text-amber-300 border-amber-500/40",
+                colorClass: "text-amber-400",
+                btnClass: "border-amber-500/40 bg-amber-950/40 text-amber-300",
+                rationale: "Access is determined entirely at the discretion of the data owner. If the Lead Architect added Alice to the DAC permissions list, access is granted regardless of clearance or time."
+            },
+            RBAC: {
+                authority: "Directory Role Administrator (AD / IAM)",
+                status: "DENIED",
+                statusClass: "bg-rose-950/80 text-rose-400 border-rose-500/40",
+                colorClass: "text-rose-400",
+                btnClass: "border-blue-500/40 bg-blue-950/40 text-blue-300",
+                rationale: "Alice belongs to group 'Junior-Developers'. Production database access is bound exclusively to the 'Site-Reliability-Engineers' group role."
+            },
+            RuBAC: {
+                authority: "Firewall / Gateway Rules Engine",
+                status: "DENIED",
+                statusClass: "bg-rose-950/80 text-rose-400 border-rose-500/40",
+                colorClass: "text-rose-400",
+                btnClass: "border-purple-500/40 bg-purple-950/40 text-purple-300",
+                rationale: "The perimeter gateway rule enforces access only during authorized maintenance windows (Mon-Fri 08:00-18:00). Current request time (23:30) triggers implicit deny."
+            },
+            ABAC: {
+                authority: "Zero Trust Policy Decision Point (PDP)",
+                status: "DENIED",
+                statusClass: "bg-rose-950/80 text-rose-400 border-rose-500/40",
+                colorClass: "text-rose-400",
+                btnClass: "border-emerald-500/40 bg-emerald-950/40 text-emerald-300",
+                rationale: "Policy requires: [User: Dev AND Device: Managed-Encrypted AND Connection: Corp-VPN AND Time: Business-Hours]. Failed 2 environmental attributes (Home Wi-Fi + 23:30)."
+            }
+        };
+
+        function selectAccessModel(model) {
+            const data = accessModelData[model];
+            if (!data) return;
+
+            document.querySelectorAll('.model-sel-btn').forEach(btn => {
+                btn.className = "model-sel-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center";
+            });
+
+            const activeBtn = document.getElementById(`model-btn-${model}`);
+            if (activeBtn) {
+                activeBtn.className = `model-sel-btn p-2.5 rounded-xl border text-xs font-bold transition-all text-center ${data.btnClass}`;
+            }
+
+            const authEl = document.getElementById('model-authority');
+            const badgeEl = document.getElementById('model-verdict-badge');
+            const ratEl = document.getElementById('model-rationale');
+
+            if (authEl) {
+                authEl.textContent = data.authority;
+                authEl.className = `font-bold ${data.colorClass}`;
+            }
+            if (badgeEl) {
+                badgeEl.textContent = data.status;
+                badgeEl.className = `px-3 py-1 rounded-md text-xs font-bold font-mono border ${data.statusClass}`;
+            }
+            if (ratEl) {
+                ratEl.textContent = data.rationale;
+            }
+        }
+
+        
+        // --- Interactive Wi-Fi Protocol Analyzer Logic ---
+        const wifiProtoData = {
+            WEP: {
+                name: "WEP (Wired Equivalent Privacy - 1997)",
+                status: "CRITICALLY BROKEN / NEVER USE",
+                statusClass: "bg-rose-950/80 text-rose-400 border-rose-500/40",
+                btnClass: "border-rose-500/50 bg-rose-950/40 text-rose-300",
+                cipher: "RC4 Stream Cipher (40-bit or 104-bit)",
+                integrity: "CRC-32 (Cyclic Redundancy Check - Linear)",
+                handshake: "Open or Shared Key Authentication (Challenge-Response)",
+                analysis: "WEP was cracked almost immediately due to catastrophic design flaws. It reused a short 24-bit Initialization Vector (IV) in plaintext. In busy networks, IV collisions occur within minutes. Tools like aircrack-ng reconstruct the master encryption key from captured IVs in under 60 seconds. In modern networks, WEP is strictly forbidden."
+            },
+            WPA: {
+                name: "WPA (Wi-Fi Protected Access - 2003)",
+                status: "DEPRECATED STOPGAP",
+                statusClass: "bg-amber-950/80 text-amber-300 border-amber-500/40",
+                btnClass: "border-amber-500/50 bg-amber-950/40 text-amber-300",
+                cipher: "RC4 with TKIP (128-bit dynamic per-packet key)",
+                integrity: "Michael Algorithm (64-bit MIC)",
+                handshake: "4-Way EAPOL Handshake (PSK)",
+                analysis: "Created as an emergency stopgap that could run as a firmware update on existing WEP hardware. Introduced TKIP (Temporal Key Integrity Protocol) to dynamically mix keys and prevent IV reuse. However, TKIP is computationally weak, Michael algorithm is vulnerable to Beck-Tews attacks, and modern 802.11 standards explicitly deprecate WPA/TKIP."
+            },
+            WPA2: {
+                name: "WPA2 (IEEE 802.11i - 2004)",
+                status: "INDUSTRY STANDARD BASELINE",
+                statusClass: "bg-emerald-950/80 text-emerald-300 border-emerald-500/40",
+                btnClass: "border-blue-500/50 bg-blue-950/40 text-blue-300",
+                cipher: "AES (Advanced Encryption Standard - 128-bit block)",
+                integrity: "CCMP (Counter Mode with CBC-MAC Protocol)",
+                handshake: "4-Way EAPOL Handshake (PSK)",
+                analysis: "WPA2 replaced the legacy RC4 cipher with AES using CCMP. CCMP provides confidentiality (Counter Mode) and message authenticity/integrity (CBC-MAC). It remains the global industry baseline. Vulnerabilities: WPA2-PSK is susceptible to offline brute-force attacks if an adversary captures the 4-way handshake, and it was vulnerable to KRACK (Key Reinstallation Attacks) without patched firmware."
+            },
+            WPA3: {
+                name: "WPA3 (Next-Gen Standard - 2018/2019)",
+                status: "MAXIMUM SECURITY (RECOMMENDED)",
+                statusClass: "bg-sky-950/80 text-sky-300 border-sky-500/40",
+                btnClass: "border-sky-500/50 bg-sky-950/40 text-sky-300",
+                cipher: "AES-GCM (128-bit Personal) / GCMP-256 (192-bit Enterprise)",
+                integrity: "BIP-GMAC-256 / HMAC-SHA384",
+                handshake: "SAE (Simultaneous Authentication of Equals / Dragonfly)",
+                analysis: "WPA3 completely solves WPA2's core vulnerabilities. It replaces PSK with Simultaneous Authentication of Equals (SAE), preventing offline dictionary and brute-force attacks even if users choose weak passphrases. It enforces Perfect Forward Secrecy (PFS)—meaning compromising a key today cannot decrypt past recorded sessions. WPA3-Enterprise offers military-grade 192-bit cryptographic mode."
+            }
+        };
+
+        function selectWifiProto(proto) {
+            const data = wifiProtoData[proto];
+            if (!data) return;
+
+            document.querySelectorAll('.proto-btn').forEach(btn => {
+                btn.className = "proto-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-bold transition-all text-center";
+            });
+
+            const activeBtn = document.getElementById(`btn-proto-${proto}`);
+            if (activeBtn) {
+                activeBtn.className = `proto-btn p-3 rounded-xl border text-xs font-bold transition-all text-center ${data.btnClass}`;
+            }
+
+            const nameEl = document.getElementById('proto-name');
+            const badgeEl = document.getElementById('proto-badge');
+            const cipherEl = document.getElementById('proto-cipher');
+            const integEl = document.getElementById('proto-integrity');
+            const handEl = document.getElementById('proto-handshake');
+            const analEl = document.getElementById('proto-analysis');
+
+            if (nameEl) nameEl.textContent = data.name;
+            if (badgeEl) {
+                badgeEl.textContent = data.status;
+                badgeEl.className = `px-3 py-1 rounded-md text-xs font-bold font-mono border ${data.statusClass}`;
+            }
+            if (cipherEl) cipherEl.textContent = data.cipher;
+            if (integEl) integEl.textContent = data.integrity;
+            if (handEl) handEl.textContent = data.handshake;
+            if (analEl) analEl.textContent = data.analysis;
+        }
+
+        // --- Interactive Wi-Fi Authentication Flow Logic ---
+        function selectWifiAuthMode(mode) {
+            const container = document.getElementById('auth-flow-container');
+            const btnP = document.getElementById('btn-auth-personal');
+            const btnE = document.getElementById('btn-auth-enterprise');
+
+            if (!container) return;
+
+            if (mode === 'personal') {
+                if (btnP) btnP.className = "px-3 py-1.5 rounded-lg text-xs font-bold border border-emerald-500/50 bg-emerald-950/40 text-emerald-300 transition-all";
+                if (btnE) btnE.className = "px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-800 bg-slate-900 text-slate-400 transition-all";
+
+                container.innerHTML = `
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-slate-300 font-sans">
+                        <strong class="text-emerald-400">Mode: WPA-Personal (PSK)</strong>
+                        <span class="text-xs text-slate-400">Single Shared Secret Architecture</span>
+                    </div>
+                    <div class="space-y-3 text-slate-300 text-xs font-mono">
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 flex items-start gap-3">
+                            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">STEP 1</span>
+                            <div>
+                                <span class="text-white font-bold">[Client Endpoint]</span> associates with <span class="text-white font-bold">[Wireless AP]</span>.
+                                <div class="text-slate-400 text-[11px] mt-1 font-sans">Both devices possess the identical Pre-Shared Key (e.g. <code>CompanySecretPass2026!</code>).</div>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 flex items-start gap-3">
+                            <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 text-[10px] font-bold">STEP 2</span>
+                            <div>
+                                <span class="text-blue-400 font-bold">4-Way EAPOL Handshake</span> begins locally between Client and AP.
+                                <div class="text-slate-400 text-[11px] mt-1 font-sans">Derives the Pairwise Transient Key (PTK) without ever transmitting the actual passphrase over the RF spectrum.</div>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 flex items-start gap-3">
+                            <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">STEP 3</span>
+                            <div>
+                                <span class="text-amber-400 font-bold">Association Complete &amp; Data Encrypted</span>.
+                                <div class="text-slate-400 text-[11px] mt-1 font-sans">Traffic is encrypted. However, if one employee leaves the company, you cannot revoke just their access—the shared key must be updated on all devices.</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                if (btnP) btnP.className = "px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-800 bg-slate-900 text-slate-400 transition-all";
+                if (btnE) btnE.className = "px-3 py-1.5 rounded-lg text-xs font-bold border border-sky-500/50 bg-sky-950/40 text-sky-300 transition-all";
+
+                container.innerHTML = `
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-slate-300 font-sans">
+                        <strong class="text-sky-400">Mode: WPA-Enterprise (802.1X + RADIUS)</strong>
+                        <span class="text-xs text-slate-400">Centralized Identity &amp; Directory Integration</span>
+                    </div>
+                    <div class="space-y-3 text-slate-300 text-xs font-mono">
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 flex items-start gap-3">
+                            <span class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 text-[10px] font-bold">STEP 1</span>
+                            <div>
+                                <span class="text-white font-bold">[Supplicant (Client)]</span> sends EAPoL-Start to <span class="text-white font-bold">[Authenticator (WAP)]</span>.
+                                <div class="text-slate-400 text-[11px] mt-1 font-sans">The WAP leaves all network ports blocked, allowing <em>only</em> 802.1X authentication packets to pass through.</div>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 flex items-start gap-3">
+                            <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 text-[10px] font-bold">STEP 2</span>
+                            <div>
+                                <span class="text-purple-400 font-bold">EAP-over-RADIUS Relay (UDP Port 1812)</span>:
+                                <div class="text-slate-400 text-[11px] mt-1 font-sans">The WAP encapsulates client credentials into RADIUS Access-Request packets and sends them to the Central AAA RADIUS Server. The RADIUS server queries LDAP/Active Directory.</div>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 flex items-start gap-3">
+                            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">STEP 3</span>
+                            <div>
+                                <span class="text-emerald-400 font-bold">Access-Accept &amp; Dynamic Key Generation</span>:
+                                <div class="text-slate-400 text-[11px] mt-1 font-sans">RADIUS sends Access-Accept with a unique Master Session Key (MSK). The WAP opens the port, assigns the user's specific VLAN, and derives a unique per-user PTK. Terminating an employee account in Active Directory immediately revokes their Wi-Fi access!</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+function renderTabs() {
             navTabs.innerHTML = Object.entries(contentData).map(([id, data]) => `
                 <button onclick="switchTab('${id}')" 
                     id="tab-${id}"
@@ -1172,6 +2824,9 @@ const contentData = {
 
             contentHtml += `</div>`;
             contentContainer.innerHTML = contentHtml;
+            if (activeTab === 'wireless_security') {
+                selectWifiAuthMode('personal');
+            }
             lucide.createIcons();
         }
 

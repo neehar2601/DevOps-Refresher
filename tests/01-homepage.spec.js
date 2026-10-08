@@ -49,9 +49,15 @@ test.describe('1 – Homepage', () => {
     await expect(link).toContainText('Open Linux Hub');
   });
 
-  test('Live badges visible for Git, Docker, Networking, Linux', async ({ page }) => {
+  test('Security card links to security hub', async ({ page }) => {
+    const link = page.locator('a[href*="security_index.html"]').first();
+    await expect(link).toBeVisible();
+    await expect(link).toContainText('Open Security Hub');
+  });
+
+  test('Live badges visible for Git, Docker, Networking, Linux, Security', async ({ page }) => {
     const liveBadges = page.locator('span:has-text("Live")');
-    await expect(liveBadges).toHaveCount(4);
+    await expect(liveBadges).toHaveCount(5);
   });
 
   test('"Coming soon" cards show toast on click', async ({ page }) => {
